@@ -19,6 +19,14 @@
 		900DDBF126E036CB0034A155 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900DDBC226E036C90034A155 /* Persistence.swift */; };
 		900DDBF226E036CB0034A155 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 900DDBC326E036CA0034A155 /* Assets.xcassets */; };
 		900DDBF326E036CB0034A155 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 900DDBC326E036CA0034A155 /* Assets.xcassets */; };
+		90596B8626E6ACD20001CCA5 /* AddItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90596B8526E6ACD20001CCA5 /* AddItemView.swift */; };
+		90884D1E26E180C000D01A55 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90884D1D26E180C000D01A55 /* CloudKit.framework */; };
+		90884D2126E180E400D01A55 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90884D2026E180E400D01A55 /* CloudKit.framework */; };
+		90C0D98926E7D08200158C85 /* AddItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90596B8526E6ACD20001CCA5 /* AddItemView.swift */; };
+		90C0D98B26E7DEF600158C85 /* AddBelongingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C0D98A26E7DEF600158C85 /* AddBelongingView.swift */; };
+		90C0D98C26E7DEF600158C85 /* AddBelongingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C0D98A26E7DEF600158C85 /* AddBelongingView.swift */; };
+		90C0D98E26E8001700158C85 /* ChooseItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C0D98D26E8001700158C85 /* ChooseItemView.swift */; };
+		90C0D98F26E8001700158C85 /* ChooseItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C0D98D26E8001700158C85 /* ChooseItemView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,9 +52,9 @@
 		900DDBC126E036C90034A155 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		900DDBC226E036C90034A155 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		900DDBC326E036CA0034A155 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		900DDBC826E036CA0034A155 /* Belongings.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Belongings.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		900DDBC826E036CA0034A155 /* Belongings Organizer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Belongings Organizer.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		900DDBCB26E036CA0034A155 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		900DDBD026E036CB0034A155 /* Belongings.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Belongings.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		900DDBD026E036CB0034A155 /* Belongings Organizer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Belongings Organizer.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		900DDBD226E036CB0034A155 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		900DDBD326E036CB0034A155 /* macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = macOS.entitlements; sourceTree = "<group>"; };
 		900DDBD826E036CB0034A155 /* Tests iOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests iOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -55,6 +63,12 @@
 		900DDBE326E036CB0034A155 /* Tests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		900DDBE726E036CB0034A155 /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
 		900DDBE926E036CB0034A155 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		90596B8526E6ACD20001CCA5 /* AddItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItemView.swift; sourceTree = "<group>"; };
+		90884D1D26E180C000D01A55 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
+		90884D1F26E180E100D01A55 /* Belongings.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Belongings.entitlements; sourceTree = "<group>"; };
+		90884D2026E180E400D01A55 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.5.sdk/System/Library/Frameworks/CloudKit.framework; sourceTree = DEVELOPER_DIR; };
+		90C0D98A26E7DEF600158C85 /* AddBelongingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBelongingView.swift; sourceTree = "<group>"; };
+		90C0D98D26E8001700158C85 /* ChooseItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseItemView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +76,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				90884D2126E180E400D01A55 /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -69,6 +84,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				90884D1E26E180C000D01A55 /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -92,18 +108,21 @@
 		900DDBB826E036C90034A155 = {
 			isa = PBXGroup;
 			children = (
+				90884D1F26E180E100D01A55 /* Belongings.entitlements */,
 				900DDBBD26E036C90034A155 /* Shared */,
 				900DDBCA26E036CA0034A155 /* iOS */,
 				900DDBD126E036CB0034A155 /* macOS */,
 				900DDBDB26E036CB0034A155 /* Tests iOS */,
 				900DDBE626E036CB0034A155 /* Tests macOS */,
 				900DDBC926E036CA0034A155 /* Products */,
+				90884D1C26E180C000D01A55 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
 		900DDBBD26E036C90034A155 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				90596B8426E6ACC30001CCA5 /* Views */,
 				900DDBC026E036C90034A155 /* BelongingsApp.swift */,
 				900DDBC126E036C90034A155 /* ContentView.swift */,
 				900DDBC226E036C90034A155 /* Persistence.swift */,
@@ -116,8 +135,8 @@
 		900DDBC926E036CA0034A155 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				900DDBC826E036CA0034A155 /* Belongings.app */,
-				900DDBD026E036CB0034A155 /* Belongings.app */,
+				900DDBC826E036CA0034A155 /* Belongings Organizer.app */,
+				900DDBD026E036CB0034A155 /* Belongings Organizer.app */,
 				900DDBD826E036CB0034A155 /* Tests iOS.xctest */,
 				900DDBE326E036CB0034A155 /* Tests macOS.xctest */,
 			);
@@ -159,12 +178,31 @@
 			path = "Tests macOS";
 			sourceTree = "<group>";
 		};
+		90596B8426E6ACC30001CCA5 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				90596B8526E6ACD20001CCA5 /* AddItemView.swift */,
+				90C0D98A26E7DEF600158C85 /* AddBelongingView.swift */,
+				90C0D98D26E8001700158C85 /* ChooseItemView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		90884D1C26E180C000D01A55 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				90884D2026E180E400D01A55 /* CloudKit.framework */,
+				90884D1D26E180C000D01A55 /* CloudKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		900DDBC726E036CA0034A155 /* Belongings (iOS) */ = {
+		900DDBC726E036CA0034A155 /* Belongings Organizer (iOS) */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 900DDBF626E036CB0034A155 /* Build configuration list for PBXNativeTarget "Belongings (iOS)" */;
+			buildConfigurationList = 900DDBF626E036CB0034A155 /* Build configuration list for PBXNativeTarget "Belongings Organizer (iOS)" */;
 			buildPhases = (
 				900DDBC426E036CA0034A155 /* Sources */,
 				900DDBC526E036CA0034A155 /* Frameworks */,
@@ -174,14 +212,14 @@
 			);
 			dependencies = (
 			);
-			name = "Belongings (iOS)";
+			name = "Belongings Organizer (iOS)";
 			productName = "Belongings (iOS)";
-			productReference = 900DDBC826E036CA0034A155 /* Belongings.app */;
+			productReference = 900DDBC826E036CA0034A155 /* Belongings Organizer.app */;
 			productType = "com.apple.product-type.application";
 		};
-		900DDBCF26E036CB0034A155 /* Belongings (macOS) */ = {
+		900DDBCF26E036CB0034A155 /* Belongings Organizer (macOS) */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 900DDBF926E036CB0034A155 /* Build configuration list for PBXNativeTarget "Belongings (macOS)" */;
+			buildConfigurationList = 900DDBF926E036CB0034A155 /* Build configuration list for PBXNativeTarget "Belongings Organizer (macOS)" */;
 			buildPhases = (
 				900DDBCC26E036CB0034A155 /* Sources */,
 				900DDBCD26E036CB0034A155 /* Frameworks */,
@@ -191,9 +229,9 @@
 			);
 			dependencies = (
 			);
-			name = "Belongings (macOS)";
+			name = "Belongings Organizer (macOS)";
 			productName = "Belongings (macOS)";
-			productReference = 900DDBD026E036CB0034A155 /* Belongings.app */;
+			productReference = 900DDBD026E036CB0034A155 /* Belongings Organizer.app */;
 			productType = "com.apple.product-type.application";
 		};
 		900DDBD726E036CB0034A155 /* Tests iOS */ = {
@@ -257,7 +295,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 900DDBBC26E036C90034A155 /* Build configuration list for PBXProject "Belongings" */;
+			buildConfigurationList = 900DDBBC26E036C90034A155 /* Build configuration list for PBXProject "Belongings Organizer" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -270,8 +308,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				900DDBC726E036CA0034A155 /* Belongings (iOS) */,
-				900DDBCF26E036CB0034A155 /* Belongings (macOS) */,
+				900DDBC726E036CA0034A155 /* Belongings Organizer (iOS) */,
+				900DDBCF26E036CB0034A155 /* Belongings Organizer (macOS) */,
 				900DDBD726E036CB0034A155 /* Tests iOS */,
 				900DDBE226E036CB0034A155 /* Tests macOS */,
 			);
@@ -316,10 +354,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				90C0D98B26E7DEF600158C85 /* AddBelongingView.swift in Sources */,
 				900DDBEA26E036CB0034A155 /* Belongings.xcdatamodeld in Sources */,
+				90C0D98E26E8001700158C85 /* ChooseItemView.swift in Sources */,
 				900DDBF026E036CB0034A155 /* Persistence.swift in Sources */,
 				900DDBEC26E036CB0034A155 /* BelongingsApp.swift in Sources */,
 				900DDBEE26E036CB0034A155 /* ContentView.swift in Sources */,
+				90596B8626E6ACD20001CCA5 /* AddItemView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -327,10 +368,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				90C0D98C26E7DEF600158C85 /* AddBelongingView.swift in Sources */,
 				900DDBEB26E036CB0034A155 /* Belongings.xcdatamodeld in Sources */,
+				90C0D98F26E8001700158C85 /* ChooseItemView.swift in Sources */,
 				900DDBF126E036CB0034A155 /* Persistence.swift in Sources */,
 				900DDBED26E036CB0034A155 /* BelongingsApp.swift in Sources */,
 				900DDBEF26E036CB0034A155 /* ContentView.swift in Sources */,
+				90C0D98926E7D08200158C85 /* AddItemView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -355,12 +399,12 @@
 /* Begin PBXTargetDependency section */
 		900DDBDA26E036CB0034A155 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 900DDBC726E036CA0034A155 /* Belongings (iOS) */;
+			target = 900DDBC726E036CA0034A155 /* Belongings Organizer (iOS) */;
 			targetProxy = 900DDBD926E036CB0034A155 /* PBXContainerItemProxy */;
 		};
 		900DDBE526E036CB0034A155 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 900DDBCF26E036CB0034A155 /* Belongings (macOS) */;
+			target = 900DDBCF26E036CB0034A155 /* Belongings Organizer (macOS) */;
 			targetProxy = 900DDBE426E036CB0034A155 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -482,6 +526,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Belongings.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				ENABLE_PREVIEWS = YES;
@@ -492,7 +537,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jlee.Belongings;
-				PRODUCT_NAME = Belongings;
+				PRODUCT_NAME = "Belongings Organizer";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -504,6 +549,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Belongings.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				ENABLE_PREVIEWS = YES;
@@ -514,7 +560,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jlee.Belongings;
-				PRODUCT_NAME = Belongings;
+				PRODUCT_NAME = "Belongings Organizer";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -540,7 +586,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jlee.Belongings;
-				PRODUCT_NAME = Belongings;
+				PRODUCT_NAME = "Belongings Organizer";
 				SDKROOT = macosx;
 				SWIFT_VERSION = 5.0;
 			};
@@ -564,7 +610,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jlee.Belongings;
-				PRODUCT_NAME = Belongings;
+				PRODUCT_NAME = "Belongings Organizer";
 				SDKROOT = macosx;
 				SWIFT_VERSION = 5.0;
 			};
@@ -662,7 +708,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		900DDBBC26E036C90034A155 /* Build configuration list for PBXProject "Belongings" */ = {
+		900DDBBC26E036C90034A155 /* Build configuration list for PBXProject "Belongings Organizer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				900DDBF426E036CB0034A155 /* Debug */,
@@ -671,7 +717,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		900DDBF626E036CB0034A155 /* Build configuration list for PBXNativeTarget "Belongings (iOS)" */ = {
+		900DDBF626E036CB0034A155 /* Build configuration list for PBXNativeTarget "Belongings Organizer (iOS)" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				900DDBF726E036CB0034A155 /* Debug */,
@@ -680,7 +726,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		900DDBF926E036CB0034A155 /* Build configuration list for PBXNativeTarget "Belongings (macOS)" */ = {
+		900DDBF926E036CB0034A155 /* Build configuration list for PBXNativeTarget "Belongings Organizer (macOS)" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				900DDBFA26E036CB0034A155 /* Debug */,
