@@ -12,47 +12,39 @@ struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
 
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
+        sortDescriptors: [NSSortDescriptor(keyPath: \Belongings.lastupd, ascending: false)],
         animation: .default)
-    private var items: FetchedResults<Item>
+    private var belongings: FetchedResults<Belongings>
+
+    @State var presentAddBelongingView = false
 
     var body: some View {
         List {
-            ForEach(items) { item in
-                Text("Item at \(item.timestamp!, formatter: itemFormatter)")
+            ForEach(belongings) { belonging in
+                Text("\(belonging.name ?? "") at \(belonging.created!, formatter: itemFormatter)")
             }
-            .onDelete(perform: deleteItems)
+            .onDelete(perform: deleteBelongings)
         }
         .toolbar {
             #if os(iOS)
             EditButton()
             #endif
 
-            Button(action: addItem) {
-                Label("Add Item", systemImage: "plus")
+            Button(action: {
+                presentAddBelongingView = true
+            }) {
+                Label("Add Belongings", systemImage: "plus")
             }
         }
+        .sheet(isPresented: $presentAddBelongingView, content: {
+            AddBelongingView()
+                .environment(\.managedObjectContext, viewContext)
+        })
     }
 
-    private func addItem() {
+    private func deleteBelongings(offsets: IndexSet) {
         withAnimation {
-            let newItem = Item(context: viewContext)
-            newItem.timestamp = Date()
-
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            offsets.map { items[$0] }.forEach(viewContext.delete)
+            offsets.map { belongings[$0] }.forEach(viewContext.delete)
 
             do {
                 try viewContext.save()
