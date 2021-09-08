@@ -30,9 +30,7 @@ struct AddBelongingView: View { @Environment(\.managedObjectContext) private var
             
             chooseObtained()
             
-            Text("Buy Price")
-            
-            TextField("0.0", text: $buyPrice)
+            chooseBuyPrice()
             
             Text("Quantity")
             
@@ -144,6 +142,22 @@ struct AddBelongingView: View { @Environment(\.managedObjectContext) private var
         return numberFormatter
     }
     
+    @State private var currency: String = "USD"
+    
+    private func chooseBuyPrice() -> some View {
+        VStack {
+            Text("Buy Price")
+            
+            TextField("0.0", text: $buyPrice)
+            
+            Picker("Currency", selection: $currency) {
+                ForEach(NSLocale.commonISOCurrencyCodes, id: \.self) { currencyCode in
+                    Text("\(currencyCode) (\(NSLocale.autoupdatingCurrent.localizedString(forCurrencyCode: currencyCode) ?? ""))")
+                }
+            }
+        }
+    }
+    
     private func actions() -> some View {
         HStack {
             Button(action: {
@@ -154,7 +168,8 @@ struct AddBelongingView: View { @Environment(\.managedObjectContext) private var
             })
             
             Button(action: {
-                    saveBelonging()
+                saveBelonging()
+                presentationMode.wrappedValue.dismiss()
             },
             label: {
                 Text("Save")
@@ -178,6 +193,7 @@ struct AddBelongingView: View { @Environment(\.managedObjectContext) private var
         newBelonging.note = note
         newBelonging.obtained = obtained
         newBelonging.buyPrice = Double(buyPrice) ?? -1.0
+        newBelonging.currency = currency
         
         if item != nil {
             item!.addToBelongings(newBelonging)

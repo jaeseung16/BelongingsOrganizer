@@ -3,6 +3,7 @@
     <entity name="Belongings" representedClassName="Belongings" syncable="YES" codeGenerationType="class">
         <attribute name="buyPrice" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="created" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="currency" optional="YES" attributeType="String"/>
         <attribute name="disposed" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="image" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
         <attribute name="lastupd" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -22,7 +23,7 @@
         <relationship name="belongings" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Belongings" inverseName="item" inverseEntity="Belongings"/>
     </entity>
     <elements>
-        <element name="Belongings" positionX="-63" positionY="72" width="128" height="194"/>
+        <element name="Belongings" positionX="-63" positionY="72" width="128" height="209"/>
         <element name="Item" positionX="-63" positionY="-18" width="128" height="119"/>
     </elements>
 </model>

@@ -21,7 +21,13 @@ struct ContentView: View {
     var body: some View {
         List {
             ForEach(belongings) { belonging in
-                Text("\(belonging.name ?? "") at \(belonging.created!, formatter: itemFormatter)")
+                VStack {
+                    Text("\(belonging.name ?? "")")
+                    Text("price: \(belonging.currency ?? "") \(belonging.buyPrice)")
+                    Text("obtained: \(belonging.obtained!, formatter: itemFormatter)")
+                    Text("added: \(belonging.created!, formatter: itemFormatter)")
+                }
+                
             }
             .onDelete(perform: deleteBelongings)
         }
