@@ -13,19 +13,19 @@ struct PersistenceController {
     static var preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
-        let itemName = ["Book", "TV", "Phone", "Car", "Box", "Watch", "Water", "Glasses", "Bag" , "Shoes"]
-        let belongingName = ["Reinforcement Learning", "FIJI", "iPhone 12 mini"]
+        let kindName = ["Book", "TV", "Phone", "Car", "Box", "Watch", "Water", "Glasses", "Bag" , "Shoes"]
+        let itemName = ["Reinforcement Learning", "FIJI", "iPhone 12 mini"]
+        
+        for index in 0..<kindName.count {
+            let newKind = Kind(context: viewContext)
+            newKind.created = Date()
+            newKind.name = kindName[index]
+        }
         
         for index in 0..<itemName.count {
             let newItem = Item(context: viewContext)
             newItem.created = Date()
             newItem.name = itemName[index]
-        }
-        
-        for index in 0..<belongingName.count {
-            let newBelonging = Belongings(context: viewContext)
-            newBelonging.created = Date()
-            newBelonging.name = belongingName[index]
         }
         
         do {
@@ -62,5 +62,7 @@ struct PersistenceController {
                 fatalError("Unresolved error \(error), \(error.userInfo)")
             }
         })
+        
+        print("persistentStores = \(container.persistentStoreCoordinator.persistentStores)")
     }
 }

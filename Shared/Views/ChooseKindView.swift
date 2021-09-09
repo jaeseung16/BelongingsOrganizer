@@ -7,31 +7,31 @@
 
 import SwiftUI
 
-struct ChooseItemView: View {
+struct ChooseKindView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) private var presentationMode
     
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Item.created, ascending: false)],
+        sortDescriptors: [NSSortDescriptor(keyPath: \Kind.created, ascending: false)],
         animation: .default)
-    private var items: FetchedResults<Item>
+    private var kinds: FetchedResults<Kind>
     
     @State var presentAddItem = false
     
-    @Binding var item: Item?
+    @Binding var kind: Kind?
     
     var body: some View {
         VStack {
-            Text("Selected item: \(item == nil ? "" : (item!.name ?? ""))")
+            Text("Selected item: \(kind == nil ? "" : (kind!.name ?? ""))")
             
             Divider()
                  
             List {
-                ForEach(items) { item in
+                ForEach(kinds) { kind in
                     Button(action: {
-                        self.item = item
+                        self.kind = kind
                     }, label: {
-                        Text("\(item.name ?? "") at \(item.created!, formatter: dateFormatter)")
+                        Text("\(kind.name ?? "") at \(kind.created!, formatter: dateFormatter)")
                     })
                 }
                 .onDelete(perform: deleteItems)
@@ -48,7 +48,7 @@ struct ChooseItemView: View {
                 }
             }
             .sheet(isPresented: $presentAddItem, content: {
-                AddItemView()
+                AddKindView()
                     .environment(\.managedObjectContext, viewContext)
             })
             
@@ -62,7 +62,7 @@ struct ChooseItemView: View {
     
     private func deleteItems(offsets: IndexSet) {
         withAnimation {
-            offsets.map { items[$0] }.forEach(viewContext.delete)
+            offsets.map { kinds[$0] }.forEach(viewContext.delete)
 
             do {
                 try viewContext.save()
@@ -83,10 +83,10 @@ private let dateFormatter: DateFormatter = {
     return formatter
 }()
 
-struct ChooseItemView_Previews: PreviewProvider {
-    @State private static var item: Item?
+struct ChooseKindView_Previews: PreviewProvider {
+    @State private static var kind: Kind?
     
     static var previews: some View {
-        ChooseItemView(item: ChooseItemView_Previews.$item)
+        ChooseKindView(kind: ChooseKindView_Previews.$kind)
     }
 }
