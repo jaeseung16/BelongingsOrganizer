@@ -19,34 +19,53 @@ struct AddBelongingView: View { @Environment(\.managedObjectContext) private var
     @State private var quantity = ""
     
     @State private var presentChooseItemView = false
+    @State private var presentManufacturerView = false
+    @State private var presentSellerView = false
     
     @State private var item: Item?
+    @State private var manufacturer: Manufacturer?
+    @State private var seller: Seller?
     
     var body: some View {
-        VStack {
-            chooseName()
-            
-            chooseItem()
-            
-            chooseObtained()
-            
-            chooseBuyPrice()
-            
-            Text("Quantity")
-            
-            TextField("0", text: $quantity)
-            
-            actions()
+        GeometryReader { geometry in
+            VStack {
+                chooseName()
+                
+                chooseItem()
+                
+                chooseManufacturer()
+                
+                chooseSeller()
+                
+                chooseObtained()
+                
+                chooseBuyPrice()
+                
+                chooseQuantity()
+                
+                actions()
+            }
+            .sheet(isPresented: $presentChooseItemView, content: {
+                ChooseItemView(item: $item)
+                    .environment(\.managedObjectContext, viewContext)
+                    .frame(width: geometry.size.width, height: geometry.size.height)
+            })
+            .sheet(isPresented: $presentManufacturerView, content: {
+                ChooseManufacturerView(manufacturer: $manufacturer)
+                    .environment(\.managedObjectContext, viewContext)
+                    .frame(width: geometry.size.width, height: geometry.size.height)
+            })
+            .sheet(isPresented: $presentSellerView, content: {
+                ChooseSellerView(seller: $seller)
+                    .environment(\.managedObjectContext, viewContext)
+                    .frame(width: geometry.size.width, height: geometry.size.height)
+            })
+            .padding()
         }
-        .sheet(isPresented: $presentChooseItemView, content: {
-            ChooseItemView(item: $item)
-                .environment(\.managedObjectContext, viewContext)
-        })
-        .padding()
     }
     
     private func chooseName() -> some View {
-        VStack {
+        HStack {
             Text("Name")
             
             TextField("Name", text: $name)
@@ -54,69 +73,90 @@ struct AddBelongingView: View { @Environment(\.managedObjectContext) private var
     }
     
     private func chooseItem() -> some View {
-        VStack {
-            Text("Item")
+        HStack {
+            Text(item == nil ? "item" : (item!.name ?? "N/A"))
             
-            HStack {
-                Text(item == nil ? "N/A" : (item!.name ?? "N/A"))
-
-                Spacer()
-                
-                Button(action: {
-                    presentChooseItemView = true
-                }, label: {
-                    Text("Choose an item")
-                })
-            }
+            Spacer()
+            
+            Button(action: {
+                presentChooseItemView = true
+            }, label: {
+                Text("Choose an item")
+            })
+        }
+    }
+    
+    private func chooseManufacturer() -> some View {
+        HStack {
+            Text(manufacturer == nil ? "manufacturer" : (manufacturer!.name ?? "N/A"))
+            
+            Spacer()
+            
+            Button(action: {
+                presentManufacturerView = true
+            }, label: {
+                Text("Choose a manufacturer")
+            })
+        }
+    }
+    
+    private func chooseSeller() -> some View {
+        HStack {
+            Text(seller == nil ? "seller" : (seller!.name ?? "N/A"))
+            
+            Spacer()
+            
+            Button(action: {
+                presentSellerView = true
+            }, label: {
+                Text("Choose a seller")
+            })
         }
     }
     
     private func chooseObtained() -> some View {
-        VStack {
+        HStack {
             Text("Obtained")
-        
-            HStack {
-                Text("Year")
-               
-                TextField("Year", value: $obtainedYear, formatter: yearFormatter) { _ in
-                    
-                } onCommit: {
-                    if obtainedYear < -9999 {
-                        obtainedYear = -9999
-                    } else if obtainedYear > 9999 {
-                        obtainedYear = 9999
-                    }
-                }
+            
+            Text("Year")
+            
+            TextField("yyyy", value: $obtainedYear, formatter: yearFormatter) { _ in
                 
-                Text("Month")
-                TextField("Month", value: $obtainedMonth, formatter: monthFormatter) { _ in
-                    
-                } onCommit: {
-                    if obtainedMonth < 1{
-                        obtainedMonth = 1
-                    } else if obtainedMonth > 12 {
-                        obtainedMonth = 12
-                    }
-                }
-                
-                Text("Day")
-                TextField("Day", value: $obtainedDay, formatter: dayFormatter) { _ in
-                    
-                } onCommit: {
-                    let calendar = Calendar(identifier: .iso8601)
-                    
-                    let dateComponents = DateComponents(calendar: calendar, year: obtainedYear, month: obtainedMonth, day: obtainedDay)
-                    
-                    if !dateComponents.isValidDate {
-                        let validDateComponents = calendar.dateComponents([.year, .month, .day], from: dateComponents.date!)
-                        
-                        obtainedYear = validDateComponents.year!
-                        obtainedMonth = validDateComponents.month!
-                        obtainedDay = validDateComponents.day!
-                    }
+            } onCommit: {
+                if obtainedYear < -9999 {
+                    obtainedYear = -9999
+                } else if obtainedYear > 9999 {
+                    obtainedYear = 9999
                 }
             }
             
+            Text("Month")
+            TextField("mm", value: $obtainedMonth, formatter: monthFormatter) { _ in
+                
+            } onCommit: {
+                if obtainedMonth < 1{
+                    obtainedMonth = 1
+                } else if obtainedMonth > 12 {
+                    obtainedMonth = 12
+                }
+            }
+            
+            Text("Day")
+            TextField("dd", value: $obtainedDay, formatter: dayFormatter) { _ in
+                
+            } onCommit: {
+                let calendar = Calendar(identifier: .iso8601)
+                
+                let dateComponents = DateComponents(calendar: calendar, year: obtainedYear, month: obtainedMonth, day: obtainedDay)
+                
+                if !dateComponents.isValidDate {
+                    let validDateComponents = calendar.dateComponents([.year, .month, .day], from: dateComponents.date!)
+                    
+                    obtainedYear = validDateComponents.year!
+                    obtainedMonth = validDateComponents.month!
+                    obtainedDay = validDateComponents.day!
+                }
+            }
         }
     }
     
@@ -145,7 +185,7 @@ struct AddBelongingView: View { @Environment(\.managedObjectContext) private var
     @State private var currency: String = "USD"
     
     private func chooseBuyPrice() -> some View {
-        VStack {
+        HStack {
             Text("Buy Price")
             
             TextField("0.0", text: $buyPrice)
@@ -155,6 +195,14 @@ struct AddBelongingView: View { @Environment(\.managedObjectContext) private var
                     Text("\(currencyCode) (\(NSLocale.autoupdatingCurrent.localizedString(forCurrencyCode: currencyCode) ?? ""))")
                 }
             }
+        }
+    }
+    
+    private func chooseQuantity() -> some View {
+        HStack {
+            Text("Quantity")
+            
+            TextField("0", text: $quantity)
         }
     }
     
@@ -194,9 +242,18 @@ struct AddBelongingView: View { @Environment(\.managedObjectContext) private var
         newBelonging.obtained = obtained
         newBelonging.buyPrice = Double(buyPrice) ?? -1.0
         newBelonging.currency = currency
+        newBelonging.uuid = UUID()
         
         if item != nil {
             item!.addToBelongings(newBelonging)
+        }
+        
+        if manufacturer != nil {
+            manufacturer!.addToBelongings(newBelonging)
+        }
+        
+        if seller != nil {
+            seller!.addToBelongings(newBelonging)
         }
 
         do {
