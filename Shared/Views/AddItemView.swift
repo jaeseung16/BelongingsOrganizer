@@ -12,8 +12,6 @@ struct AddItemView: View {
     @Environment(\.presentationMode) private var presentationMode
     
     @State private var name = ""
-    @State private var category = ""
-    @State private var maker = ""
     
     var body: some View {
         VStack {
@@ -21,24 +19,17 @@ struct AddItemView: View {
             
             TextField("Name", text: $name)
             
-            Text("Category")
-            
-            TextField("Category", text: $category)
-            
-            Text("Maker")
-            
-            TextField("Maker", text: $maker)
-            
             HStack {
                 Button(action: {
-                        presentationMode.wrappedValue.dismiss()
+                    presentationMode.wrappedValue.dismiss()
                 },
                 label: {
                     Text("Cancel")
                 })
                 
                 Button(action: {
-                        saveItem()
+                    saveItem()
+                    presentationMode.wrappedValue.dismiss()
                 },
                 label: {
                     Text("Save")
@@ -50,13 +41,14 @@ struct AddItemView: View {
     }
     
     private func saveItem() -> Void {
+        let created = Date()
+        
         let newItem = Item(context: viewContext)
-        newItem.created = Date()
-        newItem.lastupd = newItem.created
+        newItem.created = created
+        newItem.lastupd = created
         newItem.name = name
-        newItem.category = category
-        newItem.maker = maker
-
+        newItem.uuid = UUID()
+        
         do {
             try viewContext.save()
         } catch {

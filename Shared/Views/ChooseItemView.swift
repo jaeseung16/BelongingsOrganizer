@@ -31,7 +31,7 @@ struct ChooseItemView: View {
                     Button(action: {
                         self.item = item
                     }, label: {
-                        Text("\(item.name ?? "") at \(item.created!, formatter: itemFormatter)")
+                        Text("\(item.name ?? "") at \(item.created!, formatter: dateFormatter)")
                     })
                 }
                 .onDelete(perform: deleteItems)
@@ -76,7 +76,7 @@ struct ChooseItemView: View {
     }
 }
 
-private let itemFormatter: DateFormatter = {
+private let dateFormatter: DateFormatter = {
     let formatter = DateFormatter()
     formatter.dateStyle = .short
     formatter.timeStyle = .medium
