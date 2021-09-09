@@ -10,23 +10,24 @@ import CoreData
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
-
+    @EnvironmentObject var viewModel: BelongingsViewModel
+    
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Belongings.lastupd, ascending: false)],
+        sortDescriptors: [NSSortDescriptor(keyPath: \Item.lastupd, ascending: false)],
         animation: .default)
-    private var belongings: FetchedResults<Belongings>
+    private var items: FetchedResults<Item>
 
     @State var presentAddBelongingView = false
 
     var body: some View {
         GeometryReader { geometry in
             List {
-                ForEach(belongings) { belonging in
+                ForEach(items) { item in
                     VStack {
-                        Text("\(belonging.name ?? "")")
-                        Text("price: \(belonging.currency ?? "") \(belonging.buyPrice)")
-                        Text("obtained: \(belonging.obtained!, formatter: dateFormatter)")
-                        Text("added: \(belonging.created!, formatter: dateFormatter)")
+                        Text("\(item.name ?? "")")
+                        Text("price: \(item.currency ?? "") \(item.buyPrice)")
+                        Text("obtained: \(item.obtained ?? Date(), formatter: dateFormatter)")
+                        Text("added: \(item.created!, formatter: dateFormatter)")
                     }
                     
                 }
@@ -44,8 +45,9 @@ struct ContentView: View {
                 }
             }
             .sheet(isPresented: $presentAddBelongingView, content: {
-                AddBelongingView()
+                AddItemView()
                     .environment(\.managedObjectContext, viewContext)
+                    .environmentObject(viewModel)
                     .frame(minWidth: 0.5 * geometry.size.width, minHeight: 0.75 * geometry.size.height)
             })
         }
@@ -53,7 +55,7 @@ struct ContentView: View {
 
     private func deleteBelongings(offsets: IndexSet) {
         withAnimation {
-            offsets.map { belongings[$0] }.forEach(viewContext.delete)
+            offsets.map { items[$0] }.forEach(viewContext.delete)
 
             do {
                 try viewContext.save()
