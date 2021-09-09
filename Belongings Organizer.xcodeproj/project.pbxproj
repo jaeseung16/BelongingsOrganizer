@@ -20,6 +20,14 @@
 		900DDBF226E036CB0034A155 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 900DDBC326E036CA0034A155 /* Assets.xcassets */; };
 		900DDBF326E036CB0034A155 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 900DDBC326E036CA0034A155 /* Assets.xcassets */; };
 		90596B8626E6ACD20001CCA5 /* AddItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90596B8526E6ACD20001CCA5 /* AddItemView.swift */; };
+		9072232D26E9352700965653 /* ChooseManufacturerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9072232C26E9352700965653 /* ChooseManufacturerView.swift */; };
+		9072232E26E9352700965653 /* ChooseManufacturerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9072232C26E9352700965653 /* ChooseManufacturerView.swift */; };
+		9072233026E93A0500965653 /* AddManufacturerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9072232F26E93A0500965653 /* AddManufacturerView.swift */; };
+		9072233126E93A0500965653 /* AddManufacturerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9072232F26E93A0500965653 /* AddManufacturerView.swift */; };
+		9072233326E93CDC00965653 /* ChooseSellerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9072233226E93CDC00965653 /* ChooseSellerView.swift */; };
+		9072233426E93CDC00965653 /* ChooseSellerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9072233226E93CDC00965653 /* ChooseSellerView.swift */; };
+		9072233626E93CE800965653 /* AddSellerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9072233526E93CE800965653 /* AddSellerView.swift */; };
+		9072233726E93CE800965653 /* AddSellerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9072233526E93CE800965653 /* AddSellerView.swift */; };
 		90884D1E26E180C000D01A55 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90884D1D26E180C000D01A55 /* CloudKit.framework */; };
 		90884D2126E180E400D01A55 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90884D2026E180E400D01A55 /* CloudKit.framework */; };
 		90C0D98926E7D08200158C85 /* AddItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90596B8526E6ACD20001CCA5 /* AddItemView.swift */; };
@@ -64,6 +72,10 @@
 		900DDBE726E036CB0034A155 /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
 		900DDBE926E036CB0034A155 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		90596B8526E6ACD20001CCA5 /* AddItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItemView.swift; sourceTree = "<group>"; };
+		9072232C26E9352700965653 /* ChooseManufacturerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseManufacturerView.swift; sourceTree = "<group>"; };
+		9072232F26E93A0500965653 /* AddManufacturerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddManufacturerView.swift; sourceTree = "<group>"; };
+		9072233226E93CDC00965653 /* ChooseSellerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseSellerView.swift; sourceTree = "<group>"; };
+		9072233526E93CE800965653 /* AddSellerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddSellerView.swift; sourceTree = "<group>"; };
 		90884D1D26E180C000D01A55 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		90884D1F26E180E100D01A55 /* Belongings.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Belongings.entitlements; sourceTree = "<group>"; };
 		90884D2026E180E400D01A55 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.5.sdk/System/Library/Frameworks/CloudKit.framework; sourceTree = DEVELOPER_DIR; };
@@ -181,9 +193,13 @@
 		90596B8426E6ACC30001CCA5 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				90596B8526E6ACD20001CCA5 /* AddItemView.swift */,
 				90C0D98A26E7DEF600158C85 /* AddBelongingView.swift */,
+				90596B8526E6ACD20001CCA5 /* AddItemView.swift */,
+				9072232F26E93A0500965653 /* AddManufacturerView.swift */,
+				9072233526E93CE800965653 /* AddSellerView.swift */,
 				90C0D98D26E8001700158C85 /* ChooseItemView.swift */,
+				9072232C26E9352700965653 /* ChooseManufacturerView.swift */,
+				9072233226E93CDC00965653 /* ChooseSellerView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -354,10 +370,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9072232D26E9352700965653 /* ChooseManufacturerView.swift in Sources */,
 				90C0D98B26E7DEF600158C85 /* AddBelongingView.swift in Sources */,
+				9072233026E93A0500965653 /* AddManufacturerView.swift in Sources */,
 				900DDBEA26E036CB0034A155 /* Belongings.xcdatamodeld in Sources */,
 				90C0D98E26E8001700158C85 /* ChooseItemView.swift in Sources */,
 				900DDBF026E036CB0034A155 /* Persistence.swift in Sources */,
+				9072233626E93CE800965653 /* AddSellerView.swift in Sources */,
+				9072233326E93CDC00965653 /* ChooseSellerView.swift in Sources */,
 				900DDBEC26E036CB0034A155 /* BelongingsApp.swift in Sources */,
 				900DDBEE26E036CB0034A155 /* ContentView.swift in Sources */,
 				90596B8626E6ACD20001CCA5 /* AddItemView.swift in Sources */,
@@ -368,10 +388,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9072232E26E9352700965653 /* ChooseManufacturerView.swift in Sources */,
 				90C0D98C26E7DEF600158C85 /* AddBelongingView.swift in Sources */,
+				9072233126E93A0500965653 /* AddManufacturerView.swift in Sources */,
 				900DDBEB26E036CB0034A155 /* Belongings.xcdatamodeld in Sources */,
 				90C0D98F26E8001700158C85 /* ChooseItemView.swift in Sources */,
 				900DDBF126E036CB0034A155 /* Persistence.swift in Sources */,
+				9072233726E93CE800965653 /* AddSellerView.swift in Sources */,
+				9072233426E93CDC00965653 /* ChooseSellerView.swift in Sources */,
 				900DDBED26E036CB0034A155 /* BelongingsApp.swift in Sources */,
 				900DDBEF26E036CB0034A155 /* ContentView.swift in Sources */,
 				90C0D98926E7D08200158C85 /* AddItemView.swift in Sources */,
