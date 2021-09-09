@@ -8,10 +8,10 @@
 import Foundation
 
 struct KindDTO: Identifiable, CustomStringConvertible {
-    var id: UUID
-    var name: String
+    var id: UUID?
+    var name: String?
     
     var description: String {
-        "KindDTO[id: \(id), name: \(name)]"
+        "KindDTO[id: \(String(describing: id)), name: \(String(describing: name))]"
     }
 }

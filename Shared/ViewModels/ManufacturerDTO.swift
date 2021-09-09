@@ -8,11 +8,11 @@
 import Foundation
 
 struct ManufacturerDTO: Identifiable, CustomStringConvertible {
-    var id: UUID
-    var name: String
-    var url: URL
+    var id: UUID?
+    var name: String?
+    var url: URL?
     
     var description: String {
-        "ManufacturerDTO[id: \(id), name: \(name), url: \(url)]"
+        "ManufacturerDTO[id: \(String(describing: id)), name: \(String(describing: name)), url: \(String(describing: url))]"
     }
 }

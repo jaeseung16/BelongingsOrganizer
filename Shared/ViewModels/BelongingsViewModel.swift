@@ -16,6 +16,10 @@ class BelongingsViewModel: NSObject, ObservableObject {
     
     private var subscriptions: Set<AnyCancellable> = []
     
+    @Published var showAlert = false
+    
+    var message = ""
+    
     override init() {
         super.init()
         
@@ -23,6 +27,62 @@ class BelongingsViewModel: NSObject, ObservableObject {
           .publisher(for: .NSPersistentStoreRemoteChange)
           .sink { self.fetchUpdates($0) }
           .store(in: &subscriptions)
+    }
+    
+    var kindDTO = KindDTO(id: nil, name: nil) {
+        didSet {
+            if kindDTO.id != nil, let existingEntity: Kind = get(entity: .Kind, id: kindDTO.id!) {
+                existingEntity.name = kindDTO.name
+                existingEntity.lastupd = Date()
+
+                do {
+                    try saveContext()
+                } catch {
+                    let nsError = error as NSError
+                    print("While saving \(kindDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
+                    message = "Cannot update name = \(String(describing: kindDTO.name))"
+                    showAlert.toggle()
+                }
+            }
+        }
+    }
+    
+    var manufacturerDTO = ManufacturerDTO(id: nil, name: nil, url: nil) {
+        didSet {
+            if manufacturerDTO.id != nil, let existingEntity: Manufacturer = get(entity: .Manufacturer, id: manufacturerDTO.id!) {
+                existingEntity.name = manufacturerDTO.name
+                existingEntity.url = manufacturerDTO.url
+                existingEntity.lastupd = Date()
+
+                do {
+                    try saveContext()
+                } catch {
+                    let nsError = error as NSError
+                    print("While saving \(manufacturerDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
+                    message = "Cannot update name = \(String(describing: manufacturerDTO.name)) and url = \(String(describing: manufacturerDTO.url))"
+                    showAlert.toggle()
+                }
+            }
+        }
+    }
+    
+    var sellerDTO = SellerDTO(id: nil, name: nil, url: nil) {
+        didSet {
+            if sellerDTO.id != nil, let existingEntity: Seller = get(entity: .Seller, id: sellerDTO.id!) {
+                existingEntity.name = sellerDTO.name
+                existingEntity.url = sellerDTO.url
+                existingEntity.lastupd = Date()
+
+                do {
+                    try saveContext()
+                } catch {
+                    let nsError = error as NSError
+                    print("While saving \(sellerDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
+                    message = "Cannot update name = \(String(describing: sellerDTO.name)) and url = \(String(describing: sellerDTO.url))"
+                    showAlert.toggle()
+                }
+            }
+        }
     }
     
     func get<Entity: NSFetchRequestResult>(entity: Entities, id: UUID) -> Entity? {
@@ -39,6 +99,12 @@ class BelongingsViewModel: NSObject, ObservableObject {
         }
         
         return fetchedLinks.isEmpty ? nil : fetchedLinks[0]
+    }
+    
+    private func saveContext() throws -> Void {
+        persistenteContainer.viewContext.transactionAuthor = "App"
+        try persistenteContainer.viewContext.save()
+        persistenteContainer.viewContext.transactionAuthor = nil
     }
     
     // MARK: - Persistence History Request
