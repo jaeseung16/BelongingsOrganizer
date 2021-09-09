@@ -19,33 +19,36 @@ struct ContentView: View {
     @State var presentAddBelongingView = false
 
     var body: some View {
-        List {
-            ForEach(belongings) { belonging in
-                VStack {
-                    Text("\(belonging.name ?? "")")
-                    Text("price: \(belonging.currency ?? "") \(belonging.buyPrice)")
-                    Text("obtained: \(belonging.obtained!, formatter: itemFormatter)")
-                    Text("added: \(belonging.created!, formatter: itemFormatter)")
+        GeometryReader { geometry in
+            List {
+                ForEach(belongings) { belonging in
+                    VStack {
+                        Text("\(belonging.name ?? "")")
+                        Text("price: \(belonging.currency ?? "") \(belonging.buyPrice)")
+                        Text("obtained: \(belonging.obtained!, formatter: dateFormatter)")
+                        Text("added: \(belonging.created!, formatter: dateFormatter)")
+                    }
+                    
                 }
-                
+                .onDelete(perform: deleteBelongings)
             }
-            .onDelete(perform: deleteBelongings)
-        }
-        .toolbar {
-            #if os(iOS)
-            EditButton()
-            #endif
+            .toolbar {
+                #if os(iOS)
+                EditButton()
+                #endif
 
-            Button(action: {
-                presentAddBelongingView = true
-            }) {
-                Label("Add Belongings", systemImage: "plus")
+                Button(action: {
+                    presentAddBelongingView = true
+                }) {
+                    Label("Add Belongings", systemImage: "plus")
+                }
             }
+            .sheet(isPresented: $presentAddBelongingView, content: {
+                AddBelongingView()
+                    .environment(\.managedObjectContext, viewContext)
+                    .frame(minWidth: 0.5 * geometry.size.width, minHeight: 0.75 * geometry.size.height)
+            })
         }
-        .sheet(isPresented: $presentAddBelongingView, content: {
-            AddBelongingView()
-                .environment(\.managedObjectContext, viewContext)
-        })
     }
 
     private func deleteBelongings(offsets: IndexSet) {
@@ -64,7 +67,7 @@ struct ContentView: View {
     }
 }
 
-private let itemFormatter: DateFormatter = {
+private let dateFormatter: DateFormatter = {
     let formatter = DateFormatter()
     formatter.dateStyle = .short
     formatter.timeStyle = .medium
