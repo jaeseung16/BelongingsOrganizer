@@ -22,10 +22,23 @@ struct ChooseKindView: View {
     
     var body: some View {
         VStack {
-            Text("Selected item: \(kind == nil ? "" : (kind!.name ?? ""))")
+            Text("Choose a category")
+                .font(.title3)
             
             Divider()
-                 
+            
+            Form {
+                Section(header: Text("Selected")) {
+                    if kind == nil {
+                        NothingSelectedText()
+                    } else {
+                        Text((kind!.name ?? ""))
+                    }
+                }
+            }
+            
+            Divider()
+            
             List {
                 ForEach(kinds) { kind in
                     Button(action: {
@@ -36,28 +49,20 @@ struct ChooseKindView: View {
                 }
                 .onDelete(perform: deleteItems)
             }
-            .toolbar {
-                #if os(iOS)
-                EditButton()
-                #endif
-
-                Button(action: {
-                    presentAddItem = true
-                }) {
-                    Label("Add an item", systemImage: "plus")
-                }
-            }
             .sheet(isPresented: $presentAddItem, content: {
                 AddKindView()
                     .environment(\.managedObjectContext, viewContext)
             })
             
-            Button(action: {
+            Divider()
+            
+            SheetBottom(labelText: "Add a category") {
+                presentAddItem = true
+            } done: {
                 presentationMode.wrappedValue.dismiss()
-            }, label: {
-                Text("Done")
-            })
+            }
         }
+        .padding()
     }
     
     private func deleteItems(offsets: IndexSet) {

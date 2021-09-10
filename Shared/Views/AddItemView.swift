@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct AddItemView: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -19,31 +20,80 @@ struct AddItemView: View {
     @State private var obtainedDay = 1
     @State private var buyPrice = ""
     @State private var quantity = ""
+    @State private var currency: String = "USD"
     
     @State private var presentChooseKindView = false
     @State private var presentManufacturerView = false
     @State private var presentSellerView = false
+    @State private var presentCurrencyView = false
     
     @State private var kind: Kind?
     @State private var manufacturer: Manufacturer?
     @State private var seller: Seller?
     
+    var geometry: GeometryProxy
+    
     var body: some View {
         GeometryReader { geometry in
             VStack {
-                chooseName()
+                Text("Add an item")
+                    .font(.title3)
                 
-                chooseKind()
+                Divider()
                 
-                chooseManufacturer()
+                Form {
+                    Section(header: Text("Name")) {
+                        TextField("Name", text: $name)
+                    }
+                    
+                    Section(header: chooseKindHeader()) {
+                        if kind == nil {
+                            Text("ITEM")
+                                .foregroundColor(.secondary)
+                        } else {
+                            Text(kind!.name ?? "N/A")
+                        }
+                    }
+                    
+                    Section(header: chooseManufacturer()) {
+                        if manufacturer == nil {
+                            Text("MANUFACTURER")
+                                .foregroundColor(.secondary)
+                        } else {
+                            Text(manufacturer!.name ?? "N/A")
+                        }
+                    }
+                    
+                    Section(header: chooseSeller()) {
+                        if seller == nil {
+                            Text("SELLER")
+                                .foregroundColor(.secondary)
+                        } else {
+                            Text(seller!.name ?? "N/A")
+                        }
+                    }
+                    
+                    Section(header:Text("Obtained")) {
+                        chooseObtained()
+                    }
+                    
+                    Section(header: chooseCurrency()) {
+                        HStack {
+                            TextField("0.0", text: $buyPrice)
+                            
+                            Spacer()
+                            
+                            Text(currency)
+                        }
+                        
+                    }
+                    
+                    Section(header: Text("Quantity")) {
+                        chooseQuantity()
+                    }
+                }
                 
-                chooseSeller()
-                
-                chooseObtained()
-                
-                chooseBuyPrice()
-                
-                chooseQuantity()
+                Divider()
                 
                 actions()
             }
@@ -62,24 +112,17 @@ struct AddItemView: View {
                     .environment(\.managedObjectContext, viewContext)
                     .frame(width: geometry.size.width, height: geometry.size.height)
             })
-            .padding()
+            .sheet(isPresented: $presentCurrencyView, content: {
+                ChooseCurrencyView(currency: $currency)
+                    .frame(width: geometry.size.width, height: geometry.size.height)
+            })
         }
     }
     
-    private func chooseName() -> some View {
+    private func chooseKindHeader() -> some View {
         HStack {
-            Text("Name")
-            
-            TextField("Name", text: $name)
-        }
-    }
-    
-    private func chooseKind() -> some View {
-        HStack {
-            Text(kind == nil ? "item" : (kind!.name ?? "N/A"))
-            
+            Text("Category")
             Spacer()
-            
             Button(action: {
                 presentChooseKindView = true
             }, label: {
@@ -90,7 +133,7 @@ struct AddItemView: View {
     
     private func chooseManufacturer() -> some View {
         HStack {
-            Text(manufacturer == nil ? "manufacturer" : (manufacturer!.name ?? "N/A"))
+            Text("Manufacturer")
             
             Spacer()
             
@@ -104,7 +147,7 @@ struct AddItemView: View {
     
     private func chooseSeller() -> some View {
         HStack {
-            Text(seller == nil ? "seller" : (seller!.name ?? "N/A"))
+            Text("Seller")
             
             Spacer()
             
@@ -118,10 +161,8 @@ struct AddItemView: View {
     
     private func chooseObtained() -> some View {
         HStack {
-            Text("Obtained")
-            
             Text("Year")
-            
+                .foregroundColor(.secondary)
             TextField("yyyy", value: $obtainedYear, formatter: yearFormatter) { _ in
                 
             } onCommit: {
@@ -133,6 +174,7 @@ struct AddItemView: View {
             }
             
             Text("Month")
+                .foregroundColor(.secondary)
             TextField("mm", value: $obtainedMonth, formatter: monthFormatter) { _ in
                 
             } onCommit: {
@@ -144,6 +186,7 @@ struct AddItemView: View {
             }
             
             Text("Day")
+                .foregroundColor(.secondary)
             TextField("dd", value: $obtainedDay, formatter: dayFormatter) { _ in
                 
             } onCommit: {
@@ -184,32 +227,28 @@ struct AddItemView: View {
         return numberFormatter
     }
     
-    @State private var currency: String = "USD"
-    
-    private func chooseBuyPrice() -> some View {
+    private func chooseCurrency() -> some View {
         HStack {
             Text("Buy Price")
             
-            TextField("0.0", text: $buyPrice)
+            Spacer()
             
-            Picker("Currency", selection: $currency) {
-                ForEach(NSLocale.commonISOCurrencyCodes, id: \.self) { currencyCode in
-                    Text("\(currencyCode) (\(NSLocale.autoupdatingCurrent.localizedString(forCurrencyCode: currencyCode) ?? ""))")
-                }
-            }
+            Button(action: {
+                presentCurrencyView = true
+            }, label: {
+                Text("Choose a currency")
+            })
         }
     }
     
     private func chooseQuantity() -> some View {
-        HStack {
-            Text("Quantity")
-            
-            TextField("0", text: $quantity)
-        }
+        TextField("0", text: $quantity)
     }
     
     private func actions() -> some View {
         HStack {
+            Spacer()
+            
             Button(action: {
                 presentationMode.wrappedValue.dismiss()
             },
@@ -217,12 +256,16 @@ struct AddItemView: View {
                 Text("Cancel")
             })
             
+            Spacer()
+            
             Button(action: {
                 saveBelonging()
             },
             label: {
                 Text("Save")
             })
+            
+            Spacer()
         }
     }
     
@@ -279,6 +322,8 @@ struct AddItemView: View {
 
 struct AddBelongingView_Previews: PreviewProvider {
     static var previews: some View {
-        AddItemView()
+        GeometryReader { geometry in
+            AddItemView(geometry: geometry)
+        }
     }
 }

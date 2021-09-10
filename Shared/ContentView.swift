@@ -20,37 +20,47 @@ struct ContentView: View {
     @State var presentAddBelongingView = false
 
     var body: some View {
-        GeometryReader { geometry in
-            List {
-                ForEach(items) { item in
-                    VStack {
-                        Text("\(item.name ?? "")")
-                        Text("price: \(item.currency ?? "") \(item.buyPrice)")
-                        Text("obtained: \(item.obtained ?? Date(), formatter: dateFormatter)")
-                        Text("added: \(item.created!, formatter: dateFormatter)")
+        NavigationView {
+            GeometryReader { geometry in
+                List {
+                    ForEach(items) { item in
+                        VStack {
+                            Text("\(item.name ?? "")")
+                            Text("price: \(item.currency ?? "") \(item.buyPrice)")
+                            Text("obtained: \(item.obtained ?? Date(), formatter: dateFormatter)")
+                            Text("added: \(item.created!, formatter: dateFormatter)")
+                        }
+                        
                     }
+                    .onDelete(perform: deleteBelongings)
+                }
+                .sheet(isPresented: $presentAddBelongingView, content: {
+                    AddItemView(geometry: geometry)
+                        .environment(\.managedObjectContext, viewContext)
+                        .environmentObject(viewModel)
+                        .frame(minWidth: 350, minHeight: 450)
+                        .padding()
+                })
+                .toolbar {
+                    #if os(iOS)
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        EditButton()
+                    }
+                    #endif
                     
+                    ToolbarItem(placement: .navigation) {
+                        Button(action: {
+                            presentAddBelongingView = true
+                        }) {
+                            Label("Add Belongings", systemImage: "plus")
+                        }
+                    }
                 }
-                .onDelete(perform: deleteBelongings)
+                
             }
-            .toolbar {
-                #if os(iOS)
-                EditButton()
-                #endif
-
-                Button(action: {
-                    presentAddBelongingView = true
-                }) {
-                    Label("Add Belongings", systemImage: "plus")
-                }
-            }
-            .sheet(isPresented: $presentAddBelongingView, content: {
-                AddItemView()
-                    .environment(\.managedObjectContext, viewContext)
-                    .environmentObject(viewModel)
-                    .frame(minWidth: 0.5 * geometry.size.width, minHeight: 0.75 * geometry.size.height)
-            })
+            .navigationTitle(Text("Belongings"))
         }
+        
     }
 
     private func deleteBelongings(offsets: IndexSet) {

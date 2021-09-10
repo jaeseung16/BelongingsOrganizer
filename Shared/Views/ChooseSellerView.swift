@@ -22,7 +22,17 @@ struct ChooseSellerView: View {
     
     var body: some View {
         VStack {
-            Text("Selected seller: \(seller == nil ? "" : (seller!.name ?? ""))")
+            Text("Choose a seller")
+            
+            Form {
+                Section(header: Text("Selected")) {
+                    if seller == nil {
+                        NothingSelectedText()
+                    } else {
+                        Text(seller!.name ?? "")
+                    }
+                }
+            }
             
             Divider()
                  
@@ -36,28 +46,20 @@ struct ChooseSellerView: View {
                 }
                 .onDelete(perform: deleteSellers)
             }
-            .toolbar {
-                #if os(iOS)
-                EditButton()
-                #endif
-
-                Button(action: {
-                    presentAddSeller = true
-                }) {
-                    Label("Add a seller", systemImage: "plus")
-                }
-            }
             .sheet(isPresented: $presentAddSeller, content: {
                 AddSellerView()
                     .environment(\.managedObjectContext, viewContext)
             })
             
-            Button(action: {
+            Divider()
+            
+            SheetBottom(labelText: "Add a seller") {
+                presentAddSeller = true
+            } done: {
                 presentationMode.wrappedValue.dismiss()
-            }, label: {
-                Text("Done")
-            })
+            }
         }
+        .padding()
     }
     
     private func deleteSellers(offsets: IndexSet) {

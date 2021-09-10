@@ -22,10 +22,21 @@ struct ChooseManufacturerView: View {
     
     var body: some View {
         VStack {
-            Text("Selected maker: \(manufacturer == nil ? "" : (manufacturer!.name ?? ""))")
+            Text("Choose a manufacturer")
+                .font(.title3)
             
             Divider()
-                 
+            
+            Form {
+                Section(header: Text("Selected")) {
+                    if manufacturer == nil {
+                        NothingSelectedText()
+                    } else {
+                        Text(manufacturer!.name ?? "")
+                    }
+                }
+            }
+            
             List {
                 ForEach(manufacturers) { manufacturer in
                     Button(action: {
@@ -36,28 +47,20 @@ struct ChooseManufacturerView: View {
                 }
                 .onDelete(perform: deleteManufacturers)
             }
-            .toolbar {
-                #if os(iOS)
-                EditButton()
-                #endif
-
-                Button(action: {
-                    presentAddManufacturer = true
-                }) {
-                    Label("Add a manufacturer", systemImage: "plus")
-                }
-            }
             .sheet(isPresented: $presentAddManufacturer, content: {
                 AddManufacturerView()
                     .environment(\.managedObjectContext, viewContext)
             })
             
-            Button(action: {
+            Divider()
+            
+            SheetBottom(labelText: "Add a manufacturer") {
+                presentAddManufacturer = true
+            } done: {
                 presentationMode.wrappedValue.dismiss()
-            }, label: {
-                Text("Done")
-            })
+            }
         }
+        .padding()
     }
     
     private func deleteManufacturers(offsets: IndexSet) {
