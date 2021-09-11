@@ -44,7 +44,7 @@ struct ChooseKindView: View {
                     Button(action: {
                         self.kind = kind
                     }, label: {
-                        Text("\(kind.name ?? "") at \(kind.created!, formatter: dateFormatter)")
+                        Text("\(kind.name ?? "") at \(kind.created!, formatter: BelongingsViewModel.dateFormatter)")
                     })
                 }
                 .onDelete(perform: deleteItems)
@@ -80,13 +80,6 @@ struct ChooseKindView: View {
         }
     }
 }
-
-private let dateFormatter: DateFormatter = {
-    let formatter = DateFormatter()
-    formatter.dateStyle = .short
-    formatter.timeStyle = .medium
-    return formatter
-}()
 
 struct ChooseKindView_Previews: PreviewProvider {
     @State private static var kind: Kind?

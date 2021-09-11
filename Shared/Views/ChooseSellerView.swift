@@ -41,7 +41,7 @@ struct ChooseSellerView: View {
                     Button(action: {
                         self.seller = seller
                     }, label: {
-                        Text("\(seller.name ?? "") at \(seller.created!, formatter: dateFormatter)")
+                        Text("\(seller.name ?? "") at \(seller.created!, formatter: BelongingsViewModel.dateFormatter)")
                     })
                 }
                 .onDelete(perform: deleteSellers)
@@ -77,13 +77,6 @@ struct ChooseSellerView: View {
         }
     }
 }
-
-private let dateFormatter: DateFormatter = {
-    let formatter = DateFormatter()
-    formatter.dateStyle = .short
-    formatter.timeStyle = .medium
-    return formatter
-}()
 
 struct ChooseSellerView_Previews: PreviewProvider {
     @State private static var seller: Seller?

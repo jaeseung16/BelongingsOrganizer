@@ -25,6 +25,10 @@
 		904498E226EBD30500002A6F /* NothingSelectedText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 904498E026EBD30500002A6F /* NothingSelectedText.swift */; };
 		904498E426EBD7A800002A6F /* SheetBottom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 904498E326EBD7A800002A6F /* SheetBottom.swift */; };
 		904498E526EBD7A800002A6F /* SheetBottom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 904498E326EBD7A800002A6F /* SheetBottom.swift */; };
+		904498E726EBDEDB00002A6F /* ItemListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 904498E626EBDEDB00002A6F /* ItemListView.swift */; };
+		904498E826EBDEDB00002A6F /* ItemListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 904498E626EBDEDB00002A6F /* ItemListView.swift */; };
+		904498EA26EBF70600002A6F /* KindListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 904498E926EBF70600002A6F /* KindListView.swift */; };
+		904498EB26EBF70600002A6F /* KindListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 904498E926EBF70600002A6F /* KindListView.swift */; };
 		90596B8626E6ACD20001CCA5 /* AddKindView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90596B8526E6ACD20001CCA5 /* AddKindView.swift */; };
 		9072232D26E9352700965653 /* ChooseManufacturerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9072232C26E9352700965653 /* ChooseManufacturerView.swift */; };
 		9072232E26E9352700965653 /* ChooseManufacturerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9072232C26E9352700965653 /* ChooseManufacturerView.swift */; };
@@ -41,6 +45,12 @@
 		90C0D98C26E7DEF600158C85 /* AddItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C0D98A26E7DEF600158C85 /* AddItemView.swift */; };
 		90C0D98E26E8001700158C85 /* ChooseKindView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C0D98D26E8001700158C85 /* ChooseKindView.swift */; };
 		90C0D98F26E8001700158C85 /* ChooseKindView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C0D98D26E8001700158C85 /* ChooseKindView.swift */; };
+		90CB46A726ED3CB600A9468B /* ManufacturerListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CB46A626ED3CB600A9468B /* ManufacturerListView.swift */; };
+		90CB46A826ED3CB600A9468B /* ManufacturerListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CB46A626ED3CB600A9468B /* ManufacturerListView.swift */; };
+		90CB46AA26ED3F0F00A9468B /* SellerListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CB46A926ED3F0F00A9468B /* SellerListView.swift */; };
+		90CB46AB26ED3F0F00A9468B /* SellerListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CB46A926ED3F0F00A9468B /* SellerListView.swift */; };
+		90CB46AD26ED43AD00A9468B /* ItemDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CB46AC26ED43AD00A9468B /* ItemDetailView.swift */; };
+		90CB46AE26ED43AD00A9468B /* ItemDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CB46AC26ED43AD00A9468B /* ItemDetailView.swift */; };
 		90D3F23226EA594E00955316 /* BelongingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D3F23126EA594E00955316 /* BelongingsViewModel.swift */; };
 		90D3F23326EA599D00955316 /* BelongingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D3F23126EA594E00955316 /* BelongingsViewModel.swift */; };
 		90D3F23526EA5B3400955316 /* Entities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D3F23426EA5B3400955316 /* Entities.swift */; };
@@ -92,6 +102,8 @@
 		904498DC26EBBB2500002A6F /* ChooseCurrencyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseCurrencyView.swift; sourceTree = "<group>"; };
 		904498E026EBD30500002A6F /* NothingSelectedText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NothingSelectedText.swift; sourceTree = "<group>"; };
 		904498E326EBD7A800002A6F /* SheetBottom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheetBottom.swift; sourceTree = "<group>"; };
+		904498E626EBDEDB00002A6F /* ItemListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemListView.swift; sourceTree = "<group>"; };
+		904498E926EBF70600002A6F /* KindListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KindListView.swift; sourceTree = "<group>"; };
 		90596B8526E6ACD20001CCA5 /* AddKindView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddKindView.swift; sourceTree = "<group>"; };
 		9072232C26E9352700965653 /* ChooseManufacturerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseManufacturerView.swift; sourceTree = "<group>"; };
 		9072232F26E93A0500965653 /* AddManufacturerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddManufacturerView.swift; sourceTree = "<group>"; };
@@ -102,6 +114,9 @@
 		90884D2026E180E400D01A55 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.5.sdk/System/Library/Frameworks/CloudKit.framework; sourceTree = DEVELOPER_DIR; };
 		90C0D98A26E7DEF600158C85 /* AddItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItemView.swift; sourceTree = "<group>"; };
 		90C0D98D26E8001700158C85 /* ChooseKindView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseKindView.swift; sourceTree = "<group>"; };
+		90CB46A626ED3CB600A9468B /* ManufacturerListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManufacturerListView.swift; sourceTree = "<group>"; };
+		90CB46A926ED3F0F00A9468B /* SellerListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SellerListView.swift; sourceTree = "<group>"; };
+		90CB46AC26ED43AD00A9468B /* ItemDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDetailView.swift; sourceTree = "<group>"; };
 		90D3F23126EA594E00955316 /* BelongingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BelongingsViewModel.swift; sourceTree = "<group>"; };
 		90D3F23426EA5B3400955316 /* Entities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Entities.swift; sourceTree = "<group>"; };
 		90D3F23726EA7F7E00955316 /* SellerDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SellerDTO.swift; sourceTree = "<group>"; };
@@ -239,6 +254,11 @@
 				9072233226E93CDC00965653 /* ChooseSellerView.swift */,
 				904498DC26EBBB2500002A6F /* ChooseCurrencyView.swift */,
 				904498E326EBD7A800002A6F /* SheetBottom.swift */,
+				904498E626EBDEDB00002A6F /* ItemListView.swift */,
+				904498E926EBF70600002A6F /* KindListView.swift */,
+				90CB46A626ED3CB600A9468B /* ManufacturerListView.swift */,
+				90CB46A926ED3F0F00A9468B /* SellerListView.swift */,
+				90CB46AC26ED43AD00A9468B /* ItemDetailView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -426,6 +446,7 @@
 				90D3F23E26EA804E00955316 /* ItemDTO.swift in Sources */,
 				90D3F23226EA594E00955316 /* BelongingsViewModel.swift in Sources */,
 				9072232D26E9352700965653 /* ChooseManufacturerView.swift in Sources */,
+				904498EA26EBF70600002A6F /* KindListView.swift in Sources */,
 				90C0D98B26E7DEF600158C85 /* AddItemView.swift in Sources */,
 				9072233026E93A0500965653 /* AddManufacturerView.swift in Sources */,
 				904498E426EBD7A800002A6F /* SheetBottom.swift in Sources */,
@@ -435,13 +456,17 @@
 				90D3F23526EA5B3400955316 /* Entities.swift in Sources */,
 				90C0D98E26E8001700158C85 /* ChooseKindView.swift in Sources */,
 				900DDBF026E036CB0034A155 /* Persistence.swift in Sources */,
+				904498E726EBDEDB00002A6F /* ItemListView.swift in Sources */,
 				9072233626E93CE800965653 /* AddSellerView.swift in Sources */,
 				9072233326E93CDC00965653 /* ChooseSellerView.swift in Sources */,
 				90D3F23826EA7F7E00955316 /* SellerDTO.swift in Sources */,
 				900DDBEC26E036CB0034A155 /* BelongingsApp.swift in Sources */,
 				900DDBEE26E036CB0034A155 /* ContentView.swift in Sources */,
+				90CB46AD26ED43AD00A9468B /* ItemDetailView.swift in Sources */,
 				90596B8626E6ACD20001CCA5 /* AddKindView.swift in Sources */,
+				90CB46AA26ED3F0F00A9468B /* SellerListView.swift in Sources */,
 				90D3F23A26EA7FE000955316 /* ManufacturerDTO.swift in Sources */,
+				90CB46A726ED3CB600A9468B /* ManufacturerListView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -453,6 +478,7 @@
 				90D3F24226EA8CE300955316 /* ItemDTO.swift in Sources */,
 				90D3F23326EA599D00955316 /* BelongingsViewModel.swift in Sources */,
 				9072232E26E9352700965653 /* ChooseManufacturerView.swift in Sources */,
+				904498EB26EBF70600002A6F /* KindListView.swift in Sources */,
 				90C0D98C26E7DEF600158C85 /* AddItemView.swift in Sources */,
 				9072233126E93A0500965653 /* AddManufacturerView.swift in Sources */,
 				904498E526EBD7A800002A6F /* SheetBottom.swift in Sources */,
@@ -462,13 +488,17 @@
 				90D3F23626EA5C4000955316 /* Entities.swift in Sources */,
 				90C0D98F26E8001700158C85 /* ChooseKindView.swift in Sources */,
 				900DDBF126E036CB0034A155 /* Persistence.swift in Sources */,
+				904498E826EBDEDB00002A6F /* ItemListView.swift in Sources */,
 				9072233726E93CE800965653 /* AddSellerView.swift in Sources */,
 				9072233426E93CDC00965653 /* ChooseSellerView.swift in Sources */,
 				90D3F23F26EA8CDC00955316 /* SellerDTO.swift in Sources */,
 				900DDBED26E036CB0034A155 /* BelongingsApp.swift in Sources */,
 				900DDBEF26E036CB0034A155 /* ContentView.swift in Sources */,
+				90CB46AE26ED43AD00A9468B /* ItemDetailView.swift in Sources */,
 				90C0D98926E7D08200158C85 /* AddKindView.swift in Sources */,
+				90CB46AB26ED3F0F00A9468B /* SellerListView.swift in Sources */,
 				90D3F24026EA8CDE00955316 /* ManufacturerDTO.swift in Sources */,
+				90CB46A826ED3CB600A9468B /* ManufacturerListView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

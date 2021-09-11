@@ -42,7 +42,7 @@ struct ChooseManufacturerView: View {
                     Button(action: {
                         self.manufacturer = manufacturer
                     }, label: {
-                        Text("\(manufacturer.name ?? "") at \(manufacturer.created!, formatter: dateFormatter)")
+                        Text("\(manufacturer.name ?? "") at \(manufacturer.created!, formatter: BelongingsViewModel.dateFormatter)")
                     })
                 }
                 .onDelete(perform: deleteManufacturers)
@@ -78,13 +78,6 @@ struct ChooseManufacturerView: View {
         }
     }
 }
-
-private let dateFormatter: DateFormatter = {
-    let formatter = DateFormatter()
-    formatter.dateStyle = .short
-    formatter.timeStyle = .medium
-    return formatter
-}()
 
 struct ChooseManufacturerView_Previews: PreviewProvider {
     @State private static var manufacturer: Manufacturer?

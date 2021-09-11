@@ -12,6 +12,13 @@ import CoreData
 class BelongingsViewModel: NSObject, ObservableObject {
     static let shared = BelongingsViewModel()
     
+    static let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = .medium
+        return formatter
+    }()
+    
     private let persistenteContainer = PersistenceController.shared.container
     
     private var subscriptions: Set<AnyCancellable> = []
