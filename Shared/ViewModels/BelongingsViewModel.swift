@@ -93,7 +93,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     }
     
     func get<Entity: NSFetchRequestResult>(entity: Entities, id: UUID) -> Entity? {
-        let predicate = NSPredicate(format: "id == %@", argumentArray: [id])
+        let predicate = NSPredicate(format: "uuid == %@", argumentArray: [id])
         
         let fetchRequest = NSFetchRequest<Entity>(entityName: entity.rawValue)
         fetchRequest.predicate = predicate

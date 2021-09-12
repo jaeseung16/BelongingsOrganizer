@@ -40,6 +40,8 @@
 		9072233726E93CE800965653 /* AddSellerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9072233526E93CE800965653 /* AddSellerView.swift */; };
 		90884D1E26E180C000D01A55 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90884D1D26E180C000D01A55 /* CloudKit.framework */; };
 		90884D2126E180E400D01A55 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90884D2026E180E400D01A55 /* CloudKit.framework */; };
+		90B23E6626EE901900B29063 /* KindDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B23E6526EE901900B29063 /* KindDetailView.swift */; };
+		90B23E6726EE901900B29063 /* KindDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B23E6526EE901900B29063 /* KindDetailView.swift */; };
 		90C0D98926E7D08200158C85 /* AddKindView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90596B8526E6ACD20001CCA5 /* AddKindView.swift */; };
 		90C0D98B26E7DEF600158C85 /* AddItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C0D98A26E7DEF600158C85 /* AddItemView.swift */; };
 		90C0D98C26E7DEF600158C85 /* AddItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C0D98A26E7DEF600158C85 /* AddItemView.swift */; };
@@ -114,6 +116,7 @@
 		90884D1D26E180C000D01A55 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		90884D1F26E180E100D01A55 /* Belongings.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Belongings.entitlements; sourceTree = "<group>"; };
 		90884D2026E180E400D01A55 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.5.sdk/System/Library/Frameworks/CloudKit.framework; sourceTree = DEVELOPER_DIR; };
+		90B23E6526EE901900B29063 /* KindDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KindDetailView.swift; sourceTree = "<group>"; };
 		90C0D98A26E7DEF600158C85 /* AddItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItemView.swift; sourceTree = "<group>"; };
 		90C0D98D26E8001700158C85 /* ChooseKindView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseKindView.swift; sourceTree = "<group>"; };
 		90CB46A626ED3CB600A9468B /* ManufacturerListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManufacturerListView.swift; sourceTree = "<group>"; };
@@ -304,6 +307,7 @@
 			isa = PBXGroup;
 			children = (
 				90CB46AC26ED43AD00A9468B /* ItemDetailView.swift */,
+				90B23E6526EE901900B29063 /* KindDetailView.swift */,
 			);
 			path = Details;
 			sourceTree = "<group>";
@@ -496,6 +500,7 @@
 				904498E726EBDEDB00002A6F /* ItemListView.swift in Sources */,
 				9072233626E93CE800965653 /* AddSellerView.swift in Sources */,
 				9072233326E93CDC00965653 /* ChooseSellerView.swift in Sources */,
+				90B23E6626EE901900B29063 /* KindDetailView.swift in Sources */,
 				90D3F23826EA7F7E00955316 /* SellerDTO.swift in Sources */,
 				900DDBEC26E036CB0034A155 /* BelongingsApp.swift in Sources */,
 				900DDBEE26E036CB0034A155 /* ContentView.swift in Sources */,
@@ -529,6 +534,7 @@
 				904498E826EBDEDB00002A6F /* ItemListView.swift in Sources */,
 				9072233726E93CE800965653 /* AddSellerView.swift in Sources */,
 				9072233426E93CDC00965653 /* ChooseSellerView.swift in Sources */,
+				90B23E6726EE901900B29063 /* KindDetailView.swift in Sources */,
 				90D3F23F26EA8CDC00955316 /* SellerDTO.swift in Sources */,
 				900DDBED26E036CB0034A155 /* BelongingsApp.swift in Sources */,
 				900DDBEF26E036CB0034A155 /* ContentView.swift in Sources */,
