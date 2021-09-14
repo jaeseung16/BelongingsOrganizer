@@ -85,7 +85,6 @@ struct AddItemView: View {
                             
                             Text(currency)
                         }
-                        
                     }
                     
                     Section(header: Text("Quantity")) {
@@ -285,6 +284,7 @@ struct AddItemView: View {
         newItem.lastupd = created
         newItem.name = name
         newItem.note = note
+        newItem.quantity = Int64(quantity) ?? 0
         newItem.obtained = obtained
         newItem.buyPrice = Double(buyPrice) ?? -1.0
         newItem.currency = currency

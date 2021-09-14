@@ -54,7 +54,17 @@ struct ItemListView: View {
                     
                     List {
                         ForEach(filteredItems) { item in
-                            NavigationLink(item.name ?? "", destination: ItemDetailView(item: item))
+                            NavigationLink(item.name ?? "", destination: ItemDetailView(item: item,
+                                                                                        name: item.name ?? "",
+                                                                                        quantity: item.quantity,
+                                                                                        buyPrice: item.buyPrice,
+                                                                                        sellPrice: item.sellPrice,
+                                                                                        currency: item.currency ?? "USD",
+                                                                                        note: item.note ?? "",
+                                                                                        obtained: item.obtained ?? Date(),
+                                                                                        disposed: item.disposed ?? Date()))
+                                .environment(\.managedObjectContext, viewContext)
+                                .environmentObject(viewModel)
                         }
                         .onDelete(perform: deleteItems)
                     }

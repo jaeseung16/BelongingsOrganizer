@@ -36,7 +36,32 @@ class BelongingsViewModel: NSObject, ObservableObject {
           .store(in: &subscriptions)
     }
     
-    var kindDTO = KindDTO(id: nil, name: nil) {
+    var itemDTO = ItemDTO() {
+        didSet {
+            if itemDTO.id != nil, let existingEntity: Item = get(entity: .Item, id: itemDTO.id!) {
+                existingEntity.name = itemDTO.name
+                existingEntity.note = itemDTO.note
+                existingEntity.quantity = itemDTO.quantity ?? 0
+                existingEntity.buyPrice = itemDTO.buyPrice ?? 0.0
+                existingEntity.sellPrice = itemDTO.sellPrice ?? 0.0
+                existingEntity.currency = itemDTO.currency
+                existingEntity.disposed = itemDTO.disposed
+                
+                existingEntity.lastupd = Date()
+
+                do {
+                    try saveContext()
+                } catch {
+                    let nsError = error as NSError
+                    print("While saving \(kindDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
+                    message = "Cannot update name = \(String(describing: kindDTO.name))"
+                    showAlert.toggle()
+                }
+            }
+        }
+    }
+    
+    var kindDTO = KindDTO() {
         didSet {
             if kindDTO.id != nil, let existingEntity: Kind = get(entity: .Kind, id: kindDTO.id!) {
                 existingEntity.name = kindDTO.name
@@ -54,7 +79,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
         }
     }
     
-    var manufacturerDTO = ManufacturerDTO(id: nil, name: nil, url: nil) {
+    var manufacturerDTO = ManufacturerDTO() {
         didSet {
             if manufacturerDTO.id != nil, let existingEntity: Manufacturer = get(entity: .Manufacturer, id: manufacturerDTO.id!) {
                 existingEntity.name = manufacturerDTO.name
@@ -73,7 +98,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
         }
     }
     
-    var sellerDTO = SellerDTO(id: nil, name: nil, url: nil) {
+    var sellerDTO = SellerDTO() {
         didSet {
             if sellerDTO.id != nil, let existingEntity: Seller = get(entity: .Seller, id: sellerDTO.id!) {
                 existingEntity.name = sellerDTO.name
