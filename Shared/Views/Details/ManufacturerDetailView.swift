@@ -43,6 +43,16 @@ struct ManufacturerDetailView: View {
                         }
                     }
                     
+                    Section(header: Text("url").foregroundColor(.secondary)) {
+                        HStack {
+                            if let url = manufacturer.url {
+                                Link("\(url.absoluteString)", destination: url)
+                            } else {
+                                Text("N/A")
+                            }
+                        }
+                    }
+                    
                     Section(header: Text("added on").foregroundColor(.secondary)) {
                         HStack {
                             Spacer()
