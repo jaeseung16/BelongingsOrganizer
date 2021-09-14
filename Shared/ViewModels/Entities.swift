@@ -8,5 +8,5 @@
 import Foundation
 
 enum Entities: String {
-    case Item, Kind, Manufacturer, Seller
+    case Item, Kind, Brand, Seller
 }

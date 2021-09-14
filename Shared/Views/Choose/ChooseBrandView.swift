@@ -1,5 +1,5 @@
 //
-//  ChooseManufacturerView.swift
+//  ChooseBrandView.swift
 //  Belongings Organizer
 //
 //  Created by Jae Seung Lee on 9/8/21.
@@ -7,55 +7,55 @@
 
 import SwiftUI
 
-struct ChooseManufacturerView: View {
+struct ChooseBrandView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) private var presentationMode
     
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Manufacturer.name, ascending: true)],
+        sortDescriptors: [NSSortDescriptor(keyPath: \Brand.name, ascending: true)],
         animation: .default)
-    private var manufacturers: FetchedResults<Manufacturer>
+    private var brands: FetchedResults<Brand>
     
-    @State var presentAddManufacturer = false
+    @State var presentAddBrand = false
     
-    @Binding var manufacturer: Manufacturer?
+    @Binding var brand: Brand?
     
     var body: some View {
         VStack {
-            Text("Choose a manufacturer")
+            Text("Choose a brand")
                 .font(.title3)
             
             Divider()
             
             Form {
                 Section(header: Text("Selected")) {
-                    if manufacturer == nil {
+                    if brand == nil {
                         NothingSelectedText()
                     } else {
-                        Text(manufacturer!.name ?? "")
+                        Text(brand!.name ?? "")
                     }
                 }
             }
             
             List {
-                ForEach(manufacturers) { manufacturer in
+                ForEach(brands) { brand in
                     Button(action: {
-                        self.manufacturer = manufacturer
+                        self.brand = brand
                     }, label: {
-                        Text(manufacturer.name ?? "")
+                        Text(brand.name ?? "")
                     })
                 }
-                .onDelete(perform: deleteManufacturers)
+                .onDelete(perform: deleteBrands)
             }
-            .sheet(isPresented: $presentAddManufacturer, content: {
-                AddManufacturerView()
+            .sheet(isPresented: $presentAddBrand, content: {
+                AddBrandView()
                     .environment(\.managedObjectContext, viewContext)
             })
             
             Divider()
             
-            SheetBottom(labelText: "Add a manufacturer") {
-                presentAddManufacturer = true
+            SheetBottom(labelText: "Add a brand") {
+                presentAddBrand = true
             } done: {
                 presentationMode.wrappedValue.dismiss()
             }
@@ -63,9 +63,9 @@ struct ChooseManufacturerView: View {
         .padding()
     }
     
-    private func deleteManufacturers(offsets: IndexSet) {
+    private func deleteBrands(offsets: IndexSet) {
         withAnimation {
-            offsets.map { manufacturers[$0] }.forEach(viewContext.delete)
+            offsets.map { brands[$0] }.forEach(viewContext.delete)
 
             do {
                 try viewContext.save()
@@ -79,10 +79,10 @@ struct ChooseManufacturerView: View {
     }
 }
 
-struct ChooseManufacturerView_Previews: PreviewProvider {
-    @State private static var manufacturer: Manufacturer?
+struct ChooseBrandView_Previews: PreviewProvider {
+    @State private static var brand: Brand?
     
     static var previews: some View {
-        ChooseManufacturerView(manufacturer: ChooseManufacturerView_Previews.$manufacturer)
+        ChooseBrandView(brand: ChooseBrandView_Previews.$brand)
     }
 }

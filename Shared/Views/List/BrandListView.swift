@@ -1,5 +1,5 @@
 //
-//  ManufacturerListView.swift
+//  BrandListView.swift
 //  Belongings Organizer
 //
 //  Created by Jae Seung Lee on 9/11/21.
@@ -7,16 +7,16 @@
 
 import SwiftUI
 
-struct ManufacturerListView: View {
+struct BrandListView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var viewModel: BelongingsViewModel
     
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Manufacturer.name, ascending: true)],
+        sortDescriptors: [NSSortDescriptor(keyPath: \Brand.name, ascending: true)],
         animation: .default)
-    private var manufacturers: FetchedResults<Manufacturer>
+    private var brands: FetchedResults<Brand>
 
-    @State var presentAddManufacturerView = false
+    @State var presentAddBrandView = false
 
     var body: some View {
         NavigationView {
@@ -25,24 +25,24 @@ struct ManufacturerListView: View {
                     header()
                     
                     List {
-                        ForEach(manufacturers) { manufacturer in
+                        ForEach(brands) { brand in
                             NavigationLink(
-                                destination: ManufacturerDetailView(manufacturer: manufacturer, name: manufacturer.name ?? "")
+                                destination: BrandDetailView(brand: brand, name: brand.name ?? "")
                                     .environmentObject(viewModel)) {
-                                Text("\(manufacturer.name ?? "")")
+                                Text("\(brand.name ?? "")")
                             }
                         }
-                        .onDelete(perform: deleteManufactures)
+                        .onDelete(perform: deleteBrands)
                     }
-                    .sheet(isPresented: $presentAddManufacturerView, content: {
-                        AddManufacturerView()
+                    .sheet(isPresented: $presentAddBrandView, content: {
+                        AddBrandView()
                             .environment(\.managedObjectContext, viewContext)
                             .environmentObject(viewModel)
                             .frame(minWidth: 350, minHeight: 450)
                             .padding()
                     })
                 }
-                .navigationTitle("Manufacturer")
+                .navigationTitle("Brands")
             }
         }
     }
@@ -50,16 +50,16 @@ struct ManufacturerListView: View {
     private func header() -> some View {
         HStack {
             Button(action: {
-                presentAddManufacturerView = true
+                presentAddBrandView = true
             }) {
-                Label("Add a manufacturer", systemImage: "plus")
+                Label("Add a brand", systemImage: "plus")
             }
         }
     }
     
-    private func deleteManufactures(offsets: IndexSet) {
+    private func deleteBrands(offsets: IndexSet) {
         withAnimation {
-            offsets.map { manufacturers[$0] }.forEach(viewContext.delete)
+            offsets.map { brands[$0] }.forEach(viewContext.delete)
 
             do {
                 try viewContext.save()
@@ -73,8 +73,8 @@ struct ManufacturerListView: View {
     }
 }
 
-struct ManufacturerListView_Previews: PreviewProvider {
+struct BrandListView_Previews: PreviewProvider {
     static var previews: some View {
-        ManufacturerListView()
+        BrandListView()
     }
 }

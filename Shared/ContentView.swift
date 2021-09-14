@@ -31,16 +31,16 @@ struct ContentView: View {
                 .environment(\.managedObjectContext, viewContext)
                 .environmentObject(viewModel)
                 .tabItem {
-                    Image(systemName: "c.square.fill")
+                    Image(systemName: "list.dash")
                     Text("Categories")
                 }
             
-            ManufacturerListView()
+            BrandListView()
                 .environment(\.managedObjectContext, viewContext)
                 .environmentObject(viewModel)
                 .tabItem {
-                    Image(systemName: "m.square.fill")
-                    Text("Manufacturers")
+                    Image(systemName: "r.circle")
+                    Text("Brands")
                 }
             
             SellerListView()

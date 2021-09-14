@@ -1,5 +1,5 @@
 //
-//  AddManufacturerView.swift
+//  AddBrandView.swift
 //  Belongings Organizer
 //
 //  Created by Jae Seung Lee on 9/8/21.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct AddManufacturerView: View {
+struct AddBrandView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) private var presentationMode
     
@@ -33,7 +33,7 @@ struct AddManufacturerView: View {
                 })
                 
                 Button(action: {
-                    saveManufacturer()
+                    saveBrand()
                     presentationMode.wrappedValue.dismiss()
                 },
                 label: {
@@ -44,15 +44,15 @@ struct AddManufacturerView: View {
         .padding()
     }
     
-    private func saveManufacturer() -> Void {
+    private func saveBrand() -> Void {
         let created = Date()
         
-        let newManufacturer = Manufacturer(context: viewContext)
-        newManufacturer.created = created
-        newManufacturer.lastupd = created
-        newManufacturer.name = name
-        newManufacturer.url = URL(string: url)
-        newManufacturer.uuid = UUID()
+        let newBrand = Brand(context: viewContext)
+        newBrand.created = created
+        newBrand.lastupd = created
+        newBrand.name = name
+        newBrand.url = URL(string: url)
+        newBrand.uuid = UUID()
 
         do {
             try viewContext.save()
@@ -65,8 +65,8 @@ struct AddManufacturerView: View {
     }
 }
 
-struct AddManufacturerView_Previews: PreviewProvider {
+struct AddBrandView_Previews: PreviewProvider {
     static var previews: some View {
-        AddManufacturerView()
+        AddBrandView()
     }
 }

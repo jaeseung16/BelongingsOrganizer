@@ -14,7 +14,7 @@ struct ItemDetailView: View {
     
     @State var item: Item
     @State private var kind: Kind?
-    @State private var manufacturer: Manufacturer?
+    @State private var brand: Brand?
     @State private var seller: Seller?
     
     @State private var isEditing = false
@@ -30,7 +30,7 @@ struct ItemDetailView: View {
     @State var disposed = Date()
     
     @State var presentChooseKindView = false
-    @State var presentChooseManufacturerView = false
+    @State var presentChooseBrandView = false
     @State var presentChooseSellerView = false
     @State var presentChooseCurrencyView = false
     
@@ -51,11 +51,11 @@ struct ItemDetailView: View {
                         isEdited = true
                     }
             })
-            .sheet(isPresented: $presentChooseManufacturerView, content: {
-                ChooseManufacturerView(manufacturer: $manufacturer)
+            .sheet(isPresented: $presentChooseBrandView, content: {
+                ChooseBrandView(brand: $brand)
                     .environment(\.managedObjectContext, viewContext)
                     .frame(width: geometry.size.width, height: geometry.size.height)
-                    .onChange(of: manufacturer) { _ in
+                    .onChange(of: brand) { _ in
                         isEdited = true
                     }
             })
@@ -95,11 +95,11 @@ struct ItemDetailView: View {
                     kind?.addToItems(item)
                 }
                 
-                if manufacturer != nil && manufacturer != item.manufacturer {
-                    if let originalManufacturer = item.manufacturer {
-                        originalManufacturer.removeFromItems(item)
+                if brand != nil && brand != item.brand {
+                    if let originalBrand = item.brand {
+                        originalBrand.removeFromItems(item)
                     }
-                    manufacturer?.addToItems(item)
+                    brand?.addToItems(item)
                 }
                 
                 if seller != nil && seller != item.seller {
@@ -150,8 +150,8 @@ struct ItemDetailView: View {
                     categoryView()
                 }
                 
-                Section(header: Text("manufacturer")) {
-                    manufacturerView()
+                Section(header: Text("brand")) {
+                    brandView()
                 }
                 
                 Section(header: Text("seller")) {
@@ -199,19 +199,19 @@ struct ItemDetailView: View {
         }
     }
     
-    private func manufacturerView() -> some View {
+    private func brandView() -> some View {
         HStack {
             Spacer()
             
-            if manufacturer == nil {
-                Text(item.manufacturer?.name ?? "")
+            if brand == nil {
+                Text(item.brand?.name ?? "")
             } else {
-                Text(manufacturer!.name ?? "")
+                Text(brand!.name ?? "")
             }
             
             Button {
-                manufacturer = item.manufacturer
-                presentChooseManufacturerView = true
+                brand = item.brand
+                presentChooseBrandView = true
             } label: {
                 Text("Edit")
             }

@@ -8,7 +8,7 @@
 import SwiftUI
 
 enum Filter: String, CaseIterable {
-    case kind, manufacturer, seller
+    case kind, brand, seller
 }
 
 struct FilterItemsView: View {
@@ -22,9 +22,9 @@ struct FilterItemsView: View {
     private var kinds: FetchedResults<Kind>
     
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Manufacturer.name, ascending: true)],
+        sortDescriptors: [NSSortDescriptor(keyPath: \Brand.name, ascending: true)],
         animation: .default)
-    private var manufacturers: FetchedResults<Manufacturer>
+    private var brands: FetchedResults<Brand>
     
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \Seller.name, ascending: true)],
@@ -32,7 +32,7 @@ struct FilterItemsView: View {
     private var sellers: FetchedResults<Seller>
     
     @Binding var selectedKinds: Set<Kind>
-    @Binding var selectedManufacturers: Set<Manufacturer>
+    @Binding var selectedBrands: Set<Brand>
     @Binding var selectedSellers: Set<Seller>
     
     @State private var selectedFilter = Filter.kind
@@ -60,15 +60,15 @@ struct FilterItemsView: View {
                         }
                     }
                     
-                    Section(header: Text("Manufacturer")) {
+                    Section(header: Text("Brand")) {
                         ScrollView(.horizontal) {
                             LazyHStack {
-                                ForEach(selectedManufacturers.sorted(by: { $0.name ?? "" > $1.name ?? ""
-                                }), id: \.self) { manufacturer in
+                                ForEach(selectedBrands.sorted(by: { $0.name ?? "" > $1.name ?? ""
+                                }), id: \.self) { brand in
                                     Button {
-                                        selectedManufacturers.remove(manufacturer)
+                                        selectedBrands.remove(brand)
                                     } label: {
-                                        Text(manufacturer.name ?? "")
+                                        Text(brand.name ?? "")
                                             .foregroundColor(.primary)
                                     }
                                 }
@@ -99,7 +99,7 @@ struct FilterItemsView: View {
                 
                 Picker("Filter Type", selection: $selectedFilter) {
                     Text("Category").tag(Filter.kind)
-                    Text("Manufacturer").tag(Filter.manufacturer)
+                    Text("Brand").tag(Filter.brand)
                     Text("Seller").tag(Filter.seller)
                 }
                 .pickerStyle(SegmentedPickerStyle())
@@ -119,17 +119,17 @@ struct FilterItemsView: View {
                             }
                         }
                     }
-                case .manufacturer:
+                case .brand:
                     List {
-                        ForEach(manufacturers, id: \.id) { manufacture in
+                        ForEach(brands, id: \.id) { brand in
                             Button {
-                                if selectedManufacturers.contains(manufacture) {
-                                    selectedManufacturers.remove(manufacture)
+                                if selectedBrands.contains(brand) {
+                                    selectedBrands.remove(brand)
                                 } else {
-                                    selectedManufacturers.insert(manufacture)
+                                    selectedBrands.insert(brand)
                                 }
                             } label: {
-                                Text(manufacture.name ?? "")
+                                Text(brand.name ?? "")
                             }
                         }
                     }
@@ -153,7 +153,7 @@ struct FilterItemsView: View {
                 HStack {
                     Button {
                         selectedKinds.removeAll()
-                        selectedManufacturers.removeAll()
+                        selectedBrands.removeAll()
                         selectedSellers.removeAll()
                     } label: {
                         Text("Reset")

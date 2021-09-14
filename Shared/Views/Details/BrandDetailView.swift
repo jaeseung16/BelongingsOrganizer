@@ -1,5 +1,5 @@
 //
-//  ManufacturerDetailView.swift
+//  BrandDetailView.swift
 //  Belongings Organizer
 //
 //  Created by Jae Seung Lee on 9/14/21.
@@ -7,15 +7,15 @@
 
 import SwiftUI
 
-struct ManufacturerDetailView: View {
+struct BrandDetailView: View {
     @Environment(\.presentationMode) private var presentationMode
     @EnvironmentObject var viewModel: BelongingsViewModel
     
-    @State var manufacturer: Manufacturer
+    @State var brand: Brand
     
     private var items: [Item] {
         var items = [Item]()
-        manufacturer.items?.forEach { item in
+        brand.items?.forEach { item in
             if let item = item as? Item {
                 items.append(item)
             }
@@ -35,7 +35,7 @@ struct ManufacturerDetailView: View {
                 
                 Form {
                     Section(header: Text("Name").foregroundColor(.secondary)) {
-                        TextField(manufacturer.name ?? "", text: $name) { isEditing in
+                        TextField(brand.name ?? "", text: $name) { isEditing in
                             self.isEditing = isEditing
                         } onCommit: {
                             isEditing = false
@@ -45,7 +45,7 @@ struct ManufacturerDetailView: View {
                     
                     Section(header: Text("url").foregroundColor(.secondary)) {
                         HStack {
-                            if let url = manufacturer.url {
+                            if let url = brand.url {
                                 Link("\(url.absoluteString)", destination: url)
                             } else {
                                 Text("N/A")
@@ -56,14 +56,14 @@ struct ManufacturerDetailView: View {
                     Section(header: Text("added on").foregroundColor(.secondary)) {
                         HStack {
                             Spacer()
-                            Text("\(manufacturer.created ?? Date(), formatter: BelongingsViewModel.dateFormatter)")
+                            Text("\(brand.created ?? Date(), formatter: BelongingsViewModel.dateFormatter)")
                         }
                     }
                     
                     Section(header: Text("last updated on").foregroundColor(.secondary)) {
                         HStack {
                             Spacer()
-                            Text("\(manufacturer.lastupd ?? Date(), formatter: BelongingsViewModel.dateFormatter)")
+                            Text("\(brand.lastupd ?? Date(), formatter: BelongingsViewModel.dateFormatter)")
                         }
                     }
                     
@@ -94,7 +94,7 @@ struct ManufacturerDetailView: View {
             Spacer()
             
             Button {
-                viewModel.manufacturerDTO = ManufacturerDTO(id: manufacturer.uuid, name: name)
+                viewModel.brandDTO = BrandDTO(id: brand.uuid, name: name)
                 presentationMode.wrappedValue.dismiss()
             } label: {
                 Label("Save", systemImage: "square.and.arrow.down")

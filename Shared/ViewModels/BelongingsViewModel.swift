@@ -79,19 +79,19 @@ class BelongingsViewModel: NSObject, ObservableObject {
         }
     }
     
-    var manufacturerDTO = ManufacturerDTO() {
+    var brandDTO = BrandDTO() {
         didSet {
-            if manufacturerDTO.id != nil, let existingEntity: Manufacturer = get(entity: .Manufacturer, id: manufacturerDTO.id!) {
-                existingEntity.name = manufacturerDTO.name
-                existingEntity.url = manufacturerDTO.url
+            if brandDTO.id != nil, let existingEntity: Brand = get(entity: .Brand, id: brandDTO.id!) {
+                existingEntity.name = brandDTO.name
+                existingEntity.url = brandDTO.url
                 existingEntity.lastupd = Date()
 
                 do {
                     try saveContext()
                 } catch {
                     let nsError = error as NSError
-                    print("While saving \(manufacturerDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
-                    message = "Cannot update name = \(String(describing: manufacturerDTO.name)) and url = \(String(describing: manufacturerDTO.url))"
+                    print("While saving \(brandDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
+                    message = "Cannot update name = \(String(describing: brandDTO.name)) and url = \(String(describing: brandDTO.url))"
                     showAlert.toggle()
                 }
             }

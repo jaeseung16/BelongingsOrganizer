@@ -23,12 +23,12 @@ struct AddItemView: View {
     @State private var currency: String = "USD"
     
     @State private var presentChooseKindView = false
-    @State private var presentManufacturerView = false
+    @State private var presentBrandView = false
     @State private var presentSellerView = false
     @State private var presentCurrencyView = false
     
     @State private var kind: Kind?
-    @State private var manufacturer: Manufacturer?
+    @State private var brand: Brand?
     @State private var seller: Seller?
     
     var geometry: GeometryProxy
@@ -55,12 +55,12 @@ struct AddItemView: View {
                         }
                     }
                     
-                    Section(header: chooseManufacturer()) {
-                        if manufacturer == nil {
-                            Text("MANUFACTURER")
+                    Section(header: chooseBrand()) {
+                        if brand == nil {
+                            Text("BRAND")
                                 .foregroundColor(.secondary)
                         } else {
-                            Text(manufacturer!.name ?? "N/A")
+                            Text(brand!.name ?? "N/A")
                         }
                     }
                     
@@ -101,8 +101,8 @@ struct AddItemView: View {
                     .environment(\.managedObjectContext, viewContext)
                     .frame(width: geometry.size.width, height: geometry.size.height)
             })
-            .sheet(isPresented: $presentManufacturerView, content: {
-                ChooseManufacturerView(manufacturer: $manufacturer)
+            .sheet(isPresented: $presentBrandView, content: {
+                ChooseBrandView(brand: $brand)
                     .environment(\.managedObjectContext, viewContext)
                     .frame(width: geometry.size.width, height: geometry.size.height)
             })
@@ -130,16 +130,16 @@ struct AddItemView: View {
         }
     }
     
-    private func chooseManufacturer() -> some View {
+    private func chooseBrand() -> some View {
         HStack {
-            Text("Manufacturer")
+            Text("Brand")
             
             Spacer()
             
             Button(action: {
-                presentManufacturerView = true
+                presentBrandView = true
             }, label: {
-                Text("Choose a manufacturer")
+                Text("Choose a brand")
             })
         }
     }
@@ -294,8 +294,8 @@ struct AddItemView: View {
             kind!.addToItems(newItem)
         }
         
-        if manufacturer != nil {
-            manufacturer!.addToItems(newItem)
+        if brand != nil {
+            brand!.addToItems(newItem)
         }
         
         if seller != nil {

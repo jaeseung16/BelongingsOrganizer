@@ -20,7 +20,7 @@ struct ItemListView: View {
     @State var presentFilterItemsView = false
 
     @State var selectedKinds = Set<Kind>()
-    @State var selectedManufacturers = Set<Manufacturer>()
+    @State var selectedBrands = Set<Brand>()
     @State var selectedSellers = Set<Seller>()
     
     var filteredItems: Array<Item> {
@@ -31,7 +31,7 @@ struct ItemListView: View {
                 filter = false
             }
             
-            if let manufacturer = item.manufacturer, !selectedManufacturers.isEmpty && !selectedManufacturers.contains(manufacturer) {
+            if let brand = item.brand, !selectedBrands.isEmpty && !selectedBrands.contains(brand) {
                 filter = false
             }
             
@@ -76,7 +76,7 @@ struct ItemListView: View {
                             .padding()
                     })
                     .sheet(isPresented: $presentFilterItemsView, content: {
-                        FilterItemsView(selectedKinds: $selectedKinds, selectedManufacturers: $selectedManufacturers, selectedSellers: $selectedSellers)
+                        FilterItemsView(selectedKinds: $selectedKinds, selectedBrands: $selectedBrands, selectedSellers: $selectedSellers)
                             .environment(\.managedObjectContext, viewContext)
                             .environmentObject(viewModel)
                             .frame(minWidth: 350, minHeight: 450)
