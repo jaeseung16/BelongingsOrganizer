@@ -41,7 +41,7 @@ struct ChooseSellerView: View {
                     Button(action: {
                         self.seller = seller
                     }, label: {
-                        Text("\(seller.name ?? "") at \(seller.created!, formatter: BelongingsViewModel.dateFormatter)")
+                        Text(seller.name ?? "")
                     })
                 }
                 .onDelete(perform: deleteSellers)

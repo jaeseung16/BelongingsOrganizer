@@ -42,7 +42,7 @@ struct ChooseManufacturerView: View {
                     Button(action: {
                         self.manufacturer = manufacturer
                     }, label: {
-                        Text("\(manufacturer.name ?? "") at \(manufacturer.created!, formatter: BelongingsViewModel.dateFormatter)")
+                        Text(manufacturer.name ?? "")
                     })
                 }
                 .onDelete(perform: deleteManufacturers)

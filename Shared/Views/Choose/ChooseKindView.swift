@@ -44,7 +44,7 @@ struct ChooseKindView: View {
                     Button(action: {
                         self.kind = kind
                     }, label: {
-                        Text("\(kind.name ?? "") at \(kind.created!, formatter: BelongingsViewModel.dateFormatter)")
+                        Text(kind.name ?? "")
                     })
                 }
                 .onDelete(perform: deleteItems)
