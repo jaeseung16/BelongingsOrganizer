@@ -55,6 +55,7 @@ struct ItemListView: View {
                     List {
                         ForEach(filteredItems) { item in
                             NavigationLink(item.name ?? "", destination: ItemDetailView(item: item,
+                                                                                        imageData: item.image,
                                                                                         name: item.name ?? "",
                                                                                         quantity: item.quantity,
                                                                                         buyPrice: item.buyPrice,

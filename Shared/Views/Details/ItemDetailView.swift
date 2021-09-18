@@ -20,6 +20,7 @@ struct ItemDetailView: View {
     @State private var isEditing = false
     @State private var isEdited = false
     
+    @State var imageData: Data?
     @State var name = ""
     @State var quantity: Int64 = 0
     @State var buyPrice = 0.0
@@ -29,6 +30,7 @@ struct ItemDetailView: View {
     @State var obtained = Date()
     @State var disposed = Date()
     
+    @State var presentPhotoView = false
     @State var presentChooseKindView = false
     @State var presentChooseBrandView = false
     @State var presentChooseSellerView = false
@@ -71,6 +73,10 @@ struct ItemDetailView: View {
                 ChooseCurrencyView(currency: $currency)
                     .frame(width: geometry.size.width, height: geometry.size.height)
             })
+            .sheet(isPresented: $presentPhotoView, content: {
+                AddPhotoView(image: $imageData)
+                    .frame(width: geometry.size.width, height: geometry.size.height)
+            })
         }
     }
     
@@ -109,13 +115,13 @@ struct ItemDetailView: View {
                     seller?.addToItems(item)
                 }
                 
-                viewModel.itemDTO = ItemDTO(id: item.uuid, name: name, note: item.note, quantity: quantity, buyPrice: item.buyPrice, sellPrice: item.sellPrice, currency: item.currency, obtained: item.obtained, disposed: item.disposed, image: item.image)
+                viewModel.itemDTO = ItemDTO(id: item.uuid, name: name, note: item.note, quantity: quantity, buyPrice: item.buyPrice, sellPrice: item.sellPrice, currency: item.currency, obtained: item.obtained, disposed: item.disposed, image: imageData ?? item.image)
                 
                 presentationMode.wrappedValue.dismiss()
             } label: {
                 Label("Save", systemImage: "square.and.arrow.down")
             }
-            .disabled(!isEdited)
+            .disabled(!isEdited && imageData == nil)
             
             Spacer()
         }
@@ -136,25 +142,31 @@ struct ItemDetailView: View {
     
     #if os(macOS)
     private var image: NSImage? {
-        guard let data = item.image else {
+        if let data = imageData {
+            return NSImage(data: data)
+        } else if let data = item.image {
+            return NSImage(data: data)
+        } else {
             return nil
         }
-        return NSImage(data: data)
     }
     #else
     private var image: UIImage? {
-        guard let data = item.image else {
+        if let data = imageData {
+            return UIImage(data: data)
+        } else if let data = item.image {
+            return UIImage(data: data)
+        } else {
             return nil
         }
-        return UIImage(data: data)
     }
     #endif
     
     private func itemInfo() -> some View {
         VStack {
             Form {
-                Section(header: Text("Photo")) {
-                    if image == nil {
+                Section(header: photoHeader()) {
+                    if imageData == nil {
                         Text("Photo")
                             .foregroundColor(.secondary)
                     } else {
@@ -211,6 +223,19 @@ struct ItemDetailView: View {
             
         }
         .padding()
+    }
+    
+    private func photoHeader() -> some View {
+        HStack {
+            Text("Photo")
+            
+            Button {
+                kind = item.kind
+                presentPhotoView = true
+            } label: {
+                Text("Edit")
+            }
+        }
     }
     
     private func categoryView() -> some View {

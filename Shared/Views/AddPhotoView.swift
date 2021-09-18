@@ -47,6 +47,16 @@ struct AddPhotoView: View {
                     #endif
                     //Image(selectedImage!, scale: 0.1, label: Text("image"))
                         
+                } else if image != nil{
+                    #if os(macOS)
+                    Image(nsImage: NSImage(data: image!)!)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                    #else
+                    Image(uiImage: UIImage(data: image!)!)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                    #endif
                 } else {
                     Image(systemName: "photo.on.rectangle")
                         .resizable()
