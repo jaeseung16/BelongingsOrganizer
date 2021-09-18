@@ -134,9 +134,42 @@ struct ItemDetailView: View {
         return formatter
     }
     
+    #if os(macOS)
+    private var image: NSImage? {
+        guard let data = item.image else {
+            return nil
+        }
+        return NSImage(data: data)
+    }
+    #else
+    private var image: UIImage? {
+        guard let data = item.image else {
+            return nil
+        }
+        return UIImage(data: data)
+    }
+    #endif
+    
     private func itemInfo() -> some View {
         VStack {
             Form {
+                Section(header: Text("Photo")) {
+                    if image == nil {
+                        Text("Photo")
+                            .foregroundColor(.secondary)
+                    } else {
+                        #if os(macOS)
+                        Image(nsImage: image!)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                        #else
+                        Image(uiImage: image!)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                        #endif
+                    }
+                }
+                
                 Section(header: Text("name")) {
                     TextField(item.name ?? "", text: $name, onEditingChanged: { isEditing in
                         self.isEditing = isEditing

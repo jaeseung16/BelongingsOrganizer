@@ -72,7 +72,7 @@ struct ItemListView: View {
                         AddItemView(geometry: geometry)
                             .environment(\.managedObjectContext, viewContext)
                             .environmentObject(viewModel)
-                            .frame(minWidth: 350, minHeight: 450)
+                            .frame(minWidth: 350, minHeight: 550)
                             .padding()
                     })
                     .sheet(isPresented: $presentFilterItemsView, content: {

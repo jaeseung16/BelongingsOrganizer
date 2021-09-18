@@ -26,10 +26,13 @@ struct AddItemView: View {
     @State private var presentBrandView = false
     @State private var presentSellerView = false
     @State private var presentCurrencyView = false
+    @State private var presentPhotoView = false
     
     @State private var kind: Kind?
     @State private var brand: Brand?
     @State private var seller: Seller?
+    
+    @State private var image: Data?
     
     var geometry: GeometryProxy
     
@@ -42,6 +45,26 @@ struct AddItemView: View {
                 Divider()
                 
                 Form {
+                    Section(header: photoHeader()) {
+                        if image == nil {
+                            Label("Photo", systemImage: "photo.on.rectangle")
+                                .foregroundColor(.secondary)
+                                .frame(height: 50)
+                        } else {
+                            #if os(macOS)
+                            Image(nsImage: NSImage(data: image!)!)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(height: 50)
+                            #else
+                            Image(uiImage: UIImage(data: image!)!)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                            #endif
+                        }
+                    }
+                    
+                    
                     Section(header: Text("Name")) {
                         TextField("Name", text: $name)
                     }
@@ -114,6 +137,22 @@ struct AddItemView: View {
             .sheet(isPresented: $presentCurrencyView, content: {
                 ChooseCurrencyView(currency: $currency)
                     .frame(width: geometry.size.width, height: geometry.size.height)
+            })
+            .sheet(isPresented: $presentPhotoView, content: {
+                AddPhotoView(image: $image)
+                    .frame(width: geometry.size.width, height: geometry.size.height)
+            })
+        }
+    }
+    
+    private func photoHeader() -> some View {
+        HStack {
+            Text("Photo")
+            Spacer()
+            Button(action: {
+                presentPhotoView = true
+            }, label: {
+                Text("Take a photo")
             })
         }
     }
@@ -289,6 +328,7 @@ struct AddItemView: View {
         newItem.buyPrice = Double(buyPrice) ?? -1.0
         newItem.currency = currency
         newItem.uuid = UUID()
+        newItem.image = image
         
         if kind != nil {
             kind!.addToItems(newItem)
