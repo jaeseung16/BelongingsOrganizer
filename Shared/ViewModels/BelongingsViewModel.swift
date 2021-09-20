@@ -19,6 +19,13 @@ class BelongingsViewModel: NSObject, ObservableObject {
         return formatter
     }()
     
+    static let dateFormatterWithDateOnly: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = .none
+        return formatter
+    }()
+    
     private let persistenteContainer = PersistenceController.shared.container
     
     private var subscriptions: Set<AnyCancellable> = []

@@ -18,6 +18,7 @@ struct AddItemView: View {
     @State private var obtainedYear = 2020
     @State private var obtainedMonth = 1
     @State private var obtainedDay = 1
+    @State private var obtainedDate = Date()
     @State private var buyPrice = ""
     @State private var quantity = ""
     @State private var currency: String = "USD"
@@ -199,47 +200,8 @@ struct AddItemView: View {
     
     private func chooseObtained() -> some View {
         HStack {
-            Text("Year")
-                .foregroundColor(.secondary)
-            TextField("yyyy", value: $obtainedYear, formatter: yearFormatter) { _ in
-                
-            } onCommit: {
-                if obtainedYear < -9999 {
-                    obtainedYear = -9999
-                } else if obtainedYear > 9999 {
-                    obtainedYear = 9999
-                }
-            }
-            
-            Text("Month")
-                .foregroundColor(.secondary)
-            TextField("mm", value: $obtainedMonth, formatter: monthFormatter) { _ in
-                
-            } onCommit: {
-                if obtainedMonth < 1{
-                    obtainedMonth = 1
-                } else if obtainedMonth > 12 {
-                    obtainedMonth = 12
-                }
-            }
-            
-            Text("Day")
-                .foregroundColor(.secondary)
-            TextField("dd", value: $obtainedDay, formatter: dayFormatter) { _ in
-                
-            } onCommit: {
-                let calendar = Calendar(identifier: .iso8601)
-                
-                let dateComponents = DateComponents(calendar: calendar, year: obtainedYear, month: obtainedMonth, day: obtainedDay)
-                
-                if !dateComponents.isValidDate {
-                    let validDateComponents = calendar.dateComponents([.year, .month, .day], from: dateComponents.date!)
-                    
-                    obtainedYear = validDateComponents.year!
-                    obtainedMonth = validDateComponents.month!
-                    obtainedDay = validDateComponents.day!
-                }
-            }
+            Spacer()
+            DatePicker("", selection: $obtainedDate, displayedComponents: [.date])
         }
     }
     
@@ -309,12 +271,9 @@ struct AddItemView: View {
     
     private var obtained: Date {
         let calendar = Calendar(identifier: .iso8601)
-        
-        let dateComponents = DateComponents(calendar: calendar, year: obtainedYear, month: obtainedMonth, day: obtainedDay)
-        
-        return dateComponents.date!
+        return calendar.startOfDay(for: obtainedDate)
     }
-    
+        
     private func saveBelonging() -> Void {
         let created = Date()
         

@@ -35,6 +35,11 @@ struct ItemDetailView: View {
     @State var presentChooseBrandView = false
     @State var presentChooseSellerView = false
     @State var presentChooseCurrencyView = false
+    @State var presentObtainedDatePickerView = false
+    @State var presentDisposedDatePickerView = false
+    
+    @State private var isObtainedDateEdited = false
+    @State private var isDisposedDateEdited = false
     
     var body: some View {
         GeometryReader { geometry in
@@ -77,6 +82,12 @@ struct ItemDetailView: View {
                 AddPhotoView(image: $imageData)
                     .frame(width: geometry.size.width, height: geometry.size.height)
             })
+            .sheet(isPresented: $presentObtainedDatePickerView, content: {
+                EditDateView(date: $obtained, originalDate: item.obtained, isEdited: $isObtainedDateEdited)
+            })
+            .sheet(isPresented: $presentDisposedDatePickerView, content: {
+                EditDateView(date: $disposed, originalDate: item.disposed, isEdited: $isDisposedDateEdited)
+            })
         }
     }
     
@@ -87,9 +98,8 @@ struct ItemDetailView: View {
             Button {
                 presentationMode.wrappedValue.dismiss()
             } label: {
-                Label("Cancel", systemImage: "square.and.arrow.down")
+                Text("Reset")
             }
-            .disabled(!isEdited)
             
             Spacer()
             
@@ -115,7 +125,16 @@ struct ItemDetailView: View {
                     seller?.addToItems(item)
                 }
                 
-                viewModel.itemDTO = ItemDTO(id: item.uuid, name: name, note: item.note, quantity: quantity, buyPrice: item.buyPrice, sellPrice: item.sellPrice, currency: item.currency, obtained: item.obtained, disposed: item.disposed, image: imageData ?? item.image)
+                viewModel.itemDTO = ItemDTO(id: item.uuid,
+                                            name: name,
+                                            note: item.note,
+                                            quantity: quantity,
+                                            buyPrice: item.buyPrice,
+                                            sellPrice: item.sellPrice,
+                                            currency: item.currency,
+                                            obtained: isObtainedDateEdited ? obtained : item.obtained,
+                                            disposed: isDisposedDateEdited ? disposed : item.disposed,
+                                            image: imageData ?? item.image)
                 
                 presentationMode.wrappedValue.dismiss()
             } label: {
@@ -356,18 +375,40 @@ struct ItemDetailView: View {
                 Text("obtained on")
                     .foregroundColor(.secondary)
                 Spacer()
-                Text("\(item.obtained ?? Date(), formatter: BelongingsViewModel.dateFormatter)")
+                if isObtainedDateEdited {
+                    Text("\(obtained, formatter: BelongingsViewModel.dateFormatterWithDateOnly)")
+                } else if let obtained = item.obtained {
+                    Text("\(obtained, formatter: BelongingsViewModel.dateFormatterWithDateOnly)")
+                } else {
+                    Text("N/A")
+                }
+                
+                Button(action: {
+                    obtained = item.obtained ?? Date()
+                    presentObtainedDatePickerView = true
+                }, label: {
+                    Text("Edit")
+                })
             }
             
             HStack {
                 Text("disposed on")
                     .foregroundColor(.secondary)
                 Spacer()
-                if let disposed = item.disposed {
-                    Text("\(disposed, formatter: BelongingsViewModel.dateFormatter)")
+                
+                if isDisposedDateEdited {
+                    Text("\(disposed, formatter: BelongingsViewModel.dateFormatterWithDateOnly)")
+                } else if let disposed = item.disposed {
+                    Text("\(disposed, formatter: BelongingsViewModel.dateFormatterWithDateOnly)")
                 } else {
                     Text("N/A")
                 }
+                Button(action: {
+                    disposed = item.disposed ?? Date()
+                    presentDisposedDatePickerView = true
+                }, label: {
+                    Text("Edit")
+                })
             }
         }
     }
