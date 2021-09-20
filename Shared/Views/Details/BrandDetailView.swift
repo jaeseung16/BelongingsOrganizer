@@ -70,7 +70,16 @@ struct BrandDetailView: View {
                     Section(header: Text("items").foregroundColor(.secondary)) {
                         List {
                             ForEach(items) { item in
-                                Text(item.name ?? "")
+                                VStack(alignment: .leading) {
+                                    Text(item.name ?? "")
+                                    if let obtained = item.obtained {
+                                        HStack {
+                                            Spacer()
+                                            Text("\(obtained, formatter: BelongingsViewModel.dateFormatterWithDateOnly)")
+                                                .foregroundColor(.secondary)
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
