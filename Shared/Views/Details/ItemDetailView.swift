@@ -91,12 +91,34 @@ struct ItemDetailView: View {
         }
     }
     
+    private func reset() -> Void {
+        imageData = item.image
+        name = item.name ?? ""
+        quantity = item.quantity
+        buyPrice = item.buyPrice
+        sellPrice = item.sellPrice
+        currency = item.currency ?? "USD"
+        note = item.note ?? ""
+        obtained = item.obtained ?? Date()
+        disposed = item.disposed ?? Date()
+        
+        kind = nil
+        brand = nil
+        seller = nil
+        
+        isEditing = false
+        isEdited = false
+        isObtainedDateEdited = false
+        isDisposedDateEdited = false
+        
+    }
+    
     private func header() -> some View {
         HStack {
             Spacer()
             
             Button {
-                presentationMode.wrappedValue.dismiss()
+                reset()
             } label: {
                 Text("Reset")
             }
