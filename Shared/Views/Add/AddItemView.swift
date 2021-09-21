@@ -143,7 +143,7 @@ struct AddItemView: View {
             .sheet(isPresented: $presentPhotoView, onDismiss: {
                 viewModel.updateClassifications(for: image)
             }, content: {
-                AddPhotoView(originalImage: nil, image: $image)
+                AddPhotoView(image: $image)
                     .frame(width: geometry.size.width, height: geometry.size.height)
             })
         }

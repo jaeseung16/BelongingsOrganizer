@@ -1,15 +1,16 @@
 //
-//  AddPhotoView.swift
+//  EditPhotoView.swift
 //  Belongings Organizer
 //
-//  Created by Jae Seung Lee on 9/16/21.
+//  Created by Jae Seung Lee on 9/20/21.
 //
 
 import SwiftUI
 
-struct AddPhotoView: View {
+struct EditPhotoView: View {
     @Environment(\.presentationMode) private var presentationMode
 
+    @State var originalImage: Data?
     @Binding var image: Data?
     
     #if !os(macOS)
@@ -32,6 +33,16 @@ struct AddPhotoView: View {
                         .aspectRatio(contentMode: .fit)
                     #else
                     Image(uiImage: UIImage(data: image!)!)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                    #endif
+                } else if originalImage != nil {
+                    #if os(macOS)
+                    Image(nsImage: NSImage(data: originalImage!)!)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                    #else
+                    Image(uiImage: UIImage(data: originalImage!)!)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                     #endif
