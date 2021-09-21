@@ -140,7 +140,7 @@ struct AddItemView: View {
                     .frame(width: geometry.size.width, height: geometry.size.height)
             })
             .sheet(isPresented: $presentPhotoView, content: {
-                AddPhotoView(image: $image)
+                AddPhotoView(originalImage: nil, image: $image)
                     .frame(width: geometry.size.width, height: geometry.size.height)
             })
         }

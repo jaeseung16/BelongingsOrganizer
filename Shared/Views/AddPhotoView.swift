@@ -9,22 +9,13 @@ import SwiftUI
 
 struct AddPhotoView: View {
     @Environment(\.presentationMode) private var presentationMode
-    
-    /*
-    #if targetEnvironment(macCatalyst)
-    @State private var selectedImage: NSImage?
-    @Binding var image: NSImage?
-    #else
- */
-    
-    @State private var selectedImage: Data?
+
+    @State var originalImage: Data?
     @Binding var image: Data?
     
     #if !os(macOS)
     @State private var sourceType: UIImagePickerController.SourceType = .photoLibrary
     #endif
-    //#endif
-    
     
     @State private var isImagePickerDisplay = false
     
@@ -35,25 +26,23 @@ struct AddPhotoView: View {
                 
                 Divider()
                 
-                if selectedImage != nil {
-                    #if os(macOS)
-                    Image(nsImage: NSImage(data: selectedImage!)!)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                    #else
-                    Image(uiImage: UIImage(data: selectedImage!)!)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                    #endif
-                    //Image(selectedImage!, scale: 0.1, label: Text("image"))
-                        
-                } else if image != nil{
+                if image != nil {
                     #if os(macOS)
                     Image(nsImage: NSImage(data: image!)!)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                     #else
                     Image(uiImage: UIImage(data: image!)!)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                    #endif
+                } else if originalImage != nil {
+                    #if os(macOS)
+                    Image(nsImage: NSImage(data: originalImage!)!)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                    #else
+                    Image(uiImage: UIImage(data: originalImage!)!)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                     #endif
@@ -78,25 +67,12 @@ struct AddPhotoView: View {
                         openPanel.begin { (result) -> Void in
                             if result.rawValue == NSApplication.ModalResponse.OK.rawValue {
                                 let url = openPanel.url!
-                                selectedImage = try? Data(contentsOf: url)
-                                //let nsImage = NSImage(contentsOf: url)
-                                
-                                //selectedImage = nsImage?.cgImage(forProposedRect: nil, context: nil, hints: nil)
+                                self.image = try? Data(contentsOf: url)
                             }
                         }
                     } label: {
                         Text("Select an image")
                     }
-                    /*
-                    Spacer()
-                    
-                    Button {
-                        sourceType = .photoLibrary
-                        isImagePickerDisplay = true
-                    } label: {
-                        Text("Select a photo")
-                    }
-                    */
                 }
                 #else
                 HStack {
@@ -133,6 +109,7 @@ struct AddPhotoView: View {
     private func header() -> some View {
         HStack {
             Button(action: {
+                image = nil
                 presentationMode.wrappedValue.dismiss()
             }, label: {
                 Label("Cancel", systemImage: "chevron.backward")
@@ -145,7 +122,6 @@ struct AddPhotoView: View {
             Spacer()
             
             Button(action: {
-                image = selectedImage
                 presentationMode.wrappedValue.dismiss()
             }, label: {
                 Text("Done")

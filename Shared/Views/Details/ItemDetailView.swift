@@ -79,7 +79,7 @@ struct ItemDetailView: View {
                     .frame(width: geometry.size.width, height: geometry.size.height)
             })
             .sheet(isPresented: $presentPhotoView, content: {
-                AddPhotoView(image: $imageData)
+                AddPhotoView(originalImage: item.image, image: $imageData)
                     .frame(width: geometry.size.width, height: geometry.size.height)
             })
             .sheet(isPresented: $presentObtainedDatePickerView, content: {
