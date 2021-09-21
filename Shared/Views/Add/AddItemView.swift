@@ -35,6 +35,8 @@ struct AddItemView: View {
     
     @State private var image: Data?
     
+    @State private var classificationResult = "classificationResult"
+    
     var geometry: GeometryProxy
     
     var body: some View {
@@ -64,7 +66,6 @@ struct AddItemView: View {
                             #endif
                         }
                     }
-                    
                     
                     Section(header: Text("Name")) {
                         TextField("Name", text: $name)
@@ -139,7 +140,9 @@ struct AddItemView: View {
                 ChooseCurrencyView(currency: $currency)
                     .frame(width: geometry.size.width, height: geometry.size.height)
             })
-            .sheet(isPresented: $presentPhotoView, content: {
+            .sheet(isPresented: $presentPhotoView, onDismiss: {
+                viewModel.updateClassifications(for: image)
+            }, content: {
                 AddPhotoView(originalImage: nil, image: $image)
                     .frame(width: geometry.size.width, height: geometry.size.height)
             })
@@ -149,6 +152,8 @@ struct AddItemView: View {
     private func photoHeader() -> some View {
         HStack {
             Text("Photo")
+            Spacer()
+            Text(viewModel.classificationResult)
             Spacer()
             Button(action: {
                 presentPhotoView = true

@@ -16,7 +16,7 @@ struct AddPhotoView: View {
     #if !os(macOS)
     @State private var sourceType: UIImagePickerController.SourceType = .photoLibrary
     #endif
-    
+
     @State private var isImagePickerDisplay = false
     
     var body: some View {

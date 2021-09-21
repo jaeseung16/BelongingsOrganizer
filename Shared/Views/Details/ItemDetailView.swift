@@ -80,6 +80,7 @@ struct ItemDetailView: View {
             })
             .sheet(isPresented: $presentPhotoView, content: {
                 AddPhotoView(originalImage: item.image, image: $imageData)
+                    .environmentObject(viewModel)
                     .frame(width: geometry.size.width, height: geometry.size.height)
             })
             .sheet(isPresented: $presentObtainedDatePickerView, content: {
