@@ -12,7 +12,9 @@ struct AddBrandView: View {
     @Environment(\.presentationMode) private var presentationMode
     
     @State private var name = ""
-    @State private var url = ""
+    @State private var urlString = ""
+    @State private var isEditing = false
+    @State private var showAlert = false
     
     var body: some View {
         VStack {
@@ -22,8 +24,17 @@ struct AddBrandView: View {
             
             Text("URL")
             
-            TextField("URL", text: $url)
-            
+            TextField("URL", text: $urlString) { isEditing in
+                self.isEditing = isEditing
+            } onCommit: {
+                if let url = URLValidator.validate(urlString: urlString) {
+                    print("url = \(url)")
+                    self.urlString = url.absoluteString
+                } else {
+                    showAlert = true
+                }
+            }
+
             HStack {
                 Button(action: {
                     presentationMode.wrappedValue.dismiss()
@@ -42,6 +53,11 @@ struct AddBrandView: View {
             }
         }
         .padding()
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text("Invalid URL"),
+                  message: Text("Cannot access the URL. Try a different one or leave it empty."),
+                  dismissButton: .default(Text("Dismiss")))
+        }
     }
     
     private func saveBrand() -> Void {
@@ -51,7 +67,7 @@ struct AddBrandView: View {
         newBrand.created = created
         newBrand.lastupd = created
         newBrand.name = name
-        newBrand.url = URL(string: url)
+        newBrand.url = URL(string: urlString)
         newBrand.uuid = UUID()
 
         do {
