@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 import CoreData
+import SDWebImageWebPCoder
 
 class BelongingsViewModel: NSObject, ObservableObject {
     static let shared = BelongingsViewModel()
@@ -41,6 +42,9 @@ class BelongingsViewModel: NSObject, ObservableObject {
           .publisher(for: .NSPersistentStoreRemoteChange)
           .sink { self.fetchUpdates($0) }
           .store(in: &subscriptions)
+        
+        let webPCoder = SDImageWebPCoder.shared
+        SDImageCodersManager.shared.addCoder(webPCoder)
     }
     
     var itemDTO = ItemDTO() {
