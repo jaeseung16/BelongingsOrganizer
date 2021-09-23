@@ -72,7 +72,7 @@ struct ItemListView: View {
                     .sheet(isPresented: $presentAddItemView, content: {
                         AddItemView(geometry: geometry)
                             .environment(\.managedObjectContext, viewContext)
-                            .environmentObject(viewModel)
+                            .environmentObject(AddItemViewModel())
                             .frame(minWidth: 350, minHeight: 550)
                             .padding()
                     })
@@ -84,7 +84,7 @@ struct ItemListView: View {
                             .padding()
                     })
                 }
-                .navigationTitle("Categories")
+                .navigationTitle("Items")
             }
         }
     }

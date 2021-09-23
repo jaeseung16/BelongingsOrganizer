@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 struct ImagePickerView: UIViewControllerRepresentable {
-    @Binding var selectedImage: UIImage?
+    @Binding var selectedImage: Data?
     @Environment(\.presentationMode) var isPresented
     var sourceType: UIImagePickerController.SourceType
             
@@ -37,8 +37,8 @@ struct ImagePickerView: UIViewControllerRepresentable {
         }
         
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-            guard let selectedImage = info[.originalImage] as? UIImage else { return }
-            self.picker.selectedImage = selectedImage
+            guard let selected = info[.imageURL] as? URL else { return }
+            self.picker.selectedImage = try? Data(contentsOf: selected)
             self.picker.isPresented.wrappedValue.dismiss()
         }
         

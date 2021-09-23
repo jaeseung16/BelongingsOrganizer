@@ -11,13 +11,10 @@ import CoreData
 struct AddItemView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) private var presentationMode
-    @EnvironmentObject var viewModel: BelongingsViewModel
+    @EnvironmentObject var viewModel: AddItemViewModel
     
     @State private var name = ""
     @State private var note = ""
-    @State private var obtainedYear = 2020
-    @State private var obtainedMonth = 1
-    @State private var obtainedDay = 1
     @State private var obtainedDate = Date()
     @State private var buyPrice = ""
     @State private var quantity = ""
@@ -33,7 +30,10 @@ struct AddItemView: View {
     @State private var brand: Brand?
     @State private var seller: Seller?
     
-    @State private var image: Data?
+    //@State private var image: Data?
+    private var image: Data? {
+        viewModel.imageData
+    }
     
     @State private var classificationResult = "classificationResult"
     
@@ -140,11 +140,16 @@ struct AddItemView: View {
                 ChooseCurrencyView(currency: $currency)
                     .frame(width: geometry.size.width, height: geometry.size.height)
             })
-            .sheet(isPresented: $presentPhotoView, onDismiss: {
-                viewModel.updateClassifications(for: image)
-            }, content: {
-                AddPhotoView(image: $image)
+            .sheet(isPresented: $presentPhotoView, content: {
+                #if os(macOS)
+                MacAddPhotoView()
+                    .environmentObject(viewModel)
                     .frame(width: geometry.size.width, height: geometry.size.height)
+                #else
+                AddPhotoView()
+                    .environmentObject(viewModel)
+                    .frame(width: geometry.size.width, height: geometry.size.height)
+                #endif
             })
         }
     }
@@ -210,28 +215,6 @@ struct AddItemView: View {
         }
     }
     
-    private var yearFormatter: NumberFormatter {
-        let numberFormatter = NumberFormatter()
-        numberFormatter.numberStyle = .none
-        numberFormatter.minimumIntegerDigits = 1
-        numberFormatter.maximumIntegerDigits = 4
-        return numberFormatter
-    }
-    
-    private var monthFormatter: NumberFormatter {
-        let numberFormatter = NumberFormatter()
-        numberFormatter.minimumIntegerDigits = 1
-        numberFormatter.maximumIntegerDigits = 2
-        return numberFormatter
-    }
-    
-    private var dayFormatter: NumberFormatter {
-        let numberFormatter = NumberFormatter()
-        numberFormatter.minimumIntegerDigits = 1
-        numberFormatter.maximumIntegerDigits = 2
-        return numberFormatter
-    }
-    
     private func chooseCurrency() -> some View {
         HStack {
             Text("Buy Price")
@@ -280,45 +263,15 @@ struct AddItemView: View {
     }
         
     private func saveBelonging() -> Void {
-        let created = Date()
-        
-        let newItem = Item(context: viewContext)
-        newItem.created = created
-        newItem.lastupd = created
-        newItem.name = name
-        newItem.note = note
-        newItem.quantity = Int64(quantity) ?? 0
-        newItem.obtained = obtained
-        newItem.buyPrice = Double(buyPrice) ?? -1.0
-        newItem.currency = currency
-        newItem.uuid = UUID()
-        newItem.image = image
-        
-        if kind != nil {
-            kind!.addToItems(newItem)
-        }
-        
-        if brand != nil {
-            brand!.addToItems(newItem)
-        }
-        
-        if seller != nil {
-            seller!.addToItems(newItem)
-        }
-        
-        let originalMergePolicy = viewContext.mergePolicy
-        viewContext.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
-        
-        do {
-            try viewContext.save()
-        } catch {
-            // Replace this implementation with code to handle the error appropriately.
-            // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            let nsError = error as NSError
-            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-        }
-        
-        viewContext.mergePolicy = originalMergePolicy
+        viewModel.saveBelonging(name: name,
+                                kind: kind,
+                                brand: brand,
+                                seller: seller,
+                                note: note,
+                                obtained: obtained,
+                                buyPrice: Double(buyPrice),
+                                quantity: Int64(quantity),
+                                currency: currency)
         
         presentationMode.wrappedValue.dismiss()
     }
