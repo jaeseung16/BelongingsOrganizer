@@ -12,7 +12,7 @@ struct ChooseBrandView: View {
     @Environment(\.presentationMode) private var presentationMode
     
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Brand.name, ascending: true)],
+        sortDescriptors: [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare))],
         animation: .default)
     private var brands: FetchedResults<Brand>
     

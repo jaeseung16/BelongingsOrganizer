@@ -12,7 +12,7 @@ struct ChooseKindView: View {
     @Environment(\.presentationMode) private var presentationMode
     
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Kind.created, ascending: false)],
+        sortDescriptors: [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare))],
         animation: .default)
     private var kinds: FetchedResults<Kind>
     

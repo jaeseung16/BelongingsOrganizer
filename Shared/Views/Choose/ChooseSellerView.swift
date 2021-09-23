@@ -12,7 +12,7 @@ struct ChooseSellerView: View {
     @Environment(\.presentationMode) private var presentationMode
     
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Seller.name, ascending: true)],
+        sortDescriptors: [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare))],
         animation: .default)
     private var sellers: FetchedResults<Seller>
     
