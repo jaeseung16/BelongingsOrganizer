@@ -103,7 +103,7 @@ class AddItemViewModel: NSObject, ObservableObject {
                     
                     DispatchQueue.main.async {
                         self?.classificationResult = descriptions.joined(separator: " ")
-                        print("classificationResult = \(self?.classificationResult)")
+                        print("classificationResult = \(String(describing: self?.classificationResult))")
                     }
                 }
             })

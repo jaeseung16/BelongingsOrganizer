@@ -17,11 +17,20 @@ struct ChooseCurrencyView: View {
             VStack {
                 Text("Choose a currency")
                 
+                #if os(macOS)
                 Picker("", selection: $currency) {
                     ForEach(NSLocale.commonISOCurrencyCodes, id: \.self) { currencyCode in
                         Text("\(currencyCode) (\(NSLocale.autoupdatingCurrent.localizedString(forCurrencyCode: currencyCode) ?? ""))")
                     }
                 }
+                #else
+                Picker("", selection: $currency) {
+                    ForEach(NSLocale.commonISOCurrencyCodes, id: \.self) { currencyCode in
+                        Text("\(currencyCode) (\(NSLocale.autoupdatingCurrent.localizedString(forCurrencyCode: currencyCode) ?? ""))")
+                    }
+                }
+                .pickerStyle(WheelPickerStyle())
+                #endif
                 
                 Button(action: {
                     presentationMode.wrappedValue.dismiss()
@@ -29,6 +38,7 @@ struct ChooseCurrencyView: View {
                     Text("Done")
                 })
             }
+            .frame(maxWidth: .infinity)
         }
         .padding()
     }

@@ -47,75 +47,7 @@ struct AddItemView: View {
                 
                 Divider()
                 
-                Form {
-                    Section(header: photoHeader()) {
-                        if image == nil {
-                            Label("Photo", systemImage: "photo.on.rectangle")
-                                .foregroundColor(.secondary)
-                                .frame(height: 50)
-                        } else {
-                            #if os(macOS)
-                            Image(nsImage: NSImage(data: image!)!)
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(height: 50)
-                            #else
-                            Image(uiImage: UIImage(data: image!)!)
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                            #endif
-                        }
-                    }
-                    
-                    Section(header: Text("Name")) {
-                        TextField("Name", text: $name)
-                    }
-                    
-                    Section(header: chooseKindHeader()) {
-                        if kind == nil {
-                            Text("ITEM")
-                                .foregroundColor(.secondary)
-                        } else {
-                            Text(kind!.name ?? "N/A")
-                        }
-                    }
-                    
-                    Section(header: chooseBrand()) {
-                        if brand == nil {
-                            Text("BRAND")
-                                .foregroundColor(.secondary)
-                        } else {
-                            Text(brand!.name ?? "N/A")
-                        }
-                    }
-                    
-                    Section(header: chooseSeller()) {
-                        if seller == nil {
-                            Text("SELLER")
-                                .foregroundColor(.secondary)
-                        } else {
-                            Text(seller!.name ?? "N/A")
-                        }
-                    }
-                    
-                    Section(header:Text("Obtained")) {
-                        chooseObtained()
-                    }
-                    
-                    Section(header: chooseCurrency()) {
-                        HStack {
-                            TextField("0.0", text: $buyPrice)
-                            
-                            Spacer()
-                            
-                            Text(currency)
-                        }
-                    }
-                    
-                    Section(header: Text("Quantity")) {
-                        chooseQuantity()
-                    }
-                }
+                inputFormView()
                 
                 Divider()
                 
@@ -154,83 +86,226 @@ struct AddItemView: View {
         }
     }
     
-    private func photoHeader() -> some View {
-        HStack {
-            Text("Photo")
-            Spacer()
-            Text(viewModel.classificationResult)
-            Spacer()
-            Button(action: {
-                presentPhotoView = true
-            }, label: {
-                Text("Take a photo")
-            })
+    private func inputFormView() -> some View {
+        VStack {
+            inputNameView()
+            
+            inputPhotoView()
+            
+            inputKindView()
+            
+            inputBrandView()
+            
+            inputSellerView()
+            
+            inputObtainedView()
+            
+            inputBuyPriceView()
+            
+            inputQuantityView()
         }
     }
     
-    private func chooseKindHeader() -> some View {
-        HStack {
-            Text("Category")
-            Spacer()
-            Button(action: {
-                presentChooseKindView = true
-            }, label: {
-                Text("Choose an item")
-            })
+    private func inputNameView() -> some View {
+        VStack {
+            HStack {
+                Text("NAME")
+                    .font(.caption)
+                Spacer()
+            }
+            
+            TextField("name", text: $name)
+                .background(RoundedRectangle(cornerRadius: 5.0)
+                                .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
         }
     }
     
-    private func chooseBrand() -> some View {
-        HStack {
-            Text("Brand")
+    private func inputPhotoView() -> some View {
+        VStack {
+            HStack {
+                Text("PHOTO")
+                    .font(.caption)
+                Spacer()
+                Text(viewModel.classificationResult)
+                Spacer()
+                Button(action: {
+                    presentPhotoView = true
+                }, label: {
+                    Label("select", systemImage: "photo")
+                })
+            }
             
-            Spacer()
+            if image == nil {
+                Label("photo", systemImage: "photo.on.rectangle")
+                    .foregroundColor(.secondary)
+                    .frame(maxWidth: .infinity, idealHeight: 50)
+                    .background(RoundedRectangle(cornerRadius: 5.0)
+                                    .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+            } else {
+                #if os(macOS)
+                Image(nsImage: NSImage(data: image!)!)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .background(RoundedRectangle(cornerRadius: 5.0)
+                                    .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+                #else
+                Image(uiImage: UIImage(data: image!)!)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .background(RoundedRectangle(cornerRadius: 5.0)
+                                    .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+                #endif
+            }
+        }
+        
+    }
+    
+    private func inputKindView() -> some View {
+        VStack {
+            HStack {
+                Text("CATEGORY")
+                    .font(.caption)
+                Spacer()
+                Button(action: {
+                    presentChooseKindView = true
+                }, label: {
+                    Label("select", systemImage: "filemenu.and.selection")
+                })
+            }
             
-            Button(action: {
-                presentBrandView = true
-            }, label: {
-                Text("Choose a brand")
-            })
+            if kind == nil {
+                Text("category")
+                    .foregroundColor(.secondary)
+                    .frame(maxWidth: .infinity, idealHeight: 50)
+                    .background(RoundedRectangle(cornerRadius: 5.0)
+                                    .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+            } else {
+                Text(kind!.name ?? "N/A")
+                    .frame(maxWidth: .infinity, idealHeight: 50)
+                    .background(RoundedRectangle(cornerRadius: 5.0)
+                                    .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+                    .frame(maxWidth: .infinity)
+            }
         }
     }
     
-    private func chooseSeller() -> some View {
-        HStack {
-            Text("Seller")
+    private func inputBrandView() -> some View {
+        VStack {
+            HStack {
+                Text("BRAND")
+                    .font(.caption)
+                Spacer()
+                Button(action: {
+                    presentBrandView = true
+                }, label: {
+                    Label("select", systemImage: "filemenu.and.selection")
+                })
+            }
             
-            Spacer()
-            
-            Button(action: {
-                presentSellerView = true
-            }, label: {
-                Text("Choose a seller")
-            })
+            if brand == nil {
+                Text("brand")
+                    .foregroundColor(.secondary)
+                    .frame(maxWidth: .infinity, idealHeight: 50)
+                    .background(RoundedRectangle(cornerRadius: 5.0)
+                                    .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+            } else {
+                Text(brand!.name ?? "N/A")
+                    .frame(maxWidth: .infinity, idealHeight: 50)
+                    .background(RoundedRectangle(cornerRadius: 5.0)
+                                    .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+            }
         }
     }
     
-    private func chooseObtained() -> some View {
+    private func inputSellerView() -> some View {
+        VStack {
+            HStack {
+                Text("SELLER")
+                    .font(.caption)
+                
+                Spacer()
+                
+                Button(action: {
+                    presentSellerView = true
+                }, label: {
+                    Label("select", systemImage: "filemenu.and.selection")
+                })
+            }
+            
+            if seller == nil {
+                Text("seller")
+                    .foregroundColor(.secondary)
+                    .frame(maxWidth: .infinity, idealHeight: 50)
+                    .background(RoundedRectangle(cornerRadius: 5.0)
+                                    .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+            } else {
+                Text(seller!.name ?? "N/A")
+                    .frame(maxWidth: .infinity, idealHeight: 50)
+                    .background(RoundedRectangle(cornerRadius: 5.0)
+                                    .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+            }
+        }
+    }
+    
+    private func inputObtainedView() -> some View {
         HStack {
+            Text("OBTAINED")
+                .font(.caption)
+            
             Spacer()
+            
             DatePicker("", selection: $obtainedDate, displayedComponents: [.date])
         }
     }
     
-    private func chooseCurrency() -> some View {
-        HStack {
-            Text("Buy Price")
+    private func inputBuyPriceView() -> some View {
+        VStack {
+            HStack {
+                Text("CURRENCY")
+                    .font(.caption)
+                
+                Spacer()
+                
+                Text(currency)
+                    .frame(maxWidth: 50)
+                    .background(RoundedRectangle(cornerRadius: 5.0)
+                                    .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+                Button(action: {
+                    presentCurrencyView = true
+                }, label: {
+                    Label("select", systemImage: "filemenu.and.selection")
+                })
+                
+            }
             
-            Spacer()
-            
-            Button(action: {
-                presentCurrencyView = true
-            }, label: {
-                Text("Choose a currency")
-            })
+            HStack {
+                Text("PRICE")
+                    .font(.caption)
+                
+                Spacer()
+                
+                TextField("0.00", text: $buyPrice)
+                    .multilineTextAlignment(.trailing)
+                    .frame(maxWidth: 120)
+                    .background(RoundedRectangle(cornerRadius: 5.0)
+                                    .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+            }
         }
     }
     
-    private func chooseQuantity() -> some View {
-        TextField("0", text: $quantity)
+    private func inputQuantityView() -> some View {
+        HStack {
+            Text("QUANTITY")
+                .font(.caption)
+            
+            Spacer()
+            
+            TextField("0", text: $quantity)
+                .multilineTextAlignment(.trailing)
+                .frame(maxWidth: 80)
+                .background(RoundedRectangle(cornerRadius: 5.0)
+                                .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+        }
     }
     
     private func actions() -> some View {
