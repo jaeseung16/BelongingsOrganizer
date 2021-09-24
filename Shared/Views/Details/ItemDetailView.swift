@@ -207,6 +207,15 @@ struct ItemDetailView: View {
     private func itemInfo() -> some View {
         VStack {
             Form {
+                Section(header: Text("NAME")) {
+                    TextField(item.name ?? "", text: $name, onEditingChanged: { isEditing in
+                        self.isEditing = isEditing
+                    }, onCommit: {
+                        isEditing = false
+                        isEdited = true
+                    })
+                }
+                
                 Section(header: photoHeader()) {
                     if imageData == nil {
                         Text("Photo")
@@ -224,40 +233,35 @@ struct ItemDetailView: View {
                     }
                 }
                 
-                Section(header: Text("name")) {
-                    TextField(item.name ?? "", text: $name, onEditingChanged: { isEditing in
-                        self.isEditing = isEditing
-                    }, onCommit: {
-                        isEditing = false
-                        isEdited = true
-                    })
+                Section(header: Text("QUANTITY")) {
+                    quantityView()
                 }
                 
-                Section(header: Text("category")) {
-                    categoryView()
+                Section(header: Text("OBTAINED")) {
+                    obtainedView()
                 }
                 
-                Section(header: Text("brand")) {
-                    brandView()
+                Section(header: Text("DISPOSED")) {
+                    disposedView()
                 }
                 
-                Section(header: Text("seller")) {
-                    sellerView()
+                Section(header: Text("CATEGORY/BRAND/SELLER")) {
+                    VStack {
+                        categoryView()
+                        brandView()
+                        sellerView()
+                    }
                 }
                 
-                Section(header: Text("quantity and prices")) {
-                    quantityAndPricesView()
+                Section(header: Text("CURRENCY")) {
+                    currencyView()
                 }
                 
-                Section(header: Text("note")) {
+                Section(header: Text("NOTE")) {
                     Text(item.note ?? "")
                 }
                 
-                Section(header: Text("dates")) {
-                    datesView()
-                }
-                
-                Section(header: Text("misc")) {
+                Section(header: Text("MISC")) {
                     miscView()
                 }
                 
@@ -269,7 +273,9 @@ struct ItemDetailView: View {
     
     private func photoHeader() -> some View {
         HStack {
-            Text("Photo")
+            Text("PHOTO")
+            
+            Spacer()
             
             Button {
                 kind = item.kind
@@ -282,6 +288,8 @@ struct ItemDetailView: View {
     
     private func categoryView() -> some View {
         HStack {
+            Text("category")
+            
             Spacer()
             
             if kind == nil {
@@ -301,6 +309,8 @@ struct ItemDetailView: View {
     
     private func brandView() -> some View {
         HStack {
+            Text("brand")
+            
             Spacer()
             
             if brand == nil {
@@ -320,6 +330,8 @@ struct ItemDetailView: View {
     
     private func sellerView() -> some View {
         HStack {
+            Text("seller")
+            
             Spacer()
             
             if seller == nil {
@@ -337,21 +349,23 @@ struct ItemDetailView: View {
         }
     }
     
-    private func quantityAndPricesView() -> some View {
-        VStack {
-            HStack {
-                Text("quantity")
-                    .foregroundColor(.secondary)
-                Spacer()
-                TextField("\(item.quantity)", value: $quantity, formatter: quantityFormatter) { isEditing in
-                    self.isEditing = isEditing
-                } onCommit: {
-                    isEditing = false
-                    isEdited = true
-                }
-                .multilineTextAlignment(.trailing)
+    private func quantityView() -> some View {
+        HStack {
+            Text("quantity")
+                .foregroundColor(.secondary)
+            Spacer()
+            TextField("\(item.quantity)", value: $quantity, formatter: quantityFormatter) { isEditing in
+                self.isEditing = isEditing
+            } onCommit: {
+                isEditing = false
+                isEdited = true
             }
-            
+            .multilineTextAlignment(.trailing)
+        }
+    }
+    
+    private func obtainedView() -> some View {
+        VStack {
             HStack {
                 Text("buy price")
                     .foregroundColor(.secondary)
@@ -365,35 +379,6 @@ struct ItemDetailView: View {
                 .multilineTextAlignment(.trailing)
             }
             
-            HStack {
-                Text("sell price")
-                    .foregroundColor(.secondary)
-                Spacer()
-                TextField("\(item.sellPrice)", value: $sellPrice, formatter: priceFormatter) { isEditing in
-                    self.isEditing = isEditing
-                } onCommit: {
-                    isEditing = false
-                    isEdited = true
-                }
-                .multilineTextAlignment(.trailing)
-            }
-            
-            HStack {
-                Text("currency")
-                    .foregroundColor(.secondary)
-                Spacer()
-                Text(item.currency ?? "")
-                Button(action: {
-                    presentChooseCurrencyView = true
-                }, label: {
-                    Text("Edit")
-                })
-            }
-        }
-    }
-    
-    private func datesView() -> some View {
-        VStack {
             HStack {
                 Text("obtained on")
                     .foregroundColor(.secondary)
@@ -413,6 +398,23 @@ struct ItemDetailView: View {
                     Text("Edit")
                 })
             }
+        }
+    }
+    
+    private func disposedView() -> some View {
+        VStack {
+            HStack {
+                Text("sell price")
+                    .foregroundColor(.secondary)
+                Spacer()
+                TextField("\(item.sellPrice)", value: $sellPrice, formatter: priceFormatter) { isEditing in
+                    self.isEditing = isEditing
+                } onCommit: {
+                    isEditing = false
+                    isEdited = true
+                }
+                .multilineTextAlignment(.trailing)
+            }
             
             HStack {
                 Text("disposed on")
@@ -429,6 +431,22 @@ struct ItemDetailView: View {
                 Button(action: {
                     disposed = item.disposed ?? Date()
                     presentDisposedDatePickerView = true
+                }, label: {
+                    Text("Edit")
+                })
+            }
+        }
+    }
+    
+    private func currencyView() -> some View {
+        VStack {
+            HStack {
+                Text("currency")
+                    .foregroundColor(.secondary)
+                Spacer()
+                Text(item.currency ?? "")
+                Button(action: {
+                    presentChooseCurrencyView = true
                 }, label: {
                     Text("Edit")
                 })
