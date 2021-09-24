@@ -50,6 +50,8 @@
 		9089734526FBFFF5005A03A8 /* SDWebImageWebPCoder in Frameworks */ = {isa = PBXBuildFile; productRef = 9089734426FBFFF5005A03A8 /* SDWebImageWebPCoder */; };
 		9089734726FD10CC005A03A8 /* URLValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9089734626FD10CC005A03A8 /* URLValidator.swift */; };
 		9089734826FD10CC005A03A8 /* URLValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9089734626FD10CC005A03A8 /* URLValidator.swift */; };
+		9089734A26FD3B3F005A03A8 /* ItemSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9089734926FD3B3F005A03A8 /* ItemSummaryView.swift */; };
+		9089734B26FD3B3F005A03A8 /* ItemSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9089734926FD3B3F005A03A8 /* ItemSummaryView.swift */; };
 		90B23E6626EE901900B29063 /* KindDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B23E6526EE901900B29063 /* KindDetailView.swift */; };
 		90B23E6726EE901900B29063 /* KindDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B23E6526EE901900B29063 /* KindDetailView.swift */; };
 		90C0D98926E7D08200158C85 /* AddKindView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90596B8526E6ACD20001CCA5 /* AddKindView.swift */; };
@@ -141,6 +143,7 @@
 		90884D1F26E180E100D01A55 /* Belongings.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Belongings.entitlements; sourceTree = "<group>"; };
 		90884D2026E180E400D01A55 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.5.sdk/System/Library/Frameworks/CloudKit.framework; sourceTree = DEVELOPER_DIR; };
 		9089734626FD10CC005A03A8 /* URLValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLValidator.swift; sourceTree = "<group>"; };
+		9089734926FD3B3F005A03A8 /* ItemSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemSummaryView.swift; sourceTree = "<group>"; };
 		90B23E6526EE901900B29063 /* KindDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KindDetailView.swift; sourceTree = "<group>"; };
 		90C0D98A26E7DEF600158C85 /* AddItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItemView.swift; sourceTree = "<group>"; };
 		90C0D98D26E8001700158C85 /* ChooseKindView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseKindView.swift; sourceTree = "<group>"; };
@@ -356,6 +359,7 @@
 				90B23E6526EE901900B29063 /* KindDetailView.swift */,
 				90C172D126F13EC200244A9C /* BrandDetailView.swift */,
 				90C172D426F13FAF00244A9C /* SellerDetailView.swift */,
+				9089734926FD3B3F005A03A8 /* ItemSummaryView.swift */,
 			);
 			path = Details;
 			sourceTree = "<group>";
@@ -461,6 +465,7 @@
 		900DDBB926E036C90034A155 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = NO;
 				LastSwiftUpdateCheck = 1250;
 				LastUpgradeCheck = 1300;
 				TargetAttributes = {
@@ -567,6 +572,7 @@
 				9072233626E93CE800965653 /* AddSellerView.swift in Sources */,
 				9072233326E93CDC00965653 /* ChooseSellerView.swift in Sources */,
 				90B23E6626EE901900B29063 /* KindDetailView.swift in Sources */,
+				9089734A26FD3B3F005A03A8 /* ItemSummaryView.swift in Sources */,
 				90D3F23826EA7F7E00955316 /* SellerDTO.swift in Sources */,
 				906CE2EB26FA970100DC12C3 /* AddItemViewModel.swift in Sources */,
 				90C172D526F13FAF00244A9C /* SellerDetailView.swift in Sources */,
@@ -598,6 +604,7 @@
 				906CE2E926FA871900DC12C3 /* MacAddPhotoView.swift in Sources */,
 				904498E526EBD7A800002A6F /* SheetBottom.swift in Sources */,
 				900DDBEB26E036CB0034A155 /* Belongings.xcdatamodeld in Sources */,
+				9089734B26FD3B3F005A03A8 /* ItemSummaryView.swift in Sources */,
 				904498DE26EBBB2500002A6F /* ChooseCurrencyView.swift in Sources */,
 				90D3F24126EA8CE100955316 /* KindDTO.swift in Sources */,
 				9089734826FD10CC005A03A8 /* URLValidator.swift in Sources */,

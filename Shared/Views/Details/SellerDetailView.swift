@@ -20,7 +20,9 @@ struct SellerDetailView: View {
                 items.append(item)
             }
         }
-        return items
+        return items.sorted {
+            ($0.obtained ?? Date()) > ($1.obtained ?? Date())
+        }
     }
     
     @State private var isEditing = false
@@ -68,20 +70,43 @@ struct SellerDetailView: View {
                     }
                     
                     Section(header: Text("items").foregroundColor(.secondary)) {
-                        List {
-                            ForEach(items) { item in
-                                VStack(alignment: .leading) {
-                                    Text(item.name ?? "")
-                                    if let obtained = item.obtained {
-                                        HStack {
-                                            Spacer()
-                                            Text("\(obtained, formatter: BelongingsViewModel.dateFormatterWithDateOnly)")
-                                                .foregroundColor(.secondary)
+                        #if os(macOS)
+                        NavigationView {
+                            List {
+                                ForEach(items) { item in
+                                    NavigationLink(destination: ItemSummaryView(item: item)) {
+                                        VStack(alignment: .leading) {
+                                            HStack {
+                                                if let imageData = item.image, let nsImage = NSImage(data: imageData) {
+                                                    Image(nsImage: nsImage)
+                                                        .resizable()
+                                                        .aspectRatio(contentMode: .fit)
+                                                }
+                                                Text(item.name ?? "")
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
+                        #else
+                        List {
+                            ForEach(items) { item in
+                                NavigationLink(destination: ItemSummaryView(item: item)) {
+                                    VStack(alignment: .leading) {
+                                        HStack {
+                                            if let imageData = item.image, let uiImage = UIImage(data: imageData) {
+                                                Image(uiImage: uiImage)
+                                                    .resizable()
+                                                    .aspectRatio(contentMode: .fit)
+                                            }
+                                            Text(item.name ?? "")
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        #endif
                     }
                 }
                 .padding()
