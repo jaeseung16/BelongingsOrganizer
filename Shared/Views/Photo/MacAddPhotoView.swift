@@ -84,9 +84,9 @@ struct MacAddPhotoView: View {
                     if let data: Data = try? Data(contentsOf: url) {
                         let image = SDImageWebPCoder.shared.decodedImage(with: data, options: nil)
                         self.selectedImage = image?.tiffRepresentation
-                    } else {
-                        self.selectedImage = try? Data(contentsOf: url)
                     }
+                } else {
+                    self.selectedImage = try? Data(contentsOf: url)
                 }
             }
         }
