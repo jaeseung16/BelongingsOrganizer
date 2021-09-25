@@ -36,7 +36,7 @@ struct SellerListView: View {
                         .onDelete(perform: deleteSellers)
                     }
                     .sheet(isPresented: $presentAddSelleriew, content: {
-                        AddBrandView()
+                        AddSellerView()
                             .environment(\.managedObjectContext, viewContext)
                             .environmentObject(viewModel)
                             .frame(minWidth: 350, minHeight: 450)
