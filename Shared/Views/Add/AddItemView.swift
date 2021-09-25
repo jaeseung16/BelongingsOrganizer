@@ -346,7 +346,7 @@ struct AddItemView: View {
                                 obtained: obtained,
                                 buyPrice: Double(buyPrice),
                                 quantity: Int64(quantity),
-                                currency: currency)
+                                buyCurrency: currency)
         
         presentationMode.wrappedValue.dismiss()
     }

@@ -130,6 +130,12 @@ struct ItemSummaryView: View {
                     .multilineTextAlignment(.trailing)
             }
             
+            VStack {
+                Text("CURRENCY")
+                    .foregroundColor(.secondary)
+                Text(item.buyCurrency ?? "")
+            }
+            
             Spacer()
             
             VStack {
@@ -139,12 +145,10 @@ struct ItemSummaryView: View {
                     .multilineTextAlignment(.trailing)
             }
             
-            Spacer()
-            
             VStack {
                 Text("CURRENCY")
                     .foregroundColor(.secondary)
-                Text(item.currency ?? "")
+                Text(item.sellCurrency ?? "")
             }
             
             Spacer()

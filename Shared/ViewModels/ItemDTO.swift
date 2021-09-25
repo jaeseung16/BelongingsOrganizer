@@ -14,7 +14,8 @@ struct ItemDTO: Identifiable, CustomStringConvertible {
     var quantity: Int64?
     var buyPrice: Double?
     var sellPrice: Double?
-    var currency: String?
+    var buyCurrency: String?
+    var sellCurrency: String?
     var obtained: Date?
     var disposed: Date?
     var image: Data?

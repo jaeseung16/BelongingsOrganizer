@@ -25,7 +25,8 @@ struct ItemDetailView: View {
     @State var quantity: Int64 = 0
     @State var buyPrice = 0.0
     @State var sellPrice = 0.0
-    @State var currency: String = "USD"
+    @State var buyCurrency: String = "USD"
+    @State var sellCurrency: String = "USD"
     @State var note: String = ""
     @State var obtained = Date()
     @State var disposed = Date()
@@ -34,7 +35,8 @@ struct ItemDetailView: View {
     @State var presentChooseKindView = false
     @State var presentChooseBrandView = false
     @State var presentChooseSellerView = false
-    @State var presentChooseCurrencyView = false
+    @State var presentChooseBuyCurrencyView = false
+    @State var presentChooseSellCurrencyView = false
     @State var presentObtainedDatePickerView = false
     @State var presentDisposedDatePickerView = false
     
@@ -74,8 +76,12 @@ struct ItemDetailView: View {
                         isEdited = true
                     }
             })
-            .sheet(isPresented: $presentChooseCurrencyView, content: {
-                ChooseCurrencyView(currency: $currency)
+            .sheet(isPresented: $presentChooseBuyCurrencyView, content: {
+                ChooseCurrencyView(currency: $buyCurrency)
+                    .frame(width: geometry.size.width, height: geometry.size.height)
+            })
+            .sheet(isPresented: $presentChooseSellCurrencyView, content: {
+                ChooseCurrencyView(currency: $sellCurrency)
                     .frame(width: geometry.size.width, height: geometry.size.height)
             })
             .sheet(isPresented: $presentPhotoView, content: {
@@ -98,7 +104,8 @@ struct ItemDetailView: View {
         quantity = item.quantity
         buyPrice = item.buyPrice
         sellPrice = item.sellPrice
-        currency = item.currency ?? "USD"
+        buyCurrency = item.buyCurrency ?? "USD"
+        sellCurrency = item.sellCurrency ?? "USD"
         note = item.note ?? ""
         obtained = item.obtained ?? Date()
         disposed = item.disposed ?? Date()
@@ -154,7 +161,8 @@ struct ItemDetailView: View {
                                             quantity: quantity,
                                             buyPrice: item.buyPrice,
                                             sellPrice: item.sellPrice,
-                                            currency: item.currency,
+                                            buyCurrency: item.buyCurrency,
+                                            sellCurrency: item.sellCurrency,
                                             obtained: isObtainedDateEdited ? obtained : item.obtained,
                                             disposed: isDisposedDateEdited ? disposed : item.disposed,
                                             image: imageData ?? item.image)
@@ -446,7 +454,7 @@ struct ItemDetailView: View {
                 Spacer()
                 Text(item.currency ?? "")
                 Button(action: {
-                    presentChooseCurrencyView = true
+                    presentChooseSellCurrencyView = true
                 }, label: {
                     Text("Edit")
                 })

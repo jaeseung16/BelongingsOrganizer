@@ -60,7 +60,8 @@ struct ItemListView: View {
                                                                                         quantity: item.quantity,
                                                                                         buyPrice: item.buyPrice,
                                                                                         sellPrice: item.sellPrice,
-                                                                                        currency: item.currency ?? "USD",
+                                                                                        buyCurrency: item.buyCurrency ?? "USD",
+                                                                                        sellCurrency: item.sellCurrency ?? "USD",
                                                                                         note: item.note ?? "",
                                                                                         obtained: item.obtained ?? Date(),
                                                                                         disposed: item.disposed ?? Date()))
