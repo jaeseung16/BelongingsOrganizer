@@ -45,13 +45,20 @@ struct ItemDetailView: View {
     
     var body: some View {
         GeometryReader { geometry in
-            VStack {
-                header()
-                
-                Divider()
-                
-                itemInfo()
+            ScrollView {
+                VStack {
+                    header()
+                    
+                    Divider()
+                    
+                    itemInfo()
+                    
+                    Divider()
+                    
+                    footer()
+                }
             }
+            .padding()
             .sheet(isPresented: $presentChooseKindView, content: {
                 ChooseKindView(kind: $kind)
                     .environment(\.managedObjectContext, viewContext)
@@ -214,89 +221,97 @@ struct ItemDetailView: View {
     
     private func itemInfo() -> some View {
         VStack {
-            Form {
-                Section(header: Text("NAME")) {
-                    TextField(item.name ?? "", text: $name, onEditingChanged: { isEditing in
-                        self.isEditing = isEditing
-                    }, onCommit: {
-                        isEditing = false
-                        isEdited = true
-                    })
-                }
-                
-                Section(header: photoHeader()) {
-                    if imageData == nil {
-                        Text("Photo")
-                            .foregroundColor(.secondary)
-                    } else {
-                        #if os(macOS)
-                        Image(nsImage: image!)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                        #else
-                        Image(uiImage: image!)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                        #endif
-                    }
-                }
-                
-                Section(header: Text("QUANTITY")) {
-                    quantityView()
-                }
-                
-                Section(header: Text("OBTAINED")) {
-                    obtainedView()
-                }
-                
-                Section(header: Text("DISPOSED")) {
-                    disposedView()
-                }
-                
-                Section(header: Text("CATEGORY/BRAND/SELLER")) {
-                    VStack {
-                        categoryView()
-                        brandView()
-                        sellerView()
-                    }
-                }
-                
-                Section(header: Text("CURRENCY")) {
-                    currencyView()
-                }
-                
-                Section(header: Text("NOTE")) {
-                    Text(item.note ?? "")
-                }
-                
-                Section(header: Text("MISC")) {
-                    miscView()
-                }
-                
-            }
+            nameView()
             
+            photoView()
+            
+            Divider()
+            
+            categoryBrandSellerView()
+            
+            noteView()
+            
+            quantityView()
+            
+            Divider()
+            
+            obtainedView()
+            
+            Divider()
+            
+            disposedView()
         }
-        .padding()
     }
     
-    private func photoHeader() -> some View {
+    private func nameView() -> some View {
         HStack {
-            Text("PHOTO")
+            Text("NAME")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
             
             Spacer()
             
-            Button {
-                kind = item.kind
-                presentPhotoView = true
-            } label: {
-                Text("Edit")
+            TextField(item.name ?? "", text: $name, onEditingChanged: { isEditing in
+                self.isEditing = isEditing
+            }, onCommit: {
+                isEditing = false
+                isEdited = true
+            })
+                .frame(maxWidth: .infinity, idealHeight: 50)
+                .background(RoundedRectangle(cornerRadius: 5.0)
+                                .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+        }
+    }
+    
+    private func photoView() -> some View {
+        VStack {
+            HStack {
+                Text("PHOTO")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                
+                Spacer()
+                
+                Button {
+                    kind = item.kind
+                    presentPhotoView = true
+                } label: {
+                    Text("Edit")
+                }
             }
+            
+            if imageData == nil {
+                Text("Photo")
+                    .foregroundColor(.secondary)
+            } else {
+                #if os(macOS)
+                Image(nsImage: image!)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(height: 100)
+                #else
+                Image(uiImage: image!)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                #endif
+            }
+        }
+        
+    }
+    
+    private func categoryBrandSellerView() -> some View {
+        VStack {
+            categoryView()
+            brandView()
+            sellerView()
         }
     }
     
     private func categoryView() -> some View {
         HStack {
-            Text("category")
+            Text("CATEGORY")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
             
             Spacer()
             
@@ -317,7 +332,9 @@ struct ItemDetailView: View {
     
     private func brandView() -> some View {
         HStack {
-            Text("brand")
+            Text("BRAND")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
             
             Spacer()
             
@@ -338,7 +355,9 @@ struct ItemDetailView: View {
     
     private func sellerView() -> some View {
         HStack {
-            Text("seller")
+            Text("SELLER")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
             
             Spacer()
             
@@ -359,7 +378,8 @@ struct ItemDetailView: View {
     
     private func quantityView() -> some View {
         HStack {
-            Text("quantity")
+            Text("QUANTITY")
+                .font(.subheadline)
                 .foregroundColor(.secondary)
             Spacer()
             TextField("\(item.quantity)", value: $quantity, formatter: quantityFormatter) { isEditing in
@@ -369,26 +389,17 @@ struct ItemDetailView: View {
                 isEdited = true
             }
             .multilineTextAlignment(.trailing)
+            .frame(maxWidth: 80)
+            .background(RoundedRectangle(cornerRadius: 5.0)
+                            .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
         }
     }
     
     private func obtainedView() -> some View {
         VStack {
             HStack {
-                Text("buy price")
-                    .foregroundColor(.secondary)
-                Spacer()
-                TextField("\(item.buyPrice)", value: $buyPrice, formatter: priceFormatter) { isEditing in
-                    self.isEditing = isEditing
-                } onCommit: {
-                    isEditing = false
-                    isEdited = true
-                }
-                .multilineTextAlignment(.trailing)
-            }
-            
-            HStack {
-                Text("obtained on")
+                Text("OBTAINED")
+                    .font(.callout)
                     .foregroundColor(.secondary)
                 Spacer()
                 if isObtainedDateEdited {
@@ -406,26 +417,40 @@ struct ItemDetailView: View {
                     Text("Edit")
                 })
             }
-        }
-    }
-    
-    private func disposedView() -> some View {
-        VStack {
+            
             HStack {
-                Text("sell price")
+                Text("PRICE")
+                    .font(.subheadline)
                     .foregroundColor(.secondary)
                 Spacer()
-                TextField("\(item.sellPrice)", value: $sellPrice, formatter: priceFormatter) { isEditing in
+                TextField("\(item.buyPrice)", value: $buyPrice, formatter: priceFormatter) { isEditing in
                     self.isEditing = isEditing
                 } onCommit: {
                     isEditing = false
                     isEdited = true
                 }
                 .multilineTextAlignment(.trailing)
-            }
+                .frame(maxWidth: 120)
+                .background(RoundedRectangle(cornerRadius: 5.0)
+                                .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
             
+                Spacer()
+                
+                Text(item.buyCurrency ?? "")
+                Button(action: {
+                    presentChooseBuyCurrencyView = true
+                }, label: {
+                    Text("Edit")
+                })
+            }
+        }
+    }
+    
+    private func disposedView() -> some View {
+        VStack {
             HStack {
-                Text("disposed on")
+                Text("DISPOSED")
+                    .font(.subheadline)
                     .foregroundColor(.secondary)
                 Spacer()
                 
@@ -443,39 +468,70 @@ struct ItemDetailView: View {
                     Text("Edit")
                 })
             }
-        }
-    }
-    
-    private func currencyView() -> some View {
-        VStack {
+            
             HStack {
-                Text("currency")
+                Text("PRICE")
+                    .font(.caption)
                     .foregroundColor(.secondary)
                 Spacer()
-                Text(item.currency ?? "")
+                TextField("\(item.sellPrice)", value: $sellPrice, formatter: priceFormatter) { isEditing in
+                    self.isEditing = isEditing
+                } onCommit: {
+                    isEditing = false
+                    isEdited = true
+                }
+                .multilineTextAlignment(.trailing)
+                .frame(maxWidth: 120)
+                .background(RoundedRectangle(cornerRadius: 5.0)
+                                .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+            
+                Spacer()
+                
+                Text(item.sellCurrency ?? "USD")
                 Button(action: {
                     presentChooseSellCurrencyView = true
                 }, label: {
                     Text("Edit")
                 })
             }
+            
+            
         }
     }
     
-    private func miscView() -> some View {
+    private func noteView() -> some View {
+        HStack {
+            Text("NOTE")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+            
+            Spacer()
+            
+            Text(item.note ?? "")
+                .frame(maxWidth: .infinity)
+                .background(RoundedRectangle(cornerRadius: 5.0)
+                                .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+        }
+    }
+    
+    private func footer() -> some View {
         VStack {
             HStack {
-                Text("created on")
+                Text("created")
+                    .font(.subheadline)
                     .foregroundColor(.secondary)
                 Spacer()
                 Text("\(item.created!, formatter: BelongingsViewModel.dateFormatter)")
+                    .font(.callout)
             }
             
             HStack {
-                Text("last updated  on")
+                Text("last updated")
+                    .font(.subheadline)
                     .foregroundColor(.secondary)
                 Spacer()
                 Text("\(item.lastupd!, formatter: BelongingsViewModel.dateFormatter)")
+                    .font(.callout)
             }
         }
     }
