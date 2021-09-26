@@ -90,6 +90,8 @@
 		90E2EA9626F402150014A8C6 /* ImagePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E2EA9526F402150014A8C6 /* ImagePickerView.swift */; };
 		90E2EA9926F402940014A8C6 /* AddPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E2EA9826F402940014A8C6 /* AddPhotoView.swift */; };
 		90E857A226F51DFC00D15ED7 /* AddPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E2EA9826F402940014A8C6 /* AddPhotoView.swift */; };
+		90F3B6AB26FFEA2900C4859D /* ItemProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F3B6AA26FFEA2900C4859D /* ItemProperty.swift */; };
+		90F3B6AC26FFEA2900C4859D /* ItemProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F3B6AA26FFEA2900C4859D /* ItemProperty.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -163,6 +165,7 @@
 		90DD8C2B26F95A1B0079424A /* EditPhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPhotoView.swift; sourceTree = "<group>"; };
 		90E2EA9526F402150014A8C6 /* ImagePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerView.swift; sourceTree = "<group>"; };
 		90E2EA9826F402940014A8C6 /* AddPhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPhotoView.swift; sourceTree = "<group>"; };
+		90F3B6AA26FFEA2900C4859D /* ItemProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemProperty.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -376,6 +379,7 @@
 				90DD8C2826F936E60079424A /* MobileNet.mlmodel */,
 				906CE2EA26FA970100DC12C3 /* AddItemViewModel.swift */,
 				9089734626FD10CC005A03A8 /* URLValidator.swift */,
+				90F3B6AA26FFEA2900C4859D /* ItemProperty.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -465,7 +469,6 @@
 		900DDBB926E036C90034A155 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				BuildIndependentTargetsInParallel = NO;
 				LastSwiftUpdateCheck = 1250;
 				LastUpgradeCheck = 1300;
 				TargetAttributes = {
@@ -563,6 +566,7 @@
 				900DDBEA26E036CB0034A155 /* Belongings.xcdatamodeld in Sources */,
 				904498DD26EBBB2500002A6F /* ChooseCurrencyView.swift in Sources */,
 				906EA8A126F7EFF300235302 /* EditDateView.swift in Sources */,
+				90F3B6AB26FFEA2900C4859D /* ItemProperty.swift in Sources */,
 				90D3F23C26EA801F00955316 /* KindDTO.swift in Sources */,
 				90D3F23526EA5B3400955316 /* Entities.swift in Sources */,
 				90C0D98E26E8001700158C85 /* ChooseKindView.swift in Sources */,
@@ -601,6 +605,7 @@
 				90C0D98C26E7DEF600158C85 /* AddItemView.swift in Sources */,
 				9072233126E93A0500965653 /* AddBrandView.swift in Sources */,
 				90DD8C2A26F936E60079424A /* MobileNet.mlmodel in Sources */,
+				90F3B6AC26FFEA2900C4859D /* ItemProperty.swift in Sources */,
 				906CE2E926FA871900DC12C3 /* MacAddPhotoView.swift in Sources */,
 				904498E526EBD7A800002A6F /* SheetBottom.swift in Sources */,
 				900DDBEB26E036CB0034A155 /* Belongings.xcdatamodeld in Sources */,

@@ -45,18 +45,16 @@ struct ItemDetailView: View {
     
     var body: some View {
         GeometryReader { geometry in
-            ScrollView {
-                VStack {
-                    header()
-                    
-                    Divider()
-                    
-                    itemInfo()
-                    
-                    Divider()
-                    
-                    footer()
-                }
+            VStack {
+                header()
+                
+                Divider()
+                
+                itemInfo()
+                
+                Divider()
+                
+                footer()
             }
             .padding()
             .sheet(isPresented: $presentChooseKindView, content: {
@@ -220,26 +218,33 @@ struct ItemDetailView: View {
     #endif
     
     private func itemInfo() -> some View {
-        VStack {
-            nameView()
-            
-            photoView()
-            
-            Divider()
-            
-            categoryBrandSellerView()
-            
-            noteView()
-            
-            quantityView()
-            
-            Divider()
-            
-            obtainedView()
-            
-            Divider()
-            
-            disposedView()
+        List {
+            ForEach(ItemProperty.allCases) { property in
+                switch property {
+                case .name:
+                    nameView()
+                case .photo:
+                    photoView()
+                case .note:
+                    noteView()
+                case .quantity:
+                    quantityView()
+                case .category:
+                    categoryView()
+                case .brand:
+                    brandView()
+                case .seller:
+                    sellerView()
+                case .obtained:
+                    obtainedView()
+                case .buyPrice:
+                    buyPriceView()
+                case .disposed:
+                    disposedView()
+                case .sellPrice:
+                    sellPriceView()
+                }
+            }
         }
     }
     
@@ -417,32 +422,34 @@ struct ItemDetailView: View {
                     Text("Edit")
                 })
             }
-            
-            HStack {
-                Text("PRICE")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                Spacer()
-                TextField("\(item.buyPrice)", value: $buyPrice, formatter: priceFormatter) { isEditing in
-                    self.isEditing = isEditing
-                } onCommit: {
-                    isEditing = false
-                    isEdited = true
-                }
-                .multilineTextAlignment(.trailing)
-                .frame(maxWidth: 120)
-                .background(RoundedRectangle(cornerRadius: 5.0)
-                                .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
-            
-                Spacer()
-                
-                Text(item.buyCurrency ?? "")
-                Button(action: {
-                    presentChooseBuyCurrencyView = true
-                }, label: {
-                    Text("Edit")
-                })
+        }
+    }
+    
+    private func buyPriceView() -> some View {
+        HStack {
+            Text("PRICE")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+            Spacer()
+            TextField("\(item.buyPrice)", value: $buyPrice, formatter: priceFormatter) { isEditing in
+                self.isEditing = isEditing
+            } onCommit: {
+                isEditing = false
+                isEdited = true
             }
+            .multilineTextAlignment(.trailing)
+            .frame(maxWidth: 120)
+            .background(RoundedRectangle(cornerRadius: 5.0)
+                            .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+        
+            Spacer()
+            
+            Text(item.buyCurrency ?? "")
+            Button(action: {
+                presentChooseBuyCurrencyView = true
+            }, label: {
+                Text("Edit")
+            })
         }
     }
     
@@ -468,34 +475,34 @@ struct ItemDetailView: View {
                     Text("Edit")
                 })
             }
-            
-            HStack {
-                Text("PRICE")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                Spacer()
-                TextField("\(item.sellPrice)", value: $sellPrice, formatter: priceFormatter) { isEditing in
-                    self.isEditing = isEditing
-                } onCommit: {
-                    isEditing = false
-                    isEdited = true
-                }
-                .multilineTextAlignment(.trailing)
-                .frame(maxWidth: 120)
-                .background(RoundedRectangle(cornerRadius: 5.0)
-                                .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
-            
-                Spacer()
-                
-                Text(item.sellCurrency ?? "USD")
-                Button(action: {
-                    presentChooseSellCurrencyView = true
-                }, label: {
-                    Text("Edit")
-                })
+        }
+    }
+    
+    private func sellPriceView() -> some View {
+        HStack {
+            Text("PRICE")
+                .font(.caption)
+                .foregroundColor(.secondary)
+            Spacer()
+            TextField("\(item.sellPrice)", value: $sellPrice, formatter: priceFormatter) { isEditing in
+                self.isEditing = isEditing
+            } onCommit: {
+                isEditing = false
+                isEdited = true
             }
+            .multilineTextAlignment(.trailing)
+            .frame(maxWidth: 120)
+            .background(RoundedRectangle(cornerRadius: 5.0)
+                            .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+        
+            Spacer()
             
-            
+            Text(item.sellCurrency ?? "USD")
+            Button(action: {
+                presentChooseSellCurrencyView = true
+            }, label: {
+                Text("Edit")
+            })
         }
     }
     
