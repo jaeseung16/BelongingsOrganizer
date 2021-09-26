@@ -37,10 +37,16 @@ struct EditDateView: View {
             
             Divider()
             
+            #if os(macOS)
             DatePicker("", selection: $date, displayedComponents: [.date])
                 .datePickerStyle(GraphicalDatePickerStyle())
                 .scaledToFit()
                 .frame(width: 150)
+            #else
+            DatePicker("", selection: $date, displayedComponents: [.date])
+                .scaledToFit()
+                .frame(width: 150)
+            #endif
             
             if originalDate == nil {
                 Text("Original Date: N/A")
@@ -49,6 +55,8 @@ struct EditDateView: View {
             }
             
             Text("New Date: \(date, formatter: BelongingsViewModel.dateFormatterWithDateOnly)")
+            
+            Spacer()
         }
         .padding()
     }
