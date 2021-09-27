@@ -13,8 +13,9 @@ struct AddPhotoView: View {
     @EnvironmentObject var viewModel: AddItemViewModel
 
     @State private var selectedImage: Data?
-    @State private var sourceType: UIImagePickerController.SourceType = .photoLibrary
     @State private var isImagePickerDisplay = false
+    @State private var isPHPickerDisplay = false
+    @State private var progress: Progress?
     
     var body: some View {
         GeometryReader { geometry in
@@ -22,6 +23,10 @@ struct AddPhotoView: View {
                 header()
                 
                 Divider()
+                
+                if progress != nil && !(progress!.isFinished) {
+                    ProgressView(progress!)
+                }
                 
                 photoView()
                     .resizable()
@@ -31,25 +36,31 @@ struct AddPhotoView: View {
                 
                 HStack {
                     Button {
-                        sourceType = .camera
                         isImagePickerDisplay = true
                     } label: {
                         Text("Take a photo")
                     }
+                    .disabled(!UIImagePickerController.isSourceTypeAvailable(.camera))
                     
                     Spacer()
                     
                     Button {
-                        sourceType = .photoLibrary
-                        isImagePickerDisplay = true
+                        selectedImage = nil
+                        progress = nil
+                        isPHPickerDisplay = true
                     } label: {
                         Text("Select a photo")
                     }
                 }
             }
+            .padding()
             .frame(width: geometry.size.width, height: geometry.size.height)
             .sheet(isPresented: $isImagePickerDisplay) {
-                ImagePickerView(selectedImage: $selectedImage, sourceType: sourceType)
+                ImagePickerView(selectedImage: $selectedImage, sourceType: .camera)
+                    .padding()
+            }
+            .sheet(isPresented: $isPHPickerDisplay) {
+                PHPickerView(selectedImage: $selectedImage, progress: $progress)
                     .padding()
             }
         }
