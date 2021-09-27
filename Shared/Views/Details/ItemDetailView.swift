@@ -90,9 +90,15 @@ struct ItemDetailView: View {
                     .frame(width: geometry.size.width, height: geometry.size.height)
             })
             .sheet(isPresented: $presentPhotoView, content: {
+                #if os(macOS)
+                MacEditPhotoView(originalImage: item.image, image: $imageData)
+                    .environmentObject(viewModel)
+                    .frame(width: geometry.size.width, height: geometry.size.height)
+                #else
                 EditPhotoView(originalImage: item.image, image: $imageData)
                     .environmentObject(viewModel)
                     .frame(width: geometry.size.width, height: geometry.size.height)
+                #endif
             })
             .sheet(isPresented: $presentObtainedDatePickerView, content: {
                 EditDateView(date: $obtained, originalDate: item.obtained, isEdited: $isObtainedDateEdited)

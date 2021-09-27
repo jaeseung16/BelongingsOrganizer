@@ -90,10 +90,10 @@ struct ItemSummaryView: View {
                 Image(nsImage: nsImage)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
+                    .frame(height: 100)
             } else {
                 Text("PHOTO")
                     .foregroundColor(.secondary)
-                
             }
             #else
             if let image = item.image, let uiImage = UIImage(data: image) {

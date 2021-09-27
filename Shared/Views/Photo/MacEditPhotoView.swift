@@ -1,22 +1,19 @@
 //
-//  EditPhotoView.swift
+//  MacEditPhotoView.swift
 //  Belongings Organizer
 //
-//  Created by Jae Seung Lee on 9/20/21.
+//  Created by Jae Seung Lee on 9/26/21.
 //
 
-#if !os(macOS)
+#if os(macOS)
 import SwiftUI
+import SDWebImageWebPCoder
 
-struct EditPhotoView: View {
+struct MacEditPhotoView: View {
     @Environment(\.presentationMode) private var presentationMode
-
+    
     @State var originalImage: Data?
     @Binding var image: Data?
-
-    @State private var sourceType: UIImagePickerController.SourceType = .photoLibrary
-    @State private var selectedImage: Data?
-    @State private var isImagePickerDisplay = false
     
     var body: some View {
         GeometryReader { geometry in
@@ -26,11 +23,11 @@ struct EditPhotoView: View {
                 Divider()
                 
                 if image != nil {
-                    Image(uiImage: UIImage(data: image!)!)
+                    Image(nsImage: NSImage(data: image!)!)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                 } else if originalImage != nil {
-                    Image(uiImage: UIImage(data: originalImage!)!)
+                    Image(nsImage: NSImage(data: originalImage!)!)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                 } else {
@@ -43,28 +40,34 @@ struct EditPhotoView: View {
                 
                 HStack {
                     Button {
-                        sourceType = .camera
-                        isImagePickerDisplay = true
+                        let openPanel = NSOpenPanel()
+                        openPanel.prompt = "Select File"
+                        openPanel.allowsMultipleSelection = false
+                        openPanel.canChooseDirectories = false
+                        openPanel.canCreateDirectories = false
+                        openPanel.canChooseFiles = true
+                        openPanel.allowedFileTypes = ["png","jpg","jpeg","webp"]
+                        
+                        openPanel.begin { (result) -> Void in
+                            if result.rawValue == NSApplication.ModalResponse.OK.rawValue {
+                                let url = openPanel.url!
+                                
+                                if url.absoluteString.contains(".webp") {
+                                    if let data: Data = try? Data(contentsOf: url) {
+                                        let image = SDImageWebPCoder.shared.decodedImage(with: data, options: nil)
+                                        self.image = image?.tiffRepresentation
+                                    }
+                                } else {
+                                    self.image = try? Data(contentsOf: url)
+                                }
+                            }
+                        }
                     } label: {
-                        Text("Take a photo")
-                    }
-                    
-                    Spacer()
-                    
-                    Button {
-                        sourceType = .photoLibrary
-                        isImagePickerDisplay = true
-                    } label: {
-                        Text("Select a photo")
+                        Text("Select an image")
                     }
                 }
-                
             }
             .frame(width: geometry.size.width, height: geometry.size.height)
-            .sheet(isPresented: $isImagePickerDisplay) {
-                ImagePickerView(selectedImage: $selectedImage, sourceType: sourceType)
-                    .padding()
-            }
         }
     }
     
