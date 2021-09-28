@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct KindDetailView: View {
-    //@Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) private var presentationMode
     @EnvironmentObject var viewModel: BelongingsViewModel
     
@@ -102,6 +101,9 @@ struct KindDetailView: View {
                     }
                 }
                 .padding()
+            }
+            .onReceive(viewModel.$changedPeristentContext) { _ in
+                presentationMode.wrappedValue.dismiss()
             }
         }
     }

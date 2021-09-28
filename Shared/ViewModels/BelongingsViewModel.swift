@@ -31,6 +31,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     
     private var subscriptions: Set<AnyCancellable> = []
     
+    @Published var changedPeristentContext = NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave)
     @Published var showAlert = false
     
     var message = ""
@@ -154,6 +155,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     // MARK: - Persistence History Request
     private lazy var historyRequestQueue = DispatchQueue(label: "history")
     private func fetchUpdates(_ notification: Notification) -> Void {
+        print("fetchUpdates \(Date().description(with: Locale.current))")
         historyRequestQueue.async {
             let backgroundContext = self.persistenteContainer.newBackgroundContext()
             backgroundContext.performAndWait {
@@ -176,6 +178,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
                 } catch {
                     print("Could not convert history result to transactions after lastToken = \(String(describing: self.lastToken)): \(error)")
                 }
+                print("fetchUpdates \(Date().description(with: Locale.current))")
             }
         }
     }

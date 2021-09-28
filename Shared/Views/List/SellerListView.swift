@@ -9,10 +9,11 @@ import SwiftUI
 
 struct SellerListView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.presentationMode) private var presentationMode
     @EnvironmentObject var viewModel: BelongingsViewModel
     
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Seller.name, ascending: true)],
+        sortDescriptors: [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare))],
         animation: .default)
     private var sellers: FetchedResults<Seller>
 
@@ -45,6 +46,9 @@ struct SellerListView: View {
                 }
                 .navigationTitle("Seller")
             }
+        }
+        .onReceive(viewModel.$changedPeristentContext) { _ in
+            presentationMode.wrappedValue.dismiss()
         }
     }
     

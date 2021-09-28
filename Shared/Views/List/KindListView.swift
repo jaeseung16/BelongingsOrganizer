@@ -9,10 +9,11 @@ import SwiftUI
 
 struct KindListView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.presentationMode) private var presentationMode
     @EnvironmentObject var viewModel: BelongingsViewModel
     
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Kind.name, ascending: true)],
+        sortDescriptors: [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare))],
         animation: .default)
     private var kinds: FetchedResults<Kind>
 
@@ -44,6 +45,9 @@ struct KindListView: View {
                 }
                 .navigationTitle("Categories")
             }
+        }
+        .onReceive(viewModel.$changedPeristentContext) { _ in
+            presentationMode.wrappedValue.dismiss()
         }
     }
     

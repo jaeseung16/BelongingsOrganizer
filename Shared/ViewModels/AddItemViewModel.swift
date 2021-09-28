@@ -13,6 +13,8 @@ import Vision
 import CoreImage
 
 class AddItemViewModel: NSObject, ObservableObject {
+    static let shared = AddItemViewModel()
+    
     private let persistenteContainer = PersistenceController.shared.container
     private var viewContext: NSManagedObjectContext {
         persistenteContainer.viewContext
@@ -32,6 +34,16 @@ class AddItemViewModel: NSObject, ObservableObject {
     var kind: Kind?
     var brand: Brand?
     var seller: Seller?
+    
+    func reset() {
+        showAlert = false
+        message = ""
+        classificationResult = ""
+        imageData = nil
+        kind = nil
+        brand = nil
+        seller = nil
+    }
     
     func saveBelonging(name: String, kind: Kind?, brand: Brand?, seller: Seller?, note: String, obtained: Date, buyPrice: Double?, quantity: Int64?, buyCurrency: String) -> Void {
         let created = Date()

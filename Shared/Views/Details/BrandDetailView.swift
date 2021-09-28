@@ -111,6 +111,9 @@ struct BrandDetailView: View {
                 }
                 .padding()
             }
+            .onReceive(viewModel.$changedPeristentContext) { _ in
+                presentationMode.wrappedValue.dismiss()
+            }
         }
     }
     

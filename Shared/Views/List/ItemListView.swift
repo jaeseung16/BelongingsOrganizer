@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ItemListView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.presentationMode) private var presentationMode
     @EnvironmentObject var viewModel: BelongingsViewModel
     
     @FetchRequest(
@@ -70,10 +71,13 @@ struct ItemListView: View {
                         }
                         .onDelete(perform: deleteItems)
                     }
+                    .onReceive(viewModel.$changedPeristentContext) { _ in
+                        presentationMode.wrappedValue.dismiss()
+                    }
                     .sheet(isPresented: $presentAddItemView, content: {
                         AddItemView(geometry: geometry)
                             .environment(\.managedObjectContext, viewContext)
-                            .environmentObject(AddItemViewModel())
+                            .environmentObject(AddItemViewModel.shared)
                             .frame(minWidth: 350, minHeight: 550)
                             .padding()
                     })
@@ -99,6 +103,7 @@ struct ItemListView: View {
             }
             
             Button(action: {
+                AddItemViewModel.shared.reset()
                 presentAddItemView = true
             }) {
                 Label("Add", systemImage: "plus")
