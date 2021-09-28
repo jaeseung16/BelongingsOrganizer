@@ -67,6 +67,7 @@ struct MacEditPhotoView: View {
                     }
                 }
             }
+            .padding()
             .frame(width: geometry.size.width, height: geometry.size.height)
         }
     }

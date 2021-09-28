@@ -92,11 +92,9 @@ struct ItemDetailView: View {
             .sheet(isPresented: $presentPhotoView, content: {
                 #if os(macOS)
                 MacEditPhotoView(originalImage: item.image, image: $imageData)
-                    .environmentObject(viewModel)
                     .frame(width: geometry.size.width, height: geometry.size.height)
                 #else
                 EditPhotoView(originalImage: item.image, image: $imageData)
-                    .environmentObject(viewModel)
                     .frame(width: geometry.size.width, height: geometry.size.height)
                 #endif
             })
@@ -286,6 +284,7 @@ struct ItemDetailView: View {
                 Button {
                     kind = item.kind
                     presentPhotoView = true
+                    AddItemViewModel.shared.reset()
                 } label: {
                     Text("Edit")
                 }
