@@ -13,9 +13,12 @@ struct AddPhotoView: View {
     @EnvironmentObject var viewModel: AddItemViewModel
 
     @State private var selectedImage: Data?
-    @State private var isImagePickerDisplay = false
-    @State private var isPHPickerDisplay = false
+    @State private var showImagePickerView = false
+    @State private var showPHPickerView = false
     @State private var progress: Progress?
+    @State private var showAlert = false
+    @State private var errorMessage = ""
+    @State private var showProgress = false
     
     var body: some View {
         GeometryReader { geometry in
@@ -36,7 +39,7 @@ struct AddPhotoView: View {
                 
                 HStack {
                     Button {
-                        isImagePickerDisplay = true
+                        showImagePickerView = true
                     } label: {
                         Text("Take a photo")
                     }
@@ -45,9 +48,8 @@ struct AddPhotoView: View {
                     Spacer()
                     
                     Button {
-                        selectedImage = nil
                         progress = nil
-                        isPHPickerDisplay = true
+                        showPHPickerView = true
                     } label: {
                         Text("Select a photo")
                     }
@@ -55,12 +57,38 @@ struct AddPhotoView: View {
             }
             .padding()
             .frame(width: geometry.size.width, height: geometry.size.height)
-            .sheet(isPresented: $isImagePickerDisplay) {
+            .sheet(isPresented: $showAlert) {
+                VStack {
+                    Spacer()
+                    
+                    Text("Unable to Load the Photo")
+                        .font(.headline)
+                    
+                    Text("Please try a different photo")
+                        .font(.callout)
+                    
+                    Divider()
+                    
+                    Button {
+                        showAlert.toggle()
+                    } label: {
+                        Text("Dismiss")
+                    }
+                    
+                    Spacer()
+                }
+                .padding()
+                .frame(height: 120.0)
+            }
+            .sheet(isPresented: $showImagePickerView) {
                 ImagePickerView(selectedImage: $selectedImage, sourceType: .camera)
                     .padding()
             }
-            .sheet(isPresented: $isPHPickerDisplay) {
-                PHPickerView(selectedImage: $selectedImage, progress: $progress)
+            .sheet(isPresented: $showPHPickerView) {
+                PHPickerView(selectedImage: $selectedImage, progress: $progress) { success, errorString in
+                    errorMessage = errorString ?? ""
+                    showAlert = !success
+                }
                     .padding()
             }
         }

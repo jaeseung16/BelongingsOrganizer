@@ -15,6 +15,7 @@ struct PHPickerView: UIViewControllerRepresentable {
     
     @Binding var selectedImage: Data?
     @Binding var progress: Progress?
+    var completionHandler: (Bool, String?) -> Void
     
     func makeUIViewController(context: Context) -> PHPickerViewController {
         let imagePicker = PHPickerViewController(configuration: PHPickerConfiguration())
@@ -42,13 +43,22 @@ struct PHPickerView: UIViewControllerRepresentable {
                 let itemProvider = results[0].itemProvider
                 if itemProvider.canLoadObject(ofClass: UIImage.self) {
                     self.picker.progress = itemProvider.loadObject(ofClass: UIImage.self) { [weak self] image, error in
-                        print("error = \(error)")
-                        if let image = image as? UIImage {
-                            self?.picker.selectedImage = self?.resize(uiImage: image, within: CGSize(width: 1024.0, height: 1024.0))?.pngData()
+                        DispatchQueue.main.async {
+                            guard error == nil else {
+                                self?.picker.completionHandler(false, "\(error!.localizedDescription)")
+                                return
+                            }
+                            
+                            if let image = image as? UIImage {
+                                self?.picker.selectedImage = self?.resize(uiImage: image, within: CGSize(width: 1024.0, height: 1024.0))?.pngData()
+                                self?.picker.completionHandler(true, nil)
+                            } else {
+                                self?.picker.completionHandler(false, "cannot load image")
+                            }
                         }
                     }
                 } else {
-                    print("cannot load image")
+                    self.picker.completionHandler(false, "cannot load image")
                 }
             }
             

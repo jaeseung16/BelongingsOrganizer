@@ -15,9 +15,11 @@ struct EditPhotoView: View {
     @Binding var image: Data?
 
     @State private var sourceType: UIImagePickerController.SourceType = .photoLibrary
-    @State private var isImagePickerDisplay = false
-    @State private var isPHPickerDisplay = false
+    @State private var showImagePickerView = false
+    @State private var showPHPickerView = false
     @State private var progress: Progress?
+    @State private var showAlert = false
+    @State private var errorMessage = ""
     
     var body: some View {
         GeometryReader { geometry in
@@ -48,7 +50,7 @@ struct EditPhotoView: View {
                 
                 HStack {
                     Button {
-                        isImagePickerDisplay = true
+                        showImagePickerView = true
                     } label: {
                         Text("Take a photo")
                     }
@@ -59,7 +61,7 @@ struct EditPhotoView: View {
                     Button {
                         image = nil
                         progress = nil
-                        isPHPickerDisplay = true
+                        showPHPickerView = true
                     } label: {
                         Text("Select a photo")
                     }
@@ -67,13 +69,44 @@ struct EditPhotoView: View {
             }
             .padding()
             .frame(width: geometry.size.width, height: geometry.size.height)
-            .sheet(isPresented: $isImagePickerDisplay) {
+            .sheet(isPresented: $showAlert) {
+                VStack {
+                    Spacer()
+                    
+                    Text("Unable to Load the Photo")
+                        .font(.headline)
+                    
+                    Text("Please try a different photo")
+                        .font(.callout)
+                    
+                    Divider()
+                    
+                    Button {
+                        showAlert.toggle()
+                    } label: {
+                        Text("Dismiss")
+                    }
+                    
+                    Spacer()
+                }
+                .padding()
+                .frame(height: 120.0)
+            }
+            .sheet(isPresented: $showImagePickerView) {
                 ImagePickerView(selectedImage: $image, sourceType: .camera)
                     .padding()
             }
-            .sheet(isPresented: $isPHPickerDisplay) {
-                PHPickerView(selectedImage: $image, progress: $progress)
+            .sheet(isPresented: $showPHPickerView) {
+                PHPickerView(selectedImage: $image, progress: $progress) { success, errorString in
+                    errorMessage = errorString ?? ""
+                    showAlert = !success
+                }
                     .padding()
+            }
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text("Unable to Load Image"),
+                      message: Text(errorMessage),
+                      dismissButton: .default(Text("Dismiss")))
             }
         }
     }

@@ -25,7 +25,7 @@ class AddItemViewModel: NSObject, ObservableObject {
     var message = ""
     
     @Published var classificationResult: String = ""
-    var imageData: Data?
+    @Published var imageData: Data?
     
     var kind: Kind?
     var brand: Brand?
