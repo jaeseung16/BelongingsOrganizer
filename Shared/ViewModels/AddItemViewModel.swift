@@ -86,7 +86,7 @@ class AddItemViewModel: NSObject, ObservableObject {
         let newKind = Kind(context: viewContext)
         newKind.created = created
         newKind.lastupd = created
-        newKind.name = name
+        newKind.name = name.trimmingCharacters(in: .whitespaces)
         newKind.uuid = UUID()
         
         PersistenceController.save(viewContext: viewContext) { error in
@@ -103,7 +103,7 @@ class AddItemViewModel: NSObject, ObservableObject {
         let newBrand = Brand(context: viewContext)
         newBrand.created = created
         newBrand.lastupd = created
-        newBrand.name = name
+        newBrand.name = name.trimmingCharacters(in: .whitespaces)
         newBrand.url = URL(string: urlString)
         newBrand.uuid = UUID()
 
@@ -121,7 +121,7 @@ class AddItemViewModel: NSObject, ObservableObject {
         let newSeller = Seller(context: viewContext)
         newSeller.created = created
         newSeller.lastupd = created
-        newSeller.name = name
+        newSeller.name = name.trimmingCharacters(in: .whitespaces)
         newSeller.url = URL(string: urlString)
         newSeller.uuid = UUID()
 

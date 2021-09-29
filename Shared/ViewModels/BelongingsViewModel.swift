@@ -75,7 +75,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     var kindDTO = KindDTO() {
         didSet {
             if kindDTO.id != nil, let existingEntity: Kind = get(entity: .Kind, id: kindDTO.id!) {
-                existingEntity.name = kindDTO.name
+                existingEntity.name = kindDTO.name?.trimmingCharacters(in: .whitespaces)
                 existingEntity.lastupd = Date()
 
                 saveContext() { error in
@@ -91,7 +91,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     var brandDTO = BrandDTO() {
         didSet {
             if brandDTO.id != nil, let existingEntity: Brand = get(entity: .Brand, id: brandDTO.id!) {
-                existingEntity.name = brandDTO.name
+                existingEntity.name = brandDTO.name?.trimmingCharacters(in: .whitespaces)
                 existingEntity.url = brandDTO.url
                 existingEntity.lastupd = Date()
 
@@ -108,7 +108,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     var sellerDTO = SellerDTO() {
         didSet {
             if sellerDTO.id != nil, let existingEntity: Seller = get(entity: .Seller, id: sellerDTO.id!) {
-                existingEntity.name = sellerDTO.name
+                existingEntity.name = sellerDTO.name?.trimmingCharacters(in: .whitespaces)
                 existingEntity.url = sellerDTO.url
                 existingEntity.lastupd = Date()
 
