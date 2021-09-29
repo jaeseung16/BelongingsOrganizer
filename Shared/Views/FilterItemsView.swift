@@ -43,57 +43,11 @@ struct FilterItemsView: View {
                 Text("Filter")
                     .font(.title3)
                 
-                Form {
-                    Section(header: Text("Kind")) {
-                        ScrollView(.horizontal) {
-                            LazyHStack {
-                                ForEach(selectedKinds.sorted(by: { $0.name ?? "" > $1.name ?? ""
-                                }), id: \.self) { kind in
-                                    Button {
-                                        selectedKinds.remove(kind)
-                                    } label: {
-                                        Text(kind.name ?? "")
-                                            .foregroundColor(.primary)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    
-                    Section(header: Text("Brand")) {
-                        ScrollView(.horizontal) {
-                            LazyHStack {
-                                ForEach(selectedBrands.sorted(by: { $0.name ?? "" > $1.name ?? ""
-                                }), id: \.self) { brand in
-                                    Button {
-                                        selectedBrands.remove(brand)
-                                    } label: {
-                                        Text(brand.name ?? "")
-                                            .foregroundColor(.primary)
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    Section(header: Text("Seller")) {
-                        ScrollView(.horizontal) {
-                            LazyHStack {
-                                ForEach(selectedSellers.sorted(by: { $0.name ?? "" > $1.name ?? ""
-                                }), id: \.self) { seller in
-                                    Button {
-                                        selectedSellers.remove(seller)
-                                    } label: {
-                                        Text(seller.name ?? "")
-                                            .foregroundColor(.primary)
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                }
-                .frame(width: geometry.size.width)
+                selectedKindsSection()
+                
+                selectedBrandsSection()
+               
+                selectedSellersSection()
                 
                 Divider()
                 
@@ -104,68 +58,160 @@ struct FilterItemsView: View {
                 }
                 .pickerStyle(SegmentedPickerStyle())
                 
-                switch (selectedFilter) {
-                case .kind:
-                    List {
-                        ForEach(kinds, id: \.id) { kind in
-                            Button {
-                                if selectedKinds.contains(kind) {
-                                    selectedKinds.remove(kind)
-                                } else {
-                                    selectedKinds.insert(kind)
-                                }
-                            } label: {
-                                Text(kind.name ?? "")
-                            }
+                filterListView()
+            
+                Divider()
+                
+                actions()
+            }
+            .padding()
+        }
+    }
+    
+    func selectedKindsSection() -> some View {
+        VStack(alignment: .leading) {
+            Text("KIND")
+                .font(.caption)
+                .foregroundColor(.secondary)
+            
+            ScrollView(.horizontal) {
+                LazyHStack {
+                    ForEach(selectedKinds.sorted(by: { $0.name ?? "" > $1.name ?? ""
+                    }), id: \.self) { kind in
+                        Button {
+                            selectedKinds.remove(kind)
+                        } label: {
+                            Text(kind.name ?? "")
+                                .foregroundColor(.white)
                         }
                     }
-                case .brand:
-                    List {
-                        ForEach(brands, id: \.id) { brand in
-                            Button {
-                                if selectedBrands.contains(brand) {
-                                    selectedBrands.remove(brand)
-                                } else {
-                                    selectedBrands.insert(brand)
-                                }
-                            } label: {
-                                Text(brand.name ?? "")
-                            }
+                    .background(RoundedRectangle(cornerRadius: 5.0)
+                                    .fill(Color(.sRGB, white: 0.5, opacity: 1.0)))
+                }
+                .padding()
+            }
+            .background(RoundedRectangle(cornerRadius: 10.0)
+                            .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+            .frame(maxHeight: 40.0)
+        }
+    }
+    
+    func selectedBrandsSection() -> some View {
+        VStack(alignment: .leading) {
+            Text("BRAND")
+                .font(.caption)
+                .foregroundColor(.secondary)
+            
+            ScrollView(.horizontal) {
+                LazyHStack {
+                    ForEach(selectedBrands.sorted(by: { $0.name ?? "" > $1.name ?? ""
+                    }), id: \.self) { kind in
+                        Button {
+                            selectedBrands.remove(kind)
+                        } label: {
+                            Text(kind.name ?? "")
+                                .foregroundColor(.white)
                         }
                     }
-                    
-                case .seller:
-                    List {
-                        ForEach(sellers, id: \.id) { seller in
-                            Button {
-                                if selectedSellers.contains(seller) {
-                                    selectedSellers.remove(seller)
-                                } else {
-                                    selectedSellers.insert(seller)
-                                }
-                            } label: {
-                                Text(seller.name ?? "")
-                            }
+                    .background(RoundedRectangle(cornerRadius: 5.0)
+                                    .fill(Color(.sRGB, white: 0.5, opacity: 1.0)))
+                }
+                .padding()
+            }
+            .background(RoundedRectangle(cornerRadius: 10.0)
+                            .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+            .frame(maxHeight: 40.0)
+        }
+    }
+    
+    func selectedSellersSection() -> some View {
+        VStack(alignment: .leading) {
+            Text("SELLER")
+                .font(.caption)
+                .foregroundColor(.secondary)
+            
+            ScrollView(.horizontal) {
+                LazyHStack {
+                    ForEach(selectedSellers.sorted(by: { $0.name ?? "" > $1.name ?? ""
+                    }), id: \.self) { seller in
+                        Button {
+                            selectedSellers.remove(seller)
+                        } label: {
+                            Text(seller.name ?? "")
+                                .foregroundColor(.white)
                         }
+                        .background(RoundedRectangle(cornerRadius: 5.0)
+                                        .fill(Color(.sRGB, white: 0.5, opacity: 1.0)))
                     }
                 }
-
-                HStack {
+                .padding()
+            }
+            .background(RoundedRectangle(cornerRadius: 10.0)
+                            .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+            .frame(maxHeight: 40.0)
+        }
+    }
+    
+    func filterListView() -> some View {
+        List {
+            switch (selectedFilter) {
+            case .kind:
+                ForEach(kinds, id: \.id) { kind in
                     Button {
-                        selectedKinds.removeAll()
-                        selectedBrands.removeAll()
-                        selectedSellers.removeAll()
+                        if selectedKinds.contains(kind) {
+                            selectedKinds.remove(kind)
+                        } else {
+                            selectedKinds.insert(kind)
+                        }
                     } label: {
-                        Text("Reset")
+                        Text(kind.name ?? "")
                     }
-                    
+                }
+            case .brand:
+                ForEach(brands, id: \.id) { brand in
                     Button {
-                        presentationMode.wrappedValue.dismiss()
+                        if selectedBrands.contains(brand) {
+                            selectedBrands.remove(brand)
+                        } else {
+                            selectedBrands.insert(brand)
+                        }
                     } label: {
-                        Text("Done")
+                        Text(brand.name ?? "")
+                    }
+                }
+            case .seller:
+                ForEach(sellers, id: \.id) { seller in
+                    Button {
+                        if selectedSellers.contains(seller) {
+                            selectedSellers.remove(seller)
+                        } else {
+                            selectedSellers.insert(seller)
+                        }
+                    } label: {
+                        Text(seller.name ?? "")
                     }
                 }
             }
+        }
+    }
+    
+    func actions() -> some View {
+        HStack {
+            Spacer()
+            Button {
+                selectedKinds.removeAll()
+                selectedBrands.removeAll()
+                selectedSellers.removeAll()
+            } label: {
+                Text("Reset")
+            }
+            Spacer()
+            Button {
+                presentationMode.wrappedValue.dismiss()
+            } label: {
+                Text("Done")
+            }
+            Spacer()
         }
     }
 }

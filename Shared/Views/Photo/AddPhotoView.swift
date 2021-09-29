@@ -78,7 +78,7 @@ struct AddPhotoView: View {
                     Spacer()
                 }
                 .padding()
-                .frame(height: 120.0)
+                .frame(minHeight: 120.0)
             }
             .sheet(isPresented: $showImagePickerView) {
                 ImagePickerView(selectedImage: $selectedImage, sourceType: .camera)
