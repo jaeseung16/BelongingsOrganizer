@@ -392,6 +392,8 @@ struct ItemDetailView: View {
                 .font(.subheadline)
                 .foregroundColor(.secondary)
             Spacer()
+            
+            #if os(macOS)
             TextField("\(item.quantity)", value: $quantity, formatter: quantityFormatter) { isEditing in
                 self.isEditing = isEditing
             } onCommit: {
@@ -402,6 +404,19 @@ struct ItemDetailView: View {
             .frame(maxWidth: 80)
             .background(RoundedRectangle(cornerRadius: 5.0)
                             .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+            #else
+            TextField("\(item.quantity)", value: $quantity, formatter: quantityFormatter) { isEditing in
+                self.isEditing = isEditing
+            } onCommit: {
+                isEditing = false
+                isEdited = true
+            }
+            .multilineTextAlignment(.trailing)
+            .frame(maxWidth: 80)
+            .background(RoundedRectangle(cornerRadius: 5.0)
+                            .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+            .keyboardType(.numberPad)
+            #endif
         }
     }
     
@@ -436,6 +451,8 @@ struct ItemDetailView: View {
                 .font(.subheadline)
                 .foregroundColor(.secondary)
             Spacer()
+            
+            #if os(macOS)
             TextField("\(item.buyPrice)", value: $buyPrice, formatter: priceFormatter) { isEditing in
                 self.isEditing = isEditing
             } onCommit: {
@@ -446,6 +463,19 @@ struct ItemDetailView: View {
             .frame(maxWidth: 120)
             .background(RoundedRectangle(cornerRadius: 5.0)
                             .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+            #else
+            TextField("\(item.buyPrice)", value: $buyPrice, formatter: priceFormatter) { isEditing in
+                self.isEditing = isEditing
+            } onCommit: {
+                isEditing = false
+                isEdited = true
+            }
+            .multilineTextAlignment(.trailing)
+            .frame(maxWidth: 120)
+            .background(RoundedRectangle(cornerRadius: 5.0)
+                            .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+            .keyboardType(.decimalPad)
+            #endif
         
             Spacer()
             
@@ -489,6 +519,8 @@ struct ItemDetailView: View {
                 .font(.caption)
                 .foregroundColor(.secondary)
             Spacer()
+            
+            #if os(macOS)
             TextField("\(item.sellPrice)", value: $sellPrice, formatter: priceFormatter) { isEditing in
                 self.isEditing = isEditing
             } onCommit: {
@@ -499,6 +531,19 @@ struct ItemDetailView: View {
             .frame(maxWidth: 120)
             .background(RoundedRectangle(cornerRadius: 5.0)
                             .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+            #else
+            TextField("\(item.sellPrice)", value: $sellPrice, formatter: priceFormatter) { isEditing in
+                self.isEditing = isEditing
+            } onCommit: {
+                isEditing = false
+                isEdited = true
+            }
+            .multilineTextAlignment(.trailing)
+            .frame(maxWidth: 120)
+            .background(RoundedRectangle(cornerRadius: 5.0)
+                            .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+            .keyboardType(.decimalPad)
+            #endif
         
             Spacer()
             

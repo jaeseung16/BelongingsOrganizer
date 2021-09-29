@@ -284,11 +284,20 @@ struct AddItemView: View {
                 
                 Spacer()
                 
+                #if os(macOS)
                 TextField("0.00", text: $buyPrice)
                     .multilineTextAlignment(.trailing)
                     .frame(maxWidth: 120)
                     .background(RoundedRectangle(cornerRadius: 5.0)
                                     .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+                #else
+                TextField("0.00", text: $buyPrice)
+                    .multilineTextAlignment(.trailing)
+                    .frame(maxWidth: 120)
+                    .background(RoundedRectangle(cornerRadius: 5.0)
+                                    .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+                    .keyboardType(.decimalPad)
+                #endif
             }
         }
     }
@@ -300,11 +309,20 @@ struct AddItemView: View {
             
             Spacer()
             
+            #if os(macOS)
             TextField("0", text: $quantity)
                 .multilineTextAlignment(.trailing)
                 .frame(maxWidth: 80)
                 .background(RoundedRectangle(cornerRadius: 5.0)
                                 .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+            #else
+            TextField("0", text: $quantity)
+                .multilineTextAlignment(.trailing)
+                .frame(maxWidth: 80)
+                .background(RoundedRectangle(cornerRadius: 5.0)
+                                .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+                .keyboardType(.numberPad)
+            #endif
         }
     }
     
