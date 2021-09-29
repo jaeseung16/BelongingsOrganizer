@@ -132,7 +132,11 @@ struct AddItemView: View {
                 Button(action: {
                     presentPhotoView = true
                 }, label: {
-                    Label("select", systemImage: "photo")
+                    #if os(macOS)
+                    Label("select a photo", systemImage: "photo")
+                    #else
+                    Label("select/take a photo", systemImage: "photo")
+                    #endif
                 })
             }
             
@@ -170,7 +174,7 @@ struct AddItemView: View {
                 Button(action: {
                     presentChooseKindView = true
                 }, label: {
-                    Label("select", systemImage: "filemenu.and.selection")
+                    Label("select a category", systemImage: "filemenu.and.selection")
                 })
             }
             
@@ -199,7 +203,7 @@ struct AddItemView: View {
                 Button(action: {
                     presentBrandView = true
                 }, label: {
-                    Label("select", systemImage: "filemenu.and.selection")
+                    Label("select a brand", systemImage: "filemenu.and.selection")
                 })
             }
             
@@ -223,13 +227,11 @@ struct AddItemView: View {
             HStack {
                 Text("SELLER")
                     .font(.caption)
-                
                 Spacer()
-                
                 Button(action: {
                     presentSellerView = true
                 }, label: {
-                    Label("select", systemImage: "filemenu.and.selection")
+                    Label("select a seller", systemImage: "filemenu.and.selection")
                 })
             }
             
