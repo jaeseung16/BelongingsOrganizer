@@ -6,9 +6,11 @@
 //
 
 import CoreData
+import os
 
 struct PersistenceController {
     static let shared = PersistenceController()
+    static let logger = Logger()
 
     static var preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
@@ -28,14 +30,11 @@ struct PersistenceController {
             newItem.name = itemName[index]
         }
         
-        do {
-            try viewContext.save()
-        } catch {
-            // Replace this implementation with code to handle the error appropriately.
-            // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+        PersistenceController.save(viewContext: viewContext) { error in
             let nsError = error as NSError
-            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+            PersistenceController.logger.error("Unresolved error \(nsError), \(nsError.userInfo)")
         }
+        
         return result
     }()
 
@@ -54,21 +53,41 @@ struct PersistenceController {
         
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-
-                /*
-                Typical reasons for an error here include:
-                * The parent directory does not exist, cannot be created, or disallows writing.
-                * The persistent store is not accessible, due to permissions or data protection when the device is locked.
-                * The device is out of space.
-                * The store could not be migrated to the current model version.
-                Check the error message to determine what the actual problem was.
-                */
-                fatalError("Unresolved error \(error), \(error.userInfo)")
+                if let error = error as NSError? {
+                    PersistenceController.logger.error("Could not load persistent store: \(storeDescription), \(error), \(error.userInfo)")
+                }
             }
         })
         
         print("persistentStores = \(container.persistentStoreCoordinator.persistentStores)")
+        
+        container.viewContext.name = "Belongings"
+        purgeHistory()
+    }
+    
+    private func purgeHistory() {
+        let sevenDaysAgo = Date(timeIntervalSinceNow: TimeInterval(exactly: -604_800)!)
+        let purgeHistoryRequest = NSPersistentHistoryChangeRequest.deleteHistory(before: sevenDaysAgo)
+
+        do {
+            try container.newBackgroundContext().execute(purgeHistoryRequest)
+        } catch {
+            if let error = error as NSError? {
+                PersistenceController.logger.error("Could not purge history: \(error), \(error.userInfo)")
+            }
+        }
+    }
+    
+    static func save(viewContext: NSManagedObjectContext, completionHandler: (Error) -> Void) {
+        if viewContext.hasChanges {
+            do {
+                try viewContext.save()
+            } catch {
+                if let error = error as NSError? {
+                    PersistenceController.logger.error("Could not save: \(error), \(error.userInfo)")
+                }
+                completionHandler(error)
+            }
+        }
     }
 }

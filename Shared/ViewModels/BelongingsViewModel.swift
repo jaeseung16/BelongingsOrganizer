@@ -62,9 +62,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
                 existingEntity.image = itemDTO.image
                 existingEntity.lastupd = Date()
 
-                do {
-                    try saveContext()
-                } catch {
+                saveContext() { error in
                     let nsError = error as NSError
                     print("While saving \(itemDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
                     message = "Cannot update name = \(String(describing: itemDTO.name))"
@@ -80,9 +78,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
                 existingEntity.name = kindDTO.name
                 existingEntity.lastupd = Date()
 
-                do {
-                    try saveContext()
-                } catch {
+                saveContext() { error in
                     let nsError = error as NSError
                     print("While saving \(kindDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
                     message = "Cannot update name = \(String(describing: kindDTO.name))"
@@ -99,9 +95,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
                 existingEntity.url = brandDTO.url
                 existingEntity.lastupd = Date()
 
-                do {
-                    try saveContext()
-                } catch {
+                saveContext() { error in
                     let nsError = error as NSError
                     print("While saving \(brandDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
                     message = "Cannot update name = \(String(describing: brandDTO.name)) and url = \(String(describing: brandDTO.url))"
@@ -118,9 +112,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
                 existingEntity.url = sellerDTO.url
                 existingEntity.lastupd = Date()
 
-                do {
-                    try saveContext()
-                } catch {
+                saveContext() { error in
                     let nsError = error as NSError
                     print("While saving \(sellerDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
                     message = "Cannot update name = \(String(describing: sellerDTO.name)) and url = \(String(describing: sellerDTO.url))"
@@ -146,9 +138,9 @@ class BelongingsViewModel: NSObject, ObservableObject {
         return fetchedLinks.isEmpty ? nil : fetchedLinks[0]
     }
     
-    private func saveContext() throws -> Void {
+    private func saveContext(completionHandler: (Error) -> Void) -> Void {
         persistenteContainer.viewContext.transactionAuthor = "App"
-        try persistenteContainer.viewContext.save()
+        PersistenceController.save(viewContext: persistenteContainer.viewContext, completionHandler: completionHandler)
         persistenteContainer.viewContext.transactionAuthor = nil
     }
     
