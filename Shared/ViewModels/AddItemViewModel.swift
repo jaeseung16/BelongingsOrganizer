@@ -25,11 +25,7 @@ class AddItemViewModel: NSObject, ObservableObject {
     var message = ""
     
     @Published var classificationResult: String = ""
-    var imageData: Data? {
-        didSet {
-            updateClassifications()
-        }
-    }
+    var imageData: Data?
     
     var kind: Kind?
     var brand: Brand?
@@ -38,7 +34,6 @@ class AddItemViewModel: NSObject, ObservableObject {
     func reset() {
         showAlert = false
         message = ""
-        classificationResult = ""
         imageData = nil
         kind = nil
         brand = nil

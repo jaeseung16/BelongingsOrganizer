@@ -126,8 +126,6 @@ struct AddItemView: View {
                 Text("PHOTO")
                     .font(.caption)
                 Spacer()
-                Text(viewModel.classificationResult)
-                Spacer()
                 Button(action: {
                     presentPhotoView = true
                 }, label: {
