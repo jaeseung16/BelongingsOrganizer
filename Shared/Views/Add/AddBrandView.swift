@@ -18,14 +18,27 @@ struct AddBrandView: View {
     @State private var showAlert = false
     
     var body: some View {
-        VStack {
-            Text("Name")
+        VStack(alignment: .leading) {
+            Spacer()
             
-            TextField("Name", text: $name)
+            Text("Add a brand")
+                .font(.title3)
+            
+            Divider()
+            
+            Text("NAME")
+                .font(.caption)
+            
+            TextField("name", text: $name)
+                .foregroundColor(.secondary)
+                .frame(maxWidth: .infinity, idealHeight: 50)
+                .background(RoundedRectangle(cornerRadius: 5.0)
+                                .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
             
             Text("URL")
+                .font(.caption)
             
-            TextField("URL", text: $urlString) { isEditing in
+            TextField("url", text: $urlString) { isEditing in
                 self.isEditing = isEditing
             } onCommit: {
                 if let url = URLValidator.validate(urlString: urlString) {
@@ -35,14 +48,24 @@ struct AddBrandView: View {
                     showAlert = true
                 }
             }
+            .foregroundColor(.secondary)
+            .frame(maxWidth: .infinity, idealHeight: 50)
+            .background(RoundedRectangle(cornerRadius: 5.0)
+                            .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
 
+            Divider()
+            
             HStack {
+                Spacer()
+                
                 Button(action: {
                     presentationMode.wrappedValue.dismiss()
                 },
                 label: {
                     Text("Cancel")
                 })
+                
+                Spacer()
                 
                 Button(action: {
                     saveBrand()
@@ -51,9 +74,14 @@ struct AddBrandView: View {
                 label: {
                     Text("Save")
                 })
+                
+                Spacer()
             }
+            
+            Spacer()
         }
         .padding()
+        .frame(minHeight: 200.0)
         .alert(isPresented: $showAlert) {
             Alert(title: Text("Invalid URL"),
                   message: Text("Cannot access the URL. Try a different one or leave it empty."),

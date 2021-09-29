@@ -112,11 +112,15 @@ struct ItemListView: View {
     
     private func header() -> some View {
         HStack {
+            Spacer()
+            
             Button(action: {
                 presentFilterItemsView = true
             }) {
                 Label("Filter", systemImage: "line.horizontal.3.decrease.circle")
             }
+            
+            Spacer()
             
             Button(action: {
                 AddItemViewModel.shared.reset()
@@ -124,6 +128,8 @@ struct ItemListView: View {
             }) {
                 Label("Add", systemImage: "plus")
             }
+            
+            Spacer()
         }
         .scaledToFit()
     }
