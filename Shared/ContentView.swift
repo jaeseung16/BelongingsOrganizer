@@ -17,6 +17,8 @@ struct ContentView: View {
         animation: .default)
     private var items: FetchedResults<Item>
 
+    @State private var showAlert = false
+    
     var body: some View {
         TabView {
             ItemListView()
@@ -50,6 +52,14 @@ struct ContentView: View {
                     Image(systemName: "shippingbox.fill")
                     Text("Sellers")
                 }
+        }
+        .onChange(of: viewModel.showAlert) { _ in
+            showAlert = viewModel.showAlert
+        }
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text("Unable to Save Data"),
+                  message: Text(viewModel.message),
+                  dismissButton: .default(Text("Dismiss")))
         }
     }
 }

@@ -24,6 +24,8 @@ struct ItemListView: View {
     @State var selectedBrands = Set<Brand>()
     @State var selectedSellers = Set<Seller>()
     
+    @State private var showAlert = false
+    
     var filteredItems: Array<Item> {
         items.filter { item in
             var filter = true
@@ -91,6 +93,14 @@ struct ItemListView: View {
                 }
                 .navigationTitle("Items")
             }
+        }
+        .onChange(of: AddItemViewModel.shared.showAlert) { _ in
+            showAlert = AddItemViewModel.shared.showAlert
+        }
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text("Unable to Save Data"),
+                  message: Text(AddItemViewModel.shared.message),
+                  dismissButton: .default(Text("Dismiss")))
         }
     }
     
