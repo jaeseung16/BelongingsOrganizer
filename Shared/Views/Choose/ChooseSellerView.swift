@@ -10,6 +10,7 @@ import SwiftUI
 struct ChooseSellerView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) private var presentationMode
+    @EnvironmentObject var viewModel: BelongingsViewModel
     
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare))],
@@ -19,6 +20,8 @@ struct ChooseSellerView: View {
     @State var presentAddSeller = false
     
     @Binding var seller: Seller?
+    
+    @State private var showAlertForDeletion = false
     
     var body: some View {
         VStack {
@@ -60,19 +63,19 @@ struct ChooseSellerView: View {
             }
         }
         .padding()
+        .alert(isPresented: $showAlertForDeletion) {
+            Alert(title: Text("Unable to Delete Data"),
+                  message: Text("Failed to delete the selected seller"),
+                  dismissButton: .default(Text("Dismiss")))
+        }
     }
     
     private func deleteSellers(offsets: IndexSet) {
         withAnimation {
-            offsets.map { sellers[$0] }.forEach(viewContext.delete)
-
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+            viewModel.delete(offsets.map { sellers[$0] }) { error in
                 let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+                print("While deleting a category, occured an unresolved error \(nsError), \(nsError.userInfo)")
+                showAlertForDeletion.toggle()
             }
         }
     }

@@ -56,16 +56,19 @@ struct AddItemView: View {
             .sheet(isPresented: $presentChooseKindView, content: {
                 ChooseKindView(kind: $kind)
                     .environment(\.managedObjectContext, viewContext)
+                    .environmentObject(viewModel)
                     .frame(width: geometry.size.width, height: geometry.size.height)
             })
             .sheet(isPresented: $presentBrandView, content: {
                 ChooseBrandView(brand: $brand)
                     .environment(\.managedObjectContext, viewContext)
+                    .environmentObject(viewModel)
                     .frame(width: geometry.size.width, height: geometry.size.height)
             })
             .sheet(isPresented: $presentSellerView, content: {
                 ChooseSellerView(seller: $seller)
                     .environment(\.managedObjectContext, viewContext)
+                    .environmentObject(viewModel)
                     .frame(width: geometry.size.width, height: geometry.size.height)
             })
             .sheet(isPresented: $presentCurrencyView, content: {

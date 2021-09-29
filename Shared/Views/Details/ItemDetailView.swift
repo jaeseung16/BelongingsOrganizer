@@ -60,6 +60,7 @@ struct ItemDetailView: View {
             .sheet(isPresented: $presentChooseKindView, content: {
                 ChooseKindView(kind: $kind)
                     .environment(\.managedObjectContext, viewContext)
+                    .environmentObject(viewModel)
                     .frame(width: geometry.size.width, height: geometry.size.height)
                     .onChange(of: kind) { _ in
                         isEdited = true
@@ -68,6 +69,7 @@ struct ItemDetailView: View {
             .sheet(isPresented: $presentChooseBrandView, content: {
                 ChooseBrandView(brand: $brand)
                     .environment(\.managedObjectContext, viewContext)
+                    .environmentObject(viewModel)
                     .frame(width: geometry.size.width, height: geometry.size.height)
                     .onChange(of: brand) { _ in
                         isEdited = true
@@ -76,6 +78,7 @@ struct ItemDetailView: View {
             .sheet(isPresented: $presentChooseSellerView, content: {
                 ChooseSellerView(seller: $seller)
                     .environment(\.managedObjectContext, viewContext)
+                    .environmentObject(viewModel)
                     .frame(width: geometry.size.width, height: geometry.size.height)
                     .onChange(of: seller) { _ in
                         isEdited = true
