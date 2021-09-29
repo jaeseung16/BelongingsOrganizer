@@ -80,9 +80,7 @@ struct BrandListView: View {
     
     private func deleteBrands(offsets: IndexSet) {
         withAnimation {
-            offsets.map { brands[$0] }.forEach(viewContext.delete)
-
-            PersistenceController.save(viewContext: viewContext) { error in
+            viewModel.delete(offsets.map { brands[$0] }) { error in
                 let nsError = error as NSError
                 print("While deleting a brand, occured an unresolved error \(nsError), \(nsError.userInfo)")
                 showAlertForDeletion.toggle()

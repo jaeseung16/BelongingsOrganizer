@@ -138,6 +138,11 @@ class BelongingsViewModel: NSObject, ObservableObject {
         return fetchedLinks.isEmpty ? nil : fetchedLinks[0]
     }
     
+    func delete(_ objects: [NSManagedObject], completionHandler: (Error) -> Void) -> Void {
+        objects.forEach(persistenteContainer.viewContext.delete)
+        saveContext(completionHandler: completionHandler)
+    }
+    
     private func saveContext(completionHandler: (Error) -> Void) -> Void {
         persistenteContainer.viewContext.transactionAuthor = "App"
         PersistenceController.save(viewContext: persistenteContainer.viewContext, completionHandler: completionHandler)

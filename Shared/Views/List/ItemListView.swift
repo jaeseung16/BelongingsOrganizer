@@ -130,9 +130,7 @@ struct ItemListView: View {
     
     private func deleteItems(offsets: IndexSet) {
         withAnimation {
-            offsets.map { filteredItems[$0] }.forEach(viewContext.delete)
-
-            PersistenceController.save(viewContext: viewContext) { error in
+            viewModel.delete(offsets.map { filteredItems[$0] }) { error in
                 let nsError = error as NSError
                 print("While deleting an item, occured an unresolved error \(nsError), \(nsError.userInfo)")
                 showAlertForDeletion.toggle()
