@@ -19,6 +19,9 @@ struct BrandListView: View {
 
     @State var presentAddBrandView = false
 
+    @State private var showAlert = false
+    @State private var showAlertForDeletion = false
+    
     var body: some View {
         NavigationView {
             GeometryReader { geometry in
@@ -38,7 +41,7 @@ struct BrandListView: View {
                     .sheet(isPresented: $presentAddBrandView, content: {
                         AddBrandView()
                             .environment(\.managedObjectContext, viewContext)
-                            .environmentObject(viewModel)
+                            .environmentObject(AddItemViewModel.shared)
                             .frame(minWidth: 350, minHeight: 450)
                             .padding()
                     })
@@ -49,11 +52,25 @@ struct BrandListView: View {
         .onReceive(viewModel.$changedPeristentContext) { _ in
             presentationMode.wrappedValue.dismiss()
         }
+        .onChange(of: AddItemViewModel.shared.showAlert) { _ in
+            showAlert = AddItemViewModel.shared.showAlert
+        }
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text("Unable to Save Data"),
+                  message: Text(AddItemViewModel.shared.message),
+                  dismissButton: .default(Text("Dismiss")))
+        }
+        .alert(isPresented: $showAlertForDeletion) {
+            Alert(title: Text("Unable to Delete Data"),
+                  message: Text("Failed to delete the selected brand"),
+                  dismissButton: .default(Text("Dismiss")))
+        }
     }
     
     private func header() -> some View {
         HStack {
             Button(action: {
+                AddItemViewModel.shared.reset()
                 presentAddBrandView = true
             }) {
                 Label("Add a brand", systemImage: "plus")
@@ -65,13 +82,10 @@ struct BrandListView: View {
         withAnimation {
             offsets.map { brands[$0] }.forEach(viewContext.delete)
 
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+            PersistenceController.save(viewContext: viewContext) { error in
                 let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+                print("While deleting a brand, occured an unresolved error \(nsError), \(nsError.userInfo)")
+                showAlertForDeletion.toggle()
             }
         }
     }

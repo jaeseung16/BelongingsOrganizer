@@ -79,6 +79,59 @@ class AddItemViewModel: NSObject, ObservableObject {
         
         viewContext.mergePolicy = originalMergePolicy
     }
+    
+    func saveKind(name: String) -> Void {
+        let created = Date()
+        
+        let newKind = Kind(context: viewContext)
+        newKind.created = created
+        newKind.lastupd = created
+        newKind.name = name
+        newKind.uuid = UUID()
+        
+        PersistenceController.save(viewContext: viewContext) { error in
+            let nsError = error as NSError
+            print("While saving a new category, occured an unresolved error \(nsError), \(nsError.userInfo)")
+            message = "Cannot save a new category with name = \(String(describing: name))"
+            showAlert.toggle()
+        }
+    }
+    
+    func saveBrand(name: String, urlString: String) -> Void {
+        let created = Date()
+        
+        let newBrand = Brand(context: viewContext)
+        newBrand.created = created
+        newBrand.lastupd = created
+        newBrand.name = name
+        newBrand.url = URL(string: urlString)
+        newBrand.uuid = UUID()
+
+        PersistenceController.save(viewContext: viewContext) { error in
+            let nsError = error as NSError
+            print("While saving a new brand, occured an unresolved error \(nsError), \(nsError.userInfo)")
+            message = "Cannot save a new brand with name = \(String(describing: name))"
+            showAlert.toggle()
+        }
+    }
+    
+    func saveSeller(name: String, urlString: String) -> Void {
+        let created = Date()
+        
+        let newSeller = Seller(context: viewContext)
+        newSeller.created = created
+        newSeller.lastupd = created
+        newSeller.name = name
+        newSeller.url = URL(string: urlString)
+        newSeller.uuid = UUID()
+
+        PersistenceController.save(viewContext: viewContext) { error in
+            let nsError = error as NSError
+            print("While saving a new seller, occured an unresolved error \(nsError), \(nsError.userInfo)")
+            message = "Cannot save a new seller with name = \(String(describing: name))"
+            showAlert.toggle()
+        }
+    }
  
     // MARK: - Image Classification
     lazy var classificationRequest: VNCoreMLRequest = {

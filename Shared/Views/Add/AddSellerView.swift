@@ -10,6 +10,7 @@ import SwiftUI
 struct AddSellerView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) private var presentationMode
+    @EnvironmentObject var viewModel: AddItemViewModel
     
     @State private var name = ""
     @State private var urlString = ""
@@ -61,23 +62,7 @@ struct AddSellerView: View {
     }
     
     private func saveSeller() -> Void {
-        let created = Date()
-        
-        let newSeller = Seller(context: viewContext)
-        newSeller.created = created
-        newSeller.lastupd = created
-        newSeller.name = name
-        newSeller.url = URL(string: urlString)
-        newSeller.uuid = UUID()
-
-        do {
-            try viewContext.save()
-        } catch {
-            // Replace this implementation with code to handle the error appropriately.
-            // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            let nsError = error as NSError
-            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-        }
+        viewModel.saveSeller(name: name, urlString: urlString)
     }
 }
 

@@ -25,6 +25,7 @@ struct ItemListView: View {
     @State var selectedSellers = Set<Seller>()
     
     @State private var showAlert = false
+    @State private var showAlertForDeletion = false
     
     var filteredItems: Array<Item> {
         items.filter { item in
@@ -102,6 +103,11 @@ struct ItemListView: View {
                   message: Text(AddItemViewModel.shared.message),
                   dismissButton: .default(Text("Dismiss")))
         }
+        .alert(isPresented: $showAlertForDeletion) {
+            Alert(title: Text("Unable to Delete Data"),
+                  message: Text("Failed to delete the selected item"),
+                  dismissButton: .default(Text("Dismiss")))
+        }
     }
     
     private func header() -> some View {
@@ -126,13 +132,10 @@ struct ItemListView: View {
         withAnimation {
             offsets.map { filteredItems[$0] }.forEach(viewContext.delete)
 
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+            PersistenceController.save(viewContext: viewContext) { error in
                 let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+                print("While deleting an item, occured an unresolved error \(nsError), \(nsError.userInfo)")
+                showAlertForDeletion.toggle()
             }
         }
     }

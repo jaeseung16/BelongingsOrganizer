@@ -10,6 +10,7 @@ import SwiftUI
 struct AddKindView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) private var presentationMode
+    @EnvironmentObject var viewModel: AddItemViewModel
     
     @State private var name = ""
     
@@ -28,7 +29,7 @@ struct AddKindView: View {
                 })
                 
                 Button(action: {
-                    saveItem()
+                    saveKind()
                     presentationMode.wrappedValue.dismiss()
                 },
                 label: {
@@ -40,23 +41,8 @@ struct AddKindView: View {
         
     }
     
-    private func saveItem() -> Void {
-        let created = Date()
-        
-        let newKind = Kind(context: viewContext)
-        newKind.created = created
-        newKind.lastupd = created
-        newKind.name = name
-        newKind.uuid = UUID()
-        
-        do {
-            try viewContext.save()
-        } catch {
-            // Replace this implementation with code to handle the error appropriately.
-            // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            let nsError = error as NSError
-            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-        }
+    private func saveKind() -> Void {
+        viewModel.saveKind(name: name)
     }
     
 }
