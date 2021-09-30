@@ -89,6 +89,8 @@
 		90DD8C2C26F95A1B0079424A /* EditPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90DD8C2B26F95A1B0079424A /* EditPhotoView.swift */; };
 		90E238DD270659C600E03624 /* SelectImageButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E238DC270659C600E03624 /* SelectImageButton.swift */; };
 		90E238E027065D5300E03624 /* PhotoAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E238DE27065CCC00E03624 /* PhotoAlertView.swift */; };
+		90E238E22706794200E03624 /* ItemsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E238E12706794200E03624 /* ItemsView.swift */; };
+		90E238E32706799D00E03624 /* ItemsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E238E12706794200E03624 /* ItemsView.swift */; };
 		90E2EA9626F402150014A8C6 /* ImagePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E2EA9526F402150014A8C6 /* ImagePickerView.swift */; };
 		90E2EA9926F402940014A8C6 /* AddPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E2EA9826F402940014A8C6 /* AddPhotoView.swift */; };
 		90F3B6AB26FFEA2900C4859D /* ItemProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F3B6AA26FFEA2900C4859D /* ItemProperty.swift */; };
@@ -168,6 +170,7 @@
 		90DD8C2B26F95A1B0079424A /* EditPhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPhotoView.swift; sourceTree = "<group>"; };
 		90E238DC270659C600E03624 /* SelectImageButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectImageButton.swift; sourceTree = "<group>"; };
 		90E238DE27065CCC00E03624 /* PhotoAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoAlertView.swift; sourceTree = "<group>"; };
+		90E238E12706794200E03624 /* ItemsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsView.swift; sourceTree = "<group>"; };
 		90E2EA9526F402150014A8C6 /* ImagePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerView.swift; sourceTree = "<group>"; };
 		90E2EA9826F402940014A8C6 /* AddPhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPhotoView.swift; sourceTree = "<group>"; };
 		90F3B6AA26FFEA2900C4859D /* ItemProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemProperty.swift; sourceTree = "<group>"; };
@@ -358,6 +361,7 @@
 				90C172D126F13EC200244A9C /* BrandDetailView.swift */,
 				90C172D426F13FAF00244A9C /* SellerDetailView.swift */,
 				9089734926FD3B3F005A03A8 /* ItemSummaryView.swift */,
+				90E238E12706794200E03624 /* ItemsView.swift */,
 			);
 			path = Details;
 			sourceTree = "<group>";
@@ -610,6 +614,7 @@
 				9072233326E93CDC00965653 /* ChooseSellerView.swift in Sources */,
 				90B23E6626EE901900B29063 /* KindDetailView.swift in Sources */,
 				9089734A26FD3B3F005A03A8 /* ItemSummaryView.swift in Sources */,
+				90E238E32706799D00E03624 /* ItemsView.swift in Sources */,
 				90D3F23826EA7F7E00955316 /* SellerDTO.swift in Sources */,
 				906CE2EB26FA970100DC12C3 /* AddItemViewModel.swift in Sources */,
 				90C172D526F13FAF00244A9C /* SellerDetailView.swift in Sources */,
@@ -649,6 +654,7 @@
 				90D3F24126EA8CE100955316 /* KindDTO.swift in Sources */,
 				9089734826FD10CC005A03A8 /* URLValidator.swift in Sources */,
 				90D3F23626EA5C4000955316 /* Entities.swift in Sources */,
+				90E238E22706794200E03624 /* ItemsView.swift in Sources */,
 				90C0D98F26E8001700158C85 /* ChooseKindView.swift in Sources */,
 				900DDBF126E036CB0034A155 /* Persistence.swift in Sources */,
 				904498E826EBDEDB00002A6F /* ItemListView.swift in Sources */,

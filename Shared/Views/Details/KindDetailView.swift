@@ -36,72 +36,17 @@ struct KindDetailView: View {
                 
                 Divider()
                 
-                Form {
-                    Section(header: Text("Name").foregroundColor(.secondary)) {
-                        TextField(kind.name ?? "", text: $name) { isEditing in
-                            self.isEditing = isEditing
-                        } onCommit: {
-                            isEditing = false
-                            isEdited = true
-                        }
-                    }
-                    
-                    Section(header: Text("added on").foregroundColor(.secondary)) {
-                        HStack {
-                            Spacer()
-                            Text("\(kind.created ?? Date(), formatter: BelongingsViewModel.dateFormatter)")
-                        }
-                    }
-                    
-                    Section(header: Text("last updated on").foregroundColor(.secondary)) {
-                        HStack {
-                            Spacer()
-                            Text("\(kind.lastupd ?? Date(), formatter: BelongingsViewModel.dateFormatter)")
-                        }
-                    }
-                    
-                    Section(header: Text("items").foregroundColor(.secondary)) {
-                        #if os(macOS)
-                        NavigationView {
-                            List {
-                                ForEach(items) { item in
-                                    NavigationLink(destination: ItemSummaryView(item: item)) {
-                                        VStack(alignment: .leading) {
-                                            HStack {
-                                                if let imageData = item.image, let nsImage = NSImage(data: imageData) {
-                                                    Image(nsImage: nsImage)
-                                                        .resizable()
-                                                        .aspectRatio(contentMode: .fit)
-                                                }
-                                                Text(item.name ?? "")
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        #else
-                        List {
-                            ForEach(items) { item in
-                                NavigationLink(destination: ItemSummaryView(item: item)) {
-                                    VStack(alignment: .leading) {
-                                        HStack {
-                                            if let imageData = item.image, let uiImage = UIImage(data: imageData) {
-                                                Image(uiImage: uiImage)
-                                                    .resizable()
-                                                    .aspectRatio(contentMode: .fit)
-                                            }
-                                            Text(item.name ?? "")
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        #endif
-                    }
-                }
-                .padding()
+                nameView()
+                
+                addedView()
+                
+                lastUpdatedView()
+                
+                Divider()
+                
+                ItemsView(items: items)
             }
+            .padding()
             .onReceive(viewModel.$changedPeristentContext) { _ in
                 presentationMode.wrappedValue.dismiss()
             }
@@ -130,6 +75,49 @@ struct KindDetailView: View {
             .disabled(!isEdited)
             
             Spacer()
+        }
+    }
+    
+    private func nameView() -> some View {
+        VStack {
+            HStack {
+                Text("NAME")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                
+                Spacer()
+            }
+            
+            TextField(kind.name ?? "", text: $name) { isEditing in
+                self.isEditing = isEditing
+            } onCommit: {
+                isEditing = false
+                isEdited = true
+            }
+        }
+    }
+
+    private func addedView() -> some View {
+        HStack {
+            Text("ADDED")
+                .font(.caption)
+                .foregroundColor(.secondary)
+            
+            Spacer()
+            
+            Text("\(kind.created ?? Date(), formatter: BelongingsViewModel.dateFormatter)")
+        }
+    }
+    
+    private func lastUpdatedView() -> some View {
+        HStack {
+            Text("LAST UPDATED")
+                .font(.caption)
+                .foregroundColor(.secondary)
+            
+            Spacer()
+            
+            Text("\(kind.lastupd ?? Date(), formatter: BelongingsViewModel.dateFormatter)")
         }
     }
 }

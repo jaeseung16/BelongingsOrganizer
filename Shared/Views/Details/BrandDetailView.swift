@@ -35,82 +35,20 @@ struct BrandDetailView: View {
                 
                 Divider()
                 
-                Form {
-                    Section(header: Text("Name").foregroundColor(.secondary)) {
-                        TextField(brand.name ?? "", text: $name) { isEditing in
-                            self.isEditing = isEditing
-                        } onCommit: {
-                            isEditing = false
-                            isEdited = true
-                        }
-                    }
-                    
-                    Section(header: Text("url").foregroundColor(.secondary)) {
-                        HStack {
-                            if let url = brand.url {
-                                Link("\(url.absoluteString)", destination: url)
-                            } else {
-                                Text("N/A")
-                            }
-                        }
-                    }
-                    
-                    Section(header: Text("added on").foregroundColor(.secondary)) {
-                        HStack {
-                            Spacer()
-                            Text("\(brand.created ?? Date(), formatter: BelongingsViewModel.dateFormatter)")
-                        }
-                    }
-                    
-                    Section(header: Text("last updated on").foregroundColor(.secondary)) {
-                        HStack {
-                            Spacer()
-                            Text("\(brand.lastupd ?? Date(), formatter: BelongingsViewModel.dateFormatter)")
-                        }
-                    }
-                    
-                    Section(header: Text("items").foregroundColor(.secondary)) {
-                        #if os(macOS)
-                        NavigationView {
-                            List {
-                                ForEach(items) { item in
-                                    NavigationLink(destination: ItemSummaryView(item: item)) {
-                                        VStack(alignment: .leading) {
-                                            HStack {
-                                                if let imageData = item.image, let nsImage = NSImage(data: imageData) {
-                                                    Image(nsImage: nsImage)
-                                                        .resizable()
-                                                        .aspectRatio(contentMode: .fit)
-                                                }
-                                                Text(item.name ?? "")
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        #else
-                        List {
-                            ForEach(items) { item in
-                                NavigationLink(destination: ItemSummaryView(item: item)) {
-                                    VStack(alignment: .leading) {
-                                        HStack {
-                                            if let imageData = item.image, let uiImage = UIImage(data: imageData) {
-                                                Image(uiImage: uiImage)
-                                                    .resizable()
-                                                    .aspectRatio(contentMode: .fit)
-                                            }
-                                            Text(item.name ?? "")
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        #endif
-                    }
-                }
-                .padding()
+                nameView()
+                
+                urlView()
+                
+                addedView()
+                
+                lastUpdatedView()
+                
+                Divider()
+                
+                ItemsView(items: items)
+                
             }
+            .padding()
             .onReceive(viewModel.$changedPeristentContext) { _ in
                 presentationMode.wrappedValue.dismiss()
             }
@@ -141,5 +79,69 @@ struct BrandDetailView: View {
             Spacer()
         }
     }
+    
+    private func nameView() -> some View {
+        VStack {
+            HStack {
+                Text("NAME")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                
+                Spacer()
+            }
+            
+            TextField(brand.name ?? "", text: $name) { isEditing in
+                self.isEditing = isEditing
+            } onCommit: {
+                isEditing = false
+                isEdited = true
+            }
+        }
+    }
+    
+    private func urlView() -> some View {
+        VStack {
+            HStack {
+                Text("URL")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                
+                Spacer()
+            }
+            
+            HStack {
+                if let url = brand.url {
+                    Link("\(url.absoluteString)", destination: url)
+                } else {
+                    Text("N/A")
+                }
+            }
+        }
+    }
+    
+    private func addedView() -> some View {
+        HStack {
+            Text("ADDED")
+                .font(.caption)
+                .foregroundColor(.secondary)
+            
+            Spacer()
+            
+            Text("\(brand.created ?? Date(), formatter: BelongingsViewModel.dateFormatter)")
+        }
+    }
+    
+    private func lastUpdatedView() -> some View {
+        HStack {
+            Text("LAST UPDATED")
+                .font(.caption)
+                .foregroundColor(.secondary)
+            
+            Spacer()
+            
+            Text("\(brand.lastupd ?? Date(), formatter: BelongingsViewModel.dateFormatter)")
+        }
+    }
+    
 }
 
