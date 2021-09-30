@@ -76,15 +76,9 @@ struct AddItemView: View {
                     .frame(width: geometry.size.width, height: geometry.size.height)
             })
             .sheet(isPresented: $presentPhotoView, content: {
-                #if os(macOS)
-                MacAddPhotoView()
-                    .environmentObject(viewModel)
-                    .frame(width: geometry.size.width, height: geometry.size.height)
-                #else
                 AddPhotoView()
                     .environmentObject(viewModel)
                     .frame(width: geometry.size.width, height: geometry.size.height)
-                #endif
             })
         }
     }

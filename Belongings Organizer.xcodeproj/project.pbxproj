@@ -30,8 +30,7 @@
 		904498EA26EBF70600002A6F /* KindListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 904498E926EBF70600002A6F /* KindListView.swift */; };
 		904498EB26EBF70600002A6F /* KindListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 904498E926EBF70600002A6F /* KindListView.swift */; };
 		90596B8626E6ACD20001CCA5 /* AddKindView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90596B8526E6ACD20001CCA5 /* AddKindView.swift */; };
-		906CE2E826FA871900DC12C3 /* MacAddPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 906CE2E726FA871900DC12C3 /* MacAddPhotoView.swift */; };
-		906CE2E926FA871900DC12C3 /* MacAddPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 906CE2E726FA871900DC12C3 /* MacAddPhotoView.swift */; };
+		906CE2E926FA871900DC12C3 /* AddPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 906CE2E726FA871900DC12C3 /* AddPhotoView.swift */; };
 		906CE2EB26FA970100DC12C3 /* AddItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 906CE2EA26FA970100DC12C3 /* AddItemViewModel.swift */; };
 		906CE2EC26FA970100DC12C3 /* AddItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 906CE2EA26FA970100DC12C3 /* AddItemViewModel.swift */; };
 		906EA8A126F7EFF300235302 /* EditDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 906EA8A026F7EFF300235302 /* EditDateView.swift */; };
@@ -54,8 +53,7 @@
 		9089734B26FD3B3F005A03A8 /* ItemSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9089734926FD3B3F005A03A8 /* ItemSummaryView.swift */; };
 		90B23E6626EE901900B29063 /* KindDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B23E6526EE901900B29063 /* KindDetailView.swift */; };
 		90B23E6726EE901900B29063 /* KindDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B23E6526EE901900B29063 /* KindDetailView.swift */; };
-		90B46BC72700F53E00BEED75 /* MacEditPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B46BC62700F53E00BEED75 /* MacEditPhotoView.swift */; };
-		90B46BC82700F53E00BEED75 /* MacEditPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B46BC62700F53E00BEED75 /* MacEditPhotoView.swift */; };
+		90B46BC82700F53E00BEED75 /* EditPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B46BC62700F53E00BEED75 /* EditPhotoView.swift */; };
 		90C0D98926E7D08200158C85 /* AddKindView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90596B8526E6ACD20001CCA5 /* AddKindView.swift */; };
 		90C0D98B26E7DEF600158C85 /* AddItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C0D98A26E7DEF600158C85 /* AddItemView.swift */; };
 		90C0D98C26E7DEF600158C85 /* AddItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C0D98A26E7DEF600158C85 /* AddItemView.swift */; };
@@ -74,7 +72,6 @@
 		90CB46B726ED6A1900A9468B /* FilterItemsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CB46B626ED6A1900A9468B /* FilterItemsView.swift */; };
 		90CB46B826ED6A1900A9468B /* FilterItemsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CB46B626ED6A1900A9468B /* FilterItemsView.swift */; };
 		90CB778D27025BB6008CDBC6 /* PHPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CB778C27025BB6008CDBC6 /* PHPickerView.swift */; };
-		90CB778E27025BB6008CDBC6 /* PHPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CB778C27025BB6008CDBC6 /* PHPickerView.swift */; };
 		90D3F23226EA594E00955316 /* BelongingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D3F23126EA594E00955316 /* BelongingsViewModel.swift */; };
 		90D3F23326EA599D00955316 /* BelongingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D3F23126EA594E00955316 /* BelongingsViewModel.swift */; };
 		90D3F23526EA5B3400955316 /* Entities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D3F23426EA5B3400955316 /* Entities.swift */; };
@@ -90,10 +87,8 @@
 		90DD8C2926F936E60079424A /* MobileNet.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 90DD8C2826F936E60079424A /* MobileNet.mlmodel */; };
 		90DD8C2A26F936E60079424A /* MobileNet.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 90DD8C2826F936E60079424A /* MobileNet.mlmodel */; };
 		90DD8C2C26F95A1B0079424A /* EditPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90DD8C2B26F95A1B0079424A /* EditPhotoView.swift */; };
-		90DD8C2D26F95A1B0079424A /* EditPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90DD8C2B26F95A1B0079424A /* EditPhotoView.swift */; };
 		90E2EA9626F402150014A8C6 /* ImagePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E2EA9526F402150014A8C6 /* ImagePickerView.swift */; };
 		90E2EA9926F402940014A8C6 /* AddPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E2EA9826F402940014A8C6 /* AddPhotoView.swift */; };
-		90E857A226F51DFC00D15ED7 /* AddPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E2EA9826F402940014A8C6 /* AddPhotoView.swift */; };
 		90F3B6AB26FFEA2900C4859D /* ItemProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F3B6AA26FFEA2900C4859D /* ItemProperty.swift */; };
 		90F3B6AC26FFEA2900C4859D /* ItemProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F3B6AA26FFEA2900C4859D /* ItemProperty.swift */; };
 /* End PBXBuildFile section */
@@ -138,7 +133,7 @@
 		904498E626EBDEDB00002A6F /* ItemListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemListView.swift; sourceTree = "<group>"; };
 		904498E926EBF70600002A6F /* KindListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KindListView.swift; sourceTree = "<group>"; };
 		90596B8526E6ACD20001CCA5 /* AddKindView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddKindView.swift; sourceTree = "<group>"; };
-		906CE2E726FA871900DC12C3 /* MacAddPhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacAddPhotoView.swift; sourceTree = "<group>"; };
+		906CE2E726FA871900DC12C3 /* AddPhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPhotoView.swift; sourceTree = "<group>"; };
 		906CE2EA26FA970100DC12C3 /* AddItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItemViewModel.swift; sourceTree = "<group>"; };
 		906EA8A026F7EFF300235302 /* EditDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditDateView.swift; sourceTree = "<group>"; };
 		9072232C26E9352700965653 /* ChooseBrandView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseBrandView.swift; sourceTree = "<group>"; };
@@ -151,7 +146,7 @@
 		9089734626FD10CC005A03A8 /* URLValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLValidator.swift; sourceTree = "<group>"; };
 		9089734926FD3B3F005A03A8 /* ItemSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemSummaryView.swift; sourceTree = "<group>"; };
 		90B23E6526EE901900B29063 /* KindDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KindDetailView.swift; sourceTree = "<group>"; };
-		90B46BC62700F53E00BEED75 /* MacEditPhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacEditPhotoView.swift; sourceTree = "<group>"; };
+		90B46BC62700F53E00BEED75 /* EditPhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPhotoView.swift; sourceTree = "<group>"; };
 		90C0D98A26E7DEF600158C85 /* AddItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItemView.swift; sourceTree = "<group>"; };
 		90C0D98D26E8001700158C85 /* ChooseKindView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseKindView.swift; sourceTree = "<group>"; };
 		90C172D126F13EC200244A9C /* BrandDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrandDetailView.swift; sourceTree = "<group>"; };
@@ -252,6 +247,7 @@
 		900DDBCA26E036CA0034A155 /* iOS */ = {
 			isa = PBXGroup;
 			children = (
+				90E238D82706553F00E03624 /* Views */,
 				900DDBCB26E036CA0034A155 /* Info.plist */,
 			);
 			path = iOS;
@@ -260,6 +256,7 @@
 		900DDBD126E036CB0034A155 /* macOS */ = {
 			isa = PBXGroup;
 			children = (
+				90E238DA2706573900E03624 /* Views */,
 				900DDBD226E036CB0034A155 /* Info.plist */,
 				900DDBD326E036CB0034A155 /* macOS.entitlements */,
 			);
@@ -295,7 +292,6 @@
 		90596B8426E6ACC30001CCA5 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				906CE2E626FA86E800DC12C3 /* Photo */,
 				90CB46B226ED486400A9468B /* Details */,
 				90CB46B126ED484900A9468B /* List */,
 				90CB46B026ED483E00A9468B /* Choose */,
@@ -305,20 +301,8 @@
 				90CB46B626ED6A1900A9468B /* FilterItemsView.swift */,
 				90E2EA9526F402150014A8C6 /* ImagePickerView.swift */,
 				906EA8A026F7EFF300235302 /* EditDateView.swift */,
-				90CB778C27025BB6008CDBC6 /* PHPickerView.swift */,
 			);
 			path = Views;
-			sourceTree = "<group>";
-		};
-		906CE2E626FA86E800DC12C3 /* Photo */ = {
-			isa = PBXGroup;
-			children = (
-				90E2EA9826F402940014A8C6 /* AddPhotoView.swift */,
-				90DD8C2B26F95A1B0079424A /* EditPhotoView.swift */,
-				906CE2E726FA871900DC12C3 /* MacAddPhotoView.swift */,
-				90B46BC62700F53E00BEED75 /* MacEditPhotoView.swift */,
-			);
-			path = Photo;
 			sourceTree = "<group>";
 		};
 		90884D1C26E180C000D01A55 /* Frameworks */ = {
@@ -390,6 +374,41 @@
 				9089734626FD10CC005A03A8 /* URLValidator.swift */,
 			);
 			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		90E238D82706553F00E03624 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				90E238D92706554900E03624 /* Photo */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		90E238D92706554900E03624 /* Photo */ = {
+			isa = PBXGroup;
+			children = (
+				90E2EA9826F402940014A8C6 /* AddPhotoView.swift */,
+				90DD8C2B26F95A1B0079424A /* EditPhotoView.swift */,
+				90CB778C27025BB6008CDBC6 /* PHPickerView.swift */,
+			);
+			path = Photo;
+			sourceTree = "<group>";
+		};
+		90E238DA2706573900E03624 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				90E238DB2706574300E03624 /* Photo */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		90E238DB2706574300E03624 /* Photo */ = {
+			isa = PBXGroup;
+			children = (
+				906CE2E726FA871900DC12C3 /* AddPhotoView.swift */,
+				90B46BC62700F53E00BEED75 /* EditPhotoView.swift */,
+			);
+			path = Photo;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -566,13 +585,11 @@
 				90E2EA9626F402150014A8C6 /* ImagePickerView.swift in Sources */,
 				904498EA26EBF70600002A6F /* KindListView.swift in Sources */,
 				90CB46B726ED6A1900A9468B /* FilterItemsView.swift in Sources */,
-				906CE2E826FA871900DC12C3 /* MacAddPhotoView.swift in Sources */,
 				90C0D98B26E7DEF600158C85 /* AddItemView.swift in Sources */,
 				90DD8C2926F936E60079424A /* MobileNet.mlmodel in Sources */,
 				9089734726FD10CC005A03A8 /* URLValidator.swift in Sources */,
 				9072233026E93A0500965653 /* AddBrandView.swift in Sources */,
 				904498E426EBD7A800002A6F /* SheetBottom.swift in Sources */,
-				90B46BC72700F53E00BEED75 /* MacEditPhotoView.swift in Sources */,
 				900DDBEA26E036CB0034A155 /* Belongings.xcdatamodeld in Sources */,
 				904498DD26EBBB2500002A6F /* ChooseCurrencyView.swift in Sources */,
 				906EA8A126F7EFF300235302 /* EditDateView.swift in Sources */,
@@ -616,7 +633,7 @@
 				9072233126E93A0500965653 /* AddBrandView.swift in Sources */,
 				90DD8C2A26F936E60079424A /* MobileNet.mlmodel in Sources */,
 				90F3B6AC26FFEA2900C4859D /* ItemProperty.swift in Sources */,
-				906CE2E926FA871900DC12C3 /* MacAddPhotoView.swift in Sources */,
+				906CE2E926FA871900DC12C3 /* AddPhotoView.swift in Sources */,
 				904498E526EBD7A800002A6F /* SheetBottom.swift in Sources */,
 				900DDBEB26E036CB0034A155 /* Belongings.xcdatamodeld in Sources */,
 				9089734B26FD3B3F005A03A8 /* ItemSummaryView.swift in Sources */,
@@ -630,14 +647,11 @@
 				9072233726E93CE800965653 /* AddSellerView.swift in Sources */,
 				9072233426E93CDC00965653 /* ChooseSellerView.swift in Sources */,
 				90B23E6726EE901900B29063 /* KindDetailView.swift in Sources */,
-				90DD8C2D26F95A1B0079424A /* EditPhotoView.swift in Sources */,
 				906EA8A226F7EFF300235302 /* EditDateView.swift in Sources */,
 				90D3F23F26EA8CDC00955316 /* SellerDTO.swift in Sources */,
-				90B46BC82700F53E00BEED75 /* MacEditPhotoView.swift in Sources */,
+				90B46BC82700F53E00BEED75 /* EditPhotoView.swift in Sources */,
 				90C172D626F13FAF00244A9C /* SellerDetailView.swift in Sources */,
 				906CE2EC26FA970100DC12C3 /* AddItemViewModel.swift in Sources */,
-				90CB778E27025BB6008CDBC6 /* PHPickerView.swift in Sources */,
-				90E857A226F51DFC00D15ED7 /* AddPhotoView.swift in Sources */,
 				900DDBED26E036CB0034A155 /* BelongingsApp.swift in Sources */,
 				900DDBEF26E036CB0034A155 /* ContentView.swift in Sources */,
 				90C172D326F13EC200244A9C /* BrandDetailView.swift in Sources */,

@@ -5,11 +5,10 @@
 //  Created by Jae Seung Lee on 9/26/21.
 //
 
-#if os(macOS)
 import SwiftUI
 import SDWebImageWebPCoder
 
-struct MacEditPhotoView: View {
+struct EditPhotoView: View {
     @Environment(\.presentationMode) private var presentationMode
     
     @State var originalImage: Data?
@@ -96,4 +95,3 @@ struct MacEditPhotoView: View {
         
     }
 }
-#endif

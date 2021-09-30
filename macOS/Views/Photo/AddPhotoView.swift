@@ -5,11 +5,10 @@
 //  Created by Jae Seung Lee on 9/21/21.
 //
 
-#if os(macOS)
 import SwiftUI
 import SDWebImageWebPCoder
 
-struct MacAddPhotoView: View {
+struct AddPhotoView: View {
     @Environment(\.presentationMode) private var presentationMode
     @EnvironmentObject var viewModel: AddItemViewModel
     
@@ -92,5 +91,3 @@ struct MacAddPhotoView: View {
         }
     }
 }
-
-#endif

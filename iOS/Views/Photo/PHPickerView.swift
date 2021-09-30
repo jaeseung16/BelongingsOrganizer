@@ -5,7 +5,6 @@
 //  Created by Jae Seung Lee on 9/27/21.
 //
 
-#if !os(macOS)
 import Foundation
 import SwiftUI
 import PhotosUI
@@ -92,4 +91,3 @@ struct PHPickerView: UIViewControllerRepresentable {
         }
     }
 }
-#endif
