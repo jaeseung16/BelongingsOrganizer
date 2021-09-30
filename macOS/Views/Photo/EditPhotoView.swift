@@ -22,6 +22,8 @@ struct EditPhotoView: View {
                 Divider()
                 
                 photoView()
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
             }
             .padding()
             .frame(width: geometry.size.width, height: geometry.size.height)
@@ -60,19 +62,13 @@ struct EditPhotoView: View {
         }
     }
     
-    private func photoView() -> some View {
+    private func photoView() -> Image {
         if image != nil {
             return Image(nsImage: NSImage(data: image!)!)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
         } else if originalImage != nil {
             return Image(nsImage: NSImage(data: originalImage!)!)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
         } else {
             return Image(systemName: "photo.on.rectangle")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
         }
     }
 }

@@ -31,19 +31,9 @@ struct EditPhotoView: View {
                     ProgressView(progress!)
                 }
                 
-                if image != nil {
-                    Image(uiImage: UIImage(data: image!)!)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                } else if originalImage != nil {
-                    Image(uiImage: UIImage(data: originalImage!)!)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                } else {
-                    Image(systemName: "photo.on.rectangle")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                }
+                photoView()
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
                 
                 Divider()
                 
@@ -69,27 +59,9 @@ struct EditPhotoView: View {
             .padding()
             .frame(width: geometry.size.width, height: geometry.size.height)
             .sheet(isPresented: $showAlert) {
-                VStack {
-                    Spacer()
-                    
-                    Text("Unable to Load the Photo")
-                        .font(.headline)
-                    
-                    Text("Please try a different photo")
-                        .font(.callout)
-                    
-                    Divider()
-                    
-                    Button {
-                        showAlert.toggle()
-                    } label: {
-                        Text("Dismiss")
-                    }
-                    
-                    Spacer()
-                }
-                .padding()
-                .frame(minHeight: 120.0)
+                PhotoAlertView(isPresenting: $showAlert)
+                    .padding()
+                    .frame(minHeight: 120.0)
             }
             .sheet(isPresented: $showImagePickerView) {
                 ImagePickerView(selectedImage: $image, sourceType: .camera)
@@ -131,6 +103,15 @@ struct EditPhotoView: View {
                 Text("Done")
             })
         }
-        
+    }
+    
+    private func photoView() -> Image {
+        if image != nil {
+            return Image(uiImage: UIImage(data: image!)!)
+        } else if originalImage != nil {
+            return Image(uiImage: UIImage(data: originalImage!)!)
+        } else {
+            return Image(systemName: "photo.on.rectangle")
+        }
     }
 }

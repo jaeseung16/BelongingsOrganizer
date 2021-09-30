@@ -57,27 +57,9 @@ struct AddPhotoView: View {
             .padding()
             .frame(width: geometry.size.width, height: geometry.size.height)
             .sheet(isPresented: $showAlert) {
-                VStack {
-                    Spacer()
-                    
-                    Text("Unable to Load the Photo")
-                        .font(.headline)
-                    
-                    Text("Please try a different photo")
-                        .font(.callout)
-                    
-                    Divider()
-                    
-                    Button {
-                        showAlert.toggle()
-                    } label: {
-                        Text("Dismiss")
-                    }
-                    
-                    Spacer()
-                }
-                .padding()
-                .frame(minHeight: 120.0)
+                PhotoAlertView(isPresenting: $showAlert)
+                    .padding()
+                    .frame(minHeight: 120.0)
             }
             .sheet(isPresented: $showImagePickerView) {
                 ImagePickerView(selectedImage: $selectedImage, sourceType: .camera)

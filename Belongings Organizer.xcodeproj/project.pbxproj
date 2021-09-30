@@ -88,6 +88,7 @@
 		90DD8C2A26F936E60079424A /* MobileNet.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 90DD8C2826F936E60079424A /* MobileNet.mlmodel */; };
 		90DD8C2C26F95A1B0079424A /* EditPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90DD8C2B26F95A1B0079424A /* EditPhotoView.swift */; };
 		90E238DD270659C600E03624 /* SelectImageButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E238DC270659C600E03624 /* SelectImageButton.swift */; };
+		90E238E027065D5300E03624 /* PhotoAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E238DE27065CCC00E03624 /* PhotoAlertView.swift */; };
 		90E2EA9626F402150014A8C6 /* ImagePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E2EA9526F402150014A8C6 /* ImagePickerView.swift */; };
 		90E2EA9926F402940014A8C6 /* AddPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E2EA9826F402940014A8C6 /* AddPhotoView.swift */; };
 		90F3B6AB26FFEA2900C4859D /* ItemProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F3B6AA26FFEA2900C4859D /* ItemProperty.swift */; };
@@ -166,6 +167,7 @@
 		90DD8C2826F936E60079424A /* MobileNet.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = MobileNet.mlmodel; sourceTree = "<group>"; };
 		90DD8C2B26F95A1B0079424A /* EditPhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPhotoView.swift; sourceTree = "<group>"; };
 		90E238DC270659C600E03624 /* SelectImageButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectImageButton.swift; sourceTree = "<group>"; };
+		90E238DE27065CCC00E03624 /* PhotoAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoAlertView.swift; sourceTree = "<group>"; };
 		90E2EA9526F402150014A8C6 /* ImagePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerView.swift; sourceTree = "<group>"; };
 		90E2EA9826F402940014A8C6 /* AddPhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPhotoView.swift; sourceTree = "<group>"; };
 		90F3B6AA26FFEA2900C4859D /* ItemProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemProperty.swift; sourceTree = "<group>"; };
@@ -392,6 +394,7 @@
 				90E2EA9826F402940014A8C6 /* AddPhotoView.swift */,
 				90DD8C2B26F95A1B0079424A /* EditPhotoView.swift */,
 				90CB778C27025BB6008CDBC6 /* PHPickerView.swift */,
+				90E238DE27065CCC00E03624 /* PhotoAlertView.swift */,
 			);
 			path = Photo;
 			sourceTree = "<group>";
@@ -616,6 +619,7 @@
 				90C172D226F13EC200244A9C /* BrandDetailView.swift in Sources */,
 				90CB46AD26ED43AD00A9468B /* ItemDetailView.swift in Sources */,
 				90596B8626E6ACD20001CCA5 /* AddKindView.swift in Sources */,
+				90E238E027065D5300E03624 /* PhotoAlertView.swift in Sources */,
 				90CB46AA26ED3F0F00A9468B /* SellerListView.swift in Sources */,
 				90D3F23A26EA7FE000955316 /* BrandDTO.swift in Sources */,
 				90CB46A726ED3CB600A9468B /* BrandListView.swift in Sources */,
