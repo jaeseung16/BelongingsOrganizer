@@ -21,50 +21,7 @@ struct EditPhotoView: View {
                 
                 Divider()
                 
-                if image != nil {
-                    Image(nsImage: NSImage(data: image!)!)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                } else if originalImage != nil {
-                    Image(nsImage: NSImage(data: originalImage!)!)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                } else {
-                    Image(systemName: "photo.on.rectangle")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                }
-                
-                Divider()
-                
-                HStack {
-                    Button {
-                        let openPanel = NSOpenPanel()
-                        openPanel.prompt = "Select File"
-                        openPanel.allowsMultipleSelection = false
-                        openPanel.canChooseDirectories = false
-                        openPanel.canCreateDirectories = false
-                        openPanel.canChooseFiles = true
-                        openPanel.allowedFileTypes = ["png","jpg","jpeg","webp"]
-                        
-                        openPanel.begin { (result) -> Void in
-                            if result.rawValue == NSApplication.ModalResponse.OK.rawValue {
-                                let url = openPanel.url!
-                                
-                                if url.absoluteString.contains(".webp") {
-                                    if let data: Data = try? Data(contentsOf: url) {
-                                        let image = SDImageWebPCoder.shared.decodedImage(with: data, options: nil)
-                                        self.image = image?.tiffRepresentation
-                                    }
-                                } else {
-                                    self.image = try? Data(contentsOf: url)
-                                }
-                            }
-                        }
-                    } label: {
-                        Text("Select an image")
-                    }
-                }
+                photoView()
             }
             .padding()
             .frame(width: geometry.size.width, height: geometry.size.height)
@@ -82,7 +39,16 @@ struct EditPhotoView: View {
             
             Spacer()
             
-            Text("Choose a photo")
+            SelectImageButton { url in
+                if url.absoluteString.contains(".webp") {
+                    if let data: Data = try? Data(contentsOf: url) {
+                        let image = SDImageWebPCoder.shared.decodedImage(with: data, options: nil)
+                        self.image = image?.tiffRepresentation
+                    }
+                } else {
+                    self.image = try? Data(contentsOf: url)
+                }
+            }
             
             Spacer()
             
@@ -92,6 +58,21 @@ struct EditPhotoView: View {
                 Text("Done")
             })
         }
-        
+    }
+    
+    private func photoView() -> some View {
+        if image != nil {
+            return Image(nsImage: NSImage(data: image!)!)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+        } else if originalImage != nil {
+            return Image(nsImage: NSImage(data: originalImage!)!)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+        } else {
+            return Image(systemName: "photo.on.rectangle")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+        }
     }
 }

@@ -41,10 +41,15 @@ struct AddPhotoView: View {
             
             Spacer()
             
-            Button {
-                openPanel()
-            } label: {
-                Text("Select an image")
+            SelectImageButton { url in
+                if url.absoluteString.contains(".webp") {
+                    if let data: Data = try? Data(contentsOf: url) {
+                        let image = SDImageWebPCoder.shared.decodedImage(with: data, options: nil)
+                        self.selectedImage = image?.tiffRepresentation
+                    }
+                } else {
+                    self.selectedImage = try? Data(contentsOf: url)
+                }
             }
             
             Spacer()
@@ -63,31 +68,6 @@ struct AddPhotoView: View {
             return Image(nsImage: NSImage(data: selectedImage!)!)
         } else {
             return Image(systemName: "photo.on.rectangle")
-        }
-    }
-    
-    private func openPanel() -> Void {
-        let openPanel = NSOpenPanel()
-        openPanel.prompt = "Select File"
-        openPanel.allowsMultipleSelection = false
-        openPanel.canChooseDirectories = false
-        openPanel.canCreateDirectories = false
-        openPanel.canChooseFiles = true
-        openPanel.allowedFileTypes = ["png","jpg","jpeg","webp"]
-        
-        openPanel.begin { (result) -> Void in
-            if result.rawValue == NSApplication.ModalResponse.OK.rawValue {
-                let url = openPanel.url!
-                
-                if url.absoluteString.contains(".webp") {
-                    if let data: Data = try? Data(contentsOf: url) {
-                        let image = SDImageWebPCoder.shared.decodedImage(with: data, options: nil)
-                        self.selectedImage = image?.tiffRepresentation
-                    }
-                } else {
-                    self.selectedImage = try? Data(contentsOf: url)
-                }
-            }
         }
     }
 }
