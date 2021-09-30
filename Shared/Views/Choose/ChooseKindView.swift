@@ -30,32 +30,14 @@ struct ChooseKindView: View {
             
             Divider()
             
-            Form {
-                Section(header: Text("Selected")) {
-                    if kind == nil {
-                        NothingSelectedText()
-                    } else {
-                        Text((kind!.name ?? ""))
-                    }
-                }
-            }
+            selectedView()
+                .frame(minHeight: 50)
+                .background(RoundedRectangle(cornerRadius: 10.0)
+                                .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
             
             Divider()
             
-            List {
-                ForEach(kinds) { kind in
-                    Button(action: {
-                        self.kind = kind
-                    }, label: {
-                        Text(kind.name ?? "")
-                    })
-                }
-                .onDelete(perform: deleteItems)
-            }
-            .sheet(isPresented: $presentAddItem, content: {
-                AddKindView()
-                    .environment(\.managedObjectContext, viewContext)
-            })
+            kindList()
             
             Divider()
             
@@ -71,6 +53,45 @@ struct ChooseKindView: View {
                   message: Text("Failed to delete the selected category"),
                   dismissButton: .default(Text("Dismiss")))
         }
+    }
+    
+    private func selectedView() -> some View {
+        VStack {
+            HStack {
+                Text("SELECTED")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                
+                Spacer()
+            }
+           
+            if kind == nil {
+                NothingSelectedText()
+            } else {
+                Button {
+                    kind = nil
+                } label: {
+                    Text((kind!.name ?? ""))
+                }
+            }
+        }
+    }
+    
+    private func kindList() -> some View {
+        List {
+            ForEach(kinds) { kind in
+                Button {
+                    self.kind = kind
+                } label: {
+                    Text(kind.name ?? "")
+                }
+            }
+            .onDelete(perform: deleteItems)
+        }
+        .sheet(isPresented: $presentAddItem, content: {
+            AddKindView()
+                .environment(\.managedObjectContext, viewContext)
+        })
     }
     
     private func deleteItems(offsets: IndexSet) {

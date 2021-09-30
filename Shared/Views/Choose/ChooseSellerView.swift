@@ -27,32 +27,16 @@ struct ChooseSellerView: View {
         VStack {
             Text("Choose a seller")
             
-            Form {
-                Section(header: Text("Selected")) {
-                    if seller == nil {
-                        NothingSelectedText()
-                    } else {
-                        Text(seller!.name ?? "")
-                    }
-                }
-            }
+            Divider()
+            
+            selectedView()
+                .frame(minHeight: 50)
+                .background(RoundedRectangle(cornerRadius: 10.0)
+                                .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
             
             Divider()
                  
-            List {
-                ForEach(sellers) { seller in
-                    Button(action: {
-                        self.seller = seller
-                    }, label: {
-                        Text(seller.name ?? "")
-                    })
-                }
-                .onDelete(perform: deleteSellers)
-            }
-            .sheet(isPresented: $presentAddSeller, content: {
-                AddSellerView()
-                    .environment(\.managedObjectContext, viewContext)
-            })
+            sellerList()
             
             Divider()
             
@@ -68,6 +52,45 @@ struct ChooseSellerView: View {
                   message: Text("Failed to delete the selected seller"),
                   dismissButton: .default(Text("Dismiss")))
         }
+    }
+    
+    private func selectedView() -> some View {
+        VStack {
+            HStack {
+                Text("SELECTED")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                
+                Spacer()
+            }
+            
+            if seller == nil {
+                NothingSelectedText()
+            } else {
+                Button {
+                    seller = nil
+                } label: {
+                    Text((seller!.name ?? ""))
+                }
+            }
+        }
+    }
+    
+    private func sellerList() -> some View {
+        List {
+            ForEach(sellers) { seller in
+                Button {
+                    self.seller = seller
+                } label: {
+                    Text(seller.name ?? "")
+                }
+            }
+            .onDelete(perform: deleteSellers)
+        }
+        .sheet(isPresented: $presentAddSeller, content: {
+            AddSellerView()
+                .environment(\.managedObjectContext, viewContext)
+        })
     }
     
     private func deleteSellers(offsets: IndexSet) {

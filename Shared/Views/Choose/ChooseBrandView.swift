@@ -30,30 +30,14 @@ struct ChooseBrandView: View {
             
             Divider()
             
-            Form {
-                Section(header: Text("Selected")) {
-                    if brand == nil {
-                        NothingSelectedText()
-                    } else {
-                        Text(brand!.name ?? "")
-                    }
-                }
-            }
+            selectedView()
+                .frame(minHeight: 50)
+                .background(RoundedRectangle(cornerRadius: 10.0)
+                                .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
             
-            List {
-                ForEach(brands) { brand in
-                    Button(action: {
-                        self.brand = brand
-                    }, label: {
-                        Text(brand.name ?? "")
-                    })
-                }
-                .onDelete(perform: deleteBrands)
-            }
-            .sheet(isPresented: $presentAddBrand, content: {
-                AddBrandView()
-                    .environment(\.managedObjectContext, viewContext)
-            })
+            Divider()
+            
+            brandList()
             
             Divider()
             
@@ -69,6 +53,45 @@ struct ChooseBrandView: View {
                   message: Text("Failed to delete the selected brand"),
                   dismissButton: .default(Text("Dismiss")))
         }
+    }
+    
+    private func selectedView() -> some View {
+        VStack {
+            HStack {
+                Text("SELECTED")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                
+                Spacer()
+            }
+            
+            if brand == nil {
+                NothingSelectedText()
+            } else {
+                Button {
+                    brand = nil
+                } label: {
+                    Text((brand!.name ?? ""))
+                }
+            }
+        }
+    }
+    
+    private func brandList() -> some View {
+        List {
+            ForEach(brands) { brand in
+                Button {
+                    self.brand = brand
+                } label: {
+                    Text(brand.name ?? "")
+                }
+            }
+            .onDelete(perform: deleteBrands)
+        }
+        .sheet(isPresented: $presentAddBrand, content: {
+            AddBrandView()
+                .environment(\.managedObjectContext, viewContext)
+        })
     }
     
     private func deleteBrands(offsets: IndexSet) {
