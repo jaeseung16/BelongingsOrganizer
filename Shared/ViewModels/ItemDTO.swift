@@ -21,6 +21,6 @@ struct ItemDTO: Identifiable, CustomStringConvertible {
     var image: Data?
     
     var description: String {
-        "ItemDTO[id: \(String(describing: id)), name: \(String(describing: name)), obtained: \(String(describing: obtained)), buyPrice: \(String(describing: buyPrice)), disposed: \(String(describing: disposed)), sellPrice: \(String(describing: sellPrice))]"
+        "ItemDTO[id: \(String(describing: id)), name: \(String(describing: name)), quantity: \(String(describing: quantity)), obtained: \(String(describing: obtained)), buyPrice: \(String(describing: buyPrice)), disposed: \(String(describing: disposed)), sellPrice: \(String(describing: sellPrice))]"
     }
 }
