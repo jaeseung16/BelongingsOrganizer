@@ -8,27 +8,36 @@
 import Foundation
 
 class URLValidator {
+    enum Scheme: String {
+        case http, https
+    }
+    
+    static private var schemeAuthoritySeparator = "://"
+    
     static func validate(urlString: String) -> URL? {
-        print("urlString = \(urlString)")
         var validatedURL: URL?
         
         if isValid(urlString: urlString) {
             validatedURL = URL(string: urlString)
         } else {
-            if canDownloadHTML(from: "https://\(urlString)") {
-                validatedURL = URL(string: "https://\(urlString)")
-            } else if canDownloadHTML(from: "http://\(urlString)") {
-                validatedURL = URL(string: "http://\(urlString)")
+            if canDownloadHTML(from: prefix(urlString, with: Scheme.https)) {
+                validatedURL = URL(string: prefix(urlString, with: Scheme.https))
+            } else if canDownloadHTML(from: prefix(urlString, with: Scheme.http)) {
+                validatedURL = URL(string: prefix(urlString, with: Scheme.http))
             }
         }
         return validatedURL
     }
     
+    private static func prefix(_ urlString: String, with scheme: Scheme) -> String {
+        return "\(scheme.rawValue)\(schemeAuthoritySeparator)\(urlString)"
+    }
+    
     private static func isValid(urlString: String) -> Bool {
-        guard let urlComponent = URLComponents(string: urlString), let scheme = urlComponent.scheme else {
+        guard let urlComponent = URLComponents(string: urlString), let scheme = urlComponent.scheme?.lowercased() else {
             return false
         }
-        return scheme == "http" || scheme == "https"
+        return scheme == Scheme.http.rawValue || scheme == Scheme.https.rawValue
     }
     
     private static func canDownloadHTML(from urlString: String) -> Bool {

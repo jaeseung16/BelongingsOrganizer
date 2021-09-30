@@ -378,6 +378,7 @@
 		90D3F23026EA593B00955316 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				906CE2EA26FA970100DC12C3 /* AddItemViewModel.swift */,
 				90D3F23126EA594E00955316 /* BelongingsViewModel.swift */,
 				90D3F23426EA5B3400955316 /* Entities.swift */,
 				90D3F23726EA7F7E00955316 /* SellerDTO.swift */,
@@ -385,9 +386,8 @@
 				90D3F23B26EA801F00955316 /* KindDTO.swift */,
 				90D3F23D26EA804E00955316 /* ItemDTO.swift */,
 				90DD8C2826F936E60079424A /* MobileNet.mlmodel */,
-				906CE2EA26FA970100DC12C3 /* AddItemViewModel.swift */,
-				9089734626FD10CC005A03A8 /* URLValidator.swift */,
 				90F3B6AA26FFEA2900C4859D /* ItemProperty.swift */,
+				9089734626FD10CC005A03A8 /* URLValidator.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
