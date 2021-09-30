@@ -5,7 +5,6 @@
 //  Created by Jae Seung Lee on 9/16/21.
 //
 
-#if !os(macOS)
 import Foundation
 import SwiftUI
 
@@ -80,4 +79,3 @@ struct ImagePickerView: UIViewControllerRepresentable {
         }
     }
 }
-#endif

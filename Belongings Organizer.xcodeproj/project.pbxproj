@@ -303,7 +303,6 @@
 				904498DF26EBD2F500002A6F /* Text */,
 				904498E326EBD7A800002A6F /* SheetBottom.swift */,
 				90CB46B626ED6A1900A9468B /* FilterItemsView.swift */,
-				90E2EA9526F402150014A8C6 /* ImagePickerView.swift */,
 				906EA8A026F7EFF300235302 /* EditDateView.swift */,
 			);
 			path = Views;
@@ -391,6 +390,7 @@
 		90E238D92706554900E03624 /* Photo */ = {
 			isa = PBXGroup;
 			children = (
+				90E2EA9526F402150014A8C6 /* ImagePickerView.swift */,
 				90E2EA9826F402940014A8C6 /* AddPhotoView.swift */,
 				90DD8C2B26F95A1B0079424A /* EditPhotoView.swift */,
 				90CB778C27025BB6008CDBC6 /* PHPickerView.swift */,
