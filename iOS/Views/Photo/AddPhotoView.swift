@@ -36,23 +36,7 @@ struct AddPhotoView: View {
                 
                 Divider()
                 
-                HStack {
-                    Button {
-                        showImagePickerView = true
-                    } label: {
-                        Text("Take a photo")
-                    }
-                    .disabled(!UIImagePickerController.isSourceTypeAvailable(.camera))
-                    
-                    Spacer()
-                    
-                    Button {
-                        progress = nil
-                        showPHPickerView = true
-                    } label: {
-                        Text("Select a photo")
-                    }
-                }
+                footer()
             }
             .padding()
             .frame(width: geometry.size.width, height: geometry.size.height)
@@ -85,8 +69,6 @@ struct AddPhotoView: View {
             
             Spacer()
             
-            Text("Choose a photo")
-            
             Spacer()
             
             Button(action: {
@@ -104,6 +86,26 @@ struct AddPhotoView: View {
             return Image(uiImage: UIImage(data: selectedImage!)!)
         } else {
             return Image(systemName: "photo.on.rectangle")
+        }
+    }
+    
+    private func footer() -> some View {
+        HStack {
+            Button {
+                showImagePickerView = true
+            } label: {
+                Label("Take a photo", systemImage: "camera")
+            }
+            .disabled(!UIImagePickerController.isSourceTypeAvailable(.camera))
+            
+            Spacer()
+            
+            Button {
+                progress = nil
+                showPHPickerView = true
+            } label: {
+                Label("Select a photo", systemImage: "photo.on.rectangle")
+            }
         }
     }
 }
