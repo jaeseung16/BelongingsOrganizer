@@ -58,6 +58,7 @@ struct ItemDetailView: View {
             }
             .padding()
             .sheet(isPresented: $presentChooseKindView, content: {
+                #if os(macOS)
                 ChooseKindView(kind: $kind)
                     .environment(\.managedObjectContext, viewContext)
                     .environmentObject(viewModel)
@@ -65,8 +66,17 @@ struct ItemDetailView: View {
                     .onChange(of: kind) { _ in
                         isEdited = true
                     }
+                #else
+                ChooseKindView(kind: $kind)
+                    .environment(\.managedObjectContext, viewContext)
+                    .environmentObject(viewModel)
+                    .onChange(of: kind) { _ in
+                        isEdited = true
+                    }
+                #endif
             })
             .sheet(isPresented: $presentChooseBrandView, content: {
+                #if os(macOS)
                 ChooseBrandView(brand: $brand)
                     .environment(\.managedObjectContext, viewContext)
                     .environmentObject(viewModel)
@@ -74,8 +84,17 @@ struct ItemDetailView: View {
                     .onChange(of: brand) { _ in
                         isEdited = true
                     }
+                #else
+                ChooseBrandView(brand: $brand)
+                    .environment(\.managedObjectContext, viewContext)
+                    .environmentObject(viewModel)
+                    .onChange(of: brand) { _ in
+                        isEdited = true
+                    }
+                #endif
             })
             .sheet(isPresented: $presentChooseSellerView, content: {
+                #if os(macOS)
                 ChooseSellerView(seller: $seller)
                     .environment(\.managedObjectContext, viewContext)
                     .environmentObject(viewModel)
@@ -83,18 +102,38 @@ struct ItemDetailView: View {
                     .onChange(of: seller) { _ in
                         isEdited = true
                     }
+                #else
+                ChooseSellerView(seller: $seller)
+                    .environment(\.managedObjectContext, viewContext)
+                    .environmentObject(viewModel)
+                    .onChange(of: seller) { _ in
+                        isEdited = true
+                    }
+                #endif
             })
             .sheet(isPresented: $presentChooseBuyCurrencyView, content: {
+                #if os(macOS)
                 ChooseCurrencyView(currency: $buyCurrency)
                     .frame(width: geometry.size.width, height: geometry.size.height)
+                #else
+                ChooseCurrencyView(currency: $buyCurrency)
+                #endif
             })
             .sheet(isPresented: $presentChooseSellCurrencyView, content: {
+                #if os(macOS)
                 ChooseCurrencyView(currency: $sellCurrency)
                     .frame(width: geometry.size.width, height: geometry.size.height)
+                #else
+                ChooseCurrencyView(currency: $sellCurrency)
+                #endif
             })
             .sheet(isPresented: $presentPhotoView, content: {
+                #if os(macOS)
                 EditPhotoView(originalImage: item.image, image: $imageData)
                     .frame(width: geometry.size.width, height: geometry.size.height)
+                #else
+                EditPhotoView(originalImage: item.image, image: $imageData)
+                #endif
             })
             .sheet(isPresented: $presentObtainedDatePickerView, content: {
                 EditDateView(date: $obtained, originalDate: item.obtained, isEdited: $isObtainedDateEdited)
