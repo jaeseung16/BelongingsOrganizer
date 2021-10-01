@@ -340,6 +340,7 @@ struct ItemDetailView: View {
                 Image(uiImage: image!)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
+                    .frame(height: 100)
                 #endif
             }
         }

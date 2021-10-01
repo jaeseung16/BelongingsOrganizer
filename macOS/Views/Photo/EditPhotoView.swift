@@ -24,6 +24,7 @@ struct EditPhotoView: View {
                 photoView()
                     .resizable()
                     .aspectRatio(contentMode: .fit)
+                    .frame(height: 100)
             }
             .padding()
             .frame(width: geometry.size.width, height: geometry.size.height)

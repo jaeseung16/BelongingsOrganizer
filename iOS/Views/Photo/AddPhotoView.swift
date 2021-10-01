@@ -33,6 +33,7 @@ struct AddPhotoView: View {
                 photoView()
                     .resizable()
                     .aspectRatio(contentMode: .fit)
+                    .frame(height: 100)
                 
                 Divider()
                 

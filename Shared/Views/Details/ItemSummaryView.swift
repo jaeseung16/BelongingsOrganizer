@@ -100,6 +100,7 @@ struct ItemSummaryView: View {
                 Image(uiImage: uiImage)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
+                    .frame(height: 100)
             } else {
                 Text("PHOTO")
                     .foregroundColor(.secondary)

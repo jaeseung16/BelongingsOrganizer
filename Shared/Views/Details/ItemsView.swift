@@ -31,6 +31,7 @@ struct ItemsView: View {
                                         Image(nsImage: nsImage)
                                             .resizable()
                                             .aspectRatio(contentMode: .fit)
+                                            .frame(height: 100)
                                     }
                                     Text(item.name ?? "")
                                 }
@@ -49,6 +50,7 @@ struct ItemsView: View {
                                     Image(uiImage: uiImage)
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
+                                        .frame(height: 100)
                                 }
                                 Text(item.name ?? "")
                             }
