@@ -31,7 +31,7 @@ struct SellerListView: View {
                     List {
                         ForEach(sellers) { seller in
                             NavigationLink(
-                                destination: SellerDetailView(seller: seller, name: seller.name ?? "")
+                                destination: SellerDetailView(seller: seller, name: seller.name ?? "", urlString: seller.url?.absoluteString ?? "")
                                     .environmentObject(viewModel)) {
                                 Text("\(seller.name ?? "")")
                             }

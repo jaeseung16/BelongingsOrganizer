@@ -28,6 +28,8 @@ struct BrandDetailView: View {
     @State private var isEditing = false
     @State private var isEdited = false
     @State var name = ""
+    @State var urlString = ""
+    
     var body: some View {
         GeometryReader { geometry in
             VStack {
@@ -69,7 +71,7 @@ struct BrandDetailView: View {
             Spacer()
             
             Button {
-                viewModel.brandDTO = BrandDTO(id: brand.uuid, name: name)
+                viewModel.brandDTO = BrandDTO(id: brand.uuid, name: name, url: URL(string: urlString))
                 presentationMode.wrappedValue.dismiss()
             } label: {
                 Label("Save", systemImage: "square.and.arrow.down")
@@ -107,13 +109,23 @@ struct BrandDetailView: View {
                     .foregroundColor(.secondary)
                 
                 Spacer()
+                
+                if let url = brand.url {
+                    Link(destination: url) {
+                        Label("Open in Browser", systemImage: "link")
+                            .font(.caption)
+                    }
+                }
             }
             
-            HStack {
-                if let url = brand.url {
-                    Link("\(url.absoluteString)", destination: url)
-                } else {
-                    Text("N/A")
+            TextField(brand.url?.absoluteString ?? "N/A", text: $urlString) { isEditing in
+                self.isEditing = isEditing
+            } onCommit: {
+                isEditing = false
+                isEdited = true
+                
+                if let url = URLValidator.validate(urlString: urlString) {
+                    urlString = url.absoluteString
                 }
             }
         }

@@ -31,7 +31,7 @@ struct BrandListView: View {
                     List {
                         ForEach(brands) { brand in
                             NavigationLink(
-                                destination: BrandDetailView(brand: brand, name: brand.name ?? "")
+                                destination: BrandDetailView(brand: brand, name: brand.name ?? "", urlString: brand.url?.absoluteString ?? "")
                                     .environmentObject(viewModel)) {
                                 Text("\(brand.name ?? "")")
                             }
