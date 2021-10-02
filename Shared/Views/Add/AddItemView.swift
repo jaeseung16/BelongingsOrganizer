@@ -127,9 +127,9 @@ struct AddItemView: View {
                     presentPhotoView = true
                 }, label: {
                     #if os(macOS)
-                    Label("select a photo", systemImage: "photo")
+                    Label("add", systemImage: "photo")
                     #else
-                    Label("select/take a photo", systemImage: "photo")
+                    Label("add", systemImage: "photo")
                     #endif
                 })
             }
@@ -170,7 +170,7 @@ struct AddItemView: View {
                 Button(action: {
                     presentChooseKindView = true
                 }, label: {
-                    Label("select a category", systemImage: "filemenu.and.selection")
+                    Label("add", systemImage: "rectangle.stack.badge.plus")
                 })
             }
             
@@ -199,7 +199,7 @@ struct AddItemView: View {
                 Button(action: {
                     presentBrandView = true
                 }, label: {
-                    Label("select a brand", systemImage: "filemenu.and.selection")
+                    Label("add", systemImage: "bag.badge.plus")
                 })
             }
             
@@ -227,7 +227,7 @@ struct AddItemView: View {
                 Button(action: {
                     presentSellerView = true
                 }, label: {
-                    Label("select a seller", systemImage: "filemenu.and.selection")
+                    Label("add", systemImage: "cart.badge.plus")
                 })
             }
             
@@ -272,7 +272,7 @@ struct AddItemView: View {
                 Button(action: {
                     presentCurrencyView = true
                 }, label: {
-                    Label("select", systemImage: "filemenu.and.selection")
+                    Text("select")
                 })
                 
             }

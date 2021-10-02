@@ -62,7 +62,7 @@ struct ItemDetailView: View {
                 ChooseKindView(kind: $kind)
                     .environment(\.managedObjectContext, viewContext)
                     .environmentObject(viewModel)
-                    .frame(width: geometry.size.width, height: geometry.size.height)
+                    .frame(minWidth: 0.5 * geometry.size.width, minHeight: geometry.size.height)
                     .onChange(of: kind) { _ in
                         isEdited = true
                     }
@@ -80,7 +80,7 @@ struct ItemDetailView: View {
                 ChooseBrandView(brand: $brand)
                     .environment(\.managedObjectContext, viewContext)
                     .environmentObject(viewModel)
-                    .frame(width: geometry.size.width, height: geometry.size.height)
+                    .frame(minWidth: 0.5 * geometry.size.width, minHeight: geometry.size.height)
                     .onChange(of: brand) { _ in
                         isEdited = true
                     }
@@ -98,7 +98,7 @@ struct ItemDetailView: View {
                 ChooseSellerView(seller: $seller)
                     .environment(\.managedObjectContext, viewContext)
                     .environmentObject(viewModel)
-                    .frame(width: geometry.size.width, height: geometry.size.height)
+                    .frame(minWidth: 0.5 * geometry.size.width, minHeight: geometry.size.height)
                     .onChange(of: seller) { _ in
                         isEdited = true
                     }
@@ -114,7 +114,7 @@ struct ItemDetailView: View {
             .sheet(isPresented: $presentChooseBuyCurrencyView, content: {
                 #if os(macOS)
                 ChooseCurrencyView(currency: $buyCurrency)
-                    .frame(width: geometry.size.width, height: geometry.size.height)
+                    .frame(minWidth: 0.5 * geometry.size.width, minHeight: 0.2 * geometry.size.height)
                 #else
                 ChooseCurrencyView(currency: $buyCurrency)
                 #endif
@@ -122,7 +122,7 @@ struct ItemDetailView: View {
             .sheet(isPresented: $presentChooseSellCurrencyView, content: {
                 #if os(macOS)
                 ChooseCurrencyView(currency: $sellCurrency)
-                    .frame(width: geometry.size.width, height: geometry.size.height)
+                    .frame(minWidth: 0.5 * geometry.size.width, minHeight: 0.2 * geometry.size.height)
                 #else
                 ChooseCurrencyView(currency: $sellCurrency)
                 #endif
@@ -130,7 +130,7 @@ struct ItemDetailView: View {
             .sheet(isPresented: $presentPhotoView, content: {
                 #if os(macOS)
                 EditPhotoView(originalImage: item.image, image: $imageData)
-                    .frame(width: geometry.size.width, height: geometry.size.height)
+                    .frame(minWidth: 0.5 * geometry.size.width, minHeight: 0.5 * geometry.size.height)
                 #else
                 EditPhotoView(originalImage: item.image, image: $imageData)
                 #endif
@@ -323,7 +323,7 @@ struct ItemDetailView: View {
                     presentPhotoView = true
                     AddItemViewModel.shared.reset()
                 } label: {
-                    Text("Edit")
+                    Label("edit", systemImage: "photo.circle")
                 }
             }
             
@@ -373,7 +373,7 @@ struct ItemDetailView: View {
                 kind = item.kind
                 presentChooseKindView = true
             } label: {
-                Text("Edit")
+                Label("edit", systemImage: "rectangle.on.rectangle.circle")
             }
         }
     }
@@ -396,7 +396,7 @@ struct ItemDetailView: View {
                 brand = item.brand
                 presentChooseBrandView = true
             } label: {
-                Text("Edit")
+                Label("edit", systemImage: "bag.circle")
             }
         }
     }
@@ -419,7 +419,7 @@ struct ItemDetailView: View {
                 seller = item.seller
                 presentChooseSellerView = true
             } label: {
-                Text("Edit")
+                Label("edit", systemImage: "cart.circle")
             }
         }
     }
@@ -477,7 +477,7 @@ struct ItemDetailView: View {
                     obtained = item.obtained ?? Date()
                     presentObtainedDatePickerView = true
                 }, label: {
-                    Text("Edit")
+                    Label("edit", systemImage: "calendar.circle")
                 })
             }
         }
@@ -521,7 +521,7 @@ struct ItemDetailView: View {
             Button(action: {
                 presentChooseBuyCurrencyView = true
             }, label: {
-                Text("Edit")
+                Text("edit")
             })
         }
     }
@@ -545,7 +545,7 @@ struct ItemDetailView: View {
                     disposed = item.disposed ?? Date()
                     presentDisposedDatePickerView = true
                 }, label: {
-                    Text("Edit")
+                    Label("edit", systemImage: "calendar.circle")
                 })
             }
         }
@@ -589,7 +589,7 @@ struct ItemDetailView: View {
             Button(action: {
                 presentChooseSellCurrencyView = true
             }, label: {
-                Text("Edit")
+                Text("edit")
             })
         }
     }
