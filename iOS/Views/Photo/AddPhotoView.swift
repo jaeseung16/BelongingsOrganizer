@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct AddPhotoView: View {
     @Environment(\.presentationMode) private var presentationMode
@@ -34,6 +35,9 @@ struct AddPhotoView: View {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(height: 100)
+                    .onLongPressGesture {
+                        pasteImage()
+                    }
                 
                 Divider()
                 
@@ -70,8 +74,6 @@ struct AddPhotoView: View {
             
             Spacer()
             
-            Spacer()
-            
             Button(action: {
                 viewModel.imageData = selectedImage
                 presentationMode.wrappedValue.dismiss()
@@ -79,7 +81,6 @@ struct AddPhotoView: View {
                 Text("Done")
             })
         }
-        
     }
     
     private func photoView() -> Image {
@@ -95,7 +96,7 @@ struct AddPhotoView: View {
             Button {
                 showImagePickerView = true
             } label: {
-                Label("Take a photo", systemImage: "camera")
+                Label("Camera", systemImage: "camera")
             }
             .disabled(!UIImagePickerController.isSourceTypeAvailable(.camera))
             
@@ -105,7 +106,25 @@ struct AddPhotoView: View {
                 progress = nil
                 showPHPickerView = true
             } label: {
-                Label("Select a photo", systemImage: "photo.on.rectangle")
+                Label("Photos", systemImage: "photo.on.rectangle")
+            }
+            
+            if ImagePaster.hasImage() {
+                Spacer()
+                
+                Button {
+                    pasteImage()
+                } label: {
+                    Label("Paste", systemImage: "doc.on.clipboard.fill")
+                }
+            }
+        }
+    }
+    
+    private func pasteImage() -> Void {
+        ImagePaster.paste { data, _ in
+            if let data = data {
+                selectedImage = data
             }
         }
     }

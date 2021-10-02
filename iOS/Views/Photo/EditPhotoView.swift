@@ -35,6 +35,9 @@ struct EditPhotoView: View {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(height: 100)
+                    .onLongPressGesture {
+                        pasteImage()
+                    }
                 
                 Divider()
                 
@@ -100,7 +103,7 @@ struct EditPhotoView: View {
             Button {
                 showImagePickerView = true
             } label: {
-                Label("Take a photo", systemImage: "camera")
+                Label("Camera", systemImage: "camera")
             }
             .disabled(!UIImagePickerController.isSourceTypeAvailable(.camera))
             
@@ -111,7 +114,27 @@ struct EditPhotoView: View {
                 progress = nil
                 showPHPickerView = true
             } label: {
-                Label("Select a photo", systemImage: "photo.on.rectangle")
+                Label("Photos", systemImage: "photo.on.rectangle")
+            }
+            
+            Spacer()
+            
+            if ImagePaster.hasImage() {
+                Spacer()
+                
+                Button {
+                    pasteImage()
+                } label: {
+                    Label("Paste", systemImage: "doc.on.clipboard.fill")
+                }
+            }
+        }
+    }
+    
+    private func pasteImage() -> Void {
+        ImagePaster.paste { data, _ in
+            if let data = data {
+                image = data
             }
         }
     }
