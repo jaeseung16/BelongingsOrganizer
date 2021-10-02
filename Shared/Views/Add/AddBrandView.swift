@@ -72,7 +72,7 @@ struct AddBrandView: View {
                     presentationMode.wrappedValue.dismiss()
                 },
                 label: {
-                    Text("Save")
+                    Label("Save", systemImage: "square.and.arrow.down")
                 })
                 
                 Spacer()

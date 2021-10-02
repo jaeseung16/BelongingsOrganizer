@@ -126,11 +126,7 @@ struct AddItemView: View {
                 Button(action: {
                     presentPhotoView = true
                 }, label: {
-                    #if os(macOS)
-                    Label("add", systemImage: "photo")
-                    #else
-                    Label("add", systemImage: "photo")
-                    #endif
+                    Label("add", systemImage: "plus")
                 })
             }
             
@@ -170,7 +166,7 @@ struct AddItemView: View {
                 Button(action: {
                     presentChooseKindView = true
                 }, label: {
-                    Label("add", systemImage: "rectangle.stack.badge.plus")
+                    Label("add", systemImage: "plus")
                 })
             }
             
@@ -199,7 +195,7 @@ struct AddItemView: View {
                 Button(action: {
                     presentBrandView = true
                 }, label: {
-                    Label("add", systemImage: "bag.badge.plus")
+                    Label("add", systemImage: "plus")
                 })
             }
             
@@ -227,7 +223,7 @@ struct AddItemView: View {
                 Button(action: {
                     presentSellerView = true
                 }, label: {
-                    Label("add", systemImage: "cart.badge.plus")
+                    Label("add", systemImage: "plus")
                 })
             }
             
@@ -342,7 +338,7 @@ struct AddItemView: View {
                 saveBelonging()
             },
             label: {
-                Text("Save")
+                Label("Save", systemImage: "square.and.arrow.down")
             })
             
             Spacer()

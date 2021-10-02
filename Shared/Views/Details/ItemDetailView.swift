@@ -323,7 +323,7 @@ struct ItemDetailView: View {
                     presentPhotoView = true
                     AddItemViewModel.shared.reset()
                 } label: {
-                    Label("edit", systemImage: "photo.circle")
+                    Text("edit")
                 }
             }
             
@@ -373,7 +373,7 @@ struct ItemDetailView: View {
                 kind = item.kind
                 presentChooseKindView = true
             } label: {
-                Label("edit", systemImage: "rectangle.on.rectangle.circle")
+                Text("edit")
             }
         }
     }
@@ -396,7 +396,7 @@ struct ItemDetailView: View {
                 brand = item.brand
                 presentChooseBrandView = true
             } label: {
-                Label("edit", systemImage: "bag.circle")
+                Text("edit")
             }
         }
     }
@@ -419,7 +419,7 @@ struct ItemDetailView: View {
                 seller = item.seller
                 presentChooseSellerView = true
             } label: {
-                Label("edit", systemImage: "cart.circle")
+                Text("edit")
             }
         }
     }
@@ -477,7 +477,7 @@ struct ItemDetailView: View {
                     obtained = item.obtained ?? Date()
                     presentObtainedDatePickerView = true
                 }, label: {
-                    Label("edit", systemImage: "calendar.circle")
+                    Text("edit")
                 })
             }
         }
@@ -545,7 +545,7 @@ struct ItemDetailView: View {
                     disposed = item.disposed ?? Date()
                     presentDisposedDatePickerView = true
                 }, label: {
-                    Label("edit", systemImage: "calendar.circle")
+                    Text("edit")
                 })
             }
         }

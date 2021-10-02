@@ -64,7 +64,7 @@ struct BrandDetailView: View {
             Button {
                 presentationMode.wrappedValue.dismiss()
             } label: {
-                Label("Cancel", systemImage: "square.and.arrow.down")
+                Text("Cancel")
             }
             .disabled(!isEdited)
             
