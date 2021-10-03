@@ -117,8 +117,6 @@ struct EditPhotoView: View {
                 Label("Photos", systemImage: "photo.on.rectangle")
             }
             
-            Spacer()
-            
             if ImagePaster.hasImage() {
                 Spacer()
                 
