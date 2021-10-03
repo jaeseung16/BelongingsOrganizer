@@ -58,7 +58,7 @@ struct ItemListView: View {
                     
                     List {
                         ForEach(filteredItems) { item in
-                            NavigationLink(item.name ?? "", destination: ItemDetailView(item: item,
+                            NavigationLink(destination: ItemDetailView(item: item,
                                                                                         imageData: item.image,
                                                                                         name: item.name ?? "",
                                                                                         quantity: item.quantity,
@@ -68,7 +68,34 @@ struct ItemListView: View {
                                                                                         sellCurrency: item.sellCurrency ?? "USD",
                                                                                         note: item.note ?? "",
                                                                                         obtained: item.obtained ?? Date(),
-                                                                                        disposed: item.disposed ?? Date()))
+                                                                       disposed: item.disposed ?? Date())) {
+                                HStack {
+                                    if let data = item.image {
+                                        #if os(macOS)
+                                        if let nsImage = NSImage(data: data) {
+                                            Image(nsImage: nsImage)
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 50)
+                                        }
+                                        #else
+                                        if let uiImage = UIImage(data: data) {
+                                            Image(uiImage: uiImage)
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 50)
+                                        }
+                                        #endif
+                                    } else {
+                                        Image(systemName: "photo")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .frame(width: 50)
+                                    }
+                                    
+                                    Text(item.name ?? "")
+                                }
+                            }
                                 .environment(\.managedObjectContext, viewContext)
                                 .environmentObject(viewModel)
                         }
