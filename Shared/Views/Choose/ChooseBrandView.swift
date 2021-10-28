@@ -90,7 +90,7 @@ struct ChooseBrandView: View {
         }
         .sheet(isPresented: $presentAddBrand, content: {
             AddBrandView()
-                .environment(\.managedObjectContext, viewContext)
+                .environmentObject(AddItemViewModel.shared)
         })
     }
     

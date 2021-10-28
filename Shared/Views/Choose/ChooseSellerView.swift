@@ -89,7 +89,7 @@ struct ChooseSellerView: View {
         }
         .sheet(isPresented: $presentAddSeller, content: {
             AddSellerView()
-                .environment(\.managedObjectContext, viewContext)
+                .environmentObject(AddItemViewModel.shared)
         })
     }
     

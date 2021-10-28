@@ -22,32 +22,24 @@ struct ContentView: View {
     var body: some View {
         TabView {
             ItemListView()
-                .environment(\.managedObjectContext, viewContext)
-                .environmentObject(viewModel)
                 .tabItem {
                     Image(systemName: "gift.fill")
                     Text("Items")
                 }
             
             KindListView()
-                .environment(\.managedObjectContext, viewContext)
-                .environmentObject(viewModel)
                 .tabItem {
                     Image(systemName: "list.dash")
                     Text("Categories")
                 }
             
             BrandListView()
-                .environment(\.managedObjectContext, viewContext)
-                .environmentObject(viewModel)
                 .tabItem {
                     Image(systemName: "r.circle")
                     Text("Brands")
                 }
             
             SellerListView()
-                .environment(\.managedObjectContext, viewContext)
-                .environmentObject(viewModel)
                 .tabItem {
                     Image(systemName: "shippingbox.fill")
                     Text("Sellers")

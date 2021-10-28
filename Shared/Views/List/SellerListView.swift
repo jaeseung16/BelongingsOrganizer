@@ -40,7 +40,6 @@ struct SellerListView: View {
                     }
                     .sheet(isPresented: $presentAddSelleriew, content: {
                         AddSellerView()
-                            .environment(\.managedObjectContext, viewContext)
                             .environmentObject(AddItemViewModel.shared)
                             .frame(minWidth: 350, minHeight: 450)
                             .padding()

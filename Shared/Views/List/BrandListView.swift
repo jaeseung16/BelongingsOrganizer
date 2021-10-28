@@ -40,7 +40,6 @@ struct BrandListView: View {
                     }
                     .sheet(isPresented: $presentAddBrandView, content: {
                         AddBrandView()
-                            .environment(\.managedObjectContext, viewContext)
                             .environmentObject(AddItemViewModel.shared)
                             .frame(minWidth: 350, minHeight: 450)
                             .padding()

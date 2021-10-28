@@ -90,7 +90,7 @@ struct ChooseKindView: View {
         }
         .sheet(isPresented: $presentAddItem, content: {
             AddKindView()
-                .environment(\.managedObjectContext, viewContext)
+                .environmentObject(AddItemViewModel.shared)
         })
     }
     

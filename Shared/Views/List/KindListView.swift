@@ -40,7 +40,6 @@ struct KindListView: View {
                     }
                     .sheet(isPresented: $presentAddKindView, content: {
                         AddKindView()
-                            .environment(\.managedObjectContext, viewContext)
                             .environmentObject(AddItemViewModel.shared)
                             .frame(minWidth: 350, minHeight: 450)
                             .padding()

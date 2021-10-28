@@ -60,16 +60,12 @@ struct ItemDetailView: View {
             .sheet(isPresented: $presentChooseKindView, content: {
                 #if os(macOS)
                 ChooseKindView(kind: $kind)
-                    .environment(\.managedObjectContext, viewContext)
-                    .environmentObject(viewModel)
                     .frame(minWidth: 0.5 * geometry.size.width, minHeight: geometry.size.height)
                     .onChange(of: kind) { _ in
                         isEdited = true
                     }
                 #else
                 ChooseKindView(kind: $kind)
-                    .environment(\.managedObjectContext, viewContext)
-                    .environmentObject(viewModel)
                     .onChange(of: kind) { _ in
                         isEdited = true
                     }
@@ -78,16 +74,12 @@ struct ItemDetailView: View {
             .sheet(isPresented: $presentChooseBrandView, content: {
                 #if os(macOS)
                 ChooseBrandView(brand: $brand)
-                    .environment(\.managedObjectContext, viewContext)
-                    .environmentObject(viewModel)
                     .frame(minWidth: 0.5 * geometry.size.width, minHeight: geometry.size.height)
                     .onChange(of: brand) { _ in
                         isEdited = true
                     }
                 #else
                 ChooseBrandView(brand: $brand)
-                    .environment(\.managedObjectContext, viewContext)
-                    .environmentObject(viewModel)
                     .onChange(of: brand) { _ in
                         isEdited = true
                     }
@@ -96,16 +88,12 @@ struct ItemDetailView: View {
             .sheet(isPresented: $presentChooseSellerView, content: {
                 #if os(macOS)
                 ChooseSellerView(seller: $seller)
-                    .environment(\.managedObjectContext, viewContext)
-                    .environmentObject(viewModel)
                     .frame(minWidth: 0.5 * geometry.size.width, minHeight: geometry.size.height)
                     .onChange(of: seller) { _ in
                         isEdited = true
                     }
                 #else
                 ChooseSellerView(seller: $seller)
-                    .environment(\.managedObjectContext, viewContext)
-                    .environmentObject(viewModel)
                     .onChange(of: seller) { _ in
                         isEdited = true
                     }

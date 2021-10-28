@@ -96,22 +96,17 @@ struct ItemListView: View {
                                     Text(item.name ?? "")
                                 }
                             }
-                                .environment(\.managedObjectContext, viewContext)
-                                .environmentObject(viewModel)
                         }
                         .onDelete(perform: deleteItems)
                     }
                     .sheet(isPresented: $presentAddItemView, content: {
                         AddItemView(geometry: geometry)
-                            .environment(\.managedObjectContext, viewContext)
                             .environmentObject(AddItemViewModel.shared)
                             .frame(minWidth: 350, minHeight: 550)
                             .padding()
                     })
                     .sheet(isPresented: $presentFilterItemsView, content: {
                         FilterItemsView(selectedKinds: $selectedKinds, selectedBrands: $selectedBrands, selectedSellers: $selectedSellers)
-                            .environment(\.managedObjectContext, viewContext)
-                            .environmentObject(viewModel)
                             .frame(minWidth: 350, minHeight: 450)
                             .padding()
                     })
