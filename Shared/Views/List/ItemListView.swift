@@ -101,9 +101,6 @@ struct ItemListView: View {
                         }
                         .onDelete(perform: deleteItems)
                     }
-                    .onReceive(viewModel.$changedPeristentContext) { _ in
-                        presentationMode.wrappedValue.dismiss()
-                    }
                     .sheet(isPresented: $presentAddItemView, content: {
                         AddItemView(geometry: geometry)
                             .environment(\.managedObjectContext, viewContext)

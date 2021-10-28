@@ -50,9 +50,6 @@ struct SellerDetailView: View {
                 ItemsView(items: items)
             }
             .padding()
-            .onReceive(viewModel.$changedPeristentContext) { _ in
-                presentationMode.wrappedValue.dismiss()
-            }
         }
     }
     

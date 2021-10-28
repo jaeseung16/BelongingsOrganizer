@@ -49,9 +49,6 @@ struct KindListView: View {
                 .navigationTitle("Categories")
             }
         }
-        .onReceive(viewModel.$changedPeristentContext) { _ in
-            presentationMode.wrappedValue.dismiss()
-        }
         .onChange(of: AddItemViewModel.shared.showAlert) { _ in
             showAlert = AddItemViewModel.shared.showAlert
         }
