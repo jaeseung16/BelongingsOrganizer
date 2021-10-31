@@ -42,6 +42,8 @@ struct ItemDetailView: View {
     @State private var isObtainedDateEdited = false
     @State private var isDisposedDateEdited = false
     
+    @FocusState private var quantityIsFocused: Bool
+    
     var body: some View {
         GeometryReader { geometry in
             VStack {
@@ -452,14 +454,23 @@ struct ItemDetailView: View {
                                 .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
             #else
             TextField("quantity", value: $quantity, formatter: quantityFormatter, prompt: Text("0"))
-                .onSubmit({
+                .focused($quantityIsFocused)
+                .onChange(of: quantity) { _ in
                     isEdited = true
-                })
+                }
                 .multilineTextAlignment(.trailing)
                 .frame(maxWidth: 80)
                 .background(RoundedRectangle(cornerRadius: 5.0)
                                 .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
                 .keyboardType(.numberPad)
+            
+            if quantityIsFocused {
+                Button {
+                    quantityIsFocused = false
+                } label: {
+                    Text("Submit")
+                }
+            }
             #endif
         }
     }
