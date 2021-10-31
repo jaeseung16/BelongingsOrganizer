@@ -43,6 +43,8 @@ struct ItemDetailView: View {
     @State private var isDisposedDateEdited = false
     
     @FocusState private var quantityIsFocused: Bool
+    @FocusState private var buyPriceIsFocused: Bool
+    @FocusState private var sellPriceIsFocused: Bool
     
     var body: some View {
         GeometryReader { geometry in
@@ -455,8 +457,8 @@ struct ItemDetailView: View {
             #else
             TextField("quantity", value: $quantity, formatter: quantityFormatter, prompt: Text("0"))
                 .focused($quantityIsFocused)
-                .onChange(of: quantity) { _ in
-                    isEdited = true
+                .onChange(of: quantity) { newValue in
+                    isEdited = newValue != Int(item.quantity)
                 }
                 .multilineTextAlignment(.trailing)
                 .frame(maxWidth: 80)
@@ -518,9 +520,10 @@ struct ItemDetailView: View {
                                 .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
             #else
             TextField("buy price", value: $buyPrice, formatter: priceFormatter, prompt: Text("0.00"))
-                .onSubmit({
-                    isEdited = true
-                })
+                .focused($buyPriceIsFocused)
+                .onChange(of: buyPrice) { newValue in
+                    isEdited = newValue != item.buyPrice
+                }
                 .multilineTextAlignment(.trailing)
                 .frame(maxWidth: 120)
                 .background(RoundedRectangle(cornerRadius: 5.0)
@@ -530,12 +533,20 @@ struct ItemDetailView: View {
         
             Spacer()
             
-            Text(buyCurrency)
-            Button(action: {
-                presentChooseBuyCurrencyView = true
-            }, label: {
-                Text("edit")
-            })
+            if buyPriceIsFocused {
+                Button {
+                    buyPriceIsFocused = false
+                } label: {
+                    Text("Submit")
+                }
+            } else {
+                Text(buyCurrency)
+                Button(action: {
+                    presentChooseBuyCurrencyView = true
+                }, label: {
+                    Text("edit")
+                })
+            }
         }
     }
     
@@ -582,9 +593,10 @@ struct ItemDetailView: View {
                                 .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
             #else
             TextField("sell price", value: $sellPrice, formatter: priceFormatter, prompt: Text("0.00"))
-                .onSubmit({
-                    isEdited = true
-                })
+                .focused($sellPriceIsFocused)
+                .onChange(of: sellPrice) { newValue in
+                    isEdited = newValue != item.sellPrice
+                }
                 .multilineTextAlignment(.trailing)
                 .frame(maxWidth: 120)
                 .background(RoundedRectangle(cornerRadius: 5.0)
@@ -594,12 +606,20 @@ struct ItemDetailView: View {
         
             Spacer()
             
-            Text(sellCurrency)
-            Button(action: {
-                presentChooseSellCurrencyView = true
-            }, label: {
-                Text("edit")
-            })
+            if sellPriceIsFocused {
+                Button {
+                    sellPriceIsFocused = false
+                } label: {
+                    Text("Submit")
+                }
+            } else {
+                Text(sellCurrency)
+                Button(action: {
+                    presentChooseSellCurrencyView = true
+                }, label: {
+                    Text("edit")
+                })
+            }
         }
     }
     
