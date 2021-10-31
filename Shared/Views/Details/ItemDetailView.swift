@@ -9,7 +9,6 @@ import SwiftUI
 
 struct ItemDetailView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    @Environment(\.presentationMode) private var presentationMode
     @EnvironmentObject var viewModel: BelongingsViewModel
     
     @State var item: Item
@@ -22,7 +21,7 @@ struct ItemDetailView: View {
     
     @State var imageData: Data?
     @State var name = ""
-    @State var quantity: Int64 = 0
+    @State var quantity: Int = 0
     @State var buyPrice = 0.0
     @State var sellPrice = 0.0
     @State var buyCurrency: String = "USD"
@@ -103,31 +102,55 @@ struct ItemDetailView: View {
                 #if os(macOS)
                 ChooseCurrencyView(currency: $buyCurrency)
                     .frame(minWidth: 0.5 * geometry.size.width, minHeight: 0.2 * geometry.size.height)
+                    .onChange(of: buyCurrency) { _ in
+                        isEdited = true
+                    }
                 #else
                 ChooseCurrencyView(currency: $buyCurrency)
+                    .onChange(of: buyCurrency) { _ in
+                        isEdited = true
+                    }
                 #endif
             })
             .sheet(isPresented: $presentChooseSellCurrencyView, content: {
                 #if os(macOS)
                 ChooseCurrencyView(currency: $sellCurrency)
                     .frame(minWidth: 0.5 * geometry.size.width, minHeight: 0.2 * geometry.size.height)
+                    .onChange(of: sellCurrency) { _ in
+                        isEdited = true
+                    }
                 #else
                 ChooseCurrencyView(currency: $sellCurrency)
+                    .onChange(of: sellCurrency) { _ in
+                        isEdited = true
+                    }
                 #endif
             })
             .sheet(isPresented: $presentPhotoView, content: {
                 #if os(macOS)
                 EditPhotoView(originalImage: item.image, image: $imageData)
                     .frame(minWidth: 0.5 * geometry.size.width, minHeight: 0.5 * geometry.size.height)
+                    .onChange(of: imageData) { _ in
+                        isEdited = true
+                    }
                 #else
                 EditPhotoView(originalImage: item.image, image: $imageData)
+                    .onChange(of: imageData) { _ in
+                        isEdited = true
+                    }
                 #endif
             })
             .sheet(isPresented: $presentObtainedDatePickerView, content: {
                 EditDateView(date: $obtained, originalDate: item.obtained, isEdited: $isObtainedDateEdited)
+                    .onChange(of: obtained) { _ in
+                        isEdited = true
+                    }
             })
             .sheet(isPresented: $presentDisposedDatePickerView, content: {
                 EditDateView(date: $disposed, originalDate: item.disposed, isEdited: $isDisposedDateEdited)
+                    .onChange(of: disposed) { _ in
+                        isEdited = true
+                    }
             })
         }
     }
@@ -135,7 +158,7 @@ struct ItemDetailView: View {
     private func reset() -> Void {
         imageData = item.image
         name = item.name ?? ""
-        quantity = item.quantity
+        quantity = Int(item.quantity)
         buyPrice = item.buyPrice
         sellPrice = item.sellPrice
         buyCurrency = item.buyCurrency ?? "USD"
@@ -152,7 +175,6 @@ struct ItemDetailView: View {
         isEdited = false
         isObtainedDateEdited = false
         isDisposedDateEdited = false
-        
     }
     
     private func header() -> some View {
@@ -191,21 +213,21 @@ struct ItemDetailView: View {
                 
                 viewModel.itemDTO = ItemDTO(id: item.uuid,
                                             name: name,
-                                            note: item.note,
-                                            quantity: quantity,
-                                            buyPrice: item.buyPrice,
-                                            sellPrice: item.sellPrice,
-                                            buyCurrency: item.buyCurrency,
-                                            sellCurrency: item.sellCurrency,
+                                            note: note,
+                                            quantity: Int64(quantity),
+                                            buyPrice: buyPrice,
+                                            sellPrice: sellPrice,
+                                            buyCurrency: buyCurrency,
+                                            sellCurrency: sellCurrency,
                                             obtained: isObtainedDateEdited ? obtained : item.obtained,
                                             disposed: isDisposedDateEdited ? disposed : item.disposed,
                                             image: imageData ?? item.image)
                 
-                presentationMode.wrappedValue.dismiss()
+                isEdited = false
             } label: {
                 Label("Save", systemImage: "square.and.arrow.down")
             }
-            .disabled(!isEdited && imageData == nil)
+            .disabled(!isEdited)
             
             Spacer()
         }
@@ -420,28 +442,24 @@ struct ItemDetailView: View {
             Spacer()
             
             #if os(macOS)
-            TextField("\(item.quantity)", value: $quantity, formatter: quantityFormatter) { isEditing in
-                self.isEditing = isEditing
-            } onCommit: {
-                isEditing = false
-                isEdited = true
-            }
-            .multilineTextAlignment(.trailing)
-            .frame(maxWidth: 80)
-            .background(RoundedRectangle(cornerRadius: 5.0)
-                            .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+            TextField("quantity", value: $quantity, formatter: quantityFormatter, prompt: Text("0"))
+                .onSubmit({
+                    isEdited = true
+                })
+                .multilineTextAlignment(.trailing)
+                .frame(maxWidth: 80)
+                .background(RoundedRectangle(cornerRadius: 5.0)
+                                .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
             #else
-            TextField("\(item.quantity)", value: $quantity, formatter: quantityFormatter) { isEditing in
-                self.isEditing = isEditing
-            } onCommit: {
-                isEditing = false
-                isEdited = true
-            }
-            .multilineTextAlignment(.trailing)
-            .frame(maxWidth: 80)
-            .background(RoundedRectangle(cornerRadius: 5.0)
-                            .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
-            .keyboardType(.numberPad)
+            TextField("quantity", value: $quantity, formatter: quantityFormatter, prompt: Text("0"))
+                .onSubmit({
+                    isEdited = true
+                })
+                .multilineTextAlignment(.trailing)
+                .frame(maxWidth: 80)
+                .background(RoundedRectangle(cornerRadius: 5.0)
+                                .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+                .keyboardType(.numberPad)
             #endif
         }
     }
@@ -479,33 +497,29 @@ struct ItemDetailView: View {
             Spacer()
             
             #if os(macOS)
-            TextField("\(item.buyPrice)", value: $buyPrice, formatter: priceFormatter) { isEditing in
-                self.isEditing = isEditing
-            } onCommit: {
-                isEditing = false
-                isEdited = true
-            }
-            .multilineTextAlignment(.trailing)
-            .frame(maxWidth: 120)
-            .background(RoundedRectangle(cornerRadius: 5.0)
-                            .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+            TextField("buy price", value: $buyPrice, formatter: priceFormatter, prompt: Text("0.00"))
+                .onSubmit({
+                    isEdited = true
+                })
+                .multilineTextAlignment(.trailing)
+                .frame(maxWidth: 120)
+                .background(RoundedRectangle(cornerRadius: 5.0)
+                                .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
             #else
-            TextField("\(item.buyPrice)", value: $buyPrice, formatter: priceFormatter) { isEditing in
-                self.isEditing = isEditing
-            } onCommit: {
-                isEditing = false
-                isEdited = true
-            }
-            .multilineTextAlignment(.trailing)
-            .frame(maxWidth: 120)
-            .background(RoundedRectangle(cornerRadius: 5.0)
-                            .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
-            .keyboardType(.decimalPad)
+            TextField("buy price", value: $buyPrice, formatter: priceFormatter, prompt: Text("0.00"))
+                .onSubmit({
+                    isEdited = true
+                })
+                .multilineTextAlignment(.trailing)
+                .frame(maxWidth: 120)
+                .background(RoundedRectangle(cornerRadius: 5.0)
+                                .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+                .keyboardType(.decimalPad)
             #endif
         
             Spacer()
             
-            Text(item.buyCurrency ?? "")
+            Text(buyCurrency)
             Button(action: {
                 presentChooseBuyCurrencyView = true
             }, label: {
@@ -547,33 +561,29 @@ struct ItemDetailView: View {
             Spacer()
             
             #if os(macOS)
-            TextField("\(item.sellPrice)", value: $sellPrice, formatter: priceFormatter) { isEditing in
-                self.isEditing = isEditing
-            } onCommit: {
-                isEditing = false
-                isEdited = true
-            }
-            .multilineTextAlignment(.trailing)
-            .frame(maxWidth: 120)
-            .background(RoundedRectangle(cornerRadius: 5.0)
-                            .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+            TextField("sell price", value: $sellPrice, formatter: priceFormatter, prompt: Text("0.00"))
+                .onSubmit({
+                    isEdited = true
+                })
+                .multilineTextAlignment(.trailing)
+                .frame(maxWidth: 120)
+                .background(RoundedRectangle(cornerRadius: 5.0)
+                                .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
             #else
-            TextField("\(item.sellPrice)", value: $sellPrice, formatter: priceFormatter) { isEditing in
-                self.isEditing = isEditing
-            } onCommit: {
-                isEditing = false
-                isEdited = true
-            }
-            .multilineTextAlignment(.trailing)
-            .frame(maxWidth: 120)
-            .background(RoundedRectangle(cornerRadius: 5.0)
-                            .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
-            .keyboardType(.decimalPad)
+            TextField("sell price", value: $sellPrice, formatter: priceFormatter, prompt: Text("0.00"))
+                .onSubmit({
+                    isEdited = true
+                })
+                .multilineTextAlignment(.trailing)
+                .frame(maxWidth: 120)
+                .background(RoundedRectangle(cornerRadius: 5.0)
+                                .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+                .keyboardType(.decimalPad)
             #endif
         
             Spacer()
             
-            Text(item.sellCurrency ?? "USD")
+            Text(sellCurrency)
             Button(action: {
                 presentChooseSellCurrencyView = true
             }, label: {
@@ -590,7 +600,7 @@ struct ItemDetailView: View {
             
             Spacer()
             
-            Text(item.note ?? "")
+            TextField(item.note ?? "", text: $note)
                 .frame(maxWidth: .infinity)
                 .background(RoundedRectangle(cornerRadius: 5.0)
                                 .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
@@ -618,28 +628,5 @@ struct ItemDetailView: View {
             }
         }
     }
-    
-    private var yearFormatter: NumberFormatter {
-        let numberFormatter = NumberFormatter()
-        numberFormatter.numberStyle = .none
-        numberFormatter.minimumIntegerDigits = 1
-        numberFormatter.maximumIntegerDigits = 4
-        return numberFormatter
-    }
-    
-    private var monthFormatter: NumberFormatter {
-        let numberFormatter = NumberFormatter()
-        numberFormatter.minimumIntegerDigits = 1
-        numberFormatter.maximumIntegerDigits = 2
-        return numberFormatter
-    }
-    
-    private var dayFormatter: NumberFormatter {
-        let numberFormatter = NumberFormatter()
-        numberFormatter.minimumIntegerDigits = 1
-        numberFormatter.maximumIntegerDigits = 2
-        return numberFormatter
-    }
-    
 }
 
