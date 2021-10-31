@@ -50,12 +50,18 @@ struct KindDetailView: View {
         }
     }
     
+    private func reset() {
+        name = kind.name ?? ""
+        
+        isEdited = false
+    }
+    
     private func header() -> some View {
         HStack {
             Spacer()
             
             Button {
-                presentationMode.wrappedValue.dismiss()
+                reset()
             } label: {
                 Text("Cancel")
             }
@@ -65,7 +71,7 @@ struct KindDetailView: View {
             
             Button {
                 viewModel.kindDTO = KindDTO(id: kind.uuid, name: name)
-                presentationMode.wrappedValue.dismiss()
+                isEdited = false
             } label: {
                 Label("Save", systemImage: "square.and.arrow.down")
             }

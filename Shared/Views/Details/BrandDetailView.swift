@@ -54,12 +54,19 @@ struct BrandDetailView: View {
         }
     }
     
+    private func reset() {
+        name = brand.name ?? ""
+        urlString = brand.url?.absoluteString ?? ""
+        
+        isEdited = false
+    }
+    
     private func header() -> some View {
         HStack {
             Spacer()
             
             Button {
-                presentationMode.wrappedValue.dismiss()
+                reset()
             } label: {
                 Text("Cancel")
             }
@@ -69,7 +76,7 @@ struct BrandDetailView: View {
             
             Button {
                 viewModel.brandDTO = BrandDTO(id: brand.uuid, name: name, url: URL(string: urlString))
-                presentationMode.wrappedValue.dismiss()
+                isEdited = false
             } label: {
                 Label("Save", systemImage: "square.and.arrow.down")
             }

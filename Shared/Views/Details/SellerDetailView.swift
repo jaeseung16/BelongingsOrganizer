@@ -53,12 +53,19 @@ struct SellerDetailView: View {
         }
     }
     
+    private func reset() {
+        name = seller.name ?? ""
+        urlString = seller.url?.absoluteString ?? ""
+        
+        isEdited = false
+    }
+    
     private func header() -> some View {
         HStack {
             Spacer()
             
             Button {
-                presentationMode.wrappedValue.dismiss()
+                reset()
             } label: {
                 Text("Cancel")
             }
@@ -68,7 +75,7 @@ struct SellerDetailView: View {
             
             Button {
                 viewModel.sellerDTO = SellerDTO(id: seller.uuid, name: name, url: URL(string: urlString))
-                presentationMode.wrappedValue.dismiss()
+                isEdited = false
             } label: {
                 Label("Save", systemImage: "square.and.arrow.down")
             }

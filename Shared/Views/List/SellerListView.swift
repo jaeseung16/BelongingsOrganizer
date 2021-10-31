@@ -30,10 +30,12 @@ struct SellerListView: View {
                     
                     List {
                         ForEach(sellers) { seller in
-                            NavigationLink(
-                                destination: SellerDetailView(seller: seller, name: seller.name ?? "", urlString: seller.url?.absoluteString ?? "")
-                                    .environmentObject(viewModel)) {
-                                Text("\(seller.name ?? "")")
+                            if let sellerName = seller.name {
+                                NavigationLink(
+                                    destination: SellerDetailView(seller: seller, name: sellerName, urlString: seller.url?.absoluteString ?? "")
+                                        .environmentObject(viewModel)) {
+                                    Text(sellerName)
+                                }
                             }
                         }
                         .onDelete(perform: deleteSellers)

@@ -30,10 +30,10 @@ struct KindListView: View {
                     
                     List {
                         ForEach(kinds) { kind in
-                            NavigationLink(
-                                destination: KindDetailView(kind: kind, name: kind.name ?? "")
-                                    .environmentObject(viewModel)) {
-                                Text("\(kind.name ?? "")")
+                            if let kindName = kind.name {
+                                NavigationLink(destination: KindDetailView(kind: kind, name: kindName)) {
+                                    Text(kindName)
+                                }
                             }
                         }
                         .onDelete(perform: deleteKinds)

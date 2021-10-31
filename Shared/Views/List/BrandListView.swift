@@ -30,10 +30,12 @@ struct BrandListView: View {
                     
                     List {
                         ForEach(brands) { brand in
-                            NavigationLink(
-                                destination: BrandDetailView(brand: brand, name: brand.name ?? "", urlString: brand.url?.absoluteString ?? "")
-                                    .environmentObject(viewModel)) {
-                                Text("\(brand.name ?? "")")
+                            if let brandName = brand.name {
+                                NavigationLink(destination: BrandDetailView(brand: brand,
+                                                                            name: brandName,
+                                                                            urlString: brand.url?.absoluteString ?? "")) {
+                                    Text(brandName)
+                                }
                             }
                         }
                         .onDelete(perform: deleteBrands)
