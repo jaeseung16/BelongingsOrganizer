@@ -632,6 +632,9 @@ struct ItemDetailView: View {
             Spacer()
             
             TextField(item.note ?? "", text: $note)
+                .onSubmit {
+                    isEdited = true
+                }
                 .frame(maxWidth: .infinity)
                 .background(RoundedRectangle(cornerRadius: 5.0)
                                 .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
@@ -645,7 +648,7 @@ struct ItemDetailView: View {
                     .font(.subheadline)
                     .foregroundColor(.secondary)
                 Spacer()
-                Text("\(item.created!, formatter: BelongingsViewModel.dateFormatter)")
+                Text("\(item.created ?? Date(), formatter: BelongingsViewModel.dateFormatter)")
                     .font(.callout)
             }
             
@@ -654,7 +657,7 @@ struct ItemDetailView: View {
                     .font(.subheadline)
                     .foregroundColor(.secondary)
                 Spacer()
-                Text("\(item.lastupd!, formatter: BelongingsViewModel.dateFormatter)")
+                Text("\(item.lastupd ?? Date(), formatter: BelongingsViewModel.dateFormatter)")
                     .font(.callout)
             }
         }
