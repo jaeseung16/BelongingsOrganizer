@@ -13,6 +13,8 @@ struct ItemSummaryView: View {
     @State private var brand: Brand?
     @State private var seller: Seller?
     
+    private let notApplicable = "N/A"
+    
     var body: some View {
         GeometryReader { geometry in
             VStack {
@@ -36,11 +38,7 @@ struct ItemSummaryView: View {
     
     private func itemInfo() -> some View {
         VStack {
-            HStack {
-                Spacer()
-                Text(item.name ?? "")
-                Spacer()
-            }
+            nameView()
             
             photoView()
             
@@ -48,37 +46,45 @@ struct ItemSummaryView: View {
                 Spacer()
                 
                 VStack {
-                    Text("CATEGORY")
-                        .foregroundColor(.secondary)
-                    Text(item.kind?.name ?? "")
+                    section(title: "CATEGORY")
+                    Text(item.kind?.name ?? notApplicable)
                 }
                 
                 Spacer()
                 
                 VStack {
-                    Text("BRAND")
-                        .foregroundColor(.secondary)
-                    Text(item.brand?.name ?? "")
+                    section(title: "BRAND")
+                    Text(item.brand?.name ?? notApplicable)
                 }
                 
                 Spacer()
                 
                 VStack {
-                    Text("SELLER")
-                        .foregroundColor(.secondary)
-                    Text(item.seller?.name ?? "")
+                    section(title: "SELLER")
+                    Text(item.seller?.name ?? notApplicable)
                 }
                 
                 Spacer()
             }
             
-            quantityAndPricesView()
+            quantityView()
             
-            datesView()
+            obtainedView()
+            
+            disposedView()
 
             miscView()
         }
         .padding()
+    }
+    
+    private func nameView() -> some View {
+        HStack {
+            Spacer()
+            Text(item.name ?? "")
+                .font(.headline)
+            Spacer()
+        }
     }
     
     private func photoView() -> some View {
@@ -92,7 +98,7 @@ struct ItemSummaryView: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(height: 100)
             } else {
-                Text("PHOTO")
+                Text("No Photo")
                     .foregroundColor(.secondary)
             }
             #else
@@ -102,7 +108,7 @@ struct ItemSummaryView: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(height: 100)
             } else {
-                Text("PHOTO")
+                Text("No Photo")
                     .foregroundColor(.secondary)
             }
             #endif
@@ -111,95 +117,103 @@ struct ItemSummaryView: View {
         }
     }
     
-    private func quantityAndPricesView() -> some View {
+    private func quantityView() -> some View {
         HStack {
             Spacer()
             
-            VStack {
-                Text("QUANTITY")
-                    .foregroundColor(.secondary)
-                Text(quantityFormatter.string(from: NSNumber(value: item.quantity)) ?? "")
-                    .multilineTextAlignment(.trailing)
-            }
-            
-            Spacer()
-            
-            VStack {
-                Text("BUY PRICE")
-                    .foregroundColor(.secondary)
-                Text(priceFormatter.string(from: NSNumber(value: item.buyPrice)) ?? "")
-                    .multilineTextAlignment(.trailing)
-            }
-            
-            VStack {
-                Text("CURRENCY")
-                    .foregroundColor(.secondary)
-                Text(item.buyCurrency ?? "")
-            }
-            
-            Spacer()
-            
-            VStack {
-                Text("SELL PRICE")
-                    .foregroundColor(.secondary)
-                Text(priceFormatter.string(from: NSNumber(value: item.sellPrice)) ?? "")
-                    .multilineTextAlignment(.trailing)
-            }
-            
-            VStack {
-                Text("CURRENCY")
-                    .foregroundColor(.secondary)
-                Text(item.sellCurrency ?? "")
-            }
-            
+            section(title: "QUANTITY")
+            Text(quantityFormatter.string(from: NSNumber(value: item.quantity)) ?? notApplicable)
+                .multilineTextAlignment(.trailing)
             Spacer()
         }
     }
     
-    private func datesView() -> some View {
+    private func obtainedView() -> some View {
         HStack {
-            Text("OBTAINED")
-                .foregroundColor(.secondary)
-            
             Spacer()
             
-            if let obtained = item.obtained {
-                Text("\(obtained, formatter: BelongingsViewModel.dateFormatterWithDateOnly)")
-            } else {
-                Text("N/A")
+            VStack {
+                section(title: "OBTAINED")
+                if let obtained = item.obtained {
+                    Text("\(obtained, formatter: BelongingsViewModel.dateFormatterWithDateOnly)")
+                } else {
+                    Text("N/A")
+                }
             }
             
             Spacer()
-            Spacer()
             
-            Text("DISPOSED")
-                .foregroundColor(.secondary)
-            
-            Spacer()
-            
-            if let disposed = item.disposed {
-                Text("\(disposed, formatter: BelongingsViewModel.dateFormatterWithDateOnly)")
-            } else {
-                Text("N/A")
+            VStack {
+                section(title: "BUY PRICE")
+                Text(priceFormatter.string(from: NSNumber(value: item.buyPrice)) ?? notApplicable)
+                    .multilineTextAlignment(.trailing)
             }
             
+            Spacer()
+            
+            VStack {
+                section(title: "CURRENCY")
+                Text(item.buyCurrency ?? notApplicable)
+            }
+
+            Spacer()
+        }
+    }
+    
+    private func disposedView() -> some View {
+        HStack {
+            Spacer()
+       
+            VStack {
+                section(title: "DISPOSED")
+                
+                if let disposed = item.disposed {
+                    Text("\(disposed, formatter: BelongingsViewModel.dateFormatterWithDateOnly)")
+                } else {
+                    Text("N/A")
+                }
+            }
+            
+            Spacer()
+            
+            VStack {
+                section(title: "SELL PRICE")
+                Text(priceFormatter.string(from: NSNumber(value: item.sellPrice)) ?? notApplicable)
+                    .multilineTextAlignment(.trailing)
+            }
+            
+            Spacer()
+            
+            VStack {
+                section(title: "CURRENCY")
+                Text(item.sellCurrency ?? notApplicable)
+            }
+            
+            Spacer()
         }
     }
     
     private func miscView() -> some View {
-        HStack {
-            Text("created")
-                .foregroundColor(.secondary)
-            Spacer()
-            Text("\(item.created!, formatter: BelongingsViewModel.dateFormatter)")
+        VStack {
+            Divider()
             
-            Spacer()
-            Spacer()
-            
-            Text("last updated")
-                .foregroundColor(.secondary)
-            Spacer()
-            Text("\(item.lastupd!, formatter: BelongingsViewModel.dateFormatter)")
+            HStack {
+                section(title: "CREATED")
+                Text("\(item.created ?? Date(), formatter: BelongingsViewModel.dateFormatter)")
+                    .font(.callout)
+            }
+
+            HStack {
+                section(title: "UPDATED")
+                Text("\(item.lastupd ?? Date(), formatter: BelongingsViewModel.dateFormatter)")
+                    .font(.callout)
+            }
         }
+    }
+    
+    private func section(title: String) -> some View {
+        Text(title)
+            .font(.caption)
+            .foregroundColor(.secondary)
     }
 }
