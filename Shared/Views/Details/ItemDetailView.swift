@@ -59,6 +59,7 @@ struct ItemDetailView: View {
                 
                 footer()
             }
+            .navigationTitle(item.name ?? "N/A")
             .padding()
             .sheet(isPresented: $presentChooseKindView, content: {
                 #if os(macOS)
@@ -305,9 +306,7 @@ struct ItemDetailView: View {
     
     private func nameView() -> some View {
         HStack {
-            Text("NAME")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
+            SectionTitleView(title: "NAME")
             
             Spacer()
             
@@ -326,9 +325,7 @@ struct ItemDetailView: View {
     private func photoView() -> some View {
         VStack {
             HStack {
-                Text("PHOTO")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
+                SectionTitleView(title: "PHOTO")
                 
                 Spacer()
                 
@@ -371,9 +368,7 @@ struct ItemDetailView: View {
     
     private func categoryView() -> some View {
         HStack {
-            Text("CATEGORY")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
+            SectionTitleView(title: "CATEGORY")
             
             Spacer()
             
@@ -394,9 +389,7 @@ struct ItemDetailView: View {
     
     private func brandView() -> some View {
         HStack {
-            Text("BRAND")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
+            SectionTitleView(title: "BRAND")
             
             Spacer()
             
@@ -417,9 +410,7 @@ struct ItemDetailView: View {
     
     private func sellerView() -> some View {
         HStack {
-            Text("SELLER")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
+            SectionTitleView(title: "SELLER")
             
             Spacer()
             
@@ -440,9 +431,8 @@ struct ItemDetailView: View {
     
     private func quantityView() -> some View {
         HStack {
-            Text("QUANTITY")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
+            SectionTitleView(title: "QUANTITY")
+            
             Spacer()
             
             #if os(macOS)
@@ -480,9 +470,8 @@ struct ItemDetailView: View {
     private func obtainedView() -> some View {
         VStack {
             HStack {
-                Text("OBTAINED")
-                    .font(.callout)
-                    .foregroundColor(.secondary)
+                SectionTitleView(title: "OBTAINED")
+                
                 Spacer()
                 if isObtainedDateEdited {
                     Text("\(obtained, formatter: BelongingsViewModel.dateFormatterWithDateOnly)")
@@ -504,10 +493,9 @@ struct ItemDetailView: View {
     
     private func buyPriceView() -> some View {
         HStack {
-            Text("PRICE")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
             Spacer()
+            
+            SectionTitleView(title: "PRICE")
             
             #if os(macOS)
             TextField("buy price", value: $buyPrice, formatter: priceFormatter, prompt: Text("0.00"))
@@ -531,8 +519,6 @@ struct ItemDetailView: View {
                 .keyboardType(.decimalPad)
             #endif
         
-            Spacer()
-            
             if buyPriceIsFocused {
                 Button {
                     buyPriceIsFocused = false
@@ -553,9 +539,8 @@ struct ItemDetailView: View {
     private func disposedView() -> some View {
         VStack {
             HStack {
-                Text("DISPOSED")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
+                SectionTitleView(title: "DISPOSED")
+
                 Spacer()
                 
                 if isDisposedDateEdited {
@@ -577,10 +562,9 @@ struct ItemDetailView: View {
     
     private func sellPriceView() -> some View {
         HStack {
-            Text("PRICE")
-                .font(.caption)
-                .foregroundColor(.secondary)
             Spacer()
+            
+            SectionTitleView(title: "PRICE")
             
             #if os(macOS)
             TextField("sell price", value: $sellPrice, formatter: priceFormatter, prompt: Text("0.00"))
@@ -604,8 +588,6 @@ struct ItemDetailView: View {
                 .keyboardType(.decimalPad)
             #endif
         
-            Spacer()
-            
             if sellPriceIsFocused {
                 Button {
                     sellPriceIsFocused = false
@@ -624,12 +606,8 @@ struct ItemDetailView: View {
     }
     
     private func noteView() -> some View {
-        HStack {
-            Text("NOTE")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-            
-            Spacer()
+        VStack(alignment: .leading) {
+            SectionTitleView(title: "NOTE")
             
             TextField(item.note ?? "", text: $note)
                 .onSubmit {
@@ -644,19 +622,19 @@ struct ItemDetailView: View {
     private func footer() -> some View {
         VStack {
             HStack {
-                Text("created")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
                 Spacer()
+                
+                SectionTitleView(title: "CREATED")
+
                 Text("\(item.created ?? Date(), formatter: BelongingsViewModel.dateFormatter)")
                     .font(.callout)
             }
             
             HStack {
-                Text("last updated")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
                 Spacer()
+                
+                SectionTitleView(title: "UPDATED")
+              
                 Text("\(item.lastupd ?? Date(), formatter: BelongingsViewModel.dateFormatter)")
                     .font(.callout)
             }

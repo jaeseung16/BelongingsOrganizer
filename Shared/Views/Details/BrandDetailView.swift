@@ -89,9 +89,7 @@ struct BrandDetailView: View {
     private func nameView() -> some View {
         VStack {
             HStack {
-                Text("NAME")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                SectionTitleView(title: "NAME")
                 
                 Spacer()
             }
@@ -108,9 +106,7 @@ struct BrandDetailView: View {
     private func urlView() -> some View {
         VStack {
             HStack {
-                Text("URL")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                SectionTitleView(title: "URL")
                 
                 Spacer()
                 
@@ -137,11 +133,9 @@ struct BrandDetailView: View {
     
     private func addedView() -> some View {
         HStack {
-            Text("ADDED")
-                .font(.caption)
-                .foregroundColor(.secondary)
-            
             Spacer()
+            
+            SectionTitleView(title: "ADDED")
             
             Text("\(brand.created ?? Date(), formatter: BelongingsViewModel.dateFormatter)")
         }
@@ -149,11 +143,9 @@ struct BrandDetailView: View {
     
     private func lastUpdatedView() -> some View {
         HStack {
-            Text("LAST UPDATED")
-                .font(.caption)
-                .foregroundColor(.secondary)
-            
             Spacer()
+            
+            SectionTitleView(title: "UPDATED")
             
             Text("\(brand.lastupd ?? Date(), formatter: BelongingsViewModel.dateFormatter)")
         }

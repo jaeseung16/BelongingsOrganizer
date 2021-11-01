@@ -84,9 +84,7 @@ struct KindDetailView: View {
     private func nameView() -> some View {
         VStack {
             HStack {
-                Text("NAME")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                SectionTitleView(title: "NAME")
                 
                 Spacer()
             }
@@ -102,9 +100,7 @@ struct KindDetailView: View {
 
     private func addedView() -> some View {
         HStack {
-            Text("ADDED")
-                .font(.caption)
-                .foregroundColor(.secondary)
+            SectionTitleView(title: "ADDED")
             
             Spacer()
             
@@ -114,11 +110,9 @@ struct KindDetailView: View {
     
     private func lastUpdatedView() -> some View {
         HStack {
-            Text("LAST UPDATED")
-                .font(.caption)
-                .foregroundColor(.secondary)
-            
             Spacer()
+            
+            SectionTitleView(title: "UPDATED")
             
             Text("\(kind.lastupd ?? Date(), formatter: BelongingsViewModel.dateFormatter)")
         }

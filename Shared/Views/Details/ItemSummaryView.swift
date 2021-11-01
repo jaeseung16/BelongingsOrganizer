@@ -42,30 +42,9 @@ struct ItemSummaryView: View {
             
             photoView()
             
-            HStack {
-                Spacer()
-                
-                VStack {
-                    section(title: "CATEGORY")
-                    Text(item.kind?.name ?? notApplicable)
-                }
-                
-                Spacer()
-                
-                VStack {
-                    section(title: "BRAND")
-                    Text(item.brand?.name ?? notApplicable)
-                }
-                
-                Spacer()
-                
-                VStack {
-                    section(title: "SELLER")
-                    Text(item.seller?.name ?? notApplicable)
-                }
-                
-                Spacer()
-            }
+            Divider()
+            
+            categoryBrandSellerView()
             
             quantityView()
             
@@ -99,6 +78,7 @@ struct ItemSummaryView: View {
                     .frame(height: 100)
             } else {
                 Text("No Photo")
+                    .font(.body.italic())
                     .foregroundColor(.secondary)
             }
             #else
@@ -109,9 +89,40 @@ struct ItemSummaryView: View {
                     .frame(height: 100)
             } else {
                 Text("No Photo")
+                    .font(.body.italic())
                     .foregroundColor(.secondary)
             }
             #endif
+            
+            Spacer()
+        }
+    }
+    
+    private func categoryBrandSellerView() -> some View {
+        HStack {
+            Spacer()
+            
+            VStack {
+                SectionTitleView(title: "CATEGORY")
+
+                Text(item.kind?.name ?? notApplicable)
+            }
+            
+            Spacer()
+            
+            VStack {
+                SectionTitleView(title: "BRAND")
+
+                Text(item.brand?.name ?? notApplicable)
+            }
+            
+            Spacer()
+            
+            VStack {
+                SectionTitleView(title: "SELLER")
+
+                Text(item.seller?.name ?? notApplicable)
+            }
             
             Spacer()
         }
@@ -121,7 +132,8 @@ struct ItemSummaryView: View {
         HStack {
             Spacer()
             
-            section(title: "QUANTITY")
+            SectionTitleView(title: "QUANTITY")
+
             Text(quantityFormatter.string(from: NSNumber(value: item.quantity)) ?? notApplicable)
                 .multilineTextAlignment(.trailing)
             Spacer()
@@ -133,7 +145,8 @@ struct ItemSummaryView: View {
             Spacer()
             
             VStack {
-                section(title: "OBTAINED")
+                SectionTitleView(title: "OBTAINED")
+                
                 if let obtained = item.obtained {
                     Text("\(obtained, formatter: BelongingsViewModel.dateFormatterWithDateOnly)")
                 } else {
@@ -144,7 +157,8 @@ struct ItemSummaryView: View {
             Spacer()
             
             VStack {
-                section(title: "BUY PRICE")
+                SectionTitleView(title: "BUY PRICE")
+
                 Text(priceFormatter.string(from: NSNumber(value: item.buyPrice)) ?? notApplicable)
                     .multilineTextAlignment(.trailing)
             }
@@ -152,7 +166,8 @@ struct ItemSummaryView: View {
             Spacer()
             
             VStack {
-                section(title: "CURRENCY")
+                SectionTitleView(title: "CURRENCY")
+
                 Text(item.buyCurrency ?? notApplicable)
             }
 
@@ -165,8 +180,8 @@ struct ItemSummaryView: View {
             Spacer()
        
             VStack {
-                section(title: "DISPOSED")
-                
+                SectionTitleView(title: "DISPOSED")
+  
                 if let disposed = item.disposed {
                     Text("\(disposed, formatter: BelongingsViewModel.dateFormatterWithDateOnly)")
                 } else {
@@ -177,7 +192,8 @@ struct ItemSummaryView: View {
             Spacer()
             
             VStack {
-                section(title: "SELL PRICE")
+                SectionTitleView(title: "SELL PRICE")
+
                 Text(priceFormatter.string(from: NSNumber(value: item.sellPrice)) ?? notApplicable)
                     .multilineTextAlignment(.trailing)
             }
@@ -185,7 +201,8 @@ struct ItemSummaryView: View {
             Spacer()
             
             VStack {
-                section(title: "CURRENCY")
+                SectionTitleView(title: "CURRENCY")
+
                 Text(item.sellCurrency ?? notApplicable)
             }
             
@@ -198,22 +215,19 @@ struct ItemSummaryView: View {
             Divider()
             
             HStack {
-                section(title: "CREATED")
+                SectionTitleView(title: "CREATED")
+
                 Text("\(item.created ?? Date(), formatter: BelongingsViewModel.dateFormatter)")
                     .font(.callout)
             }
 
             HStack {
-                section(title: "UPDATED")
+                SectionTitleView(title: "UPDATED")
+
                 Text("\(item.lastupd ?? Date(), formatter: BelongingsViewModel.dateFormatter)")
                     .font(.callout)
             }
         }
     }
     
-    private func section(title: String) -> some View {
-        Text(title)
-            .font(.caption)
-            .foregroundColor(.secondary)
-    }
 }
