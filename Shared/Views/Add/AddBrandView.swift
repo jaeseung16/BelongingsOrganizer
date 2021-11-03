@@ -84,11 +84,13 @@ struct AddBrandView: View {
         }
         .padding()
         .frame(minHeight: 200.0)
-        .alert(isPresented: $showAlert) {
-            Alert(title: Text("Invalid URL"),
-                  message: Text("Cannot access the URL. Try a different one or leave it empty."),
-                  dismissButton: .default(Text("Dismiss")))
-        }
+        .alert("Invalid URL", isPresented: $showAlert, actions: {
+            Button("Dismiss")  {
+                urlString = ""
+            }
+        }, message: {
+            Text("Cannot access the URL. Try a different one or leave it empty.")
+        })
     }
     
     private func saveBrand() -> Void {

@@ -13,6 +13,8 @@ struct SellerDetailView: View {
     
     @State var seller: Seller
     
+    @State private var showAlert = false
+    
     private var items: [Item] {
         var items = [Item]()
         seller.items?.forEach { item in
@@ -49,7 +51,15 @@ struct SellerDetailView: View {
                 ItemsView(items: items)
             }
             .padding()
+            .alert("Invalid URL", isPresented: $showAlert, actions: {
+                Button("Dismiss")  {
+                    urlString = seller.url?.absoluteString ?? ""
+                }
+            }, message: {
+                Text("Cannot access the URL. Try a different one or leave it empty.")
+            })
         }
+        
     }
     
     private func reset() {
@@ -120,6 +130,8 @@ struct SellerDetailView: View {
                     
                     if let url = URLValidator.validate(urlString: urlString) {
                         urlString = url.absoluteString
+                    } else {
+                        showAlert = true
                     }
                 }
         }
