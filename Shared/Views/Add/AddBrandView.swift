@@ -48,6 +48,9 @@ struct AddBrandView: View {
                     showAlert = true
                 }
             }
+            #if os(iOS)
+            .textInputAutocapitalization(.never)
+            #endif
             .foregroundColor(.secondary)
             .frame(maxWidth: .infinity, idealHeight: 50)
             .background(RoundedRectangle(cornerRadius: 5.0)
