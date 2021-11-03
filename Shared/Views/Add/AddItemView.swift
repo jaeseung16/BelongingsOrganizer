@@ -30,6 +30,9 @@ struct AddItemView: View {
     @State private var brand: Brand?
     @State private var seller: Seller?
     
+    @FocusState private var quantityIsFocused: Bool
+    @FocusState private var buyPriceIsFocused: Bool
+    
     //@State private var image: Data?
     private var image: Data? {
         viewModel.imageData
@@ -287,12 +290,21 @@ struct AddItemView: View {
                                     .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
                 #else
                 TextField("0.00", text: $buyPrice)
+                    .focused($buyPriceIsFocused)
                     .multilineTextAlignment(.trailing)
                     .frame(maxWidth: 120)
                     .background(RoundedRectangle(cornerRadius: 5.0)
                                     .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
                     .keyboardType(.decimalPad)
                 #endif
+                
+                if buyPriceIsFocused {
+                    Button {
+                        buyPriceIsFocused = false
+                    } label: {
+                        Text("Submit")
+                    }
+                }
             }
         }
     }
@@ -312,12 +324,21 @@ struct AddItemView: View {
                                 .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
             #else
             TextField("0", text: $quantity)
+                .focused($quantityIsFocused)
                 .multilineTextAlignment(.trailing)
                 .frame(maxWidth: 80)
                 .background(RoundedRectangle(cornerRadius: 5.0)
                                 .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
                 .keyboardType(.numberPad)
             #endif
+            
+            if quantityIsFocused {
+                Button {
+                    quantityIsFocused = false
+                } label: {
+                    Text("Submit")
+                }
+            }
         }
     }
     
