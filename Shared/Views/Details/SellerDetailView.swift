@@ -25,7 +25,6 @@ struct SellerDetailView: View {
         }
     }
     
-    @State private var isEditing = false
     @State private var isEdited = false
     @State var name = ""
     @State var urlString = ""
@@ -93,12 +92,10 @@ struct SellerDetailView: View {
                 Spacer()
             }
             
-            TextField(seller.name ?? "", text: $name) { isEditing in
-                self.isEditing = isEditing
-            } onCommit: {
-                isEditing = false
-                isEdited = true
-            }
+            TextField(seller.name ?? "", text: $name, prompt: nil)
+                .onSubmit {
+                    isEdited = true
+                }
         }
     }
     
@@ -117,16 +114,14 @@ struct SellerDetailView: View {
                 }
             }
             
-            TextField(seller.url?.absoluteString ?? "N/A", text: $urlString) { isEditing in
-                self.isEditing = isEditing
-            } onCommit: {
-                isEditing = false
-                isEdited = true
-                
-                if let url = URLValidator.validate(urlString: urlString) {
-                    urlString = url.absoluteString
+            TextField(seller.url?.absoluteString ?? "N/A", text: $urlString, prompt: nil)
+                .onSubmit {
+                    isEdited = true
+                    
+                    if let url = URLValidator.validate(urlString: urlString) {
+                        urlString = url.absoluteString
+                    }
                 }
-            }
         }
     }
     

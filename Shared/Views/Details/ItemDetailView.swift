@@ -310,12 +310,10 @@ struct ItemDetailView: View {
             
             Spacer()
             
-            TextField(item.name ?? "", text: $name, onEditingChanged: { isEditing in
-                self.isEditing = isEditing
-            }, onCommit: {
-                isEditing = false
-                isEdited = true
-            })
+            TextField(item.name ?? "", text: $name, prompt: nil)
+                .onSubmit {
+                    isEdited = true
+                }
                 .frame(maxWidth: .infinity, idealHeight: 50)
                 .background(RoundedRectangle(cornerRadius: 5.0)
                                 .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))

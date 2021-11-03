@@ -25,7 +25,6 @@ struct BrandDetailView: View {
         }
     }
     
-    @State private var isEditing = false
     @State private var isEdited = false
     @State var name = ""
     @State var urlString = ""
@@ -94,12 +93,10 @@ struct BrandDetailView: View {
                 Spacer()
             }
             
-            TextField(brand.name ?? "", text: $name) { isEditing in
-                self.isEditing = isEditing
-            } onCommit: {
-                isEditing = false
-                isEdited = true
-            }
+            TextField(brand.name ?? "", text: $name, prompt: nil)
+                .onSubmit {
+                    isEdited = true
+                }
         }
     }
     
@@ -118,16 +115,14 @@ struct BrandDetailView: View {
                 }
             }
             
-            TextField(brand.url?.absoluteString ?? "N/A", text: $urlString) { isEditing in
-                self.isEditing = isEditing
-            } onCommit: {
-                isEditing = false
-                isEdited = true
-                
-                if let url = URLValidator.validate(urlString: urlString) {
-                    urlString = url.absoluteString
+            TextField(brand.url?.absoluteString ?? "N/A", text: $urlString, prompt: nil)
+                .onSubmit {
+                    isEdited = true
+                    
+                    if let url = URLValidator.validate(urlString: urlString) {
+                        urlString = url.absoluteString
+                    }
                 }
-            }
         }
     }
     

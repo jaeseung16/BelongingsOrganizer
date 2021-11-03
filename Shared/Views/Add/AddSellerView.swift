@@ -38,16 +38,15 @@ struct AddSellerView: View {
             Text("URL")
                 .font(.caption)
             
-            TextField("url", text: $urlString) { isEditing in
-                self.isEditing = isEditing
-            } onCommit: {
-                if let url = URLValidator.validate(urlString: urlString) {
-                    print("url = \(url)")
-                    self.urlString = url.absoluteString
-                } else {
-                    showAlert = true
+            TextField("url", text: $urlString, prompt: nil)
+                .onSubmit {
+                    if let url = URLValidator.validate(urlString: urlString) {
+                        print("url = \(url)")
+                        self.urlString = url.absoluteString
+                    } else {
+                        showAlert = true
+                    }
                 }
-            }
             #if os(iOS)
             .textInputAutocapitalization(.never)
             #endif

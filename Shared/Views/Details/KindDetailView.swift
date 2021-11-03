@@ -25,7 +25,6 @@ struct KindDetailView: View {
         }
     }
     
-    @State private var isEditing = false
     @State private var isEdited = false
     @State var name = ""
     
@@ -89,12 +88,10 @@ struct KindDetailView: View {
                 Spacer()
             }
             
-            TextField(kind.name ?? "", text: $name) { isEditing in
-                self.isEditing = isEditing
-            } onCommit: {
-                isEditing = false
-                isEdited = true
-            }
+            TextField(kind.name ?? "", text: $name, prompt: nil)
+                .onSubmit {
+                    isEdited = true
+                }
         }
     }
 
