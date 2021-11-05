@@ -119,15 +119,19 @@ struct ItemListView: View {
         .onChange(of: AddItemViewModel.shared.showAlert) { _ in
             showAlert = AddItemViewModel.shared.showAlert
         }
-        .alert(isPresented: $showAlert) {
-            Alert(title: Text("Unable to Save Data"),
-                  message: Text(AddItemViewModel.shared.message),
-                  dismissButton: .default(Text("Dismiss")))
+        .alert("Unable to Save Data", isPresented: $showAlert) {
+            Button("Dismiss") {
+                showAlert.toggle()
+            }
+        } message: {
+            Text(AddItemViewModel.shared.message)
         }
-        .alert(isPresented: $showAlertForDeletion) {
-            Alert(title: Text("Unable to Delete Data"),
-                  message: Text("Failed to delete the selected item"),
-                  dismissButton: .default(Text("Dismiss")))
+        .alert("Unable to Delete Data", isPresented: $showAlertForDeletion) {
+            Button("Dismiss") {
+                showAlert.toggle()
+            }
+        } message: {
+            Text("Failed to delete the selected item")
         }
     }
     
