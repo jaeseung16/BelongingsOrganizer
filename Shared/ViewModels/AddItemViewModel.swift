@@ -11,9 +11,11 @@ import CoreData
 import CoreML
 import Vision
 import CoreImage
+import os
 
 class AddItemViewModel: NSObject, ObservableObject {
     static let shared = AddItemViewModel()
+    let logger = Logger()
     
     private let persistenteContainer = PersistenceController.shared.container
     private var viewContext: NSManagedObjectContext {
@@ -72,7 +74,7 @@ class AddItemViewModel: NSObject, ObservableObject {
         
         PersistenceController.save(viewContext: viewContext) { error in
             let nsError = error as NSError
-            print("While saving a new item, occured an unresolved error \(nsError), \(nsError.userInfo)")
+            logger.error("While saving a new item, occured an unresolved error \(nsError), \(nsError.userInfo)")
             message = "Cannot save a new item with name = \(String(describing: name))"
             showAlert.toggle()
         }
@@ -91,7 +93,7 @@ class AddItemViewModel: NSObject, ObservableObject {
         
         PersistenceController.save(viewContext: viewContext) { error in
             let nsError = error as NSError
-            print("While saving a new category, occured an unresolved error \(nsError), \(nsError.userInfo)")
+            logger.error("While saving a new category, occured an unresolved error \(nsError), \(nsError.userInfo)")
             message = "Cannot save a new category with name = \(String(describing: name))"
             showAlert.toggle()
         }
@@ -109,7 +111,7 @@ class AddItemViewModel: NSObject, ObservableObject {
 
         PersistenceController.save(viewContext: viewContext) { error in
             let nsError = error as NSError
-            print("While saving a new brand, occured an unresolved error \(nsError), \(nsError.userInfo)")
+            logger.error("While saving a new brand, occured an unresolved error \(nsError), \(nsError.userInfo)")
             message = "Cannot save a new brand with name = \(String(describing: name))"
             showAlert.toggle()
         }
@@ -127,7 +129,7 @@ class AddItemViewModel: NSObject, ObservableObject {
 
         PersistenceController.save(viewContext: viewContext) { error in
             let nsError = error as NSError
-            print("While saving a new seller, occured an unresolved error \(nsError), \(nsError.userInfo)")
+            logger.error("While saving a new seller, occured an unresolved error \(nsError), \(nsError.userInfo)")
             message = "Cannot save a new seller with name = \(String(describing: name))"
             showAlert.toggle()
         }

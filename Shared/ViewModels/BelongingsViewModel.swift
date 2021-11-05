@@ -9,9 +9,11 @@ import Foundation
 import Combine
 import CoreData
 import SDWebImageWebPCoder
+import os
 
 class BelongingsViewModel: NSObject, ObservableObject {
     static let shared = BelongingsViewModel()
+    let logger = Logger()
     
     static let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -64,7 +66,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
 
                 saveContext() { error in
                     let nsError = error as NSError
-                    print("While saving \(itemDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
+                    logger.error("While saving \(self.itemDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
                     message = "Cannot update name = \(String(describing: itemDTO.name))"
                     showAlert.toggle()
                 }
@@ -80,7 +82,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
 
                 saveContext() { error in
                     let nsError = error as NSError
-                    print("While saving \(kindDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
+                    logger.error("While saving \(self.kindDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
                     message = "Cannot update name = \(String(describing: kindDTO.name))"
                     showAlert.toggle()
                 }
@@ -97,7 +99,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
 
                 saveContext() { error in
                     let nsError = error as NSError
-                    print("While saving \(brandDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
+                    logger.error("While saving \(self.brandDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
                     message = "Cannot update name = \(String(describing: brandDTO.name)) and url = \(String(describing: brandDTO.url))"
                     showAlert.toggle()
                 }
@@ -114,7 +116,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
 
                 saveContext() { error in
                     let nsError = error as NSError
-                    print("While saving \(sellerDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
+                    logger.error("While saving \(self.sellerDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
                     message = "Cannot update name = \(String(describing: sellerDTO.name)) and url = \(String(describing: sellerDTO.url))"
                     showAlert.toggle()
                 }
@@ -132,7 +134,8 @@ class BelongingsViewModel: NSObject, ObservableObject {
         do {
             fetchedLinks = try persistenteContainer.viewContext.fetch(fetchRequest)
         } catch {
-            fatalError("Failed to fetch \(entity) with uuid = \(id): \(error)")
+            logger.error("Failed to fetch \(entity.rawValue) with uuid = \(id): \(error.localizedDescription)")
+            showAlert.toggle()
         }
         
         return fetchedLinks.isEmpty ? nil : fetchedLinks[0]
@@ -152,7 +155,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     // MARK: - Persistence History Request
     private lazy var historyRequestQueue = DispatchQueue(label: "history")
     private func fetchUpdates(_ notification: Notification) -> Void {
-        print("fetchUpdates \(Date().description(with: Locale.current))")
+        //print("fetchUpdates \(Date().description(with: Locale.current))")
         historyRequestQueue.async {
             let backgroundContext = self.persistenteContainer.newBackgroundContext()
             backgroundContext.performAndWait {
@@ -173,9 +176,9 @@ class BelongingsViewModel: NSObject, ObservableObject {
                         self.lastToken = history.last?.token
                     }
                 } catch {
-                    print("Could not convert history result to transactions after lastToken = \(String(describing: self.lastToken)): \(error)")
+                    self.logger.error("Could not convert history result to transactions after lastToken = \(String(describing: self.lastToken)): \(error.localizedDescription)")
                 }
-                print("fetchUpdates \(Date().description(with: Locale.current))")
+                //print("fetchUpdates \(Date().description(with: Locale.current))")
             }
         }
     }
@@ -191,7 +194,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
                 try data.write(to: tokenFile)
             } catch {
                 let message = "Could not write token data"
-                print("###\(#function): \(message): \(error)")
+                logger.error("###\(#function): \(message): \(error.localizedDescription)")
             }
         }
     }
@@ -205,7 +208,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
                                                         attributes: nil)
             } catch {
                 let message = "Could not create persistent container URL"
-                print("###\(#function): \(message): \(error)")
+                logger.error("###\(#function): \(message): \(error.localizedDescription)")
             }
         }
         return url.appendingPathComponent("token.data", isDirectory: false)
