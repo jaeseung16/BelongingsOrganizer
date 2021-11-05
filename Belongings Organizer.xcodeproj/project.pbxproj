@@ -19,6 +19,8 @@
 		900DDBF126E036CB0034A155 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900DDBC226E036C90034A155 /* Persistence.swift */; };
 		900DDBF226E036CB0034A155 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 900DDBC326E036CA0034A155 /* Assets.xcassets */; };
 		900DDBF326E036CB0034A155 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 900DDBC326E036CA0034A155 /* Assets.xcassets */; };
+		900F8D7A2735C5210069CE07 /* DetailHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900F8D792735C5210069CE07 /* DetailHeaderView.swift */; };
+		900F8D7B2735C5210069CE07 /* DetailHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900F8D792735C5210069CE07 /* DetailHeaderView.swift */; };
 		904498DD26EBBB2500002A6F /* ChooseCurrencyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 904498DC26EBBB2500002A6F /* ChooseCurrencyView.swift */; };
 		904498DE26EBBB2500002A6F /* ChooseCurrencyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 904498DC26EBBB2500002A6F /* ChooseCurrencyView.swift */; };
 		904498E126EBD30500002A6F /* NothingSelectedText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 904498E026EBD30500002A6F /* NothingSelectedText.swift */; };
@@ -137,6 +139,7 @@
 		900DDBE326E036CB0034A155 /* Tests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		900DDBE726E036CB0034A155 /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
 		900DDBE926E036CB0034A155 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		900F8D792735C5210069CE07 /* DetailHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailHeaderView.swift; sourceTree = "<group>"; };
 		904498DC26EBBB2500002A6F /* ChooseCurrencyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseCurrencyView.swift; sourceTree = "<group>"; };
 		904498E026EBD30500002A6F /* NothingSelectedText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NothingSelectedText.swift; sourceTree = "<group>"; };
 		904498E326EBD7A800002A6F /* SheetBottom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheetBottom.swift; sourceTree = "<group>"; };
@@ -373,6 +376,7 @@
 				90C172D426F13FAF00244A9C /* SellerDetailView.swift */,
 				9089734926FD3B3F005A03A8 /* ItemSummaryView.swift */,
 				90E238E12706794200E03624 /* ItemsView.swift */,
+				900F8D792735C5210069CE07 /* DetailHeaderView.swift */,
 			);
 			path = Details;
 			sourceTree = "<group>";
@@ -645,6 +649,7 @@
 				90CB46AA26ED3F0F00A9468B /* SellerListView.swift in Sources */,
 				90D3F23A26EA7FE000955316 /* BrandDTO.swift in Sources */,
 				90CB46A726ED3CB600A9468B /* BrandListView.swift in Sources */,
+				900F8D7A2735C5210069CE07 /* DetailHeaderView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -675,6 +680,7 @@
 				90E238E22706794200E03624 /* ItemsView.swift in Sources */,
 				90C0D98F26E8001700158C85 /* ChooseKindView.swift in Sources */,
 				900DDBF126E036CB0034A155 /* Persistence.swift in Sources */,
+				900F8D7B2735C5210069CE07 /* DetailHeaderView.swift in Sources */,
 				904498E826EBDEDB00002A6F /* ItemListView.swift in Sources */,
 				9072233726E93CE800965653 /* AddSellerView.swift in Sources */,
 				9072233426E93CDC00965653 /* ChooseSellerView.swift in Sources */,

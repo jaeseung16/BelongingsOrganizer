@@ -70,27 +70,11 @@ struct SellerDetailView: View {
     }
     
     private func header() -> some View {
-        HStack {
-            Spacer()
-            
-            Button {
-                reset()
-            } label: {
-                Text("Cancel")
-            }
-            .disabled(!isEdited)
-            
-            Spacer()
-            
-            Button {
-                viewModel.sellerDTO = SellerDTO(id: seller.uuid, name: name, url: URL(string: urlString))
-                isEdited = false
-            } label: {
-                Label("Save", systemImage: "square.and.arrow.down")
-            }
-            .disabled(!isEdited)
-            
-            Spacer()
+        DetailHeaderView(isEdited: $isEdited) {
+            reset()
+        } update: {
+            viewModel.sellerDTO = SellerDTO(id: seller.uuid, name: name, url: URL(string: urlString))
+            isEdited = false
         }
     }
     

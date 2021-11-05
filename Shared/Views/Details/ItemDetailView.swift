@@ -183,58 +183,42 @@ struct ItemDetailView: View {
     }
     
     private func header() -> some View {
-        HStack {
-            Spacer()
-            
-            Button {
-                reset()
-            } label: {
-                Text("Reset")
+        DetailHeaderView(isEdited: $isEdited) {
+            reset()
+        } update: {
+            if kind != nil && kind != item.kind {
+                if let originalKind = item.kind {
+                    originalKind.removeFromItems(item)
+                }
+                kind?.addToItems(item)
             }
             
-            Spacer()
-            
-            Button {
-                if kind != nil && kind != item.kind {
-                    if let originalKind = item.kind {
-                        originalKind.removeFromItems(item)
-                    }
-                    kind?.addToItems(item)
+            if brand != nil && brand != item.brand {
+                if let originalBrand = item.brand {
+                    originalBrand.removeFromItems(item)
                 }
-                
-                if brand != nil && brand != item.brand {
-                    if let originalBrand = item.brand {
-                        originalBrand.removeFromItems(item)
-                    }
-                    brand?.addToItems(item)
-                }
-                
-                if seller != nil && seller != item.seller {
-                    if let originalSeller = item.seller {
-                        originalSeller.removeFromItems(item)
-                    }
-                    seller?.addToItems(item)
-                }
-                
-                viewModel.itemDTO = ItemDTO(id: item.uuid,
-                                            name: name,
-                                            note: note,
-                                            quantity: Int64(quantity),
-                                            buyPrice: buyPrice,
-                                            sellPrice: sellPrice,
-                                            buyCurrency: buyCurrency,
-                                            sellCurrency: sellCurrency,
-                                            obtained: isObtainedDateEdited ? obtained : item.obtained,
-                                            disposed: isDisposedDateEdited ? disposed : item.disposed,
-                                            image: imageData ?? item.image)
-                
-                isEdited = false
-            } label: {
-                Label("Save", systemImage: "square.and.arrow.down")
+                brand?.addToItems(item)
             }
-            .disabled(!isEdited)
             
-            Spacer()
+            if seller != nil && seller != item.seller {
+                if let originalSeller = item.seller {
+                    originalSeller.removeFromItems(item)
+                }
+                seller?.addToItems(item)
+            }
+            
+            viewModel.itemDTO = ItemDTO(id: item.uuid,
+                                        name: name,
+                                        note: note,
+                                        quantity: Int64(quantity),
+                                        buyPrice: buyPrice,
+                                        sellPrice: sellPrice,
+                                        buyCurrency: buyCurrency,
+                                        sellCurrency: sellCurrency,
+                                        obtained: isObtainedDateEdited ? obtained : item.obtained,
+                                        disposed: isDisposedDateEdited ? disposed : item.disposed,
+                                        image: imageData ?? item.image)
+            isEdited = false
         }
     }
     

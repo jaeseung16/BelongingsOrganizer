@@ -70,27 +70,11 @@ struct BrandDetailView: View {
     }
     
     private func header() -> some View {
-        HStack {
-            Spacer()
-            
-            Button {
-                reset()
-            } label: {
-                Text("Cancel")
-            }
-            .disabled(!isEdited)
-            
-            Spacer()
-            
-            Button {
-                viewModel.brandDTO = BrandDTO(id: brand.uuid, name: name, url: URL(string: urlString))
-                isEdited = false
-            } label: {
-                Label("Save", systemImage: "square.and.arrow.down")
-            }
-            .disabled(!isEdited)
-            
-            Spacer()
+        DetailHeaderView(isEdited: $isEdited) {
+            reset()
+        } update: {
+            viewModel.brandDTO = BrandDTO(id: brand.uuid, name: name, url: URL(string: urlString))
+            isEdited = false
         }
     }
     

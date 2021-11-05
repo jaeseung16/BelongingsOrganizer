@@ -56,27 +56,11 @@ struct KindDetailView: View {
     }
     
     private func header() -> some View {
-        HStack {
-            Spacer()
-            
-            Button {
-                reset()
-            } label: {
-                Text("Cancel")
-            }
-            .disabled(!isEdited)
-            
-            Spacer()
-            
-            Button {
-                viewModel.kindDTO = KindDTO(id: kind.uuid, name: name)
-                isEdited = false
-            } label: {
-                Label("Save", systemImage: "square.and.arrow.down")
-            }
-            .disabled(!isEdited)
-            
-            Spacer()
+        DetailHeaderView(isEdited: $isEdited) {
+            reset()
+        } update: {
+            viewModel.kindDTO = KindDTO(id: kind.uuid, name: name)
+            isEdited = false
         }
     }
     
