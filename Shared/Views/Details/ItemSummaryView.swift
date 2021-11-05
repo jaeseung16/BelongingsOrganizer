@@ -9,9 +9,6 @@ import SwiftUI
 
 struct ItemSummaryView: View {
     @State var item: Item
-    @State private var kind: Kind?
-    @State private var brand: Brand?
-    @State private var seller: Seller?
     
     private let notApplicable = "N/A"
     
@@ -51,6 +48,8 @@ struct ItemSummaryView: View {
             obtainedView()
             
             disposedView()
+            
+            noteView()
 
             miscView()
         }
