@@ -78,9 +78,7 @@ struct SellerListView: View {
     
     private func deleteSellers(offsets: IndexSet) {
         withAnimation {
-            viewModel.delete(offsets.map { sellers[$0] }) { error in
-                let nsError = error as NSError
-                print("While deleting a seller, occured an unresolved error \(nsError), \(nsError.userInfo)")
+            viewModel.delete(offsets.map { sellers[$0] }) { _ in
                 showAlertForDeletion.toggle()
             }
         }

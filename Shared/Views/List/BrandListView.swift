@@ -78,9 +78,7 @@ struct BrandListView: View {
     
     private func deleteBrands(offsets: IndexSet) {
         withAnimation {
-            viewModel.delete(offsets.map { brands[$0] }) { error in
-                let nsError = error as NSError
-                print("While deleting a brand, occured an unresolved error \(nsError), \(nsError.userInfo)")
+            viewModel.delete(offsets.map { brands[$0] }) { _ in
                 showAlertForDeletion.toggle()
             }
         }

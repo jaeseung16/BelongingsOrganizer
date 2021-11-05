@@ -76,9 +76,7 @@ struct KindListView: View {
     
     private func deleteKinds(offsets: IndexSet) {
         withAnimation {
-            viewModel.delete(offsets.map { kinds[$0] }) { error in
-                let nsError = error as NSError
-                print("While deleting a category, occured an unresolved error \(nsError), \(nsError.userInfo)")
+            viewModel.delete(offsets.map { kinds[$0] }) { _ in
                 showAlertForDeletion.toggle()
             }
         }

@@ -161,9 +161,7 @@ struct ItemListView: View {
     
     private func deleteItems(offsets: IndexSet) {
         withAnimation {
-            viewModel.delete(offsets.map { filteredItems[$0] }) { error in
-                let nsError = error as NSError
-                print("While deleting an item, occured an unresolved error \(nsError), \(nsError.userInfo)")
+            viewModel.delete(offsets.map { filteredItems[$0] }) { _ in
                 showAlertForDeletion.toggle()
             }
         }
