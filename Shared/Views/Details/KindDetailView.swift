@@ -45,6 +45,7 @@ struct KindDetailView: View {
                 
                 ItemsView(items: items)
             }
+            .navigationTitle(name)
             .padding()
         }
     }

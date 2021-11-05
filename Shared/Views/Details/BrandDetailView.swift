@@ -51,6 +51,7 @@ struct BrandDetailView: View {
                 ItemsView(items: items)
                 
             }
+            .navigationTitle(name)
             .padding()
             .alert("Invalid URL", isPresented: $showAlert, actions: {
                 Button("Dismiss")  {

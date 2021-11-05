@@ -59,7 +59,7 @@ struct ItemDetailView: View {
                 
                 footer()
             }
-            .navigationTitle(item.name ?? "N/A")
+            .navigationTitle(name)
             .padding()
             .sheet(isPresented: $presentChooseKindView, content: {
                 #if os(macOS)
