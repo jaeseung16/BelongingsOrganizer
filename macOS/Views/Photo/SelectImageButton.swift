@@ -26,23 +26,13 @@ struct SelectImageButton: View {
         openPanel.canChooseDirectories = false
         openPanel.canCreateDirectories = false
         openPanel.canChooseFiles = true
-        openPanel.allowedFileTypes = ["png","jpg","jpeg","webp"]
+        openPanel.allowedContentTypes = [.png, .jpeg, .webP]
         
         openPanel.begin { (result) -> Void in
             if result.rawValue == NSApplication.ModalResponse.OK.rawValue {
                 let url = openPanel.url!
                 
                 completionHandler(url)
-                /*
-                if url.absoluteString.contains(".webp") {
-                    if let data: Data = try? Data(contentsOf: url) {
-                        let image = SDImageWebPCoder.shared.decodedImage(with: data, options: nil)
-                        self.selectedImage = image?.tiffRepresentation
-                    }
-                } else {
-                    self.selectedImage = try? Data(contentsOf: url)
-                }
-                 */
             }
         }
     }

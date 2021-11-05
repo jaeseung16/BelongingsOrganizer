@@ -14,7 +14,6 @@ class ImagePaster {
     
     static func loadData(from info: DropInfo, completionHandler: @escaping (Data?, Error?) -> Void) ->Void {
         if info.hasItemsConforming(to: ImagePaster.imageTypes) {
-            print("\(info.itemProviders(for: ImagePaster.imageTypes))")
             info.itemProviders(for: ImagePaster.imageTypes).forEach { itemProvider in
                 for type in ImagePaster.imageTypes {
                     itemProvider.loadDataRepresentation(forTypeIdentifier: type.identifier, completionHandler: completionHandler)
@@ -25,7 +24,6 @@ class ImagePaster {
     
     static func loadFile(from info: DropInfo, completionHandler: @escaping NSItemProvider.CompletionHandler) -> Void {
         if info.hasItemsConforming(to: ImagePaster.fileTypes) {
-            print("\(info.itemProviders(for: ImagePaster.fileTypes))")
             info.itemProviders(for: ImagePaster.fileTypes).forEach { itemProvider in
                 itemProvider.loadItem(forTypeIdentifier: UTType.fileURL.identifier, completionHandler: completionHandler)
             }

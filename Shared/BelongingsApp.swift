@@ -24,8 +24,6 @@ struct BelongingsApp: App {
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
                 .environmentObject(viewModel)
             #endif
-            
-            
         }
     }
 }
