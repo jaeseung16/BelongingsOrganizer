@@ -209,6 +209,18 @@ struct ItemSummaryView: View {
         }
     }
     
+    private func noteView() -> some View {
+        VStack {
+            SectionTitleView(title: "NOTE")
+            
+            if let note = item.note, !note.isEmpty {
+                Text(note)
+            } else {
+                Text("N/A")
+            }
+        }
+    }
+    
     private func miscView() -> some View {
         VStack {
             Divider()
