@@ -2,6 +2,8 @@
 
 The app helps a user keep the records of items.
 
+[<img src="https://linkmaker.itunes.apple.com/assets/shared/badges/en-us/appstore-lrg.svg">](https://apps.apple.com/app/id1584237466)
+
 # How to Use
  
 ## Items tab
