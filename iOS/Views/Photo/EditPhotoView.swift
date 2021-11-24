@@ -72,7 +72,7 @@ struct EditPhotoView: View {
     private func header() -> some View {
         HStack {
             Button(action: {
-                image = nil
+                image = originalImage
                 presentationMode.wrappedValue.dismiss()
             }, label: {
                 Label("Cancel", systemImage: "chevron.backward")
