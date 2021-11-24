@@ -186,23 +186,29 @@ struct ItemDetailView: View {
         DetailHeaderView(isEdited: $isEdited) {
             reset()
         } update: {
-            if kind != nil && kind != item.kind {
-                if let originalKind = item.kind {
-                    originalKind.removeFromItems(item)
+            if kind != nil {
+                item.kind?.forEach {
+                    if let kind = $0 as? Kind {
+                        kind.removeFromItems(item)
+                    }
                 }
                 kind?.addToItems(item)
             }
             
-            if brand != nil && brand != item.brand {
-                if let originalBrand = item.brand {
-                    originalBrand.removeFromItems(item)
+            if brand != nil {
+                item.brand?.forEach {
+                    if let brand = $0 as? Brand {
+                        brand.removeFromItems(item)
+                    }
                 }
                 brand?.addToItems(item)
             }
             
-            if seller != nil && seller != item.seller {
-                if let originalSeller = item.seller {
-                    originalSeller.removeFromItems(item)
+            if seller != nil {
+                item.seller?.forEach {
+                    if let seller = $0 as? Seller {
+                        seller.removeFromItems(item)
+                    }
                 }
                 seller?.addToItems(item)
             }
@@ -312,7 +318,6 @@ struct ItemDetailView: View {
                 Spacer()
                 
                 Button {
-                    kind = item.kind
                     presentPhotoView = true
                     AddItemViewModel.shared.reset()
                 } label: {
@@ -348,6 +353,21 @@ struct ItemDetailView: View {
         }
     }
     
+    private var itemKind: Kind? {
+        let kinds = item.kind?.filter { $0 is Kind }.map { $0 as! Kind }
+        return kinds?.first
+    }
+    
+    private var itemBrand: Brand? {
+        let brands = item.brand?.filter { $0 is Brand }.map { $0 as! Brand }
+        return brands?.first
+    }
+    
+    private var itemSeller: Seller? {
+        let sellers = item.seller?.filter { $0 is Seller }.map { $0 as! Seller }
+        return sellers?.first
+    }
+    
     private func categoryView() -> some View {
         HStack {
             SectionTitleView(title: "CATEGORY")
@@ -355,13 +375,13 @@ struct ItemDetailView: View {
             Spacer()
             
             if kind == nil {
-                Text(item.kind?.name ?? "")
+                Text(itemKind?.name ?? "")
             } else {
                 Text(kind!.name ?? "")
             }
             
             Button {
-                kind = item.kind
+                kind = itemKind
                 presentChooseKindView = true
             } label: {
                 Text("edit")
@@ -376,13 +396,13 @@ struct ItemDetailView: View {
             Spacer()
             
             if brand == nil {
-                Text(item.brand?.name ?? "")
+                Text(itemBrand?.name ?? "")
             } else {
                 Text(brand!.name ?? "")
             }
             
             Button {
-                brand = item.brand
+                brand = itemBrand
                 presentChooseBrandView = true
             } label: {
                 Text("edit")
@@ -397,13 +417,13 @@ struct ItemDetailView: View {
             Spacer()
             
             if seller == nil {
-                Text(item.seller?.name ?? "")
+                Text(itemSeller?.name ?? "")
             } else {
                 Text(seller!.name ?? "")
             }
             
             Button {
-                seller = item.seller
+                seller = itemSeller
                 presentChooseSellerView = true
             } label: {
                 Text("edit")
