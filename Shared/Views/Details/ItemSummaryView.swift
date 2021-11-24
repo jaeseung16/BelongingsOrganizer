@@ -12,6 +12,21 @@ struct ItemSummaryView: View {
     
     private let notApplicable = "N/A"
     
+    private var kind: Kind? {
+        let kinds = item.kind?.filter { $0 is Kind }.map { $0 as! Kind }
+        return kinds?.first
+    }
+    
+    private var brand: Brand? {
+        let brands = item.brand?.filter { $0 is Brand }.map { $0 as! Brand }
+        return brands?.first
+    }
+    
+    private var seller: Seller? {
+        let sellers = item.seller?.filter { $0 is Seller }.map { $0 as! Seller }
+        return sellers?.first
+    }
+    
     var body: some View {
         GeometryReader { geometry in
             VStack {
@@ -105,7 +120,7 @@ struct ItemSummaryView: View {
             VStack {
                 SectionTitleView(title: "CATEGORY")
 
-                Text(item.kind?.name ?? notApplicable)
+                Text(self.kind?.name ?? notApplicable)
             }
             
             Spacer()
@@ -113,7 +128,7 @@ struct ItemSummaryView: View {
             VStack {
                 SectionTitleView(title: "BRAND")
 
-                Text(item.brand?.name ?? notApplicable)
+                Text(self.brand?.name ?? notApplicable)
             }
             
             Spacer()
@@ -121,7 +136,7 @@ struct ItemSummaryView: View {
             VStack {
                 SectionTitleView(title: "SELLER")
 
-                Text(item.seller?.name ?? notApplicable)
+                Text(self.seller?.name ?? notApplicable)
             }
             
             Spacer()

@@ -27,19 +27,34 @@ struct ItemListView: View {
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
     
+    private func kind(item: Item) -> Kind? {
+        let kinds = item.kind?.filter { $0 is Kind }.map { $0 as! Kind }
+        return kinds?.first
+    }
+    
+    private func brand(item: Item) -> Brand? {
+        let brands = item.brand?.filter { $0 is Brand }.map { $0 as! Brand }
+        return brands?.first
+    }
+    
+    private func seller(item: Item) -> Seller? {
+        let sellers = item.seller?.filter { $0 is Seller }.map { $0 as! Seller}
+        return sellers?.first
+    }
+    
     var filteredItems: Array<Item> {
         items.filter { item in
             var filter = true
             
-            if let kind = item.kind, !selectedKinds.isEmpty && !selectedKinds.contains(kind) {
+            if let kind = self.kind(item: item), !selectedKinds.isEmpty && !selectedKinds.contains(kind) {
                 filter = false
             }
             
-            if let brand = item.brand, !selectedBrands.isEmpty && !selectedBrands.contains(brand) {
+            if let brand = self.brand(item: item), !selectedBrands.isEmpty && !selectedBrands.contains(brand) {
                 filter = false
             }
             
-            if let seller = item.seller, !selectedSellers.isEmpty && !selectedSellers.contains(seller) {
+            if let seller = self.seller(item: item), !selectedSellers.isEmpty && !selectedSellers.contains(seller) {
                 filter = false
             }
             
