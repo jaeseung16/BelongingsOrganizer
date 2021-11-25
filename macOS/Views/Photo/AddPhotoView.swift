@@ -36,8 +36,17 @@ struct AddPhotoView: View, DropDelegate {
     
     func performDrop(info: DropInfo) -> Bool {
         ImagePaster.loadData(from: info) { data, _ in
-            if let data = data, let nsImage = NSImage(data: data) {
-                selectedImage = ImagePaster.resize(nsImage: nsImage, within: CGSize(width: 1024, height: 1024)).tiffRepresentation
+            if let imageData = data {
+                if imageData.count > ImagePaster.maxDataSize, let nsImage = NSImage(data: imageData) {
+                    if let resized = ImagePaster.resize(nsImage: nsImage, within: ImagePaster.maxResizeSize).tiffRepresentation,
+                       let imageRep = NSBitmapImageRep(data: resized) {
+                        selectedImage = imageRep.representation(using: NSBitmapImageRep.FileType.png, properties: [:])
+                    } else {
+                        selectedImage = imageData
+                    }
+                } else {
+                    selectedImage = imageData
+                }
             }
         }
         
@@ -52,6 +61,7 @@ struct AddPhotoView: View, DropDelegate {
                     self.selectedImage = try? Data(contentsOf: url)
                 }
             }
+            print("selectedImage = \(String(describing: selectedImage))")
         }
         
         return selectedImage != nil
