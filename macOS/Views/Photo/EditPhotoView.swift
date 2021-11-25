@@ -76,8 +76,17 @@ struct EditPhotoView: View, DropDelegate {
     
     func performDrop(info: DropInfo) -> Bool {
         ImagePaster.loadData(from: info) { data, _ in
-            if let data = data, let nsImage = NSImage(data: data) {
-                image = ImagePaster.resize(nsImage: nsImage, within: CGSize(width: 1024, height: 1024)).tiffRepresentation
+            if let imageData = data {
+                if imageData.count > ImagePaster.maxDataSize, let nsImage = NSImage(data: imageData) {
+                    if let resized = ImagePaster.resize(nsImage: nsImage, within: ImagePaster.maxResizeSize).tiffRepresentation,
+                       let imageRep = NSBitmapImageRep(data: resized) {
+                        image = imageRep.representation(using: NSBitmapImageRep.FileType.png, properties: [:])
+                    } else {
+                        image = imageData
+                    }
+                } else {
+                    image = imageData
+                }
             }
         }
         
