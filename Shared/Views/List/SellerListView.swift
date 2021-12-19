@@ -27,18 +27,7 @@ struct SellerListView: View {
                 VStack {
                     header()
                     
-                    List {
-                        ForEach(sellers) { seller in
-                            if let sellerName = seller.name {
-                                NavigationLink(
-                                    destination: SellerDetailView(seller: seller, name: sellerName, urlString: seller.url?.absoluteString ?? "")
-                                        .environmentObject(viewModel)) {
-                                    Text(sellerName)
-                                }
-                            }
-                        }
-                        .onDelete(perform: deleteSellers)
-                    }
+                    sellerListView()
                     .sheet(isPresented: $presentAddSelleriew, content: {
                         AddSellerView()
                             .environmentObject(AddItemViewModel.shared)
@@ -75,6 +64,35 @@ struct SellerListView: View {
                 presentAddSelleriew = true
             }) {
                 Label("Add a seller", systemImage: "plus")
+            }
+        }
+    }
+    
+    private func sellerListView() -> some View {
+        List {
+            ForEach(sellers) { seller in
+                if let sellerName = seller.name {
+                    NavigationLink(destination: SellerDetailView(seller: seller,
+                                                                 name: sellerName,
+                                                                 urlString: seller.url?.absoluteString ?? "")) {
+                        sellerRowView(seller, name: sellerName)
+                    }
+                }
+            }
+            .onDelete(perform: deleteSellers)
+        }
+    }
+    
+    private func sellerRowView(_ seller: Seller, name: String) -> some View {
+        HStack {
+            Text(name)
+            
+            Spacer()
+            
+            if let items = seller.items {
+                Text("\(items.count) items")
+                    .font(.callout)
+                    .foregroundColor(.secondary)
             }
         }
     }
