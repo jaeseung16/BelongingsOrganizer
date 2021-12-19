@@ -22,6 +22,18 @@ struct KindListView: View {
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
     
+    var filteredKinds: Array<Kind> {
+        kinds.filter { kind in
+            if viewModel.stringToSearch == "" {
+                return true
+            } else if let name = kind.name {
+                return name.lowercased().contains(viewModel.stringToSearch.lowercased())
+            } else {
+                return false
+            }
+        }
+    }
+    
     var body: some View {
         NavigationView {
             GeometryReader { geometry in
@@ -29,12 +41,13 @@ struct KindListView: View {
                     header()
                     
                     kindListView()
-                    .sheet(isPresented: $presentAddKindView, content: {
-                        AddKindView()
-                            .environmentObject(AddItemViewModel.shared)
-                            .frame(minWidth: 350, minHeight: 450)
-                            .padding()
-                    })
+                        .sheet(isPresented: $presentAddKindView) {
+                            AddKindView()
+                                .environmentObject(AddItemViewModel.shared)
+                                .frame(minWidth: 350, minHeight: 450)
+                                .padding()
+                            
+                        }
                 }
                 .navigationTitle("Categories")
             }
@@ -71,7 +84,7 @@ struct KindListView: View {
     
     private func kindListView() -> some View {
         List {
-            ForEach(kinds) { kind in
+            ForEach(filteredKinds) { kind in
                 if let kindName = kind.name {
                     NavigationLink(destination: KindDetailView(kind: kind, name: kindName)) {
                         kindRowView(kind, name: kindName)
@@ -98,7 +111,7 @@ struct KindListView: View {
     
     private func deleteKinds(offsets: IndexSet) {
         withAnimation {
-            viewModel.delete(offsets.map { kinds[$0] }) { _ in
+            viewModel.delete(offsets.map { filteredKinds[$0] }) { _ in
                 showAlertForDeletion.toggle()
             }
         }

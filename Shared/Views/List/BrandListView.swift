@@ -22,6 +22,18 @@ struct BrandListView: View {
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
     
+    var filteredBrands: Array<Brand> {
+        brands.filter { brand in
+            if viewModel.stringToSearch == "" {
+                return true
+            } else if let name = brand.name {
+                return name.lowercased().contains(viewModel.stringToSearch.lowercased())
+            } else {
+                return false
+            }
+        }
+    }
+    
     var body: some View {
         NavigationView {
             GeometryReader { geometry in
@@ -71,7 +83,7 @@ struct BrandListView: View {
     
     private func brandListView() -> some View {
         List {
-            ForEach(brands) { brand in
+            ForEach(filteredBrands) { brand in
                 if let brandName = brand.name {
                     NavigationLink(destination: BrandDetailView(brand: brand,
                                                                 name: brandName,
@@ -100,7 +112,7 @@ struct BrandListView: View {
     
     private func deleteBrands(offsets: IndexSet) {
         withAnimation {
-            viewModel.delete(offsets.map { brands[$0] }) { _ in
+            viewModel.delete(offsets.map { filteredBrands[$0] }) { _ in
                 showAlertForDeletion.toggle()
             }
         }

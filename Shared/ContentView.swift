@@ -45,6 +45,7 @@ struct ContentView: View {
                     Text("Sellers")
                 }
         }
+        .searchable(text: $viewModel.stringToSearch)
         .onChange(of: viewModel.showAlert) { _ in
             showAlert = viewModel.showAlert
         }

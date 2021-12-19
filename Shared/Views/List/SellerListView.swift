@@ -22,6 +22,18 @@ struct SellerListView: View {
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
     
+    var filteredSellers: Array<Seller> {
+        sellers.filter { seller in
+            if viewModel.stringToSearch == "" {
+                return true
+            } else if let name = seller.name {
+                return name.lowercased().contains(viewModel.stringToSearch.lowercased())
+            } else {
+                return false
+            }
+        }
+    }
+    
     var body: some View {
         NavigationView {
             GeometryReader { geometry in
@@ -71,7 +83,7 @@ struct SellerListView: View {
     
     private func sellerListView() -> some View {
         List {
-            ForEach(sellers) { seller in
+            ForEach(filteredSellers) { seller in
                 if let sellerName = seller.name {
                     NavigationLink(destination: SellerDetailView(seller: seller,
                                                                  name: sellerName,
@@ -100,7 +112,7 @@ struct SellerListView: View {
     
     private func deleteSellers(offsets: IndexSet) {
         withAnimation {
-            viewModel.delete(offsets.map { sellers[$0] }) { _ in
+            viewModel.delete(offsets.map { filteredSellers[$0] }) { _ in
                 showAlertForDeletion.toggle()
             }
         }

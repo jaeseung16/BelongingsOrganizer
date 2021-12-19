@@ -25,9 +25,7 @@ struct ItemListView: View {
     
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
-    
-    @State private var itemNameToSearch = ""
-    
+  
     private func kind(item: Item) -> Kind? {
         let kinds = item.kind?.filter { $0 is Kind }.map { $0 as! Kind }
         return kinds?.first
@@ -62,10 +60,10 @@ struct ItemListView: View {
             return filter
         }
         .filter { item in
-            if itemNameToSearch == "" {
+            if viewModel.stringToSearch == "" {
                 return true
             } else if let name = item.name {
-                return name.lowercased().contains(itemNameToSearch.lowercased())
+                return name.lowercased().contains(viewModel.stringToSearch.lowercased())
             } else {
                 return false
             }
@@ -97,7 +95,6 @@ struct ItemListView: View {
                 .frame(minWidth: 350, minHeight: 450)
                 .padding()
         }
-        .searchable(text: $itemNameToSearch)
         .onChange(of: AddItemViewModel.shared.showAlert) { _ in
             showAlert = AddItemViewModel.shared.showAlert
         }

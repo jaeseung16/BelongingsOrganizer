@@ -35,6 +35,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     
     @Published var changedPeristentContext = NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave)
     @Published var showAlert = false
+    @Published var stringToSearch = ""
     
     var message = ""
     
