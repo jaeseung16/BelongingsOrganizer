@@ -20,13 +20,21 @@ struct ItemsView: View {
                 Spacer()
             }
             
+            #if os(macOS)
             NavigationView {
-                List {
-                    ForEach(items) { item in
-                        NavigationLink(destination: ItemSummaryView(item: item)) {
-                            ItemRowView(item: item, name: item.name ?? "", imageWidth: 40.0)
-                        }
-                    }
+                itemList()
+            }
+            #else
+            itemList()
+            #endif
+        }
+    }
+    
+    private func itemList() -> some View {
+        List {
+            ForEach(items) { item in
+                NavigationLink(destination: ItemSummaryView(item: item)) {
+                    ItemRowView(item: item, name: item.name ?? "", imageWidth: 40.0)
                 }
             }
         }
