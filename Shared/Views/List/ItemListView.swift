@@ -81,40 +81,21 @@ struct ItemListView: View {
                     
                     Divider()
                     
-                    List {
-                        ForEach(filteredItems) { item in
-                            if let itemName = item.name {
-                                NavigationLink(destination: ItemDetailView(item: item,
-                                                                           imageData: item.image,
-                                                                           name: itemName,
-                                                                           quantity: Int(item.quantity),
-                                                                           buyPrice: item.buyPrice,
-                                                                           sellPrice: item.sellPrice,
-                                                                           buyCurrency: item.buyCurrency ?? "USD",
-                                                                           sellCurrency: item.sellCurrency ?? "USD",
-                                                                           note: item.note ?? "",
-                                                                           obtained: item.obtained ?? Date(),
-                                                                           disposed: item.disposed ?? Date())) {
-                                    ItemRowView(item: item, name: itemName)
-                                }
-                            }
+                    itemListView()
+                        .sheet(isPresented: $presentAddItemView) {
+                            AddItemView(geometry: geometry)
+                                .environmentObject(AddItemViewModel.shared)
+                                .frame(minWidth: 350, minHeight: 550)
+                                .padding()
                         }
-                        .onDelete(perform: deleteItems)
-                    }
-                    .sheet(isPresented: $presentAddItemView, content: {
-                        AddItemView(geometry: geometry)
-                            .environmentObject(AddItemViewModel.shared)
-                            .frame(minWidth: 350, minHeight: 550)
-                            .padding()
-                    })
-                    .sheet(isPresented: $presentFilterItemsView, content: {
-                        FilterItemsView(selectedKinds: $selectedKinds, selectedBrands: $selectedBrands, selectedSellers: $selectedSellers)
-                            .frame(minWidth: 350, minHeight: 450)
-                            .padding()
-                    })
                 }
                 .navigationTitle("Items")
             }
+        }
+        .sheet(isPresented: $presentFilterItemsView) {
+            FilterItemsView(selectedKinds: $selectedKinds, selectedBrands: $selectedBrands, selectedSellers: $selectedSellers)
+                .frame(minWidth: 350, minHeight: 450)
+                .padding()
         }
         .searchable(text: $itemNameToSearch)
         .onChange(of: AddItemViewModel.shared.showAlert) { _ in
@@ -158,6 +139,29 @@ struct ItemListView: View {
             Spacer()
         }
         .scaledToFit()
+    }
+    
+    private func itemListView() -> some View {
+        List {
+            ForEach(filteredItems) { item in
+                if let itemName = item.name {
+                    NavigationLink(destination: ItemDetailView(item: item,
+                                                               imageData: item.image,
+                                                               name: itemName,
+                                                               quantity: Int(item.quantity),
+                                                               buyPrice: item.buyPrice,
+                                                               sellPrice: item.sellPrice,
+                                                               buyCurrency: item.buyCurrency ?? "USD",
+                                                               sellCurrency: item.sellCurrency ?? "USD",
+                                                               note: item.note ?? "",
+                                                               obtained: item.obtained ?? Date(),
+                                                               disposed: item.disposed ?? Date())) {
+                        ItemRowView(item: item, name: itemName)
+                    }
+                }
+            }
+            .onDelete(perform: deleteItems)
+        }
     }
     
     private func deleteItems(offsets: IndexSet) {
