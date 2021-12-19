@@ -200,7 +200,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     }
     
     private lazy var tokenFile: URL = {
-        let url = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent("LinkCollector",isDirectory: true)
+        let url = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent("BelongingsOrganizer", isDirectory: true)
         if !FileManager.default.fileExists(atPath: url.path) {
             do {
                 try FileManager.default.createDirectory(at: url,
