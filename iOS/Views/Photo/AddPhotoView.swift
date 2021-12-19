@@ -9,7 +9,7 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct AddPhotoView: View {
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var viewModel: AddItemViewModel
 
     @State private var selectedImage: Data?
@@ -67,7 +67,7 @@ struct AddPhotoView: View {
     private func header() -> some View {
         HStack {
             Button(action: {
-                presentationMode.wrappedValue.dismiss()
+                dismiss.callAsFunction()
             }, label: {
                 Label("Cancel", systemImage: "chevron.backward")
             })
@@ -76,7 +76,7 @@ struct AddPhotoView: View {
             
             Button(action: {
                 viewModel.imageData = selectedImage
-                presentationMode.wrappedValue.dismiss()
+                dismiss.callAsFunction()
             }, label: {
                 Text("Done")
             })

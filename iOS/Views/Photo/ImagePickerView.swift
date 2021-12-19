@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 struct ImagePickerView: UIViewControllerRepresentable {
-    @Environment(\.presentationMode) var isPresented
+    @Environment(\.dismiss) var dismiss
     
     @Binding var selectedImage: Data?
     
@@ -39,17 +39,17 @@ struct ImagePickerView: UIViewControllerRepresentable {
         
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
             guard let selected = info[.originalImage] as? UIImage else {
-                self.picker.isPresented.wrappedValue.dismiss()
+                self.picker.dismiss.callAsFunction()
                 return
             }
             
             // No need to orient since the correct orientation is used with UIImage.draw(in:)
             self.picker.selectedImage = resize(uiImage: selected, within: CGSize(width: 1024.0, height: 1024.0))?.pngData()
-            self.picker.isPresented.wrappedValue.dismiss()
+            self.picker.dismiss.callAsFunction()
         }
         
         func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-            self.picker.isPresented.wrappedValue.dismiss()
+            self.picker.dismiss.callAsFunction()
         }
         
         private func orient(uiImage: UIImage) -> UIImage? {

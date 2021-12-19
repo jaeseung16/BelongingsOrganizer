@@ -10,7 +10,7 @@ import SwiftUI
 import PhotosUI
 
 struct PHPickerView: UIViewControllerRepresentable {
-    @Environment(\.presentationMode) var isPresented
+    @Environment(\.dismiss) var dismiss
     
     @Binding var selectedImage: Data?
     @Binding var progress: Progress?
@@ -61,7 +61,7 @@ struct PHPickerView: UIViewControllerRepresentable {
                 }
             }
             
-            self.picker.isPresented.wrappedValue.dismiss()
+            self.picker.dismiss.callAsFunction()
         }
         
         private func orient(uiImage: UIImage) -> UIImage? {

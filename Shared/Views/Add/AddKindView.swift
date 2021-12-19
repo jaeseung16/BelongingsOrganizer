@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AddKindView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var viewModel: AddItemViewModel
     
     @State private var name = ""
@@ -38,7 +38,7 @@ struct AddKindView: View {
                 Spacer()
                 
                 Button(action: {
-                    presentationMode.wrappedValue.dismiss()
+                    dismiss.callAsFunction()
                 },
                 label: {
                     Text("Cancel")
@@ -48,7 +48,7 @@ struct AddKindView: View {
                 
                 Button(action: {
                     saveKind()
-                    presentationMode.wrappedValue.dismiss()
+                    dismiss.callAsFunction()
                 },
                 label: {
                     Label("Save", systemImage: "square.and.arrow.down")

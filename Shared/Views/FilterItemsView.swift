@@ -13,7 +13,7 @@ enum Filter: String, CaseIterable {
 
 struct FilterItemsView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var viewModel: BelongingsViewModel
 
     @FetchRequest(
@@ -207,7 +207,7 @@ struct FilterItemsView: View {
             }
             Spacer()
             Button {
-                presentationMode.wrappedValue.dismiss()
+                dismiss.callAsFunction()
             } label: {
                 Text("Done")
             }

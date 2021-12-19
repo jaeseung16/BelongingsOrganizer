@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AddBrandView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var viewModel: AddItemViewModel
     
     @State private var name = ""
@@ -61,7 +61,7 @@ struct AddBrandView: View {
                 Spacer()
                 
                 Button(action: {
-                    presentationMode.wrappedValue.dismiss()
+                    dismiss.callAsFunction()
                 },
                 label: {
                     Text("Cancel")
@@ -71,7 +71,7 @@ struct AddBrandView: View {
                 
                 Button(action: {
                     saveBrand()
-                    presentationMode.wrappedValue.dismiss()
+                    dismiss.callAsFunction()
                 },
                 label: {
                     Label("Save", systemImage: "square.and.arrow.down")

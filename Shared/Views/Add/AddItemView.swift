@@ -10,7 +10,7 @@ import CoreData
 
 struct AddItemView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var viewModel: AddItemViewModel
     
     @State private var name = ""
@@ -347,7 +347,7 @@ struct AddItemView: View {
             Spacer()
             
             Button(action: {
-                presentationMode.wrappedValue.dismiss()
+                dismiss.callAsFunction()
             },
             label: {
                 Text("Cancel")
@@ -382,7 +382,7 @@ struct AddItemView: View {
                                 quantity: Int64(quantity),
                                 buyCurrency: currency)
         
-        presentationMode.wrappedValue.dismiss()
+        dismiss.callAsFunction()
     }
 }
 

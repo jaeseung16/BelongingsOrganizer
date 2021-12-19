@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ChooseCurrencyView: View {
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.dismiss) private var dismiss
     
     @Binding var currency: String
     
@@ -33,7 +33,7 @@ struct ChooseCurrencyView: View {
                 #endif
                 
                 Button(action: {
-                    presentationMode.wrappedValue.dismiss()
+                    dismiss.callAsFunction()
                 }, label: {
                     Text("Done")
                 })

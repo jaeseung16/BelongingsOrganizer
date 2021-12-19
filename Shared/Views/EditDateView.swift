@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct EditDateView: View {
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.dismiss) private var dismiss
     
     @Binding var date: Date
     @State var originalDate: Date?
@@ -20,7 +20,7 @@ struct EditDateView: View {
             HStack {
                 Button {
                     isEdited = false
-                    presentationMode.wrappedValue.dismiss()
+                    dismiss.callAsFunction()
                 } label: {
                     Text("Canel")
                 }
@@ -29,7 +29,7 @@ struct EditDateView: View {
                     
                 Button {
                     isEdited = true
-                    presentationMode.wrappedValue.dismiss()
+                    dismiss.callAsFunction()
                 } label: {
                     Text("Save")
                 }

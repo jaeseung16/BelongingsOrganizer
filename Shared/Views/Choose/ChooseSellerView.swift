@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ChooseSellerView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var viewModel: BelongingsViewModel
     
     @FetchRequest(
@@ -43,7 +43,7 @@ struct ChooseSellerView: View {
             SheetBottom(labelText: "Add a seller") {
                 presentAddSeller = true
             } done: {
-                presentationMode.wrappedValue.dismiss()
+                dismiss.callAsFunction()
             }
         }
         .padding()

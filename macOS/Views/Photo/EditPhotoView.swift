@@ -9,7 +9,7 @@ import SwiftUI
 import SDWebImageWebPCoder
 
 struct EditPhotoView: View, DropDelegate {
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.dismiss) private var dismiss
     
     @State var originalImage: Data?
     @Binding var image: Data?
@@ -36,7 +36,7 @@ struct EditPhotoView: View, DropDelegate {
         HStack {
             Button(action: {
                 image = originalImage
-                presentationMode.wrappedValue.dismiss()
+                dismiss.callAsFunction()
             }, label: {
                 Label("Cancel", systemImage: "chevron.backward")
             })
@@ -57,7 +57,7 @@ struct EditPhotoView: View, DropDelegate {
             Spacer()
             
             Button(action: {
-                presentationMode.wrappedValue.dismiss()
+                dismiss.callAsFunction()
             }, label: {
                 Text("Done")
             })
