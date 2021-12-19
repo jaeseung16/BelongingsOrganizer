@@ -12,7 +12,8 @@ struct BrandListView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
     
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare))],
+        sortDescriptors: [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
+                          NSSortDescriptor(key: "created", ascending: false)],
         animation: .default)
     private var brands: FetchedResults<Brand>
 
