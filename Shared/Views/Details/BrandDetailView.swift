@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct BrandDetailView: View {
-    @Environment(\.presentationMode) private var presentationMode
     @EnvironmentObject var viewModel: BelongingsViewModel
     
     @State var brand: Brand

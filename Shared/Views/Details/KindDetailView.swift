@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct KindDetailView: View {
-    @Environment(\.presentationMode) private var presentationMode
     @EnvironmentObject var viewModel: BelongingsViewModel
     
     @State var kind: Kind
