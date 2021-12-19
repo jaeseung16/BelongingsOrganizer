@@ -27,18 +27,7 @@ struct BrandListView: View {
                 VStack {
                     header()
                     
-                    List {
-                        ForEach(brands) { brand in
-                            if let brandName = brand.name {
-                                NavigationLink(destination: BrandDetailView(brand: brand,
-                                                                            name: brandName,
-                                                                            urlString: brand.url?.absoluteString ?? "")) {
-                                    Text(brandName)
-                                }
-                            }
-                        }
-                        .onDelete(perform: deleteBrands)
-                    }
+                    brandListView()
                     .sheet(isPresented: $presentAddBrandView, content: {
                         AddBrandView()
                             .environmentObject(AddItemViewModel.shared)
@@ -75,6 +64,35 @@ struct BrandListView: View {
                 presentAddBrandView = true
             }) {
                 Label("Add a brand", systemImage: "plus")
+            }
+        }
+    }
+    
+    private func brandListView() -> some View {
+        List {
+            ForEach(brands) { brand in
+                if let brandName = brand.name {
+                    NavigationLink(destination: BrandDetailView(brand: brand,
+                                                                name: brandName,
+                                                                urlString: brand.url?.absoluteString ?? "")) {
+                        brandRowView(brand, name: brandName)
+                    }
+                }
+            }
+            .onDelete(perform: deleteBrands)
+        }
+    }
+    
+    private func brandRowView(_ brand: Brand, name: String) -> some View {
+        HStack {
+            Text(name)
+            
+            Spacer()
+            
+            if let items = brand.items {
+                Text("\(items.count) items")
+                    .font(.callout)
+                    .foregroundColor(.secondary)
             }
         }
     }
