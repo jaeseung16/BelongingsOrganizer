@@ -27,16 +27,7 @@ struct KindListView: View {
                 VStack {
                     header()
                     
-                    List {
-                        ForEach(kinds) { kind in
-                            if let kindName = kind.name {
-                                NavigationLink(destination: KindDetailView(kind: kind, name: kindName)) {
-                                    Text(kindName)
-                                }
-                            }
-                        }
-                        .onDelete(perform: deleteKinds)
-                    }
+                    kindListView()
                     .sheet(isPresented: $presentAddKindView, content: {
                         AddKindView()
                             .environmentObject(AddItemViewModel.shared)
@@ -73,6 +64,33 @@ struct KindListView: View {
                 presentAddKindView = true
             }) {
                 Label("Add a category", systemImage: "plus")
+            }
+        }
+    }
+    
+    private func kindListView() -> some View {
+        List {
+            ForEach(kinds) { kind in
+                if let kindName = kind.name {
+                    NavigationLink(destination: KindDetailView(kind: kind, name: kindName)) {
+                        kindRowView(kind, name: kindName)
+                    }
+                }
+            }
+            .onDelete(perform: deleteKinds)
+        }
+    }
+    
+    private func kindRowView(_ kind: Kind, name: String) -> some View {
+        HStack {
+            Text(name)
+            
+            Spacer()
+            
+            if let items = kind.items {
+                Text("\(items.count) items")
+                    .font(.callout)
+                    .foregroundColor(.secondary)
             }
         }
     }
