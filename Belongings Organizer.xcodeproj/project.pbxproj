@@ -103,6 +103,8 @@
 		90E2EA9926F402940014A8C6 /* AddPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E2EA9826F402940014A8C6 /* AddPhotoView.swift */; };
 		90F3B6AB26FFEA2900C4859D /* ItemProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F3B6AA26FFEA2900C4859D /* ItemProperty.swift */; };
 		90F3B6AC26FFEA2900C4859D /* ItemProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F3B6AA26FFEA2900C4859D /* ItemProperty.swift */; };
+		90FF8FD4276FABC70099A23B /* ItemRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90FF8FD3276FABC70099A23B /* ItemRowView.swift */; };
+		90FF8FD5276FABC70099A23B /* ItemRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90FF8FD3276FABC70099A23B /* ItemRowView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -187,6 +189,7 @@
 		90E2EA9526F402150014A8C6 /* ImagePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerView.swift; sourceTree = "<group>"; };
 		90E2EA9826F402940014A8C6 /* AddPhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPhotoView.swift; sourceTree = "<group>"; };
 		90F3B6AA26FFEA2900C4859D /* ItemProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemProperty.swift; sourceTree = "<group>"; };
+		90FF8FD3276FABC70099A23B /* ItemRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemRowView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -377,6 +380,7 @@
 				9089734926FD3B3F005A03A8 /* ItemSummaryView.swift */,
 				90E238E12706794200E03624 /* ItemsView.swift */,
 				900F8D792735C5210069CE07 /* DetailHeaderView.swift */,
+				90FF8FD3276FABC70099A23B /* ItemRowView.swift */,
 			);
 			path = Details;
 			sourceTree = "<group>";
@@ -631,6 +635,7 @@
 				90DD8C2C26F95A1B0079424A /* EditPhotoView.swift in Sources */,
 				900DDBF026E036CB0034A155 /* Persistence.swift in Sources */,
 				904498E726EBDEDB00002A6F /* ItemListView.swift in Sources */,
+				90FF8FD4276FABC70099A23B /* ItemRowView.swift in Sources */,
 				9072233626E93CE800965653 /* AddSellerView.swift in Sources */,
 				9072233326E93CDC00965653 /* ChooseSellerView.swift in Sources */,
 				90B23E6626EE901900B29063 /* KindDetailView.swift in Sources */,
@@ -687,6 +692,7 @@
 				90B23E6726EE901900B29063 /* KindDetailView.swift in Sources */,
 				906EA8A226F7EFF300235302 /* EditDateView.swift in Sources */,
 				90CD27EE270908A1001A89B5 /* ImageType.swift in Sources */,
+				90FF8FD5276FABC70099A23B /* ItemRowView.swift in Sources */,
 				90D3F23F26EA8CDC00955316 /* SellerDTO.swift in Sources */,
 				90B46BC82700F53E00BEED75 /* EditPhotoView.swift in Sources */,
 				90C172D626F13FAF00244A9C /* SellerDetailView.swift in Sources */,
