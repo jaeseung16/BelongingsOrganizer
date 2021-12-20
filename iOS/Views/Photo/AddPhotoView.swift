@@ -19,7 +19,6 @@ struct AddPhotoView: View, DropDelegate {
     @State private var progress: Progress?
     @State private var showAlert = false
     @State private var errorMessage = ""
-    @State private var showProgress = false
     
     var body: some View {
         GeometryReader { geometry in

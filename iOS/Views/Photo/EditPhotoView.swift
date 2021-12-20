@@ -15,7 +15,6 @@ struct EditPhotoView: View, DropDelegate {
     @State var originalImage: Data?
     @Binding var image: Data?
 
-    @State private var sourceType: UIImagePickerController.SourceType = .photoLibrary
     @State private var showImagePickerView = false
     @State private var showPHPickerView = false
     @State private var progress: Progress?
@@ -63,11 +62,6 @@ struct EditPhotoView: View, DropDelegate {
                     showAlert = !success
                 }
                     .padding()
-            }
-            .alert(isPresented: $showAlert) {
-                Alert(title: Text("Unable to Load Image"),
-                      message: Text(errorMessage),
-                      dismissButton: .default(Text("Dismiss")))
             }
         }
     }
