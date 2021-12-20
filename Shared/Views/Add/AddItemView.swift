@@ -18,7 +18,9 @@ struct AddItemView: View {
     @State private var obtainedDate = Date()
     @State private var buyPrice = ""
     @State private var quantity = ""
-    @State private var currency: String = "USD"
+    
+    @AppStorage("BelongingsOrganizer.currency")
+    private var currency: String = "USD"
     
     @State private var presentChooseKindView = false
     @State private var presentBrandView = false
@@ -385,13 +387,5 @@ struct AddItemView: View {
                                 buyCurrency: currency)
         
         dismiss.callAsFunction()
-    }
-}
-
-struct AddBelongingView_Previews: PreviewProvider {
-    static var previews: some View {
-        GeometryReader { geometry in
-            AddItemView(geometry: geometry)
-        }
     }
 }

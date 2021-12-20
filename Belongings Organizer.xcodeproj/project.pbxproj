@@ -7,12 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9000E36B2771229700A224E0 /* BelongingsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9000E36A2771229700A224E0 /* BelongingsApp.swift */; };
+		9000E36C2771229700A224E0 /* BelongingsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9000E36A2771229700A224E0 /* BelongingsApp.swift */; };
 		900DDBDD26E036CB0034A155 /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900DDBDC26E036CB0034A155 /* Tests_iOS.swift */; };
 		900DDBE826E036CB0034A155 /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900DDBE726E036CB0034A155 /* Tests_macOS.swift */; };
 		900DDBEA26E036CB0034A155 /* Belongings.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 900DDBBE26E036C90034A155 /* Belongings.xcdatamodeld */; };
 		900DDBEB26E036CB0034A155 /* Belongings.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 900DDBBE26E036C90034A155 /* Belongings.xcdatamodeld */; };
-		900DDBEC26E036CB0034A155 /* BelongingsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900DDBC026E036C90034A155 /* BelongingsApp.swift */; };
-		900DDBED26E036CB0034A155 /* BelongingsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900DDBC026E036C90034A155 /* BelongingsApp.swift */; };
 		900DDBEE26E036CB0034A155 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900DDBC126E036C90034A155 /* ContentView.swift */; };
 		900DDBEF26E036CB0034A155 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900DDBC126E036C90034A155 /* ContentView.swift */; };
 		900DDBF026E036CB0034A155 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900DDBC226E036C90034A155 /* Persistence.swift */; };
@@ -125,8 +125,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9000E36A2771229700A224E0 /* BelongingsApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BelongingsApp.swift; sourceTree = "<group>"; };
 		900DDBBF26E036C90034A155 /* Shared.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Shared.xcdatamodel; sourceTree = "<group>"; };
-		900DDBC026E036C90034A155 /* BelongingsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BelongingsApp.swift; sourceTree = "<group>"; };
 		900DDBC126E036C90034A155 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		900DDBC226E036C90034A155 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		900DDBC326E036CA0034A155 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -247,7 +247,7 @@
 			children = (
 				90D3F23026EA593B00955316 /* ViewModels */,
 				90596B8426E6ACC30001CCA5 /* Views */,
-				900DDBC026E036C90034A155 /* BelongingsApp.swift */,
+				9000E36A2771229700A224E0 /* BelongingsApp.swift */,
 				900DDBC126E036C90034A155 /* ContentView.swift */,
 				900DDBC226E036C90034A155 /* Persistence.swift */,
 				900DDBC326E036CA0034A155 /* Assets.xcassets */,
@@ -636,6 +636,7 @@
 				900DDBF026E036CB0034A155 /* Persistence.swift in Sources */,
 				904498E726EBDEDB00002A6F /* ItemListView.swift in Sources */,
 				90FF8FD4276FABC70099A23B /* ItemRowView.swift in Sources */,
+				9000E36B2771229700A224E0 /* BelongingsApp.swift in Sources */,
 				9072233626E93CE800965653 /* AddSellerView.swift in Sources */,
 				9072233326E93CDC00965653 /* ChooseSellerView.swift in Sources */,
 				90B23E6626EE901900B29063 /* KindDetailView.swift in Sources */,
@@ -645,7 +646,6 @@
 				906CE2EB26FA970100DC12C3 /* AddItemViewModel.swift in Sources */,
 				90C172D526F13FAF00244A9C /* SellerDetailView.swift in Sources */,
 				90E2EA9926F402940014A8C6 /* AddPhotoView.swift in Sources */,
-				900DDBEC26E036CB0034A155 /* BelongingsApp.swift in Sources */,
 				900DDBEE26E036CB0034A155 /* ContentView.swift in Sources */,
 				90C172D226F13EC200244A9C /* BrandDetailView.swift in Sources */,
 				90CB46AD26ED43AD00A9468B /* ItemDetailView.swift in Sources */,
@@ -672,6 +672,7 @@
 				90E238DD270659C600E03624 /* SelectImageButton.swift in Sources */,
 				90C0D98C26E7DEF600158C85 /* AddItemView.swift in Sources */,
 				9072233126E93A0500965653 /* AddBrandView.swift in Sources */,
+				9000E36C2771229700A224E0 /* BelongingsApp.swift in Sources */,
 				90DD8C2A26F936E60079424A /* MobileNet.mlmodel in Sources */,
 				90F3B6AC26FFEA2900C4859D /* ItemProperty.swift in Sources */,
 				906CE2E926FA871900DC12C3 /* AddPhotoView.swift in Sources */,
@@ -697,7 +698,6 @@
 				90B46BC82700F53E00BEED75 /* EditPhotoView.swift in Sources */,
 				90C172D626F13FAF00244A9C /* SellerDetailView.swift in Sources */,
 				906CE2EC26FA970100DC12C3 /* AddItemViewModel.swift in Sources */,
-				900DDBED26E036CB0034A155 /* BelongingsApp.swift in Sources */,
 				900DDBEF26E036CB0034A155 /* ContentView.swift in Sources */,
 				90C172D326F13EC200244A9C /* BrandDetailView.swift in Sources */,
 				90CB46AE26ED43AD00A9468B /* ItemDetailView.swift in Sources */,
