@@ -118,6 +118,9 @@ struct SellerDetailView: View {
                         showAlert = true
                     }
                 }
+                #if os(iOS)
+                .textInputAutocapitalization(.never)
+                #endif
         }
     }
     
