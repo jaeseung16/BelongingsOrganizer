@@ -42,7 +42,7 @@ class AddItemViewModel: NSObject, ObservableObject {
         seller = nil
     }
     
-    func saveBelonging(name: String, kind: Kind?, brand: Brand?, seller: Seller?, note: String, obtained: Date, buyPrice: Double?, quantity: Int64?, buyCurrency: String) -> Void {
+    func saveBelonging(name: String, kind: [Kind], brand: Brand?, seller: Seller?, note: String, obtained: Date, buyPrice: Double?, quantity: Int64?, buyCurrency: String) -> Void {
         let created = Date()
         
         let newItem = Item(context: viewContext)
@@ -57,8 +57,8 @@ class AddItemViewModel: NSObject, ObservableObject {
         newItem.uuid = UUID()
         newItem.image = imageData
         
-        if kind != nil {
-            kind!.addToItems(newItem)
+        if !kind.isEmpty {
+            kind.forEach { $0.addToItems(newItem) }
         }
         
         if brand != nil {

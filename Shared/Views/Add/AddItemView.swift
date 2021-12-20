@@ -26,7 +26,7 @@ struct AddItemView: View {
     @State private var presentCurrencyView = false
     @State private var presentPhotoView = false
     
-    @State private var kind: Kind?
+    @State private var kind = [Kind]()
     @State private var brand: Brand?
     @State private var seller: Seller?
     
@@ -57,7 +57,7 @@ struct AddItemView: View {
                 actions()
             }
             .sheet(isPresented: $presentChooseKindView, content: {
-                ChooseKindView(kind: $kind)
+                ChooseKindView(selectedKinds: $kind)
                     .environment(\.managedObjectContext, viewContext)
                     .environmentObject(viewModel)
                     .frame(width: geometry.size.width, height: geometry.size.height)
@@ -173,18 +173,20 @@ struct AddItemView: View {
                 })
             }
             
-            if kind == nil {
+            if kind.isEmpty {
                 Text("category")
                     .foregroundColor(.secondary)
                     .frame(maxWidth: .infinity, idealHeight: 50)
                     .background(RoundedRectangle(cornerRadius: 5.0)
                                     .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
             } else {
-                Text(kind!.name ?? "N/A")
-                    .frame(maxWidth: .infinity, idealHeight: 50)
-                    .background(RoundedRectangle(cornerRadius: 5.0)
-                                    .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
-                    .frame(maxWidth: .infinity)
+                ForEach(kind) { kind in
+                    Text(kind.name ?? "N/A")
+                        .frame(maxWidth: .infinity, idealHeight: 50)
+                        .background(RoundedRectangle(cornerRadius: 5.0)
+                                        .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+                        .frame(maxWidth: .infinity)
+                }
             }
         }
     }

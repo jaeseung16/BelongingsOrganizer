@@ -12,7 +12,7 @@ struct ItemDetailView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
     
     @State var item: Item
-    @State private var kind: Kind?
+    @State private var kind = [Kind]()
     @State private var brand: Brand?
     @State private var seller: Seller?
     
@@ -63,7 +63,7 @@ struct ItemDetailView: View {
             .padding()
             .sheet(isPresented: $presentChooseKindView, content: {
                 #if os(macOS)
-                ChooseKindView(kind: $kind)
+                ChooseKindView(selectedKinds: $kind)
                     .frame(minWidth: 0.5 * geometry.size.width, minHeight: geometry.size.height)
                     .onChange(of: kind) { _ in
                         isEdited = true
@@ -172,7 +172,7 @@ struct ItemDetailView: View {
         obtained = item.obtained ?? Date()
         disposed = item.disposed ?? Date()
         
-        kind = nil
+        kind.removeAll()
         brand = nil
         seller = nil
         
@@ -186,13 +186,13 @@ struct ItemDetailView: View {
         DetailHeaderView(isEdited: $isEdited) {
             reset()
         } update: {
-            if kind != nil {
+            if !kind.isEmpty {
                 item.kind?.forEach {
                     if let kind = $0 as? Kind {
                         kind.removeFromItems(item)
                     }
                 }
-                kind?.addToItems(item)
+                kind.forEach { $0.addToItems(item) }
             }
             
             if brand != nil {
@@ -358,6 +358,10 @@ struct ItemDetailView: View {
         return kinds?.first
     }
     
+    private var itemKinds: [Kind] {
+        item.kind?.filter { $0 is Kind }.map { $0 as! Kind } ?? [Kind]()
+    }
+    
     private var itemBrand: Brand? {
         let brands = item.brand?.filter { $0 is Brand }.map { $0 as! Brand }
         return brands?.first
@@ -374,14 +378,22 @@ struct ItemDetailView: View {
             
             Spacer()
             
-            if kind == nil {
-                Text(itemKind?.name ?? "")
+            if kind.isEmpty {
+                VStack {
+                    ForEach(itemKinds) {
+                        Text($0.name ?? "")
+                    }
+                }
             } else {
-                Text(kind!.name ?? "")
+                VStack {
+                    ForEach(kind) {
+                        Text($0.name ?? "")
+                    }
+                }
             }
             
             Button {
-                kind = itemKind
+                kind = itemKinds
                 presentChooseKindView = true
             } label: {
                 Text("edit")

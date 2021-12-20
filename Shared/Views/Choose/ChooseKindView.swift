@@ -19,7 +19,7 @@ struct ChooseKindView: View {
     
     @State var presentAddItem = false
     
-    @Binding var kind: Kind?
+    @Binding var selectedKinds: [Kind]
     
     @State private var showAlertForDeletion = false
     
@@ -65,14 +65,17 @@ struct ChooseKindView: View {
                 Spacer()
             }
            
-            if kind == nil {
-                NothingSelectedText()
-            } else {
-                Button {
-                    kind = nil
-                } label: {
-                    Text((kind!.name ?? ""))
+            List {
+                ForEach(selectedKinds) { kind in
+                    Button {
+                        if let index = selectedKinds.firstIndex(of: kind) {
+                            selectedKinds.remove(at: index)
+                        }
+                    } label: {
+                        Text(kind.name ?? "")
+                    }
                 }
+                .onDelete(perform: deleteItems)
             }
         }
     }
@@ -81,7 +84,13 @@ struct ChooseKindView: View {
         List {
             ForEach(kinds) { kind in
                 Button {
-                    self.kind = kind
+                    if selectedKinds.contains(kind) {
+                        if let index = selectedKinds.firstIndex(of: kind) {
+                            selectedKinds.remove(at: index)
+                        }
+                    } else {
+                        selectedKinds.append(kind)
+                    }
                 } label: {
                     Text(kind.name ?? "")
                 }
@@ -106,9 +115,9 @@ struct ChooseKindView: View {
 }
 
 struct ChooseKindView_Previews: PreviewProvider {
-    @State private static var kind: Kind?
+    @State private static var selectedKinds = [Kind]()
     
     static var previews: some View {
-        ChooseKindView(kind: ChooseKindView_Previews.$kind)
+        ChooseKindView(selectedKinds: ChooseKindView_Previews.$selectedKinds)
     }
 }
