@@ -7,8 +7,9 @@
 
 import SwiftUI
 import UniformTypeIdentifiers
+import SDWebImageWebPCoder
 
-struct AddPhotoView: View {
+struct AddPhotoView: View, DropDelegate {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var viewModel: AddItemViewModel
 
@@ -38,6 +39,7 @@ struct AddPhotoView: View {
                     .onLongPressGesture {
                         pasteImage()
                     }
+                    .onDrop(of: ["public.image", "public.file-url"], delegate: self)
                 
                 Divider()
                 
@@ -127,5 +129,40 @@ struct AddPhotoView: View {
                 selectedImage = data
             }
         }
+    }
+    
+    func performDrop(info: DropInfo) -> Bool {
+        ImagePaster.loadData(from: info) { data, _ in
+            if let imageData = data {
+                if imageData.count > ImagePaster.maxDataSize, let uiImage = UIImage(data: imageData) {
+                    if let resized = ImagePaster.resize(uiImage: uiImage, within: ImagePaster.maxResizeSize),
+                       let data = resized.pngData() {
+                        selectedImage = data
+                    } else {
+                        selectedImage = imageData
+                    }
+                } else {
+                    selectedImage = imageData
+                }
+            }
+        }
+        
+        ImagePaster.loadFile(from: info) { item, error in
+            if let url = URL(dataRepresentation: item as! Data, relativeTo: nil) {
+                if url.absoluteString.contains(".webp") {
+                    let _ = url.startAccessingSecurityScopedResource()
+                    if let data: Data = try? Data(contentsOf: url) {
+                        let image = SDImageWebPCoder.shared.decodedImage(with: data, options: nil)
+                        self.selectedImage = image?.pngData()
+                    }
+                    url.stopAccessingSecurityScopedResource()
+                } else {
+                    self.selectedImage = try? Data(contentsOf: url)
+                }
+            }
+            print("selectedImage = \(String(describing: selectedImage))")
+        }
+        
+        return selectedImage != nil
     }
 }

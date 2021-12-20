@@ -6,8 +6,10 @@
 //
 
 import SwiftUI
+import UniformTypeIdentifiers
+import SDWebImageWebPCoder
 
-struct EditPhotoView: View {
+struct EditPhotoView: View, DropDelegate {
     @Environment(\.dismiss) private var dismiss
 
     @State var originalImage: Data?
@@ -38,6 +40,7 @@ struct EditPhotoView: View {
                     .onLongPressGesture {
                         pasteImage()
                     }
+                    .onDrop(of: ["public.image", "public.file-url"], delegate: self)
                 
                 Divider()
                 
@@ -135,5 +138,40 @@ struct EditPhotoView: View {
                 image = data
             }
         }
+    }
+    
+    func performDrop(info: DropInfo) -> Bool {
+        ImagePaster.loadData(from: info) { data, _ in
+            if let imageData = data {
+                if imageData.count > ImagePaster.maxDataSize, let uiImage = UIImage(data: imageData) {
+                    if let resized = ImagePaster.resize(uiImage: uiImage, within: ImagePaster.maxResizeSize),
+                       let data = resized.pngData() {
+                        image = data
+                    } else {
+                        image = imageData
+                    }
+                } else {
+                    image = imageData
+                }
+            }
+        }
+        
+        ImagePaster.loadFile(from: info) { item, error in
+            if let url = URL(dataRepresentation: item as! Data, relativeTo: nil) {
+                if url.absoluteString.contains(".webp") {
+                    let _ = url.startAccessingSecurityScopedResource()
+                    if let data: Data = try? Data(contentsOf: url) {
+                        let image = SDImageWebPCoder.shared.decodedImage(with: data, options: nil)
+                        self.image = image?.pngData()
+                    }
+                    url.stopAccessingSecurityScopedResource()
+                } else {
+                    self.image = try? Data(contentsOf: url)
+                }
+            }
+            print("image = \(String(describing: image))")
+        }
+        
+        return image != nil
     }
 }
