@@ -18,7 +18,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     static let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .short
-        formatter.timeStyle = .medium
+        formatter.timeStyle = .short
         return formatter
     }()
     
