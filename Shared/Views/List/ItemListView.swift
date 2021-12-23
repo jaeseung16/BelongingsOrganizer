@@ -85,14 +85,12 @@ struct ItemListView: View {
         }
         .alert("Unable to Save Data", isPresented: $showAlert) {
             Button("Dismiss") {
-                showAlert.toggle()
             }
         } message: {
             Text(AddItemViewModel.shared.message)
         }
         .alert("Unable to Delete Data", isPresented: $showAlertForDeletion) {
             Button("Dismiss") {
-                showAlert.toggle()
             }
         } message: {
             Text("Failed to delete the selected item")
@@ -149,7 +147,7 @@ struct ItemListView: View {
     private func deleteItems(offsets: IndexSet) {
         withAnimation {
             viewModel.delete(offsets.map { filteredItems[$0] }) { _ in
-                showAlertForDeletion.toggle()
+                showAlert.toggle()
             }
         }
     }
