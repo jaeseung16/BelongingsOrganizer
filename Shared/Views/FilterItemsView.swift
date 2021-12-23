@@ -40,6 +40,10 @@ struct FilterItemsView: View {
     var body: some View {
         GeometryReader { geometry in
             VStack {
+                header()
+                
+                Divider()
+                
                 Text("Filter")
                     .font(.title3)
                 
@@ -59,10 +63,6 @@ struct FilterItemsView: View {
                 .pickerStyle(SegmentedPickerStyle())
                 
                 filterListView()
-            
-                Divider()
-                
-                actions()
             }
             .padding()
         }
@@ -195,9 +195,16 @@ struct FilterItemsView: View {
         }
     }
     
-    func actions() -> some View {
+    func header() -> some View {
         HStack {
+            Button {
+                dismiss.callAsFunction()
+            } label: {
+                Text("Dismiss")
+            }
+            
             Spacer()
+            
             Button {
                 selectedKinds.removeAll()
                 selectedBrands.removeAll()
@@ -205,13 +212,6 @@ struct FilterItemsView: View {
             } label: {
                 Text("Reset")
             }
-            Spacer()
-            Button {
-                dismiss.callAsFunction()
-            } label: {
-                Text("Done")
-            }
-            Spacer()
         }
     }
 }
