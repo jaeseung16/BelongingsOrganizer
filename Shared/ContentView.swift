@@ -17,8 +17,6 @@ struct ContentView: View {
         animation: .default)
     private var items: FetchedResults<Item>
 
-    @State private var showAlert = false
-    
     var body: some View {
         TabView {
             ItemListView()
@@ -46,13 +44,11 @@ struct ContentView: View {
                 }
         }
         .searchable(text: $viewModel.stringToSearch)
-        .onChange(of: viewModel.showAlert) { _ in
-            showAlert = viewModel.showAlert
-        }
-        .alert(isPresented: $showAlert) {
-            Alert(title: Text("Unable to Save Data"),
-                  message: Text(viewModel.message),
-                  dismissButton: .default(Text("Dismiss")))
+        .alert("Unable to save data", isPresented: $viewModel.showAlert) {
+            Button("Dismiss") {
+            }
+        } message: {
+            Text("viewModel.message")
         }
     }
 }
