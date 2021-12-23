@@ -140,9 +140,9 @@ struct FilterItemsView: View {
                             Text(seller.name ?? "")
                                 .foregroundColor(.white)
                         }
-                        .background(RoundedRectangle(cornerRadius: 5.0)
-                                        .fill(Color(.sRGB, white: 0.5, opacity: 1.0)))
                     }
+                    .background(RoundedRectangle(cornerRadius: 5.0)
+                                    .fill(Color(.sRGB, white: 0.5, opacity: 1.0)))
                 }
                 .padding()
             }
@@ -157,38 +157,44 @@ struct FilterItemsView: View {
             switch (selectedFilter) {
             case .kind:
                 ForEach(kinds, id: \.id) { kind in
-                    Button {
-                        if selectedKinds.contains(kind) {
-                            selectedKinds.remove(kind)
-                        } else {
-                            selectedKinds.insert(kind)
+                    if let name = kind.name {
+                        Button {
+                            if selectedKinds.contains(kind) {
+                                selectedKinds.remove(kind)
+                            } else {
+                                selectedKinds.insert(kind)
+                            }
+                        } label: {
+                            KindRowView(kind: kind, name: name)
                         }
-                    } label: {
-                        Text(kind.name ?? "")
                     }
                 }
             case .brand:
                 ForEach(brands, id: \.id) { brand in
-                    Button {
-                        if selectedBrands.contains(brand) {
-                            selectedBrands.remove(brand)
-                        } else {
-                            selectedBrands.insert(brand)
+                    if let name = brand.name {
+                        Button {
+                            if selectedBrands.contains(brand) {
+                                selectedBrands.remove(brand)
+                            } else {
+                                selectedBrands.insert(brand)
+                            }
+                        } label: {
+                            BrandRowView(brand: brand, name: name)
                         }
-                    } label: {
-                        Text(brand.name ?? "")
                     }
                 }
             case .seller:
                 ForEach(sellers, id: \.id) { seller in
-                    Button {
-                        if selectedSellers.contains(seller) {
-                            selectedSellers.remove(seller)
-                        } else {
-                            selectedSellers.insert(seller)
+                    if let name = seller.name {
+                        Button {
+                            if selectedSellers.contains(seller) {
+                                selectedSellers.remove(seller)
+                            } else {
+                                selectedSellers.insert(seller)
+                            }
+                        } label: {
+                            SellerRowView(seller: seller, name: name)
                         }
-                    } label: {
-                        Text(seller.name ?? "")
                     }
                 }
             }

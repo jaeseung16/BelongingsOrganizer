@@ -88,7 +88,7 @@ struct SellerListView: View {
                     NavigationLink(destination: SellerDetailView(seller: seller,
                                                                  name: sellerName,
                                                                  urlString: seller.url?.absoluteString ?? "")) {
-                        sellerRowView(seller, name: sellerName)
+                        SellerRowView(seller: seller, name: sellerName)
                     }
                 }
             }

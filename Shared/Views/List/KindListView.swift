@@ -87,25 +87,11 @@ struct KindListView: View {
             ForEach(filteredKinds) { kind in
                 if let kindName = kind.name {
                     NavigationLink(destination: KindDetailView(kind: kind, name: kindName)) {
-                        kindRowView(kind, name: kindName)
+                        KindRowView(kind: kind, name: kindName)
                     }
                 }
             }
             .onDelete(perform: deleteKinds)
-        }
-    }
-    
-    private func kindRowView(_ kind: Kind, name: String) -> some View {
-        HStack {
-            Text(name)
-            
-            Spacer()
-            
-            if let items = kind.items {
-                Text("\(items.count) items")
-                    .font(.callout)
-                    .foregroundColor(.secondary)
-            }
         }
     }
     

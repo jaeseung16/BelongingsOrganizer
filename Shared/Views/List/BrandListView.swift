@@ -88,25 +88,11 @@ struct BrandListView: View {
                     NavigationLink(destination: BrandDetailView(brand: brand,
                                                                 name: brandName,
                                                                 urlString: brand.url?.absoluteString ?? "")) {
-                        brandRowView(brand, name: brandName)
+                        BrandRowView(brand: brand, name: brandName)
                     }
                 }
             }
             .onDelete(perform: deleteBrands)
-        }
-    }
-    
-    private func brandRowView(_ brand: Brand, name: String) -> some View {
-        HStack {
-            Text(name)
-            
-            Spacer()
-            
-            if let items = brand.items {
-                Text("\(items.count) items")
-                    .font(.callout)
-                    .foregroundColor(.secondary)
-            }
         }
     }
     
