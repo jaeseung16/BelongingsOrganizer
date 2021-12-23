@@ -12,6 +12,8 @@ struct ChooseCurrencyView: View {
     
     @Binding var currency: String
     
+    private let currencyCodes = NSLocale.commonISOCurrencyCodes
+    
     var body: some View {
         GeometryReader { geometry in
             VStack {
@@ -19,28 +21,32 @@ struct ChooseCurrencyView: View {
                 
                 #if os(macOS)
                 Picker("", selection: $currency) {
-                    ForEach(NSLocale.commonISOCurrencyCodes, id: \.self) { currencyCode in
-                        Text("\(currencyCode) (\(NSLocale.autoupdatingCurrent.localizedString(forCurrencyCode: currencyCode) ?? ""))")
+                    ForEach(currencyCodes, id: \.self) { currencyCode in
+                        Text("\(currencyCode) (\(localizedString(for: currencyCode)))")
                     }
                 }
                 #else
                 Picker("", selection: $currency) {
-                    ForEach(NSLocale.commonISOCurrencyCodes, id: \.self) { currencyCode in
-                        Text("\(currencyCode) (\(NSLocale.autoupdatingCurrent.localizedString(forCurrencyCode: currencyCode) ?? ""))")
+                    ForEach(currencyCodes, id: \.self) { currencyCode in
+                        Text("\(currencyCode) (\(localizedString(for: currencyCode)))")
                     }
                 }
                 .pickerStyle(WheelPickerStyle())
                 #endif
                 
-                Button(action: {
+                Button {
                     dismiss.callAsFunction()
-                }, label: {
+                } label: {
                     Text("Done")
-                })
+                }
             }
             .frame(maxWidth: .infinity)
         }
         .padding()
+    }
+    
+    private func localizedString(for currencyCode: String) -> String {
+        return NSLocale.autoupdatingCurrent.localizedString(forCurrencyCode: currencyCode) ?? ""
     }
 }
 
