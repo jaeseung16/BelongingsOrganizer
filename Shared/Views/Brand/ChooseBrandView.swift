@@ -24,34 +24,46 @@ struct ChooseBrandView: View {
     @State private var showAlertForDeletion = false
     
     var body: some View {
-        VStack {
-            Text("Choose a brand")
-                .font(.title3)
-            
-            Divider()
-            
-            selectedView()
-                .frame(minHeight: 50)
-                .background(RoundedRectangle(cornerRadius: 10.0)
-                                .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
-            
-            Divider()
-            
-            brandList()
-            
-            Divider()
-            
-            SheetBottom(labelText: "Add a brand") {
-                presentAddBrand = true
-            } done: {
-                dismiss.callAsFunction()
+        GeometryReader { geometry in
+            VStack {
+                Text("Choose a brand")
+                    .font(.title3)
+                
+                Divider()
+                
+                selectedView()
+                    .frame(minHeight: 50)
+                    .background(RoundedRectangle(cornerRadius: 10.0)
+                                    .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+                
+                Divider()
+                
+                brandList()
+                
+                Divider()
+                
+                SheetBottom(labelText: "Add a brand") {
+                    presentAddBrand = true
+                } done: {
+                    dismiss.callAsFunction()
+                }
             }
-        }
-        .padding()
-        .alert(isPresented: $showAlertForDeletion) {
-            Alert(title: Text("Unable to Delete Data"),
-                  message: Text("Failed to delete the selected brand"),
-                  dismissButton: .default(Text("Dismiss")))
+            .padding()
+            .sheet(isPresented: $presentAddBrand, content: {
+                #if os(macOS)
+                AddBrandView()
+                    .frame(minWidth: 0.5 * geometry.size.width)
+                    .environmentObject(AddItemViewModel.shared)
+                #else
+                AddBrandView()
+                    .environmentObject(AddItemViewModel.shared)
+                #endif
+            })
+            .alert(isPresented: $showAlertForDeletion) {
+                Alert(title: Text("Unable to Delete Data"),
+                      message: Text("Failed to delete the selected brand"),
+                      dismissButton: .default(Text("Dismiss")))
+            }
         }
     }
     
@@ -88,10 +100,6 @@ struct ChooseBrandView: View {
             }
             .onDelete(perform: deleteBrands)
         }
-        .sheet(isPresented: $presentAddBrand, content: {
-            AddBrandView()
-                .environmentObject(AddItemViewModel.shared)
-        })
     }
     
     private func deleteBrands(offsets: IndexSet) {

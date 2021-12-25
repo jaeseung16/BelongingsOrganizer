@@ -24,35 +24,48 @@ struct ChooseKindView: View {
     @State private var showAlertForDeletion = false
     
     var body: some View {
-        VStack {
-            Text("Choose a category")
-                .font(.title3)
-            
-            Divider()
-            
-            selectedView()
-                .frame(minHeight: 50)
-                .background(RoundedRectangle(cornerRadius: 10.0)
-                                .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
-            
-            Divider()
-            
-            kindList()
-            
-            Divider()
-            
-            SheetBottom(labelText: "Add a category") {
-                presentAddItem = true
-            } done: {
-                dismiss.callAsFunction()
+        GeometryReader { geometry in
+            VStack {
+                Text("Choose a category")
+                    .font(.title3)
+                
+                Divider()
+                
+                selectedView()
+                    .frame(minHeight: 50)
+                    .background(RoundedRectangle(cornerRadius: 10.0)
+                                    .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+                
+                Divider()
+                
+                kindList()
+                
+                Divider()
+                
+                SheetBottom(labelText: "Add a category") {
+                    presentAddItem = true
+                } done: {
+                    dismiss.callAsFunction()
+                }
+            }
+            .padding()
+            .sheet(isPresented: $presentAddItem, content: {
+                #if os(macOS)
+                AddKindView()
+                    .frame(minWidth: 0.5 * geometry.size.width)
+                    .environmentObject(AddItemViewModel.shared)
+                #else
+                AddKindView()
+                    .environmentObject(AddItemViewModel.shared)
+                #endif
+            })
+            .alert(isPresented: $showAlertForDeletion) {
+                Alert(title: Text("Unable to Delete Data"),
+                      message: Text("Failed to delete the selected category"),
+                      dismissButton: .default(Text("Dismiss")))
             }
         }
-        .padding()
-        .alert(isPresented: $showAlertForDeletion) {
-            Alert(title: Text("Unable to Delete Data"),
-                  message: Text("Failed to delete the selected category"),
-                  dismissButton: .default(Text("Dismiss")))
-        }
+        
     }
     
     private func selectedView() -> some View {
@@ -97,10 +110,6 @@ struct ChooseKindView: View {
             }
             .onDelete(perform: deleteItems)
         }
-        .sheet(isPresented: $presentAddItem, content: {
-            AddKindView()
-                .environmentObject(AddItemViewModel.shared)
-        })
     }
     
     private func deleteItems(offsets: IndexSet) {

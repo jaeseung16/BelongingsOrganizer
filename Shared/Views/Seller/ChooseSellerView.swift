@@ -24,33 +24,45 @@ struct ChooseSellerView: View {
     @State private var showAlertForDeletion = false
     
     var body: some View {
-        VStack {
-            Text("Choose a seller")
-            
-            Divider()
-            
-            selectedView()
-                .frame(minHeight: 50)
-                .background(RoundedRectangle(cornerRadius: 10.0)
-                                .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
-            
-            Divider()
-                 
-            sellerList()
-            
-            Divider()
-            
-            SheetBottom(labelText: "Add a seller") {
-                presentAddSeller = true
-            } done: {
-                dismiss.callAsFunction()
+        GeometryReader { geometry in
+            VStack {
+                Text("Choose a seller")
+                
+                Divider()
+                
+                selectedView()
+                    .frame(minHeight: 50)
+                    .background(RoundedRectangle(cornerRadius: 10.0)
+                                    .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+                
+                Divider()
+                     
+                sellerList()
+                
+                Divider()
+                
+                SheetBottom(labelText: "Add a seller") {
+                    presentAddSeller = true
+                } done: {
+                    dismiss.callAsFunction()
+                }
             }
-        }
-        .padding()
-        .alert(isPresented: $showAlertForDeletion) {
-            Alert(title: Text("Unable to Delete Data"),
-                  message: Text("Failed to delete the selected seller"),
-                  dismissButton: .default(Text("Dismiss")))
+            .padding()
+            .sheet(isPresented: $presentAddSeller, content: {
+                #if os(macOS)
+                AddSellerView()
+                    .frame(minWidth: 0.5 * geometry.size.width)
+                    .environmentObject(AddItemViewModel.shared)
+                #else
+                AddSellerView()
+                    .environmentObject(AddItemViewModel.shared)
+                #endif
+            })
+            .alert(isPresented: $showAlertForDeletion) {
+                Alert(title: Text("Unable to Delete Data"),
+                      message: Text("Failed to delete the selected seller"),
+                      dismissButton: .default(Text("Dismiss")))
+            }
         }
     }
     
@@ -87,10 +99,6 @@ struct ChooseSellerView: View {
             }
             .onDelete(perform: deleteSellers)
         }
-        .sheet(isPresented: $presentAddSeller, content: {
-            AddSellerView()
-                .environmentObject(AddItemViewModel.shared)
-        })
     }
     
     private func deleteSellers(offsets: IndexSet) {
