@@ -16,7 +16,6 @@ struct AddSellerView: View {
     @State private var urlString = ""
     @State private var isEditing = false
     @State private var showAlert = false
-    @State private var isEdited = true
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -58,10 +57,10 @@ struct AddSellerView: View {
             
             Divider()
             
-            DetailHeaderView(isEdited: $isEdited) {
+            AddBottomView {
                 dismiss.callAsFunction()
-            } update: {
-                saveSeller()
+            } save: {
+                viewModel.saveSeller(name: name, urlString: urlString)
                 dismiss.callAsFunction()
             }
             
@@ -76,10 +75,6 @@ struct AddSellerView: View {
         }, message: {
             Text("Cannot access the URL. Try a different one or leave it empty.")
         })
-    }
-    
-    private func saveSeller() -> Void {
-        viewModel.saveSeller(name: name, urlString: urlString)
     }
 }
 

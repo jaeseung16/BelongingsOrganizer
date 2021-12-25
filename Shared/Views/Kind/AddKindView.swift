@@ -13,7 +13,6 @@ struct AddKindView: View {
     @EnvironmentObject var viewModel: AddItemViewModel
     
     @State private var name = ""
-    @State private var isEdited = true
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -35,10 +34,10 @@ struct AddKindView: View {
             
             Divider()
             
-            DetailHeaderView(isEdited: $isEdited) {
+            AddBottomView {
                 dismiss.callAsFunction()
-            } update: {
-                saveKind()
+            } save: {
+                viewModel.saveKind(name: name)
                 dismiss.callAsFunction()
             }
             
@@ -48,11 +47,6 @@ struct AddKindView: View {
         .frame(minHeight: 200.0)
         
     }
-    
-    private func saveKind() -> Void {
-        viewModel.saveKind(name: name)
-    }
-    
 }
 
 struct AddKindView_Previews: PreviewProvider {
