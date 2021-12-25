@@ -13,6 +13,7 @@ struct AddKindView: View {
     @EnvironmentObject var viewModel: AddItemViewModel
     
     @State private var name = ""
+    @State private var isEdited = true
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -34,27 +35,11 @@ struct AddKindView: View {
             
             Divider()
             
-            HStack {
-                Spacer()
-                
-                Button(action: {
-                    dismiss.callAsFunction()
-                },
-                label: {
-                    Text("Cancel")
-                })
-                
-                Spacer()
-                
-                Button(action: {
-                    saveKind()
-                    dismiss.callAsFunction()
-                },
-                label: {
-                    Label("Save", systemImage: "square.and.arrow.down")
-                })
-                
-                Spacer()
+            DetailHeaderView(isEdited: $isEdited) {
+                dismiss.callAsFunction()
+            } update: {
+                saveKind()
+                dismiss.callAsFunction()
             }
             
             Spacer()

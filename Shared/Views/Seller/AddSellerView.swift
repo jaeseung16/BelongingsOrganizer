@@ -16,6 +16,7 @@ struct AddSellerView: View {
     @State private var urlString = ""
     @State private var isEditing = false
     @State private var showAlert = false
+    @State private var isEdited = true
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -57,27 +58,11 @@ struct AddSellerView: View {
             
             Divider()
             
-            HStack {
-                Spacer()
-                
-                Button(action: {
-                    dismiss.callAsFunction()
-                },
-                label: {
-                    Text("Cancel")
-                })
-                
-                Spacer()
-                
-                Button(action: {
-                    saveSeller()
-                    dismiss.callAsFunction()
-                },
-                label: {
-                    Label("Save", systemImage: "square.and.arrow.down")
-                })
-                
-                Spacer()
+            DetailHeaderView(isEdited: $isEdited) {
+                dismiss.callAsFunction()
+            } update: {
+                saveSeller()
+                dismiss.callAsFunction()
             }
             
             Spacer()
