@@ -118,6 +118,8 @@
 		90E54D1C2777D37300B6DF62 /* AddBottomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E54D1A2777D37300B6DF62 /* AddBottomView.swift */; };
 		90F3B6AB26FFEA2900C4859D /* ItemProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F3B6AA26FFEA2900C4859D /* ItemProperty.swift */; };
 		90F3B6AC26FFEA2900C4859D /* ItemProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F3B6AA26FFEA2900C4859D /* ItemProperty.swift */; };
+		90F4444927B49BDF00768A49 /* BannerAdViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F4444827B49BDF00768A49 /* BannerAdViewController.swift */; };
+		90F4444B27B49C5100768A49 /* BannerAd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F4444A27B49C5100768A49 /* BannerAd.swift */; };
 		90FF8FD4276FABC70099A23B /* ItemRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90FF8FD3276FABC70099A23B /* ItemRowView.swift */; };
 		90FF8FD5276FABC70099A23B /* ItemRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90FF8FD3276FABC70099A23B /* ItemRowView.swift */; };
 /* End PBXBuildFile section */
@@ -215,6 +217,8 @@
 		90E2EA9826F402940014A8C6 /* AddPhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPhotoView.swift; sourceTree = "<group>"; };
 		90E54D1A2777D37300B6DF62 /* AddBottomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBottomView.swift; sourceTree = "<group>"; };
 		90F3B6AA26FFEA2900C4859D /* ItemProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemProperty.swift; sourceTree = "<group>"; };
+		90F4444827B49BDF00768A49 /* BannerAdViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerAdViewController.swift; sourceTree = "<group>"; };
+		90F4444A27B49C5100768A49 /* BannerAd.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerAd.swift; sourceTree = "<group>"; };
 		90FF8FD3276FABC70099A23B /* ItemRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemRowView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -304,6 +308,7 @@
 		900DDBCA26E036CA0034A155 /* iOS */ = {
 			isa = PBXGroup;
 			children = (
+				90F4444727B49BB600768A49 /* AdMob */,
 				90E238D82706553F00E03624 /* Views */,
 				900DDBCB26E036CA0034A155 /* Info.plist */,
 			);
@@ -503,6 +508,15 @@
 			path = Photo;
 			sourceTree = "<group>";
 		};
+		90F4444727B49BB600768A49 /* AdMob */ = {
+			isa = PBXGroup;
+			children = (
+				90F4444827B49BDF00768A49 /* BannerAdViewController.swift */,
+				90F4444A27B49C5100768A49 /* BannerAd.swift */,
+			);
+			path = AdMob;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -677,6 +691,7 @@
 				90E54D1B2777D37300B6DF62 /* AddBottomView.swift in Sources */,
 				90E2EA9626F402150014A8C6 /* ImagePickerView.swift in Sources */,
 				904498EA26EBF70600002A6F /* KindListView.swift in Sources */,
+				90F4444B27B49C5100768A49 /* BannerAd.swift in Sources */,
 				90CF0CF62730A1C300E93917 /* SectionTitleView.swift in Sources */,
 				90CB46B726ED6A1900A9468B /* FilterItemsView.swift in Sources */,
 				90DE25542707AD4C0030AEFF /* ImagePaster.swift in Sources */,
@@ -694,6 +709,7 @@
 				90D3F23526EA5B3400955316 /* Entities.swift in Sources */,
 				90CD27ED270908A1001A89B5 /* ImageType.swift in Sources */,
 				900FF63B277538AD00F08528 /* BrandRowView.swift in Sources */,
+				90F4444927B49BDF00768A49 /* BannerAdViewController.swift in Sources */,
 				90C0D98E26E8001700158C85 /* ChooseKindView.swift in Sources */,
 				90DD8C2C26F95A1B0079424A /* EditPhotoView.swift in Sources */,
 				900DDBF026E036CB0034A155 /* Persistence.swift in Sources */,
@@ -930,7 +946,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Belongings.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
@@ -939,8 +955,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2;
-				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jlee.Belongings;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jlee.BelongingsWithAds;
 				PRODUCT_NAME = "Belongings Organizer";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
@@ -956,7 +972,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Belongings.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
@@ -965,8 +981,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2;
-				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jlee.Belongings;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jlee.BelongingsWithAds;
 				PRODUCT_NAME = "Belongings Organizer";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
