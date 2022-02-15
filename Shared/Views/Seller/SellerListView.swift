@@ -47,6 +47,12 @@ struct SellerListView: View {
                             .frame(minWidth: 350, minHeight: 450)
                             .padding()
                     })
+                    
+                    #if os(iOS)
+                    Spacer()
+                    BannerAd()
+                        .frame(height: 50)
+                    #endif
                 }
                 .navigationTitle("Seller")
             }

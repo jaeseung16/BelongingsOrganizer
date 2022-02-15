@@ -6,11 +6,23 @@
 //
 
 import SwiftUI
+#if os(iOS)
+import AppTrackingTransparency
+import GoogleMobileAds
+#endif
 
 @main
 struct BelongingsApp: App {
     let persistenceController = PersistenceController.shared
     let viewModel = BelongingsViewModel.shared
+    
+    #if os(iOS)
+    init() {
+        ATTrackingManager.requestTrackingAuthorization { status in
+            GADMobileAds.sharedInstance().start(completionHandler: nil)
+        }
+    }
+    #endif
 
     var body: some Scene {
         WindowGroup {

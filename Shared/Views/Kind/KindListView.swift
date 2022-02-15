@@ -48,6 +48,12 @@ struct KindListView: View {
                                 .padding()
                             
                         }
+                    
+                    #if os(iOS)
+                    Spacer()
+                    BannerAd()
+                        .frame(height: 50)
+                    #endif
                 }
                 .navigationTitle("Categories")
             }
