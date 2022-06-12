@@ -67,7 +67,7 @@ struct ItemListView: View {
                     itemListView()
                         .sheet(isPresented: $presentAddItemView) {
                             AddItemView(geometry: geometry)
-                                .environmentObject(AddItemViewModel.shared)
+                                .environmentObject(viewModel.addItemViewModel)
                                 .frame(minWidth: 350, minHeight: 550)
                                 .padding()
                         }
@@ -80,14 +80,14 @@ struct ItemListView: View {
                 .frame(minWidth: 350, minHeight: 450)
                 .padding()
         }
-        .onChange(of: AddItemViewModel.shared.showAlert) { _ in
-            showAlert = AddItemViewModel.shared.showAlert
+        .onChange(of: viewModel.addItemViewModel.showAlert) { _ in
+            showAlert = viewModel.addItemViewModel.showAlert
         }
         .alert("Unable to Save Data", isPresented: $showAlert) {
             Button("Dismiss") {
             }
         } message: {
-            Text(AddItemViewModel.shared.message)
+            Text(viewModel.addItemViewModel.message)
         }
         .alert("Unable to Delete Data", isPresented: $showAlertForDeletion) {
             Button("Dismiss") {
@@ -110,7 +110,7 @@ struct ItemListView: View {
             Spacer()
             
             Button(action: {
-                AddItemViewModel.shared.reset()
+                viewModel.addItemViewModel.reset()
                 presentAddItemView = true
             }) {
                 Label("Add", systemImage: "plus")

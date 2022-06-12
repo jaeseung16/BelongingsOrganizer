@@ -12,14 +12,18 @@ import CoreML
 import Vision
 import CoreImage
 import os
+import Persistence
 
 class AddItemViewModel: NSObject, ObservableObject {
-    static let shared = AddItemViewModel()
     let logger = Logger()
     
-    private let persistenteContainer = PersistenceController.shared.container
+    private let persistence: Persistence
     private var viewContext: NSManagedObjectContext {
-        persistenteContainer.viewContext
+        persistence.container.viewContext
+    }
+    
+    init(persistence: Persistence) {
+        self.persistence = persistence
     }
     
     @Published var showAlert = false
