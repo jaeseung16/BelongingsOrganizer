@@ -17,19 +17,16 @@ struct BelongingsApp: App {
     #endif
     
     var body: some Scene {
-        let persistence = Persistence(name: BelongsOrganizerConstants.appName.rawValue, identifier: BelongsOrganizerConstants.iCloudIdentifier.rawValue)
-        let viewModel = BelongingsViewModel(persistence: persistence)
-        
         WindowGroup {
             #if os(macOS)
             ContentView()
                 .frame(minWidth: 900, minHeight: 600)
-                .environment(\.managedObjectContext, persistence.container.viewContext)
-                .environmentObject(viewModel)
+                .environment(\.managedObjectContext, appDelegate.persistence.container.viewContext)
+                .environmentObject(appDelegate.viewModel)
             #else
             ContentView()
-                .environment(\.managedObjectContext, persistence.container.viewContext)
-                .environmentObject(viewModel)
+                .environment(\.managedObjectContext, appDelegate.persistence.container.viewContext)
+                .environmentObject(appDelegate.viewModel)
             #endif
         }
     }

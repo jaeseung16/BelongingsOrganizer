@@ -31,6 +31,16 @@ class AppDelegate: NSObject {
         CKContainer(identifier: BelongsOrganizerConstants.iCloudIdentifier.rawValue).privateCloudDatabase
     }
     
+    let persistence: Persistence
+    let viewModel: BelongingsViewModel
+    
+    override init() {
+        self.persistence = Persistence(name: BelongsOrganizerConstants.appName.rawValue, identifier: BelongsOrganizerConstants.iCloudIdentifier.rawValue)
+        self.viewModel = BelongingsViewModel(persistence: persistence)
+        
+        super.init()
+    }
+    
     private func registerForPushNotifications() {
         UNUserNotificationCenter.current()
             .requestAuthorization(options: [.alert, .sound, .badge]) { [weak self] granted, _ in
@@ -120,7 +130,7 @@ extension AppDelegate: NSApplicationDelegate {
         registerForPushNotifications()
         
         // TODO: - Remove or comment out after testing
-        //UserDefaults.standard.setValue(false, forKey: didCreateArticleSubscription)
+        UserDefaults.standard.setValue(false, forKey: didCreateItemSubscription)
         
         subscribe()
     }
@@ -215,6 +225,8 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        logger.info("userNotificationCenter: response=\(response, privacy: .public)")
+        viewModel.stringToSearch = response.notification.request.content.body
         completionHandler()
     }
 }
