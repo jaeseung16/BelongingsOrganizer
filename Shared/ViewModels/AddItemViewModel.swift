@@ -12,17 +12,22 @@ import CoreML
 import Vision
 import CoreImage
 import os
+import Persistence
 
 class AddItemViewModel: NSObject, ObservableObject {
-    static let shared = AddItemViewModel()
     let logger = Logger()
     
-    private let persistenteContainer = PersistenceController.shared.container
+    private let persistence: Persistence
     private var viewContext: NSManagedObjectContext {
-        persistenteContainer.viewContext
+        persistence.container.viewContext
+    }
+    
+    init(persistence: Persistence) {
+        self.persistence = persistence
     }
     
     @Published var showAlert = false
+    @Published var toggle = false
     
     var message = ""
     
@@ -72,11 +77,16 @@ class AddItemViewModel: NSObject, ObservableObject {
         let originalMergePolicy = viewContext.mergePolicy
         viewContext.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
         
-        PersistenceController.save(viewContext: viewContext) { error in
-            let nsError = error as NSError
-            logger.error("While saving a new item, occured an unresolved error \(nsError), \(nsError.userInfo)")
-            message = "Cannot save a new item with name = \(String(describing: name))"
-            showAlert.toggle()
+        persistence.save() { result in
+            switch result {
+            case .success(()):
+                self.toggle.toggle()
+            case .failure(let error):
+                let nsError = error as NSError
+                self.logger.error("While saving a new item, occured an unresolved error \(nsError), \(nsError.userInfo)")
+                self.message = "Cannot save a new item with name = \(String(describing: name))"
+                self.showAlert.toggle()
+            }
         }
         
         viewContext.mergePolicy = originalMergePolicy
@@ -91,11 +101,16 @@ class AddItemViewModel: NSObject, ObservableObject {
         newKind.name = name.trimmingCharacters(in: .whitespaces)
         newKind.uuid = UUID()
         
-        PersistenceController.save(viewContext: viewContext) { error in
-            let nsError = error as NSError
-            logger.error("While saving a new category, occured an unresolved error \(nsError), \(nsError.userInfo)")
-            message = "Cannot save a new category with name = \(String(describing: name))"
-            showAlert.toggle()
+        persistence.save() { result in
+            switch result {
+            case .success(()):
+                self.toggle.toggle()
+            case .failure(let error):
+                let nsError = error as NSError
+                self.logger.error("While saving a new category, occured an unresolved error \(nsError), \(nsError.userInfo)")
+                self.message = "Cannot save a new category with name = \(String(describing: name))"
+                self.showAlert.toggle()
+            }
         }
     }
     
@@ -109,11 +124,16 @@ class AddItemViewModel: NSObject, ObservableObject {
         newBrand.url = URL(string: urlString)
         newBrand.uuid = UUID()
 
-        PersistenceController.save(viewContext: viewContext) { error in
-            let nsError = error as NSError
-            logger.error("While saving a new brand, occured an unresolved error \(nsError), \(nsError.userInfo)")
-            message = "Cannot save a new brand with name = \(String(describing: name))"
-            showAlert.toggle()
+        persistence.save() { result in
+            switch result {
+            case .success(()):
+                self.toggle.toggle()
+            case .failure(let error):
+                let nsError = error as NSError
+                self.logger.error("While saving a new brand, occured an unresolved error \(nsError), \(nsError.userInfo)")
+                self.message = "Cannot save a new brand with name = \(String(describing: name))"
+                self.showAlert.toggle()
+            }
         }
     }
     
@@ -127,11 +147,16 @@ class AddItemViewModel: NSObject, ObservableObject {
         newSeller.url = URL(string: urlString)
         newSeller.uuid = UUID()
 
-        PersistenceController.save(viewContext: viewContext) { error in
-            let nsError = error as NSError
-            logger.error("While saving a new seller, occured an unresolved error \(nsError), \(nsError.userInfo)")
-            message = "Cannot save a new seller with name = \(String(describing: name))"
-            showAlert.toggle()
+        persistence.save() { result in
+            switch result {
+            case .success(()):
+                self.toggle.toggle()
+            case .failure(let error):
+                let nsError = error as NSError
+                self.logger.error("While saving a new seller, occured an unresolved error \(nsError), \(nsError.userInfo)")
+                self.message = "Cannot save a new seller with name = \(String(describing: name))"
+                self.showAlert.toggle()
+            }
         }
     }
  

@@ -6,23 +6,27 @@
 //
 
 import SwiftUI
+import Persistence
 
 @main
 struct BelongingsApp: App {
-    let persistenceController = PersistenceController.shared
-    let viewModel = BelongingsViewModel.shared
-
+    #if os(macOS)
+    @NSApplicationDelegateAdaptor private var appDelegate: AppDelegate
+    #else
+    @UIApplicationDelegateAdaptor private var appDelegate: AppDelegate
+    #endif
+    
     var body: some Scene {
         WindowGroup {
             #if os(macOS)
             ContentView()
                 .frame(minWidth: 900, minHeight: 600)
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
-                .environmentObject(viewModel)
+                .environment(\.managedObjectContext, appDelegate.persistence.container.viewContext)
+                .environmentObject(appDelegate.viewModel)
             #else
             ContentView()
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
-                .environmentObject(viewModel)
+                .environment(\.managedObjectContext, appDelegate.persistence.container.viewContext)
+                .environmentObject(appDelegate.viewModel)
             #endif
         }
     }

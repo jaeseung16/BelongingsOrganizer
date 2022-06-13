@@ -10,9 +10,9 @@ import Combine
 import CoreData
 import SDWebImageWebPCoder
 import os
+import Persistence
 
 class BelongingsViewModel: NSObject, ObservableObject {
-    static let shared = BelongingsViewModel()
     let logger = Logger()
     
     static let dateFormatter: DateFormatter = {
@@ -29,17 +29,25 @@ class BelongingsViewModel: NSObject, ObservableObject {
         return formatter
     }()
     
-    private let persistenteContainer = PersistenceController.shared.container
+    private var persistence: Persistence
+    private var persistenceContainer: NSPersistentCloudKitContainer {
+        persistence.container
+    }
     
     private var subscriptions: Set<AnyCancellable> = []
     
     @Published var changedPeristentContext = NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave)
     @Published var showAlert = false
     @Published var stringToSearch = ""
+    @Published var toggle = false
     
     var message = ""
     
-    override init() {
+    let addItemViewModel: AddItemViewModel
+    
+    init(persistence: Persistence) {
+        self.persistence = persistence
+        self.addItemViewModel = AddItemViewModel(persistence: persistence)
         super.init()
         
         NotificationCenter.default
@@ -49,6 +57,8 @@ class BelongingsViewModel: NSObject, ObservableObject {
         
         let webPCoder = SDImageWebPCoder.shared
         SDImageCodersManager.shared.addCoder(webPCoder)
+        
+        self.persistence.container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
     }
     
     var itemDTO = ItemDTO() {
@@ -65,11 +75,11 @@ class BelongingsViewModel: NSObject, ObservableObject {
                 existingEntity.image = itemDTO.image
                 existingEntity.lastupd = Date()
 
-                saveContext() { error in
+                saveContext() { [self] error in
                     let nsError = error as NSError
-                    logger.error("While saving \(self.itemDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
-                    message = "Cannot update name = \(String(describing: itemDTO.name))"
-                    showAlert.toggle()
+                    self.logger.error("While saving \(self.itemDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
+                    self.message = "Cannot update name = \(String(describing: itemDTO.name))"
+                    self.showAlert.toggle()
                 }
             }
         }
@@ -83,9 +93,9 @@ class BelongingsViewModel: NSObject, ObservableObject {
 
                 saveContext() { error in
                     let nsError = error as NSError
-                    logger.error("While saving \(self.kindDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
-                    message = "Cannot update name = \(String(describing: kindDTO.name))"
-                    showAlert.toggle()
+                    self.logger.error("While saving \(self.kindDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
+                    self.message = "Cannot update name = \(String(describing: self.kindDTO.name))"
+                    self.showAlert.toggle()
                 }
             }
         }
@@ -100,9 +110,9 @@ class BelongingsViewModel: NSObject, ObservableObject {
 
                 saveContext() { error in
                     let nsError = error as NSError
-                    logger.error("While saving \(self.brandDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
-                    message = "Cannot update name = \(String(describing: brandDTO.name)) and url = \(String(describing: brandDTO.url))"
-                    showAlert.toggle()
+                    self.logger.error("While saving \(self.brandDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
+                    self.message = "Cannot update name = \(String(describing: self.brandDTO.name)) and url = \(String(describing: self.brandDTO.url))"
+                    self.showAlert.toggle()
                 }
             }
         }
@@ -117,9 +127,9 @@ class BelongingsViewModel: NSObject, ObservableObject {
 
                 saveContext() { error in
                     let nsError = error as NSError
-                    logger.error("While saving \(self.sellerDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
-                    message = "Cannot update name = \(String(describing: sellerDTO.name)) and url = \(String(describing: sellerDTO.url))"
-                    showAlert.toggle()
+                    self.logger.error("While saving \(self.sellerDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
+                    self.message = "Cannot update name = \(String(describing: self.sellerDTO.name)) and url = \(String(describing: self.sellerDTO.url))"
+                    self.showAlert.toggle()
                 }
             }
         }
@@ -133,7 +143,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
         
         var fetchedLinks = [Entity]()
         do {
-            fetchedLinks = try persistenteContainer.viewContext.fetch(fetchRequest)
+            fetchedLinks = try persistenceContainer.viewContext.fetch(fetchRequest)
         } catch {
             logger.error("Failed to fetch \(entity.rawValue) with uuid = \(id): \(error.localizedDescription)")
             showAlert.toggle()
@@ -142,23 +152,45 @@ class BelongingsViewModel: NSObject, ObservableObject {
         return fetchedLinks.isEmpty ? nil : fetchedLinks[0]
     }
     
-    func delete(_ objects: [NSManagedObject], completionHandler: (Error) -> Void) -> Void {
-        objects.forEach(persistenteContainer.viewContext.delete)
+    func delete(_ objects: [NSManagedObject], completionHandler: @escaping (Error) -> Void) -> Void {
+        objects.forEach(persistenceContainer.viewContext.delete)
         saveContext(completionHandler: completionHandler)
     }
     
-    private func saveContext(completionHandler: (Error) -> Void) -> Void {
-        persistenteContainer.viewContext.transactionAuthor = "App"
-        PersistenceController.save(viewContext: persistenteContainer.viewContext, completionHandler: completionHandler)
-        persistenteContainer.viewContext.transactionAuthor = nil
+    private func saveContext(completionHandler: @escaping (Error) -> Void) -> Void {
+        persistenceContainer.viewContext.transactionAuthor = "App"
+        persistence.save { result in
+            switch result {
+            case .success(_):
+                DispatchQueue.main.async {
+                    self.toggle.toggle()
+                }
+            case .failure(let error):
+                self.logger.log("Error while saving data: \(error.localizedDescription, privacy: .public)")
+                self.logger.log("Error while saving data: \(Thread.callStackSymbols, privacy: .public)")
+                print("Error while saving data: \(Thread.callStackSymbols)")
+                DispatchQueue.main.async {
+                    self.showAlert.toggle()
+                    completionHandler(error)
+                }
+            }
+        }
+        
+        persistenceContainer.viewContext.transactionAuthor = nil
     }
     
     // MARK: - Persistence History Request
     private lazy var historyRequestQueue = DispatchQueue(label: "history")
     private func fetchUpdates(_ notification: Notification) -> Void {
+        persistence.fetchUpdates(notification) { _ in
+            DispatchQueue.main.async {
+                self.toggle.toggle()
+            }
+        }
+        /*
         //print("fetchUpdates \(Date().description(with: Locale.current))")
         historyRequestQueue.async {
-            let backgroundContext = self.persistenteContainer.newBackgroundContext()
+            let backgroundContext = self.persistenceContainer.newBackgroundContext()
             backgroundContext.performAndWait {
                 do {
                     let fetchHistoryRequest = NSPersistentHistoryChangeRequest.fetchHistory(after: self.lastToken)
@@ -166,10 +198,10 @@ class BelongingsViewModel: NSObject, ObservableObject {
                     if let historyResult = try backgroundContext.execute(fetchHistoryRequest) as? NSPersistentHistoryResult,
                        let history = historyResult.result as? [NSPersistentHistoryTransaction] {
                         for transaction in history.reversed() {
-                            self.persistenteContainer.viewContext.perform {
+                            self.persistenceContainer.viewContext.perform {
                                 if let userInfo = transaction.objectIDNotification().userInfo {
                                     NSManagedObjectContext.mergeChanges(fromRemoteContextSave: userInfo,
-                                                                        into: [self.persistenteContainer.viewContext])
+                                                                        into: [self.persistenceContainer.viewContext])
                                 }
                             }
                         }
@@ -182,6 +214,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
                 //print("fetchUpdates \(Date().description(with: Locale.current))")
             }
         }
+         */
     }
     
     private var lastToken: NSPersistentHistoryToken? = nil {

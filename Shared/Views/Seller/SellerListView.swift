@@ -43,7 +43,7 @@ struct SellerListView: View {
                     sellerListView()
                     .sheet(isPresented: $presentAddSelleriew, content: {
                         AddSellerView()
-                            .environmentObject(AddItemViewModel.shared)
+                            .environmentObject(viewModel.addItemViewModel)
                             .frame(minWidth: 350, minHeight: 450)
                             .padding()
                     })
@@ -57,15 +57,15 @@ struct SellerListView: View {
                 .navigationTitle("Seller")
             }
         }
-        .onChange(of: AddItemViewModel.shared.showAlert) { _ in
-            showAlert = AddItemViewModel.shared.showAlert
+        .onChange(of: viewModel.addItemViewModel.showAlert) { _ in
+            showAlert = viewModel.addItemViewModel.showAlert
         }
         .alert("Unable to Save Data", isPresented: $showAlert) {
             Button("Dismiss") {
                 showAlert.toggle()
             }
         } message: {
-            Text(AddItemViewModel.shared.message)
+            Text(viewModel.addItemViewModel.message)
         }
         .alert("Unable to Delete Data", isPresented: $showAlertForDeletion) {
             Button("Dismiss") {
@@ -79,7 +79,7 @@ struct SellerListView: View {
     private func header() -> some View {
         HStack {
             Button(action: {
-                AddItemViewModel.shared.reset()
+                viewModel.addItemViewModel.reset()
                 presentAddSelleriew = true
             }) {
                 Label("Add a seller", systemImage: "plus")
