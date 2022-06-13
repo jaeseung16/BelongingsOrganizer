@@ -130,7 +130,7 @@ extension AppDelegate: NSApplicationDelegate {
         registerForPushNotifications()
         
         // TODO: - Remove or comment out after testing
-        UserDefaults.standard.setValue(false, forKey: didCreateItemSubscription)
+        // UserDefaults.standard.setValue(false, forKey: didCreateItemSubscription)
         
         subscribe()
     }
