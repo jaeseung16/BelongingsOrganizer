@@ -180,72 +180,16 @@ class BelongingsViewModel: NSObject, ObservableObject {
     }
     
     // MARK: - Persistence History Request
-    private lazy var historyRequestQueue = DispatchQueue(label: "history")
     private func fetchUpdates(_ notification: Notification) -> Void {
-        persistence.fetchUpdates(notification) { _ in
-            DispatchQueue.main.async {
-                self.toggle.toggle()
-            }
-        }
-        /*
-        //print("fetchUpdates \(Date().description(with: Locale.current))")
-        historyRequestQueue.async {
-            let backgroundContext = self.persistenceContainer.newBackgroundContext()
-            backgroundContext.performAndWait {
-                do {
-                    let fetchHistoryRequest = NSPersistentHistoryChangeRequest.fetchHistory(after: self.lastToken)
-                    
-                    if let historyResult = try backgroundContext.execute(fetchHistoryRequest) as? NSPersistentHistoryResult,
-                       let history = historyResult.result as? [NSPersistentHistoryTransaction] {
-                        for transaction in history.reversed() {
-                            self.persistenceContainer.viewContext.perform {
-                                if let userInfo = transaction.objectIDNotification().userInfo {
-                                    NSManagedObjectContext.mergeChanges(fromRemoteContextSave: userInfo,
-                                                                        into: [self.persistenceContainer.viewContext])
-                                }
-                            }
-                        }
-                        
-                        self.lastToken = history.last?.token
-                    }
-                } catch {
-                    self.logger.error("Could not convert history result to transactions after lastToken = \(String(describing: self.lastToken)): \(error.localizedDescription)")
+        persistence.fetchUpdates(notification) { result in
+            switch result {
+            case .success(()):
+                DispatchQueue.main.async {
+                    self.toggle.toggle()
                 }
-                //print("fetchUpdates \(Date().description(with: Locale.current))")
-            }
-        }
-         */
-    }
-    
-    private var lastToken: NSPersistentHistoryToken? = nil {
-        didSet {
-            guard let token = lastToken,
-                  let data = try? NSKeyedArchiver.archivedData(withRootObject: token, requiringSecureCoding: true) else {
-                return
-            }
-            
-            do {
-                try data.write(to: tokenFile)
-            } catch {
-                let message = "Could not write token data"
-                logger.error("###\(#function): \(message): \(error.localizedDescription)")
+            case .failure(let error):
+                self.logger.log("Error while updating history: \(error.localizedDescription, privacy: .public) \(Thread.callStackSymbols, privacy: .public)")
             }
         }
     }
-    
-    private lazy var tokenFile: URL = {
-        let url = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent("BelongingsOrganizer", isDirectory: true)
-        if !FileManager.default.fileExists(atPath: url.path) {
-            do {
-                try FileManager.default.createDirectory(at: url,
-                                                        withIntermediateDirectories: true,
-                                                        attributes: nil)
-            } catch {
-                let message = "Could not create persistent container URL"
-                logger.error("###\(#function): \(message): \(error.localizedDescription)")
-            }
-        }
-        return url.appendingPathComponent("token.data", isDirectory: false)
-    }()
-
 }
