@@ -182,39 +182,16 @@ class BelongingsViewModel: NSObject, ObservableObject {
     // MARK: - Persistence History Request
     private lazy var historyRequestQueue = DispatchQueue(label: "history")
     private func fetchUpdates(_ notification: Notification) -> Void {
-        persistence.fetchUpdates(notification) { _ in
-            DispatchQueue.main.async {
-                self.toggle.toggle()
-            }
-        }
-        /*
-        //print("fetchUpdates \(Date().description(with: Locale.current))")
-        historyRequestQueue.async {
-            let backgroundContext = self.persistenceContainer.newBackgroundContext()
-            backgroundContext.performAndWait {
-                do {
-                    let fetchHistoryRequest = NSPersistentHistoryChangeRequest.fetchHistory(after: self.lastToken)
-                    
-                    if let historyResult = try backgroundContext.execute(fetchHistoryRequest) as? NSPersistentHistoryResult,
-                       let history = historyResult.result as? [NSPersistentHistoryTransaction] {
-                        for transaction in history.reversed() {
-                            self.persistenceContainer.viewContext.perform {
-                                if let userInfo = transaction.objectIDNotification().userInfo {
-                                    NSManagedObjectContext.mergeChanges(fromRemoteContextSave: userInfo,
-                                                                        into: [self.persistenceContainer.viewContext])
-                                }
-                            }
-                        }
-                        
-                        self.lastToken = history.last?.token
-                    }
-                } catch {
-                    self.logger.error("Could not convert history result to transactions after lastToken = \(String(describing: self.lastToken)): \(error.localizedDescription)")
+        persistence.fetchUpdates(notification) { result in
+            switch result {
+            case .success(()):
+                DispatchQueue.main.async {
+                    self.toggle.toggle()
                 }
-                //print("fetchUpdates \(Date().description(with: Locale.current))")
+            case .failure(let error):
+                self.logger.log("Error while updating history: \(error.localizedDescription, privacy: .public) \(Thread.callStackSymbols, privacy: .public)")
             }
         }
-         */
     }
     
     private var lastToken: NSPersistentHistoryToken? = nil {
