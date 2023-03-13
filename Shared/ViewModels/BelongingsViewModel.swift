@@ -61,6 +61,19 @@ class BelongingsViewModel: NSObject, ObservableObject {
         self.persistence.container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
     }
     
+    var items: [Item] {
+        let fetchRequest = NSFetchRequest<Item>(entityName: "Item")
+        
+        var fetchedEntities = [Item]()
+        do {
+            fetchedEntities = try persistenceContainer.viewContext.fetch(fetchRequest)
+        } catch {
+            self.logger.error("Failed to fetch: \(error.localizedDescription)")
+        }
+        
+        return fetchedEntities
+    }
+    
     var itemDTO = ItemDTO() {
         didSet {
             if itemDTO.id != nil, let existingEntity: Item = get(entity: .Item, id: itemDTO.id!) {

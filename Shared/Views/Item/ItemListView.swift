@@ -11,11 +11,6 @@ struct ItemListView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var viewModel: BelongingsViewModel
     
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Item.lastupd, ascending: false)],
-        animation: .default)
-    private var items: FetchedResults<Item>
-
     @State var presentAddItemView = false
     @State var presentFilterItemsView = false
 
@@ -27,27 +22,27 @@ struct ItemListView: View {
     @State private var showAlertForDeletion = false
     
     var filteredItems: Array<Item> {
-        items.filter { item in
+        viewModel.items.filter {
             var filter = true
             
-            if let kind = item.kind as? Set<Kind>, !selectedKinds.isEmpty && selectedKinds.intersection(kind).isEmpty {
+            if let kind = $0.kind as? Set<Kind>, !selectedKinds.isEmpty && selectedKinds.intersection(kind).isEmpty {
                 filter = false
             }
             
-            if let brand = item.brand as? Set<Brand>, !selectedBrands.isEmpty && selectedBrands.intersection(brand).isEmpty {
+            if let brand = $0.brand as? Set<Brand>, !selectedBrands.isEmpty && selectedBrands.intersection(brand).isEmpty {
                 filter = false
             }
             
-            if let seller = item.seller as? Set<Seller>, !selectedSellers.isEmpty && selectedSellers.intersection(seller).isEmpty {
+            if let seller = $0.seller as? Set<Seller>, !selectedSellers.isEmpty && selectedSellers.intersection(seller).isEmpty {
                 filter = false
             }
             
             return filter
         }
-        .filter { item in
+        .filter {
             if viewModel.stringToSearch == "" {
                 return true
-            } else if let name = item.name {
+            } else if let name = $0.name {
                 return name.lowercased().contains(viewModel.stringToSearch.lowercased())
             } else {
                 return false
