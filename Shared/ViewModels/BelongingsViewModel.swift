@@ -31,7 +31,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     
     private var persistence: Persistence
     private var persistenceContainer: NSPersistentCloudKitContainer {
-        persistence.container
+        persistence.cloudContainer!
     }
     
     private var subscriptions: Set<AnyCancellable> = []
