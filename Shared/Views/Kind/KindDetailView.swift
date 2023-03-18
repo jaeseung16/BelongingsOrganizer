@@ -11,21 +11,11 @@ struct KindDetailView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
     
     @State var kind: Kind
-    
-    private var items: [Item] {
-        var items = [Item]()
-        kind.items?.forEach { item in
-            if let item = item as? Item {
-                items.append(item)
-            }
-        }
-        return items.sorted {
-            ($0.obtained ?? Date()) > ($1.obtained ?? Date())
-        }
-    }
+    @State var name = ""
+    var items: [Item]
     
     @State private var isEdited = false
-    @State var name = ""
+    
     
     var body: some View {
         GeometryReader { geometry in
