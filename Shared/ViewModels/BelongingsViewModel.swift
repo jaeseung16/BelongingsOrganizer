@@ -62,15 +62,25 @@ class BelongingsViewModel: NSObject, ObservableObject {
     }
     
     var items: [Item] {
-        let fetchRequest = NSFetchRequest<Item>(entityName: "Item")
+        fetch(NSFetchRequest<Item>(entityName: "Item"))
+    }
+    
+    var kinds: [Kind] {
+        let sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
+                               NSSortDescriptor(key: "created", ascending: false)]
         
-        var fetchedEntities = [Item]()
+        let fetchRequest = NSFetchRequest<Kind>(entityName: "Kind")
+        fetchRequest.sortDescriptors = sortDescriptors
+        return fetch(fetchRequest)
+    }
+    
+    private func fetch<Element>(_ fetchRequest: NSFetchRequest<Element>) -> [Element] {
+        var fetchedEntities = [Element]()
         do {
             fetchedEntities = try persistenceContainer.viewContext.fetch(fetchRequest)
         } catch {
             self.logger.error("Failed to fetch: \(error.localizedDescription)")
         }
-        
         return fetchedEntities
     }
     

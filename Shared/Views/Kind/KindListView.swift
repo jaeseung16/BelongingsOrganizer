@@ -11,22 +11,16 @@ struct KindListView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var viewModel: BelongingsViewModel
     
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
-                          NSSortDescriptor(key: "created", ascending: false)],
-        animation: .default)
-    private var kinds: FetchedResults<Kind>
-
     @State var presentAddKindView = false
 
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
     
     var filteredKinds: Array<Kind> {
-        kinds.filter { kind in
+        viewModel.kinds.filter {
             if viewModel.stringToSearch == "" {
                 return true
-            } else if let name = kind.name {
+            } else if let name = $0.name {
                 return name.lowercased().contains(viewModel.stringToSearch.lowercased())
             } else {
                 return false
@@ -101,11 +95,5 @@ struct KindListView: View {
                 showAlertForDeletion.toggle()
             }
         }
-    }
-}
-
-struct KindListView_Previews: PreviewProvider {
-    static var previews: some View {
-        KindListView()
     }
 }
