@@ -83,6 +83,15 @@ class BelongingsViewModel: NSObject, ObservableObject {
         return fetch(fetchRequest)
     }
     
+    var sellers: [Seller] {
+        let sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
+                               NSSortDescriptor(key: "created", ascending: false)]
+        
+        let fetchRequest = NSFetchRequest<Seller>(entityName: "Seller")
+        fetchRequest.sortDescriptors = sortDescriptors
+        return fetch(fetchRequest)
+    }
+    
     private func fetch<Element>(_ fetchRequest: NSFetchRequest<Element>) -> [Element] {
         var fetchedEntities = [Element]()
         do {

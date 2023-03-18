@@ -10,12 +10,6 @@ import SwiftUI
 struct SellerListView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var viewModel: BelongingsViewModel
-    
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
-                          NSSortDescriptor(key: "created", ascending: false)],
-        animation: .default)
-    private var sellers: FetchedResults<Seller>
 
     @State var presentAddSelleriew = false
 
@@ -23,7 +17,7 @@ struct SellerListView: View {
     @State private var showAlertForDeletion = false
     
     var filteredSellers: Array<Seller> {
-        sellers.filter { seller in
+        viewModel.sellers.filter { seller in
             if viewModel.stringToSearch == "" {
                 return true
             } else if let name = seller.name {
@@ -87,13 +81,23 @@ struct SellerListView: View {
                 if let sellerName = seller.name {
                     NavigationLink(destination: SellerDetailView(seller: seller,
                                                                  name: sellerName,
-                                                                 urlString: seller.url?.absoluteString ?? "")) {
+                                                                 urlString: seller.url?.absoluteString ?? "",
+                                                                 items: getItems(seller))) {
                         SellerRowView(seller: seller, name: sellerName)
                     }
                 }
             }
             .onDelete(perform: deleteSellers)
         }
+    }
+    
+    private func getItems(_ seller: Seller) -> [Item] {
+        guard let items = seller.items else {
+            return [Item]()
+        }
+        
+        return items.compactMap { $0 as? Item }
+            .sorted { ($0.obtained ?? Date()) > ($1.obtained ?? Date()) }
     }
     
     private func sellerRowView(_ seller: Seller, name: String) -> some View {
