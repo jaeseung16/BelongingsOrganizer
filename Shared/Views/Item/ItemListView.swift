@@ -13,6 +13,7 @@ struct ItemListView: View {
     
     @State var presentAddItemView = false
     @State var presentFilterItemsView = false
+    @State var presentSortItemView = false
 
     @State var selectedKinds = Set<Kind>()
     @State var selectedBrands = Set<Brand>()
@@ -20,6 +21,9 @@ struct ItemListView: View {
     
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
+    
+    @State private var sortType = SortType.lastupd
+    @State private var sortDirection = SortDirection.descending
     
     var filteredItems: Array<Item> {
         viewModel.items.filter {
@@ -46,6 +50,28 @@ struct ItemListView: View {
                 return name.lowercased().contains(viewModel.stringToSearch.lowercased())
             } else {
                 return false
+            }
+        }
+        .sorted {
+            switch sortType {
+            case .lastupd:
+                if let lastupd1 = $0.lastupd, let lastupd2 = $1.lastupd {
+                    return sortDirection == .ascending ? lastupd1 < lastupd2 : lastupd2 < lastupd1
+                } else {
+                    return false
+                }
+            case .obtained:
+                if let obtained1 = $0.obtained, let obtained2 = $1.obtained {
+                    return sortDirection == .ascending ? obtained1 < obtained2 : obtained2 < obtained1
+                } else {
+                    return false
+                }
+            case .name:
+                if let name1 = $0.name, let name2 = $1.name {
+                    return sortDirection == .ascending ? name1 < name2 : name2 < name1
+                } else {
+                    return false
+                }
             }
         }
     }
@@ -75,6 +101,11 @@ struct ItemListView: View {
                 .frame(minWidth: 350, minHeight: 450)
                 .padding()
         }
+        .sheet(isPresented: $presentSortItemView) {
+            SortItemsView(sortType: $sortType, sortDirection: $sortDirection)
+                .frame(minWidth: 350, minHeight: 100)
+                .padding()
+        }
         .onChange(of: viewModel.addItemViewModel.showAlert) { _ in
             showAlert = viewModel.addItemViewModel.showAlert
         }
@@ -100,6 +131,14 @@ struct ItemListView: View {
                 presentFilterItemsView = true
             }) {
                 Label("Filter", systemImage: "line.horizontal.3.decrease.circle")
+            }
+            
+            Spacer()
+            
+            Button(action: {
+                presentSortItemView = true
+            }) {
+                Label("Sort", systemImage: "list.number")
             }
             
             Spacer()
@@ -145,11 +184,5 @@ struct ItemListView: View {
                 showAlert.toggle()
             }
         }
-    }
-}
-
-struct ItemListView_Previews: PreviewProvider {
-    static var previews: some View {
-        ItemListView()
     }
 }
