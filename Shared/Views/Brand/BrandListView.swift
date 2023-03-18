@@ -11,19 +11,13 @@ struct BrandListView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var viewModel: BelongingsViewModel
     
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
-                          NSSortDescriptor(key: "created", ascending: false)],
-        animation: .default)
-    private var brands: FetchedResults<Brand>
-
     @State var presentAddBrandView = false
 
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
     
     var filteredBrands: Array<Brand> {
-        brands.filter { brand in
+        viewModel.brands.filter { brand in
             if viewModel.stringToSearch == "" {
                 return true
             } else if let name = brand.name {
@@ -87,13 +81,23 @@ struct BrandListView: View {
                 if let brandName = brand.name {
                     NavigationLink(destination: BrandDetailView(brand: brand,
                                                                 name: brandName,
-                                                                urlString: brand.url?.absoluteString ?? "")) {
+                                                                urlString: brand.url?.absoluteString ?? "",
+                                                                items: getItems(brand))) {
                         BrandRowView(brand: brand, name: brandName)
                     }
                 }
             }
             .onDelete(perform: deleteBrands)
         }
+    }
+    
+    private func getItems(_ brand: Brand) -> [Item] {
+        guard let items = brand.items else {
+            return [Item]()
+        }
+        
+        return items.compactMap { $0 as? Item }
+            .sorted { ($0.obtained ?? Date()) > ($1.obtained ?? Date()) }
     }
     
     private func deleteBrands(offsets: IndexSet) {

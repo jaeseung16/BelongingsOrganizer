@@ -11,24 +11,12 @@ struct BrandDetailView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
     
     @State var brand: Brand
-    
-    @State private var showAlert = false
-    
-    private var items: [Item] {
-        var items = [Item]()
-        brand.items?.forEach { item in
-            if let item = item as? Item {
-                items.append(item)
-            }
-        }
-        return items.sorted {
-            ($0.obtained ?? Date()) > ($1.obtained ?? Date())
-        }
-    }
-    
-    @State private var isEdited = false
     @State var name = ""
     @State var urlString = ""
+    var items: [Item]
+    
+    @State private var showAlert = false
+    @State private var isEdited = false
     
     var body: some View {
         GeometryReader { geometry in
