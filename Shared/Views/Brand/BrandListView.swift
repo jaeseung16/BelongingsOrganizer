@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct BrandListView: View {
-    @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var viewModel: BelongingsViewModel
     
     @State var presentAddBrandView = false

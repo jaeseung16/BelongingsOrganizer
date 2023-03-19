@@ -11,11 +11,6 @@ struct ChooseSellerView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var viewModel: BelongingsViewModel
     
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare))],
-        animation: .default)
-    private var sellers: FetchedResults<Seller>
-    
     @State var presentAddSeller = false
     
     @Binding var seller: Seller?
@@ -89,7 +84,7 @@ struct ChooseSellerView: View {
     
     private func sellerList() -> some View {
         List {
-            ForEach(sellers) { seller in
+            ForEach(viewModel.sellers) { seller in
                 Button {
                     self.seller = seller
                 } label: {
@@ -102,7 +97,7 @@ struct ChooseSellerView: View {
     
     private func deleteSellers(offsets: IndexSet) {
         withAnimation {
-            viewModel.delete(offsets.map { sellers[$0] }) { error in
+            viewModel.delete(offsets.map { viewModel.sellers[$0] }) { error in
                 let nsError = error as NSError
                 print("While deleting a category, occured an unresolved error \(nsError), \(nsError.userInfo)")
                 showAlertForDeletion.toggle()
@@ -111,10 +106,3 @@ struct ChooseSellerView: View {
     }
 }
 
-struct ChooseSellerView_Previews: PreviewProvider {
-    @State private static var seller: Seller?
-    
-    static var previews: some View {
-        ChooseSellerView(seller: ChooseSellerView_Previews.$seller)
-    }
-}

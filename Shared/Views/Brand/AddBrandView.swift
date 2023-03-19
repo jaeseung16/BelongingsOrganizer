@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct AddBrandView: View {
-    @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var viewModel: AddItemViewModel
     

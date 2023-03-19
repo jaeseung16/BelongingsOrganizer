@@ -10,12 +10,7 @@ import SwiftUI
 struct ChooseBrandView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var viewModel: BelongingsViewModel
-    
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare))],
-        animation: .default)
-    private var brands: FetchedResults<Brand>
-    
+
     @State var presentAddBrand = false
     
     @Binding var brand: Brand?
@@ -90,7 +85,7 @@ struct ChooseBrandView: View {
     
     private func brandList() -> some View {
         List {
-            ForEach(brands) { brand in
+            ForEach(viewModel.brands) { brand in
                 Button {
                     self.brand = brand
                 } label: {
@@ -103,7 +98,7 @@ struct ChooseBrandView: View {
     
     private func deleteBrands(offsets: IndexSet) {
         withAnimation {
-            viewModel.delete(offsets.map { brands[$0] }) { error in
+            viewModel.delete(offsets.map { viewModel.brands[$0] }) { error in
                 let nsError = error as NSError
                 print("While deleting a category, occured an unresolved error \(nsError), \(nsError.userInfo)")
                 showAlertForDeletion.toggle()
@@ -112,10 +107,3 @@ struct ChooseBrandView: View {
     }
 }
 
-struct ChooseBrandView_Previews: PreviewProvider {
-    @State private static var brand: Brand?
-    
-    static var previews: some View {
-        ChooseBrandView(brand: ChooseBrandView_Previews.$brand)
-    }
-}

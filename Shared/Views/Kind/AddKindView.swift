@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct AddKindView: View {
-    @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var viewModel: AddItemViewModel
     
@@ -46,11 +45,5 @@ struct AddKindView: View {
         .padding()
         .frame(minHeight: 200.0)
         
-    }
-}
-
-struct AddKindView_Previews: PreviewProvider {
-    static var previews: some View {
-        AddKindView()
     }
 }

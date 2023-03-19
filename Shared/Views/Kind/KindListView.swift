@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct KindListView: View {
-    @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var viewModel: BelongingsViewModel
     
     @State var presentAddKindView = false

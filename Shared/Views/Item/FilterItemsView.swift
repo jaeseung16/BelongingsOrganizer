@@ -12,7 +12,6 @@ enum Filter: String, CaseIterable {
 }
 
 struct FilterItemsView: View {
-    @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var viewModel: BelongingsViewModel
 

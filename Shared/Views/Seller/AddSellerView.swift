@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct AddSellerView: View {
-    @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var viewModel: AddItemViewModel
     
@@ -78,8 +77,3 @@ struct AddSellerView: View {
     }
 }
 
-struct AddSellerView_Previews: PreviewProvider {
-    static var previews: some View {
-        AddSellerView()
-    }
-}

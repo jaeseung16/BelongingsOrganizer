@@ -234,36 +234,5 @@ class BelongingsViewModel: NSObject, ObservableObject {
             }
         }
     }
-    
-    private var lastToken: NSPersistentHistoryToken? = nil {
-        didSet {
-            guard let token = lastToken,
-                  let data = try? NSKeyedArchiver.archivedData(withRootObject: token, requiringSecureCoding: true) else {
-                return
-            }
-            
-            do {
-                try data.write(to: tokenFile)
-            } catch {
-                let message = "Could not write token data"
-                logger.error("###\(#function): \(message): \(error.localizedDescription)")
-            }
-        }
-    }
-    
-    private lazy var tokenFile: URL = {
-        let url = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent("BelongingsOrganizer", isDirectory: true)
-        if !FileManager.default.fileExists(atPath: url.path) {
-            do {
-                try FileManager.default.createDirectory(at: url,
-                                                        withIntermediateDirectories: true,
-                                                        attributes: nil)
-            } catch {
-                let message = "Could not create persistent container URL"
-                logger.error("###\(#function): \(message): \(error.localizedDescription)")
-            }
-        }
-        return url.appendingPathComponent("token.data", isDirectory: false)
-    }()
 
 }
