@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct ChooseKindView: View {
-    @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var viewModel: BelongingsViewModel
     
