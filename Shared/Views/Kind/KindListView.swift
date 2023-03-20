@@ -15,17 +15,21 @@ struct KindListView: View {
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
     
-    var filteredKinds: Array<Kind> {
-        viewModel.kinds.filter {
-            if viewModel.stringToSearch == "" {
-                return true
-            } else if let name = $0.name {
-                return name.lowercased().contains(viewModel.stringToSearch.lowercased())
-            } else {
-                return false
+    @State var kinds: [Kind] {
+        didSet {
+            filteredKinds = kinds.filter {
+                if viewModel.stringToSearch == "" {
+                    return true
+                } else if let name = $0.name {
+                    return name.lowercased().contains(viewModel.stringToSearch.lowercased())
+                } else {
+                    return false
+                }
             }
         }
     }
+    
+    @State private var filteredKinds = [Kind]()
     
     var body: some View {
         NavigationView {
@@ -44,6 +48,9 @@ struct KindListView: View {
                 }
                 .navigationTitle("Categories")
             }
+        }
+        .onReceive(viewModel.$updated) { _ in
+            kinds = viewModel.kinds
         }
         .onChange(of: viewModel.addItemViewModel.showAlert) { _ in
             showAlert = viewModel.addItemViewModel.showAlert

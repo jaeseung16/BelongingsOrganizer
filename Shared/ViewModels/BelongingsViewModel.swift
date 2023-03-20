@@ -39,7 +39,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     @Published var changedPeristentContext = NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave)
     @Published var showAlert = false
     @Published var stringToSearch = ""
-    @Published var toggle = false
+    @Published var updated = false
     
     var message = ""
     
@@ -204,7 +204,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
             switch result {
             case .success(_):
                 DispatchQueue.main.async {
-                    self.toggle.toggle()
+                    self.updated.toggle()
                 }
             case .failure(let error):
                 self.logger.log("Error while saving data: \(error.localizedDescription, privacy: .public)")
@@ -227,7 +227,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
             switch result {
             case .success(()):
                 DispatchQueue.main.async {
-                    self.toggle.toggle()
+                    self.updated.toggle()
                 }
             case .failure(let error):
                 self.logger.log("Error while updating history: \(error.localizedDescription, privacy: .public) \(Thread.callStackSymbols, privacy: .public)")

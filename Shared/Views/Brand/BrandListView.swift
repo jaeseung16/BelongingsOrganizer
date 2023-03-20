@@ -15,17 +15,21 @@ struct BrandListView: View {
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
     
-    var filteredBrands: Array<Brand> {
-        viewModel.brands.filter { brand in
-            if viewModel.stringToSearch == "" {
-                return true
-            } else if let name = brand.name {
-                return name.lowercased().contains(viewModel.stringToSearch.lowercased())
-            } else {
-                return false
+    @State var brands: [Brand] {
+        didSet {
+            filteredBrands = brands.filter { brand in
+                if viewModel.stringToSearch == "" {
+                    return true
+                } else if let name = brand.name {
+                    return name.lowercased().contains(viewModel.stringToSearch.lowercased())
+                } else {
+                    return false
+                }
             }
         }
     }
+    
+    @State private var filteredBrands = [Brand]()
     
     var body: some View {
         NavigationView {
@@ -43,6 +47,9 @@ struct BrandListView: View {
                 }
                 .navigationTitle("Brands")
             }
+        }
+        .onReceive(viewModel.$updated) { _ in
+            brands = viewModel.brands
         }
         .onChange(of: viewModel.addItemViewModel.showAlert) { _ in
             showAlert = viewModel.addItemViewModel.showAlert
@@ -108,8 +115,3 @@ struct BrandListView: View {
     }
 }
 
-struct BrandListView_Previews: PreviewProvider {
-    static var previews: some View {
-        BrandListView()
-    }
-}

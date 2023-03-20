@@ -15,8 +15,10 @@ struct SellerListView: View {
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
     
-    var filteredSellers: Array<Seller> {
-        viewModel.sellers.filter { seller in
+    @State var sellers: [Seller]
+    
+    var filteredSellers: [Seller] {
+        sellers.filter { seller in
             if viewModel.stringToSearch == "" {
                 return true
             } else if let name = seller.name {
@@ -43,6 +45,9 @@ struct SellerListView: View {
                 }
                 .navigationTitle("Seller")
             }
+        }
+        .onReceive(viewModel.$updated) { _ in
+            sellers = viewModel.sellers
         }
         .onChange(of: viewModel.addItemViewModel.showAlert) { _ in
             showAlert = viewModel.addItemViewModel.showAlert
@@ -122,8 +127,3 @@ struct SellerListView: View {
     }
 }
 
-struct SellerListView_Previews: PreviewProvider {
-    static var previews: some View {
-        SellerListView()
-    }
-}
