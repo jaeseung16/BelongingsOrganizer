@@ -15,19 +15,13 @@ struct SellerListView: View {
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
     
-    @State var sellers: [Seller]
-    
-    var filteredSellers: [Seller] {
-        sellers.filter { seller in
-            if viewModel.stringToSearch == "" {
-                return true
-            } else if let name = seller.name {
-                return name.lowercased().contains(viewModel.stringToSearch.lowercased())
-            } else {
-                return false
-            }
+    @State var sellers: [Seller] {
+        didSet {
+            filteredSellers =  sellers.filter { viewModel.checkIfStringToSearchContainedIn($0.name) }
         }
     }
+    
+    @State var filteredSellers = [Seller]()
     
     var body: some View {
         NavigationView {

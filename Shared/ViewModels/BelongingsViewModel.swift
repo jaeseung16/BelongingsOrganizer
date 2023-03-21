@@ -234,5 +234,17 @@ class BelongingsViewModel: NSObject, ObservableObject {
             }
         }
     }
+    
+    // MARK: -
+    public func checkIfStringToSearchContainedIn(_ input: String?) -> Bool {
+        if stringToSearch == "" {
+            return true
+        } else if let input = input {
+            return input.lowercased().contains(stringToSearch.lowercased())
+        } else {
+            return false
+        }
+    }
 
 }
+

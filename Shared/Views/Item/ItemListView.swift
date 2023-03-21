@@ -24,60 +24,52 @@ struct ItemListView: View {
     @State private var sortType = SortType.lastupd
     @State private var sortDirection = SortDirection.descending
     
-    @State var items: [Item] {
-        didSet {
-            filteredItems = items.filter {
-                var filter = true
-                
-                if let kind = $0.kind as? Set<Kind>, !selectedKinds.isEmpty && selectedKinds.intersection(kind).isEmpty {
-                    filter = false
-                }
-                
-                if let brand = $0.brand as? Set<Brand>, !selectedBrands.isEmpty && selectedBrands.intersection(brand).isEmpty {
-                    filter = false
-                }
-                
-                if let seller = $0.seller as? Set<Seller>, !selectedSellers.isEmpty && selectedSellers.intersection(seller).isEmpty {
-                    filter = false
-                }
-                
-                return filter
+    @State var items: [Item]
+    
+    var filteredItems: [Item] {
+        items.filter {
+            var filter = true
+            
+            if let kind = $0.kind as? Set<Kind>, !selectedKinds.isEmpty && selectedKinds.intersection(kind).isEmpty {
+                filter = false
             }
-            .filter {
-                if viewModel.stringToSearch == "" {
-                    return true
-                } else if let name = $0.name {
-                    return name.lowercased().contains(viewModel.stringToSearch.lowercased())
+            
+            if let brand = $0.brand as? Set<Brand>, !selectedBrands.isEmpty && selectedBrands.intersection(brand).isEmpty {
+                filter = false
+            }
+            
+            if let seller = $0.seller as? Set<Seller>, !selectedSellers.isEmpty && selectedSellers.intersection(seller).isEmpty {
+                filter = false
+            }
+            
+            return filter
+        }
+        .filter {
+            viewModel.checkIfStringToSearchContainedIn($0.name)
+        }
+        .sorted {
+            switch sortType {
+            case .lastupd:
+                if let lastupd1 = $0.lastupd, let lastupd2 = $1.lastupd {
+                    return sortDirection == .ascending ? lastupd1 < lastupd2 : lastupd2 < lastupd1
+                } else {
+                    return false
+                }
+            case .obtained:
+                if let obtained1 = $0.obtained, let obtained2 = $1.obtained {
+                    return sortDirection == .ascending ? obtained1 < obtained2 : obtained2 < obtained1
+                } else {
+                    return false
+                }
+            case .name:
+                if let name1 = $0.name, let name2 = $1.name {
+                    return sortDirection == .ascending ? name1 < name2 : name2 < name1
                 } else {
                     return false
                 }
             }
-            .sorted {
-                switch sortType {
-                case .lastupd:
-                    if let lastupd1 = $0.lastupd, let lastupd2 = $1.lastupd {
-                        return sortDirection == .ascending ? lastupd1 < lastupd2 : lastupd2 < lastupd1
-                    } else {
-                        return false
-                    }
-                case .obtained:
-                    if let obtained1 = $0.obtained, let obtained2 = $1.obtained {
-                        return sortDirection == .ascending ? obtained1 < obtained2 : obtained2 < obtained1
-                    } else {
-                        return false
-                    }
-                case .name:
-                    if let name1 = $0.name, let name2 = $1.name {
-                        return sortDirection == .ascending ? name1 < name2 : name2 < name1
-                    } else {
-                        return false
-                    }
-                }
-            }
         }
     }
-    
-    @State var filteredItems = [Item]()
     
     var body: some View {
         NavigationView {

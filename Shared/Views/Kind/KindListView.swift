@@ -15,21 +15,11 @@ struct KindListView: View {
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
     
-    @State var kinds: [Kind] {
-        didSet {
-            filteredKinds = kinds.filter {
-                if viewModel.stringToSearch == "" {
-                    return true
-                } else if let name = $0.name {
-                    return name.lowercased().contains(viewModel.stringToSearch.lowercased())
-                } else {
-                    return false
-                }
-            }
-        }
-    }
+    @State var kinds: [Kind]
     
-    @State private var filteredKinds = [Kind]()
+    private var filteredKinds: [Kind] {
+        kinds.filter { viewModel.checkIfStringToSearchContainedIn($0.name) }
+    }
     
     var body: some View {
         NavigationView {

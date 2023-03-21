@@ -15,21 +15,11 @@ struct BrandListView: View {
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
     
-    @State var brands: [Brand] {
-        didSet {
-            filteredBrands = brands.filter { brand in
-                if viewModel.stringToSearch == "" {
-                    return true
-                } else if let name = brand.name {
-                    return name.lowercased().contains(viewModel.stringToSearch.lowercased())
-                } else {
-                    return false
-                }
-            }
-        }
-    }
+    @State var brands: [Brand]
     
-    @State private var filteredBrands = [Brand]()
+    private var filteredBrands: [Brand] {
+        brands.filter { viewModel.checkIfStringToSearchContainedIn($0.name) }
+    }
     
     var body: some View {
         NavigationView {
