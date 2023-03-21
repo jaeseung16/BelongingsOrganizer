@@ -46,6 +46,9 @@ struct SellerListView: View {
         .onChange(of: viewModel.addItemViewModel.showAlert) { _ in
             showAlert = viewModel.addItemViewModel.showAlert
         }
+        .onChange(of: viewModel.stringToSearch) { _ in
+            filteredSellers = sellers.filter { viewModel.checkIfStringToSearchContainedIn($0.name) }
+        }
         .alert("Unable to Save Data", isPresented: $showAlert) {
             Button("Dismiss") {
                 showAlert.toggle()
@@ -81,7 +84,7 @@ struct SellerListView: View {
                                                                  name: sellerName,
                                                                  urlString: seller.url?.absoluteString ?? "",
                                                                  items: getItems(seller))) {
-                        SellerRowView(seller: seller, name: sellerName)
+                        SellerRowView(seller: seller)
                     }
                 }
             }

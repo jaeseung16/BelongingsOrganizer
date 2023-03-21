@@ -77,7 +77,7 @@ struct KindListView: View {
             ForEach(filteredKinds) { kind in
                 if let kindName = kind.name {
                     NavigationLink(destination: KindDetailView(kind: kind, name: kindName, items: getItems(kind))) {
-                        KindRowView(kind: kind, name: kindName)
+                        KindRowView(kind: kind)
                     }
                 }
             }

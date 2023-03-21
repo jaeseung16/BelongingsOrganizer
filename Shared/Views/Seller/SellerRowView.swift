@@ -8,21 +8,37 @@
 import SwiftUI
 
 struct SellerRowView: View {
-    var seller: Seller
-    var name: String
+    @EnvironmentObject var viewModel: BelongingsViewModel
+    
+    @State var seller: Seller {
+        didSet {
+            refresh()
+        }
+    }
+    
+    @State private var name: String?
+    @State private var itemCount = 0
     
     var body: some View {
         HStack {
-            Text(name)
+            if let name = name {
+                Text(name)
+            }
             
             Spacer()
             
-            if let items = seller.items {
-                Text("\(items.count) items")
-                    .font(.callout)
-                    .foregroundColor(.secondary)
-            }
+            Text("\(itemCount) items")
+                .font(.callout)
+                .foregroundColor(.secondary)
         }
+        .onReceive(viewModel.$updated) { _ in
+            refresh()
+        }
+    }
+    
+    private func refresh() {
+        name = seller.name
+        itemCount = seller.items?.count ?? 0
     }
 }
 

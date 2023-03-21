@@ -79,7 +79,7 @@ struct BrandListView: View {
                                                                 name: brandName,
                                                                 urlString: brand.url?.absoluteString ?? "",
                                                                 items: getItems(brand))) {
-                        BrandRowView(brand: brand, name: brandName)
+                        BrandRowView(brand: brand)
                     }
                 }
             }

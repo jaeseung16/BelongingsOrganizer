@@ -156,7 +156,7 @@ struct FilterItemsView: View {
             switch (selectedFilter) {
             case .kind:
                 ForEach(kinds, id: \.id) { kind in
-                    if let name = kind.name {
+                    if kind.name != nil {
                         Button {
                             if selectedKinds.contains(kind) {
                                 selectedKinds.remove(kind)
@@ -164,13 +164,13 @@ struct FilterItemsView: View {
                                 selectedKinds.insert(kind)
                             }
                         } label: {
-                            KindRowView(kind: kind, name: name)
+                            KindRowView(kind: kind)
                         }
                     }
                 }
             case .brand:
                 ForEach(brands, id: \.id) { brand in
-                    if let name = brand.name {
+                    if brand.name != nil {
                         Button {
                             if selectedBrands.contains(brand) {
                                 selectedBrands.remove(brand)
@@ -178,13 +178,13 @@ struct FilterItemsView: View {
                                 selectedBrands.insert(brand)
                             }
                         } label: {
-                            BrandRowView(brand: brand, name: name)
+                            BrandRowView(brand: brand)
                         }
                     }
                 }
             case .seller:
                 ForEach(sellers, id: \.id) { seller in
-                    if let name = seller.name {
+                    if seller.name != nil {
                         Button {
                             if selectedSellers.contains(seller) {
                                 selectedSellers.remove(seller)
@@ -192,7 +192,7 @@ struct FilterItemsView: View {
                                 selectedSellers.insert(seller)
                             }
                         } label: {
-                            SellerRowView(seller: seller, name: name)
+                            SellerRowView(seller: seller)
                         }
                     }
                 }
