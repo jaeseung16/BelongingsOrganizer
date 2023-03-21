@@ -34,7 +34,7 @@ struct ItemsView: View {
         List {
             ForEach(items) { item in
                 NavigationLink(destination: ItemSummaryView(item: item)) {
-                    ItemRowView(item: item, name: item.name ?? "", imageWidth: 40.0)
+                    ItemRowView(item: item, imageWidth: 40.0)
                 }
             }
         }

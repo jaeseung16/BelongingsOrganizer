@@ -8,22 +8,31 @@
 import SwiftUI
 
 struct ItemRowView: View {
-    var item: Item
-    var name: String
+    @EnvironmentObject var viewModel: BelongingsViewModel
+    
+    @State var item: Item {
+        didSet {
+            refresh()
+        }
+    }
+    
     var imageWidth: CGFloat = 50
+    
+    @State private var name: String = ""
+    @State private var imageData: Data?
     
     var body: some View {
         HStack {
-            if let data = item.image {
+            if let imageData = imageData {
             #if os(macOS)
-                if let nsImage = NSImage(data: data) {
+                if let nsImage = NSImage(data: imageData) {
                     Image(nsImage: nsImage)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: imageWidth)
                 }
             #else
-                if let uiImage = UIImage(data: data) {
+                if let uiImage = UIImage(data: imageData) {
                     Image(uiImage: uiImage)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
@@ -62,6 +71,14 @@ struct ItemRowView: View {
                 }
             }
         }
+        .onReceive(viewModel.$updated) { _ in
+            refresh()
+        }
+    }
+    
+    private func refresh() {
+        name = item.name ?? ""
+        imageData = item.image
     }
 }
 

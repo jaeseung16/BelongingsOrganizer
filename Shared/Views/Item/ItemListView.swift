@@ -168,7 +168,7 @@ struct ItemListView: View {
                                                                note: item.note ?? "",
                                                                obtained: item.obtained ?? Date(),
                                                                disposed: item.disposed ?? Date())) {
-                        ItemRowView(item: item, name: itemName)
+                        ItemRowView(item: item)
                     }
                 }
             }
