@@ -57,12 +57,20 @@
 		9072233426E93CDC00965653 /* ChooseSellerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9072233226E93CDC00965653 /* ChooseSellerView.swift */; };
 		9072233626E93CE800965653 /* AddSellerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9072233526E93CE800965653 /* AddSellerView.swift */; };
 		9072233726E93CE800965653 /* AddSellerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9072233526E93CE800965653 /* AddSellerView.swift */; };
+		907614A829D0ED860068365C /* KindStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 907614A729D0ED860068365C /* KindStats.swift */; };
+		907614A929D0ED860068365C /* KindStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 907614A729D0ED860068365C /* KindStats.swift */; };
+		907614AB29D0ED920068365C /* BrandStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 907614AA29D0ED920068365C /* BrandStats.swift */; };
+		907614AC29D0ED920068365C /* BrandStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 907614AA29D0ED920068365C /* BrandStats.swift */; };
+		907614AE29D0ED9E0068365C /* SellerStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 907614AD29D0ED9E0068365C /* SellerStats.swift */; };
+		907614AF29D0ED9E0068365C /* SellerStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 907614AD29D0ED9E0068365C /* SellerStats.swift */; };
 		90785B9629BFD91300BFE933 /* SortItemsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90785B9529BFD91300BFE933 /* SortItemsView.swift */; };
 		90785B9729BFD91300BFE933 /* SortItemsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90785B9529BFD91300BFE933 /* SortItemsView.swift */; };
 		90785B9929BFD9B300BFE933 /* SortType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90785B9829BFD9B300BFE933 /* SortType.swift */; };
 		90785B9A29BFD9B300BFE933 /* SortType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90785B9829BFD9B300BFE933 /* SortType.swift */; };
 		90785B9C29BFDC1F00BFE933 /* SortDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90785B9B29BFDC1F00BFE933 /* SortDirection.swift */; };
 		90785B9D29BFDC1F00BFE933 /* SortDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90785B9B29BFDC1F00BFE933 /* SortDirection.swift */; };
+		907C26DD29C754C200116BC1 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 907C26DC29C754C200116BC1 /* StatsView.swift */; };
+		907C26E229C7A6B500116BC1 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 907C26DC29C754C200116BC1 /* StatsView.swift */; };
 		90884D1E26E180C000D01A55 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90884D1D26E180C000D01A55 /* CloudKit.framework */; };
 		90884D2126E180E400D01A55 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90884D2026E180E400D01A55 /* CloudKit.framework */; };
 		9089734326FBFFEA005A03A8 /* SDWebImageWebPCoder in Frameworks */ = {isa = PBXBuildFile; productRef = 9089734226FBFFEA005A03A8 /* SDWebImageWebPCoder */; };
@@ -180,9 +188,13 @@
 		9072232F26E93A0500965653 /* AddBrandView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBrandView.swift; sourceTree = "<group>"; };
 		9072233226E93CDC00965653 /* ChooseSellerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseSellerView.swift; sourceTree = "<group>"; };
 		9072233526E93CE800965653 /* AddSellerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddSellerView.swift; sourceTree = "<group>"; };
+		907614A729D0ED860068365C /* KindStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KindStats.swift; sourceTree = "<group>"; };
+		907614AA29D0ED920068365C /* BrandStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrandStats.swift; sourceTree = "<group>"; };
+		907614AD29D0ED9E0068365C /* SellerStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SellerStats.swift; sourceTree = "<group>"; };
 		90785B9529BFD91300BFE933 /* SortItemsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortItemsView.swift; sourceTree = "<group>"; };
 		90785B9829BFD9B300BFE933 /* SortType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortType.swift; sourceTree = "<group>"; };
 		90785B9B29BFDC1F00BFE933 /* SortDirection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortDirection.swift; sourceTree = "<group>"; };
+		907C26DC29C754C200116BC1 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
 		90884D1D26E180C000D01A55 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		90884D1F26E180E100D01A55 /* Belongings.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Belongings.entitlements; sourceTree = "<group>"; };
 		90884D2026E180E400D01A55 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.5.sdk/System/Library/Frameworks/CloudKit.framework; sourceTree = DEVELOPER_DIR; };
@@ -412,6 +424,7 @@
 		90596B8426E6ACC30001CCA5 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				907C26DB29C754B200116BC1 /* Stats */,
 				900FF64427753AAD00F08528 /* Common */,
 				900FF640277539E700F08528 /* Item */,
 				900FF64127753A0000F08528 /* Brand */,
@@ -419,6 +432,24 @@
 				900FF64227753A0F00F08528 /* Seller */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		907C26DB29C754B200116BC1 /* Stats */ = {
+			isa = PBXGroup;
+			children = (
+				907C26DC29C754C200116BC1 /* StatsView.swift */,
+			);
+			path = Stats;
+			sourceTree = "<group>";
+		};
+		907C26DE29C7566E00116BC1 /* Stats */ = {
+			isa = PBXGroup;
+			children = (
+				907614A729D0ED860068365C /* KindStats.swift */,
+				907614AA29D0ED920068365C /* BrandStats.swift */,
+				907614AD29D0ED9E0068365C /* SellerStats.swift */,
+			);
+			path = Stats;
 			sourceTree = "<group>";
 		};
 		90884D1C26E180C000D01A55 /* Frameworks */ = {
@@ -433,6 +464,7 @@
 		90D3F23026EA593B00955316 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				907C26DE29C7566E00116BC1 /* Stats */,
 				906CE2EA26FA970100DC12C3 /* AddItemViewModel.swift */,
 				90D3F23126EA594E00955316 /* BelongingsViewModel.swift */,
 				90D3F23426EA5B3400955316 /* Entities.swift */,
@@ -671,6 +703,7 @@
 				90CF0CF62730A1C300E93917 /* SectionTitleView.swift in Sources */,
 				90CB46B726ED6A1900A9468B /* FilterItemsView.swift in Sources */,
 				90DE25542707AD4C0030AEFF /* ImagePaster.swift in Sources */,
+				907C26DD29C754C200116BC1 /* StatsView.swift in Sources */,
 				90C0D98B26E7DEF600158C85 /* AddItemView.swift in Sources */,
 				90DD8C2926F936E60079424A /* MobileNet.mlmodel in Sources */,
 				9089734726FD10CC005A03A8 /* URLValidator.swift in Sources */,
@@ -686,7 +719,9 @@
 				90F3B6AB26FFEA2900C4859D /* ItemProperty.swift in Sources */,
 				90D3F23C26EA801F00955316 /* KindDTO.swift in Sources */,
 				90D3F23526EA5B3400955316 /* Entities.swift in Sources */,
+				907614A829D0ED860068365C /* KindStats.swift in Sources */,
 				90CD27ED270908A1001A89B5 /* ImageType.swift in Sources */,
+				907614AB29D0ED920068365C /* BrandStats.swift in Sources */,
 				900FF63B277538AD00F08528 /* BrandRowView.swift in Sources */,
 				90785B9929BFD9B300BFE933 /* SortType.swift in Sources */,
 				90C0D98E26E8001700158C85 /* ChooseKindView.swift in Sources */,
@@ -698,6 +733,7 @@
 				9072233626E93CE800965653 /* AddSellerView.swift in Sources */,
 				9072233326E93CDC00965653 /* ChooseSellerView.swift in Sources */,
 				90B23E6626EE901900B29063 /* KindDetailView.swift in Sources */,
+				907614AE29D0ED9E0068365C /* SellerStats.swift in Sources */,
 				9089734A26FD3B3F005A03A8 /* ItemSummaryView.swift in Sources */,
 				90E238E32706799D00E03624 /* ItemsView.swift in Sources */,
 				90D3F23826EA7F7E00955316 /* SellerDTO.swift in Sources */,
@@ -728,7 +764,9 @@
 				9072232E26E9352700965653 /* ChooseBrandView.swift in Sources */,
 				90785B9A29BFD9B300BFE933 /* SortType.swift in Sources */,
 				904498EB26EBF70600002A6F /* KindListView.swift in Sources */,
+				907614A929D0ED860068365C /* KindStats.swift in Sources */,
 				90CB46B826ED6A1900A9468B /* FilterItemsView.swift in Sources */,
+				907C26E229C7A6B500116BC1 /* StatsView.swift in Sources */,
 				90CD27F1270908D3001A89B5 /* ImagePaster.swift in Sources */,
 				90E238DD270659C600E03624 /* SelectImageButton.swift in Sources */,
 				90C0D98C26E7DEF600158C85 /* AddItemView.swift in Sources */,
@@ -755,6 +793,7 @@
 				904498E826EBDEDB00002A6F /* ItemListView.swift in Sources */,
 				9072233726E93CE800965653 /* AddSellerView.swift in Sources */,
 				9072233426E93CDC00965653 /* ChooseSellerView.swift in Sources */,
+				907614AC29D0ED920068365C /* BrandStats.swift in Sources */,
 				90B23E6726EE901900B29063 /* KindDetailView.swift in Sources */,
 				906EA8A226F7EFF300235302 /* EditDateView.swift in Sources */,
 				90CD27EE270908A1001A89B5 /* ImageType.swift in Sources */,
@@ -774,6 +813,7 @@
 				90D3F24026EA8CDE00955316 /* BrandDTO.swift in Sources */,
 				90CB46A826ED3CB600A9468B /* BrandListView.swift in Sources */,
 				90CF0CF72730A1C300E93917 /* SectionTitleView.swift in Sources */,
+				907614AF29D0ED9E0068365C /* SellerStats.swift in Sources */,
 				900FF63F2775393300F08528 /* SellerRowView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -861,8 +901,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -916,8 +956,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -937,7 +977,7 @@
 				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -963,7 +1003,7 @@
 				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -997,7 +1037,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jlee.Belongings;
 				PRODUCT_NAME = "Belongings Organizer";
@@ -1025,7 +1065,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jlee.Belongings;
 				PRODUCT_NAME = "Belongings Organizer";

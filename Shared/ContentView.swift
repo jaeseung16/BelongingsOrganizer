@@ -36,6 +36,13 @@ struct ContentView: View {
                     Image(systemName: "shippingbox.fill")
                     Text("Sellers")
                 }
+            
+            StatsView()
+                .tabItem {
+                    Image(systemName: "chart.xyaxis.line")
+                    Text("Stats")
+                }
+            
         }
         .searchable(text: $viewModel.stringToSearch)
         .alert("Unable to save data", isPresented: $viewModel.showAlert) {
