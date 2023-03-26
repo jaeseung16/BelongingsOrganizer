@@ -36,7 +36,7 @@ struct AddPhotoView: View, DropDelegate {
             }
             .padding()
             .frame(width: geometry.size.width, height: geometry.size.height)
-            .onDrop(of: ["public.image", "public.file-url"], delegate: self)
+            .onDrop(of: ["public.image", "public.file-url", "public.url"], delegate: self)
         }
         .alert("Cannot add a photo", isPresented: $failed, presenting: details) { details in
             Button("Dismiss") {
@@ -46,71 +46,17 @@ struct AddPhotoView: View, DropDelegate {
     }
     
     func performDrop(info: DropInfo) -> Bool {
-        ImagePaster.loadData(from: info) { data, error in
-            var image: Data?
-            if let imageData = data {
-                if imageData.count > ImagePaster.maxDataSize, let nsImage = NSImage(data: imageData) {
-                    if let resized = ImagePaster.resize(nsImage: nsImage, within: ImagePaster.maxResizeSize).tiffRepresentation,
-                       let imageRep = NSBitmapImageRep(data: resized) {
-                        image = imageRep.representation(using: NSBitmapImageRep.FileType.png, properties: [:])
-                    } else {
-                        image = imageData
-                    }
-                } else {
-                    image = imageData
-                }
-            }
-            
-            if image == nil || NSImage(data: image!) == nil {
+        ImagePaster.getData(from: info) { data, error in
+            guard let data = data else {
                 if let localizedDescription = error?.localizedDescription {
                     details = localizedDescription
                 }
-                image = nil
+                self.selectedImage = nil
                 failed.toggle()
+                return
             }
             
-            self.selectedImage = image
-            print("loadData: selectedImage = \(String(describing: selectedImage))")
-        }
-        
-        ImagePaster.loadFile(from: info) { item, error in
-            var imageData: Data?
-            if let url = URL(dataRepresentation: item as! Data, relativeTo: nil) {
-                if url.absoluteString.contains(".webp") {
-                    if let data: Data = try? Data(contentsOf: url) {
-                        let image = SDImageWebPCoder.shared.decodedImage(with: data, options: nil)
-                        imageData = image?.tiffRepresentation
-                    }
-                } else {
-                    imageData = try? Data(contentsOf: url)
-                }
-            }
-            
-            if imageData == nil || NSImage(data: imageData!) == nil {
-                if let localizedDescription = error?.localizedDescription {
-                    details = localizedDescription
-                }
-                imageData = nil
-                failed.toggle()
-            }
-            
-            self.selectedImage = imageData
-            print("loadFile: selectedImage = \(String(describing: selectedImage))")
-        }
-        
-        ImagePaster.download(from: info) { data, error in
-            var imageData: Data?
-            if let data = data {
-                imageData = data
-            } else {
-                if let localizedDescription = error?.localizedDescription {
-                    details = localizedDescription
-                }
-                failed.toggle()
-            }
-            
-            self.selectedImage = imageData
-            print("download: selectedImage = \(String(describing: selectedImage))")
+            self.selectedImage = data
         }
         
         return selectedImage != nil
