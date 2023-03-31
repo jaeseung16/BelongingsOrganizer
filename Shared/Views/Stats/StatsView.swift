@@ -16,7 +16,7 @@ struct StatsView: View {
     @State private var end = Date()
     
     private var itemCountByKind: [KindStats] {
-        viewModel.itemCountByKind(from: start, to: end)
+        viewModel.itemCountsByKind(from: start, to: end)
     }
     
     private var itemCountByBrand: [BrandStats] {
