@@ -28,30 +28,29 @@ struct StatsView: View {
     }
     
     var body: some View {
-        VStack {
-            header
-            
-            switch statsType {
-            case .kind:
-                kindChart
-                    .padding()
-            case .brand:
-                brandChart
-                    .padding()
-            case .seller:
-                sellerChart
-                    .padding()
-            }
+        GeometryReader { geometry in
+            VStack {
+                header
+                    .frame(width: 200, height: 0.1 * geometry.size.height)
                 
+                Spacer(minLength: 20.0)
+                
+                switch statsType {
+                case .kind:
+                    chart(for: itemCountByKind, color: .green)
+                case .brand:
+                    chart(for: itemCountByBrand, color: .blue)
+                case .seller:
+                    chart(for: itemCountBySeller, color: .red)
+                }
+            }
+            .padding()
         }
-        .padding()
     }
     
     private var header: some View {
-        HStack {
-            Spacer()
-            
-            Picker("Stats", selection: $statsType) {
+        VStack {
+            Picker("Items per", selection: $statsType) {
                 Text("Category").tag(StatsType.kind)
                 Text("Brand").tag(StatsType.brand)
                 Text("Seller").tag(StatsType.seller)
@@ -60,49 +59,24 @@ struct StatsView: View {
             Spacer()
             
             DatePicker("Start Date", selection: $start, displayedComponents: [.date])
-            
-            Spacer()
-            
             DatePicker("End Date", selection: $end, displayedComponents: [.date])
-            
-            Spacer()
         }
     }
     
-    
-    private var kindChart: some View {
+    private func chart(for stats: [BelongsStats], color: Color) -> some View {
         Chart {
-            ForEach(itemCountByKind, id: \.name) {
+            ForEach(stats, id: \.name) { item in
                 BarMark(
-                    x: .value("# of items", $0.itemCount),
-                    y: .value("Category", $0.name)
+                    x: .value("# of items", item.itemCount),
+                    y: .value("Category", item.name)
                 )
-                .foregroundStyle(.green)
+                .annotation(position: .trailing) {
+                    Text("\(item.itemCount)")
+                        .foregroundColor(.secondary)
+                }
+                .foregroundStyle(color)
             }
         }
     }
     
-    private var brandChart: some View {
-        Chart {
-            ForEach(itemCountByBrand, id: \.name) {
-                BarMark(
-                    x: .value("# of items", $0.itemCount),
-                    y: .value("Brand", $0.name)
-                )
-                .foregroundStyle(.blue)
-            }
-        }
-    }
-    
-    private var sellerChart: some View {
-        Chart {
-            ForEach(itemCountBySeller, id: \.name) {
-                BarMark(
-                    x: .value("# of items", $0.itemCount),
-                    y: .value("Seller", $0.name)
-                )
-                .foregroundStyle(.red)
-            }
-        }
-    }
 }

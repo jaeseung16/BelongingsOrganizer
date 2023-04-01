@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct BrandStats {
+struct BrandStats: BelongsStats {
     var name: String
     var itemCount: Int
 }

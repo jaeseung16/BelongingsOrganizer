@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct KindStats {
+struct KindStats: BelongsStats {
     var name: String
     var itemCount: Int
 }
