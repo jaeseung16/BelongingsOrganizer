@@ -69,7 +69,7 @@ struct FilterItemsView: View {
     
     func selectedKindsSection() -> some View {
         VStack(alignment: .leading) {
-            Text("KIND")
+            Text("CATEGORY")
                 .font(.caption)
                 .foregroundColor(.secondary)
             
