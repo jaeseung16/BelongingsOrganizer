@@ -30,19 +30,35 @@ struct StatsView: View {
     var body: some View {
         GeometryReader { geometry in
             VStack {
-                header
-                    .frame(width: 200, height: 0.1 * geometry.size.height)
+                HStack {
+                    Spacer()
+                    header
+                        .frame(width: 250, height: 0.1 * geometry.size.height)
+                }
                 
                 Spacer(minLength: 20.0)
                 
-                switch statsType {
-                case .kind:
-                    chart(for: itemCountByKind, color: .green)
-                case .brand:
-                    chart(for: itemCountByBrand, color: .blue)
-                case .seller:
-                    chart(for: itemCountBySeller, color: .red)
+                HStack {
+                    Text("CATEGORY")
+                    Spacer()
                 }
+                
+                chart(for: itemCountByKind, color: .green)
+            
+                HStack {
+                    Text("BRAND")
+                    Spacer()
+                }
+                
+                chart(for: itemCountByBrand, color: .blue)
+           
+                HStack {
+                    Text("SELLER")
+                    Spacer()
+                }
+
+                chart(for: itemCountBySeller, color: .red)
+                
             }
             .padding()
         }
@@ -50,31 +66,20 @@ struct StatsView: View {
     
     private var header: some View {
         VStack {
-            Picker("Items per", selection: $statsType) {
-                Text("Category").tag(StatsType.kind)
-                Text("Brand").tag(StatsType.brand)
-                Text("Seller").tag(StatsType.seller)
-            }
-            
-            Spacer()
-            
             DatePicker("Start Date", selection: $start, displayedComponents: [.date])
             DatePicker("End Date", selection: $end, displayedComponents: [.date])
         }
     }
     
     private func chart(for stats: [BelongsStats], color: Color) -> some View {
-        Chart {
-            ForEach(stats, id: \.name) { item in
-                BarMark(
-                    x: .value("# of items", item.itemCount),
-                    y: .value("Category", item.name)
-                )
-                .annotation(position: .trailing) {
-                    Text("\(item.itemCount)")
-                        .foregroundColor(.secondary)
-                }
-                .foregroundStyle(color)
+        Chart(stats, id: \.name) { item in
+            BarMark(
+                x: .value("# of items", item.itemCount)
+            )
+            .foregroundStyle(by: .value("Category", item.name))
+            .annotation(position: .overlay) {
+                Text("\(item.itemCount)")
+                    .foregroundColor(.secondary)
             }
         }
     }
