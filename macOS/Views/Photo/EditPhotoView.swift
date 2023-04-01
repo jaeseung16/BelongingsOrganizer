@@ -13,6 +13,8 @@ struct EditPhotoView: View, DropDelegate {
     
     @State var originalImage: Data?
     @Binding var image: Data?
+    @State private var failed = false
+    @State private var details = ""
     
     var body: some View {
         GeometryReader { geometry in
@@ -29,6 +31,11 @@ struct EditPhotoView: View, DropDelegate {
             }
             .padding()
             .frame(width: geometry.size.width, height: geometry.size.height)
+        }
+        .alert("Cannot replace a photo", isPresented: $failed, presenting: details) { details in
+            Button("Dismiss") {
+                
+            }
         }
     }
     
@@ -75,32 +82,17 @@ struct EditPhotoView: View, DropDelegate {
     }
     
     func performDrop(info: DropInfo) -> Bool {
-        ImagePaster.loadData(from: info) { data, _ in
-            if let imageData = data {
-                if imageData.count > ImagePaster.maxDataSize, let nsImage = NSImage(data: imageData) {
-                    if let resized = ImagePaster.resize(nsImage: nsImage, within: ImagePaster.maxResizeSize).tiffRepresentation,
-                       let imageRep = NSBitmapImageRep(data: resized) {
-                        image = imageRep.representation(using: NSBitmapImageRep.FileType.png, properties: [:])
-                    } else {
-                        image = imageData
-                    }
-                } else {
-                    image = imageData
+        ImagePaster.getData(from: info) { data, error in
+            guard let data = data else {
+                if let localizedDescription = error?.localizedDescription {
+                    details = localizedDescription
                 }
+                self.image = nil
+                failed.toggle()
+                return
             }
-        }
-        
-        ImagePaster.loadFile(from: info) { item, error in
-            if let url = URL(dataRepresentation: item as! Data, relativeTo: nil) {
-                if url.absoluteString.contains(".webp") {
-                    if let data: Data = try? Data(contentsOf: url) {
-                        let image = SDImageWebPCoder.shared.decodedImage(with: data, options: nil)
-                        self.image = image?.tiffRepresentation
-                    }
-                } else {
-                    self.image = try? Data(contentsOf: url)
-                }
-            }
+            
+            self.image = data
         }
         
         return image != nil

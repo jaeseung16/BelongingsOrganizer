@@ -365,5 +365,18 @@ class BelongingsViewModel: NSObject, ObservableObject {
         
     }
     
+    // MARK: - AddItemViewModel
+    public var imageData: Data? {
+        return addItemViewModel.imageData
+    }
+    
+    public func updateImage(_ imageData: Data?) {
+        addItemViewModel.imageData = imageData
+    }
+    
+    public func saveBelonging(name: String, kind: [Kind], brand: Brand?, seller: Seller?, note: String, obtained: Date, buyPrice: Double?, quantity: Int64?, buyCurrency: String) -> Void {
+        addItemViewModel.saveBelonging(name: name, kind: kind, brand: brand, seller: seller, note: note, obtained: obtained, buyPrice: buyPrice, quantity: quantity, buyCurrency: buyCurrency)
+    }
+    
 }
 

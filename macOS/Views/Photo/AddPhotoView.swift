@@ -11,7 +11,7 @@ import UniformTypeIdentifiers
 
 struct AddPhotoView: View, DropDelegate {
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var viewModel: AddItemViewModel
+    @EnvironmentObject var viewModel: BelongingsViewModel
     
     @State private var selectedImage: Data?
     @State private var isTargeted = false
@@ -86,7 +86,7 @@ struct AddPhotoView: View, DropDelegate {
             Spacer()
             
             Button(action: {
-                viewModel.imageData = selectedImage
+                viewModel.updateImage(selectedImage)
                 dismiss.callAsFunction()
             }, label: {
                 Text("Done")

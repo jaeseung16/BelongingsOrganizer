@@ -83,7 +83,7 @@ struct ItemListView: View {
                     itemListView()
                         .sheet(isPresented: $presentAddItemView) {
                             AddItemView(geometry: geometry)
-                                .environmentObject(viewModel.addItemViewModel)
+                                .environmentObject(viewModel)
                                 .frame(minWidth: 350, minHeight: 550)
                                 .padding()
                         }
