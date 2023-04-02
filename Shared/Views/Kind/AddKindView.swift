@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AddKindView: View {
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var viewModel: AddItemViewModel
+    @EnvironmentObject var viewModel: BelongingsViewModel
     
     @State private var name = ""
     

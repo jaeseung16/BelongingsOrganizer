@@ -30,7 +30,7 @@ struct BrandListView: View {
                     brandListView()
                     .sheet(isPresented: $presentAddBrandView, content: {
                         AddBrandView()
-                            .environmentObject(viewModel.addItemViewModel)
+                            .environmentObject(viewModel)
                             .frame(minWidth: 350, minHeight: 450)
                             .padding()
                     })

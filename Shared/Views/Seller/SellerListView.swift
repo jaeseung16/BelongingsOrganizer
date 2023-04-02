@@ -22,6 +22,7 @@ struct SellerListView: View {
     }
     
     @State var filteredSellers = [Seller]()
+    @State var selectedSeller: Seller?
     
     var body: some View {
         NavigationView {
@@ -32,7 +33,7 @@ struct SellerListView: View {
                     sellerListView()
                     .sheet(isPresented: $presentAddSelleriew, content: {
                         AddSellerView()
-                            .environmentObject(viewModel.addItemViewModel)
+                            .environmentObject(viewModel)
                             .frame(minWidth: 350, minHeight: 450)
                             .padding()
                     })

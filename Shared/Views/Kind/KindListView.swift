@@ -30,7 +30,7 @@ struct KindListView: View {
                     kindListView()
                         .sheet(isPresented: $presentAddKindView) {
                             AddKindView()
-                                .environmentObject(viewModel.addItemViewModel)
+                                .environmentObject(viewModel)
                                 .frame(minWidth: 350, minHeight: 450)
                                 .padding()
                             

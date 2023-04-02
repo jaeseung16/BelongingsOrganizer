@@ -51,9 +51,9 @@ class BelongingsViewModel: NSObject, ObservableObject {
         super.init()
         
         NotificationCenter.default
-          .publisher(for: .NSPersistentStoreRemoteChange)
-          .sink { self.fetchUpdates($0) }
-          .store(in: &subscriptions)
+            .publisher(for: .NSPersistentStoreRemoteChange)
+            .sink { self.fetchUpdates($0) }
+            .store(in: &subscriptions)
         
         let webPCoder = SDImageWebPCoder.shared
         SDImageCodersManager.shared.addCoder(webPCoder)
@@ -115,7 +115,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
                 existingEntity.disposed = itemDTO.disposed
                 existingEntity.image = itemDTO.image
                 existingEntity.lastupd = Date()
-
+                
                 saveContext() { [self] error in
                     let nsError = error as NSError
                     self.logger.error("While saving \(self.itemDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
@@ -131,7 +131,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
             if kindDTO.id != nil, let existingEntity: Kind = get(entity: .Kind, id: kindDTO.id!) {
                 existingEntity.name = kindDTO.name?.trimmingCharacters(in: .whitespaces)
                 existingEntity.lastupd = Date()
-
+                
                 saveContext() { error in
                     let nsError = error as NSError
                     self.logger.error("While saving \(self.kindDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
@@ -148,7 +148,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
                 existingEntity.name = brandDTO.name?.trimmingCharacters(in: .whitespaces)
                 existingEntity.url = brandDTO.url
                 existingEntity.lastupd = Date()
-
+                
                 saveContext() { error in
                     let nsError = error as NSError
                     self.logger.error("While saving \(self.brandDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
@@ -165,7 +165,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
                 existingEntity.name = sellerDTO.name?.trimmingCharacters(in: .whitespaces)
                 existingEntity.url = sellerDTO.url
                 existingEntity.lastupd = Date()
-
+                
                 saveContext() { error in
                     let nsError = error as NSError
                     self.logger.error("While saving \(self.sellerDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
@@ -245,7 +245,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
             return false
         }
     }
-
+    
     // MARK: - Stats
     private let maxCountForStats = 10
     private let others = "others"
@@ -270,7 +270,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
         }
         
         let itemCountsByKind = itemsObtainedByKind.map { (name, itemCount) in
-                return KindStats(name: name, itemCount: itemCount)
+            return KindStats(name: name, itemCount: itemCount)
         }.sorted(by: { $0.itemCount > $1.itemCount })
         
         if (itemCountsByKind.count > maxCountForStats) {
@@ -281,7 +281,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
         }
         
         return result
-
+        
     }
     
     private func itemsObtainedBetween(from start: Date, to end: Date) -> [Item] {
@@ -317,7 +317,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
         }
         
         let itemCountsByBrand = itemsObtainedByBrand.map { (name, itemCount) in
-                return BrandStats(name: name, itemCount: itemCount)
+            return BrandStats(name: name, itemCount: itemCount)
         }.sorted(by: { $0.itemCount > $1.itemCount })
         
         if (itemCountsByBrand.count > maxCountForStats) {
@@ -328,7 +328,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
         }
         
         return result
-
+        
     }
     
     public func itemCountBySeller(from start: Date, to end: Date) -> [SellerStats] {
@@ -351,9 +351,9 @@ class BelongingsViewModel: NSObject, ObservableObject {
         }
         
         let itemCountsBySeller =  itemsObtainedBySeller.map { (name, itemCount) in
-                return SellerStats(name: name, itemCount: itemCount)
+            return SellerStats(name: name, itemCount: itemCount)
         }.sorted(by: { $0.itemCount > $1.itemCount })
-
+        
         if (itemCountsBySeller.count > maxCountForStats) {
             result.append(contentsOf: itemCountsBySeller[..<maxCountForStats])
             result.append(SellerStats(name: others, itemCount: itemCountsBySeller[maxCountForStats...].reduce(0, { $0 + $1.itemCount })))
@@ -378,5 +378,16 @@ class BelongingsViewModel: NSObject, ObservableObject {
         addItemViewModel.saveBelonging(name: name, kind: kind, brand: brand, seller: seller, note: note, obtained: obtained, buyPrice: buyPrice, quantity: quantity, buyCurrency: buyCurrency)
     }
     
+    public func saveKind(name: String) -> Void {
+        addItemViewModel.saveKind(name: name)
+    }
+    
+    public func saveBrand(name: String, urlString: String) -> Void {
+        addItemViewModel.saveBrand(name: name, urlString: urlString)
+    }
+    
+    public func saveSeller(name: String, urlString: String) -> Void {
+        addItemViewModel.saveSeller(name: name, urlString: urlString)
+    }
 }
 
