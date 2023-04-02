@@ -28,6 +28,10 @@ struct EditPhotoView: View, DropDelegate {
                     .aspectRatio(contentMode: .fit)
                     .frame(height: 100)
                     .onDrop(of: ["public.image", "public.file-url"], delegate: self)
+                
+                Divider()
+                
+                footer()
             }
             .padding()
             .frame(width: geometry.size.width, height: geometry.size.height)
@@ -96,5 +100,34 @@ struct EditPhotoView: View, DropDelegate {
         }
         
         return image != nil
+    }
+    
+    private func footer() -> some View {
+        HStack {
+            Spacer()
+            
+            if ImagePaster.hasImage() {
+                Spacer()
+                
+                Button {
+                    pasteImage()
+                } label: {
+                    Label("Paste", systemImage: "doc.on.clipboard.fill")
+                }
+            }
+        }
+    }
+    
+    private func pasteImage() -> Void {
+        ImagePaster.paste { data, error in
+            if let data = data {
+                image = data
+            } else {
+                if let localizedDescription = error?.localizedDescription {
+                    details = localizedDescription
+                }
+                failed.toggle()
+            }
+        }
     }
 }
