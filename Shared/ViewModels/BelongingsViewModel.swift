@@ -375,19 +375,112 @@ class BelongingsViewModel: NSObject, ObservableObject {
     }
     
     public func saveBelonging(name: String, kind: [Kind], brand: Brand?, seller: Seller?, note: String, obtained: Date, buyPrice: Double?, quantity: Int64?, buyCurrency: String) -> Void {
-        addItemViewModel.saveBelonging(name: name, kind: kind, brand: brand, seller: seller, note: note, obtained: obtained, buyPrice: buyPrice, quantity: quantity, buyCurrency: buyCurrency)
+        let created = Date()
+        
+        let newItem = Item(context: addItemViewModel.viewContext)
+        newItem.created = created
+        newItem.lastupd = created
+        newItem.name = name
+        newItem.note = note
+        newItem.quantity = quantity ?? 0
+        newItem.obtained = obtained
+        newItem.buyPrice = buyPrice ?? 0.0
+        newItem.buyCurrency = buyCurrency
+        newItem.uuid = UUID()
+        newItem.image = imageData
+       
+        addItemViewModel.save(item: newItem, kind: kind, brand: brand, seller: seller) { result in
+            switch result {
+            case .success(()):
+                DispatchQueue.main.async {
+                    self.updated.toggle()
+                }
+            case .failure(let error):
+                self.logger.error("While saving a new item, occured an unresolved error \(error, privacy: .public)")
+                self.message = "Cannot save a new item with name = \(String(describing: name))"
+                DispatchQueue.main.async {
+                    self.showAlert.toggle()
+                }
+            }
+        }
     }
     
     public func saveKind(name: String) -> Void {
-        addItemViewModel.saveKind(name: name)
+        let created = Date()
+        
+        let newKind = Kind(context: addItemViewModel.viewContext)
+        newKind.created = created
+        newKind.lastupd = created
+        newKind.name = name.trimmingCharacters(in: .whitespaces)
+        newKind.uuid = UUID()
+        
+        addItemViewModel.save(kind: newKind) { result in
+            switch result {
+            case .success(()):
+                DispatchQueue.main.async {
+                    self.updated.toggle()
+                }
+            case .failure(let error):
+                self.logger.error("While saving a new category, occured an unresolved error \(error, privacy: .public)")
+                self.message = "Cannot save a new category with name = \(String(describing: name))"
+                DispatchQueue.main.async {
+                    self.showAlert.toggle()
+                }
+            }
+        }
     }
     
     public func saveBrand(name: String, urlString: String) -> Void {
-        addItemViewModel.saveBrand(name: name, urlString: urlString)
+        let created = Date()
+        
+        let newBrand = Brand(context: addItemViewModel.viewContext)
+        newBrand.created = created
+        newBrand.lastupd = created
+        newBrand.name = name.trimmingCharacters(in: .whitespaces)
+        newBrand.url = URL(string: urlString)
+        newBrand.uuid = UUID()
+
+        addItemViewModel.save(brand: newBrand) { result in
+            switch result {
+            case .success(()):
+                DispatchQueue.main.async {
+                    self.updated.toggle()
+                }
+            case .failure(let error):
+                self.logger.error("While saving a new brand, occured an unresolved error \(error, privacy: .public)")
+                self.message = "Cannot save a new brand with name = \(String(describing: name))"
+                DispatchQueue.main.async {
+                    self.showAlert.toggle()
+                }
+            }
+        }
     }
     
     public func saveSeller(name: String, urlString: String) -> Void {
-        addItemViewModel.saveSeller(name: name, urlString: urlString)
+        let created = Date()
+        
+        let newSeller = Seller(context: addItemViewModel.viewContext)
+        newSeller.created = created
+        newSeller.lastupd = created
+        newSeller.name = name.trimmingCharacters(in: .whitespaces)
+        newSeller.url = URL(string: urlString)
+        newSeller.uuid = UUID()
+
+        addItemViewModel.save(seller: newSeller) { result in
+            switch result {
+            case .success(()):
+                DispatchQueue.main.async {
+                    self.updated.toggle()
+                }
+            case .failure(let error):
+                self.logger.error("While saving a new seller, occured an unresolved error \(error, privacy: .public)")
+                self.message = "Cannot save a new seller with name = \(String(describing: name))"
+                DispatchQueue.main.async {
+                    self.showAlert.toggle()
+                }
+            }
+            
+        }
     }
 }
 

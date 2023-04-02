@@ -47,10 +47,10 @@ struct ChooseKindView: View {
                 #if os(macOS)
                 AddKindView()
                     .frame(minWidth: 0.5 * geometry.size.width)
-                    .environmentObject(viewModel.addItemViewModel)
+                    .environmentObject(viewModel)
                 #else
                 AddKindView()
-                    .environmentObject(viewModel.addItemViewModel)
+                    .environmentObject(viewModel)
                 #endif
             })
             .alert(isPresented: $showAlertForDeletion) {

@@ -47,10 +47,10 @@ struct ChooseBrandView: View {
                 #if os(macOS)
                 AddBrandView()
                     .frame(minWidth: 0.5 * geometry.size.width)
-                    .environmentObject(viewModel.addItemViewModel)
+                    .environmentObject(viewModel)
                 #else
                 AddBrandView()
-                    .environmentObject(viewModel.addItemViewModel)
+                    .environmentObject(viewModel)
                 #endif
             })
             .alert(isPresented: $showAlertForDeletion) {

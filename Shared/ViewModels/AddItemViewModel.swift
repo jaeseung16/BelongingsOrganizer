@@ -14,150 +14,55 @@ import CoreImage
 import os
 import Persistence
 
-class AddItemViewModel: NSObject, ObservableObject {
-    let logger = Logger()
+class AddItemViewModel {
+    private static let logger = Logger()
     
     private let persistence: Persistence
-    private var viewContext: NSManagedObjectContext {
+    var viewContext: NSManagedObjectContext {
         persistence.container.viewContext
     }
     
     init(persistence: Persistence) {
         self.persistence = persistence
     }
-    
-    @Published var showAlert = false
-    @Published var toggle = false
-    
-    var message = ""
-    
-    @Published var classificationResult: String = ""
-    @Published var imageData: Data?
-    
-    var kind: Kind?
-    var brand: Brand?
-    var seller: Seller?
+
+    var classificationResult: String = ""
+    var imageData: Data?
     
     func reset() {
-        showAlert = false
-        message = ""
         imageData = nil
-        kind = nil
-        brand = nil
-        seller = nil
     }
     
-    func saveBelonging(name: String, kind: [Kind], brand: Brand?, seller: Seller?, note: String, obtained: Date, buyPrice: Double?, quantity: Int64?, buyCurrency: String) -> Void {
-        let created = Date()
-        
-        let newItem = Item(context: viewContext)
-        newItem.created = created
-        newItem.lastupd = created
-        newItem.name = name
-        newItem.note = note
-        newItem.quantity = quantity ?? 0
-        newItem.obtained = obtained
-        newItem.buyPrice = buyPrice ?? 0.0
-        newItem.buyCurrency = buyCurrency
-        newItem.uuid = UUID()
-        newItem.image = imageData
-        
+    func save(item: Item, kind: [Kind], brand: Brand?, seller: Seller?, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
         if !kind.isEmpty {
-            kind.forEach { $0.addToItems(newItem) }
+            kind.forEach { $0.addToItems(item) }
         }
         
         if brand != nil {
-            brand!.addToItems(newItem)
+            brand!.addToItems(item)
         }
         
         if seller != nil {
-            seller!.addToItems(newItem)
+            seller!.addToItems(item)
         }
         
         let originalMergePolicy = viewContext.mergePolicy
         viewContext.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
-        
-        persistence.save() { result in
-            switch result {
-            case .success(()):
-                self.toggle.toggle()
-            case .failure(let error):
-                let nsError = error as NSError
-                self.logger.error("While saving a new item, occured an unresolved error \(nsError), \(nsError.userInfo)")
-                self.message = "Cannot save a new item with name = \(String(describing: name))"
-                self.showAlert.toggle()
-            }
-        }
-        
+        persistence.save(completionHandler: completionHandler)
         viewContext.mergePolicy = originalMergePolicy
     }
     
-    func saveKind(name: String) -> Void {
-        let created = Date()
-        
-        let newKind = Kind(context: viewContext)
-        newKind.created = created
-        newKind.lastupd = created
-        newKind.name = name.trimmingCharacters(in: .whitespaces)
-        newKind.uuid = UUID()
-        
-        persistence.save() { result in
-            switch result {
-            case .success(()):
-                self.toggle.toggle()
-            case .failure(let error):
-                let nsError = error as NSError
-                self.logger.error("While saving a new category, occured an unresolved error \(nsError), \(nsError.userInfo)")
-                self.message = "Cannot save a new category with name = \(String(describing: name))"
-                self.showAlert.toggle()
-            }
-        }
+    func save(kind: Kind, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
+        persistence.save(completionHandler: completionHandler)
     }
     
-    func saveBrand(name: String, urlString: String) -> Void {
-        let created = Date()
-        
-        let newBrand = Brand(context: viewContext)
-        newBrand.created = created
-        newBrand.lastupd = created
-        newBrand.name = name.trimmingCharacters(in: .whitespaces)
-        newBrand.url = URL(string: urlString)
-        newBrand.uuid = UUID()
 
-        persistence.save() { result in
-            switch result {
-            case .success(()):
-                self.toggle.toggle()
-            case .failure(let error):
-                let nsError = error as NSError
-                self.logger.error("While saving a new brand, occured an unresolved error \(nsError), \(nsError.userInfo)")
-                self.message = "Cannot save a new brand with name = \(String(describing: name))"
-                self.showAlert.toggle()
-            }
-        }
+    func save(brand: Brand, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
+        persistence.save(completionHandler: completionHandler)
     }
     
-    func saveSeller(name: String, urlString: String) -> Void {
-        let created = Date()
-        
-        let newSeller = Seller(context: viewContext)
-        newSeller.created = created
-        newSeller.lastupd = created
-        newSeller.name = name.trimmingCharacters(in: .whitespaces)
-        newSeller.url = URL(string: urlString)
-        newSeller.uuid = UUID()
-
-        persistence.save() { result in
-            switch result {
-            case .success(()):
-                self.toggle.toggle()
-            case .failure(let error):
-                let nsError = error as NSError
-                self.logger.error("While saving a new seller, occured an unresolved error \(nsError), \(nsError.userInfo)")
-                self.message = "Cannot save a new seller with name = \(String(describing: name))"
-                self.showAlert.toggle()
-            }
-        }
+    func save(seller: Seller, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
+        persistence.save(completionHandler: completionHandler)
     }
  
     // MARK: - Image Classification

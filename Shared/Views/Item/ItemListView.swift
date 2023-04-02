@@ -104,14 +104,14 @@ struct ItemListView: View {
         .onReceive(viewModel.$updated) { _ in
             items = viewModel.items
         }
-        .onChange(of: viewModel.addItemViewModel.showAlert) { _ in
-            showAlert = viewModel.addItemViewModel.showAlert
+        .onChange(of: viewModel.showAlert) { _ in
+            showAlert = viewModel.showAlert
         }
         .alert("Unable to Save Data", isPresented: $showAlert) {
             Button("Dismiss") {
             }
         } message: {
-            Text(viewModel.addItemViewModel.message)
+            Text(viewModel.message)
         }
         .alert("Unable to Delete Data", isPresented: $showAlertForDeletion) {
             Button("Dismiss") {

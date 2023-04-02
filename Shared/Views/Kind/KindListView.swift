@@ -42,15 +42,15 @@ struct KindListView: View {
         .onReceive(viewModel.$updated) { _ in
             kinds = viewModel.kinds
         }
-        .onChange(of: viewModel.addItemViewModel.showAlert) { _ in
-            showAlert = viewModel.addItemViewModel.showAlert
+        .onChange(of: viewModel.showAlert) { _ in
+            showAlert = viewModel.showAlert
         }
         .alert("Unable to Save Data", isPresented: $showAlert) {
             Button("Dismiss") {
                 showAlert.toggle()
             }
         } message: {
-            Text(viewModel.addItemViewModel.message)
+            Text(viewModel.message)
         }
         .alert("Unable to Delete Data", isPresented: $showAlertForDeletion) {
             Button("Dismiss") {

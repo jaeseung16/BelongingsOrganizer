@@ -44,8 +44,8 @@ struct SellerListView: View {
         .onReceive(viewModel.$updated) { _ in
             sellers = viewModel.sellers
         }
-        .onChange(of: viewModel.addItemViewModel.showAlert) { _ in
-            showAlert = viewModel.addItemViewModel.showAlert
+        .onChange(of: viewModel.showAlert) { _ in
+            showAlert = viewModel.showAlert
         }
         .onChange(of: viewModel.stringToSearch) { _ in
             filteredSellers = sellers.filter { viewModel.checkIfStringToSearchContainedIn($0.name) }
@@ -55,7 +55,7 @@ struct SellerListView: View {
                 showAlert.toggle()
             }
         } message: {
-            Text(viewModel.addItemViewModel.message)
+            Text(viewModel.message)
         }
         .alert("Unable to Delete Data", isPresented: $showAlertForDeletion) {
             Button("Dismiss") {

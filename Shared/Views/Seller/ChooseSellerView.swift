@@ -46,10 +46,10 @@ struct ChooseSellerView: View {
                 #if os(macOS)
                 AddSellerView()
                     .frame(minWidth: 0.5 * geometry.size.width)
-                    .environmentObject(viewModel.addItemViewModel)
+                    .environmentObject(viewModel)
                 #else
                 AddSellerView()
-                    .environmentObject(viewModel.addItemViewModel)
+                    .environmentObject(viewModel)
                 #endif
             })
             .alert(isPresented: $showAlertForDeletion) {
