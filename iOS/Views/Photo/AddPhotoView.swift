@@ -117,7 +117,7 @@ struct AddPhotoView: View, DropDelegate {
                 Label("Photos", systemImage: "photo.on.rectangle")
             }
             
-            if ImagePaster.hasImage() {
+            if viewModel.hasImage() {
                 Spacer()
                 
                 Button {
@@ -130,7 +130,7 @@ struct AddPhotoView: View, DropDelegate {
     }
     
     private func pasteImage() -> Void {
-        ImagePaster.paste { data, _ in
+        viewModel.paste { data, _ in
             if let data = data {
                 selectedImage = data
             }
@@ -138,7 +138,7 @@ struct AddPhotoView: View, DropDelegate {
     }
     
     func performDrop(info: DropInfo) -> Bool {
-        ImagePaster.getData(from: info) { data, error in
+        viewModel.getData(from: info) { data, error in
             guard let data = data else {
                 if let localizedDescription = error?.localizedDescription {
                     details = localizedDescription

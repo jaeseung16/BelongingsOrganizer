@@ -11,6 +11,7 @@ import CoreData
 import SDWebImageWebPCoder
 import os
 import Persistence
+import SwiftUI
 
 class BelongingsViewModel: NSObject, ObservableObject {
     let logger = Logger()
@@ -44,6 +45,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     var message = ""
     
     let addItemViewModel: AddItemViewModel
+    let imagePaster = ImagePaster.shared
     
     init(persistence: Persistence) {
         self.persistence = persistence
@@ -481,6 +483,19 @@ class BelongingsViewModel: NSObject, ObservableObject {
             }
             
         }
+    }
+    
+    // MARK: - ImagePaster
+    func hasImage() -> Bool {
+        return imagePaster.hasImage()
+    }
+    
+    func paste(completionHandler: @escaping (Data?, Error?) -> Void) ->Void {
+        imagePaster.paste(completionHandler: completionHandler)
+    }
+    
+    func getData(from info: DropInfo, completionHandler: @escaping (Data?, Error?) -> Void) ->Void {
+        imagePaster.getData(from: info, completionHandler: completionHandler)
     }
 }
 

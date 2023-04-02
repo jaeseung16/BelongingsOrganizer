@@ -11,6 +11,7 @@ import SDWebImageWebPCoder
 
 struct EditPhotoView: View, DropDelegate {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject var viewModel: BelongingsViewModel
 
     @State var originalImage: Data?
     @Binding var image: Data?
@@ -121,7 +122,7 @@ struct EditPhotoView: View, DropDelegate {
                 Label("Photos", systemImage: "photo.on.rectangle")
             }
             
-            if ImagePaster.hasImage() {
+            if viewModel.hasImage() {
                 Spacer()
                 
                 Button {
@@ -134,7 +135,7 @@ struct EditPhotoView: View, DropDelegate {
     }
     
     private func pasteImage() -> Void {
-        ImagePaster.paste { data, _ in
+        viewModel.paste { data, _ in
             if let data = data {
                 image = data
             }
@@ -142,7 +143,7 @@ struct EditPhotoView: View, DropDelegate {
     }
     
     func performDrop(info: DropInfo) -> Bool {
-        ImagePaster.getData(from: info) { data, error in
+        viewModel.getData(from: info) { data, error in
             guard let data = data else {
                 if let localizedDescription = error?.localizedDescription {
                     details = localizedDescription

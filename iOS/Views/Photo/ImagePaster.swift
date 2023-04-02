@@ -9,28 +9,25 @@ import SwiftUI
 import UniformTypeIdentifiers
 import OSLog
 
-class ImagePaster {
+class ImagePaster: ImagePasting {
+    static let shared = ImagePaster()
     private static let logger = Logger()
     
     private static let imageTypes: [UTType] = [.png, .jpeg, .webP]
     private static let fileTypes: [UTType] = [.fileURL]
     private static let urlTypes: [UTType] = [.url]
     
-    static let maxDataSize = 1_000_000
-    static let maxResizeSize = CGSize(width: 128, height: 128)
+    private static let maxDataSize = 1_000_000
+    private static let maxResizeSize = CGSize(width: 128, height: 128)
     
-    static func getData(from info: DropInfo, completionHandler: @escaping (Data?, Error?) -> Void) ->Void {
-        if info.hasItemsConforming(to: ImagePaster.imageTypes) {
-        }
-        
-        
+    func getData(from info: DropInfo, completionHandler: @escaping (Data?, Error?) -> Void) ->Void {
         ImagePaster.logger.log("loadData")
-        ImagePaster.loadData(from: info) { data, error in
+        loadData(from: info) { data, error in
             var image: Data?
             
             if let imageData = data, let uiImage = UIImage(data: imageData) {
                 if imageData.count > ImagePaster.maxDataSize {
-                    if let resized = ImagePaster.resize(uiImage: uiImage, within: ImagePaster.maxResizeSize),
+                    if let resized = self.resize(uiImage: uiImage, within: ImagePaster.maxResizeSize),
                        let data = resized.pngData() {
                         image = data
                     } else {
@@ -46,7 +43,7 @@ class ImagePaster {
                 completionHandler(image, error)
             } else {
                 ImagePaster.logger.log("loadFile")
-                ImagePaster.loadFile(from: info) { item, error in
+                self.loadFile(from: info) { item, error in
                     var imageData: Data?
                     if let item = item, let url = URL(dataRepresentation: item as! Data, relativeTo: nil) {
                         imageData = try? Data(contentsOf: url)
@@ -59,7 +56,7 @@ class ImagePaster {
                         completionHandler(nil, BelongingsError.noImage)
                     } else {
                         ImagePaster.logger.log("download")
-                        ImagePaster.download(from: info) { item, error in
+                        self.download(from: info) { item, error in
                             var imageData: Data?
                             if let item = item as? Data, let url = URL(dataRepresentation: item, relativeTo: nil) {
                                 ImagePaster.logger.log("url=\(url, privacy: .public)")
@@ -83,7 +80,7 @@ class ImagePaster {
         }
     }
     
-    static func loadData(from info: DropInfo, completionHandler: @escaping (Data?, Error?) -> Void) ->Void {
+    func loadData(from info: DropInfo, completionHandler: @escaping (Data?, Error?) -> Void) ->Void {
         if info.hasItemsConforming(to: ImagePaster.imageTypes) {
             let itemProviders = info.itemProviders(for: ImagePaster.imageTypes)
             if !itemProviders.isEmpty {
@@ -106,7 +103,7 @@ class ImagePaster {
         }
     }
     
-    static func loadFile(from info: DropInfo, completionHandler: @escaping NSItemProvider.CompletionHandler) -> Void {
+    func loadFile(from info: DropInfo, completionHandler: @escaping NSItemProvider.CompletionHandler) -> Void {
         if info.hasItemsConforming(to: ImagePaster.fileTypes) {
             let itemProviders = info.itemProviders(for: ImagePaster.fileTypes)
             if !itemProviders.isEmpty {
@@ -127,10 +124,10 @@ class ImagePaster {
         }
     }
     
-    static func resize(uiImage: UIImage, within size: CGSize) -> UIImage? {
+    func resize(uiImage: UIImage, within size: CGSize) -> UIImage? {
         let widthScale = size.width / uiImage.size.width
         let heightScale = size.height / uiImage.size.height
-        print("widthScale = \(widthScale), heightScale = \(heightScale)")
+        
         guard widthScale < 1.0 && heightScale < 1.0 else {
             return uiImage
         }
@@ -146,7 +143,7 @@ class ImagePaster {
         return newImage
     }
     
-    static func paste(completionHandler: @escaping (Data?, Error?) -> Void) ->Void {
+    func paste(completionHandler: @escaping (Data?, Error?) -> Void) ->Void {
         ImageType.allCases.forEach { imageType in
             UIPasteboard.general.itemProviders.first(where: {
                 $0.hasItemConformingToTypeIdentifier(imageType.identifier())
@@ -155,7 +152,7 @@ class ImagePaster {
         }
     }
     
-    static func hasImage() -> Bool {
+    func hasImage() -> Bool {
         var result = false
         for imageType in ImageType.allCases {
             if UIPasteboard.general.itemProviders.first(where: {$0.hasItemConformingToTypeIdentifier(imageType.identifier())}) != nil {
@@ -166,7 +163,7 @@ class ImagePaster {
         return result
     }
     
-    static func download(from info: DropInfo, completionHandler: @escaping NSItemProvider.CompletionHandler) -> Void {
+    func download(from info: DropInfo, completionHandler: @escaping NSItemProvider.CompletionHandler) -> Void {
         ImagePaster.logger.log("info.hasItemsConforming(to: ImagePaster.urlTypes)=\(info.hasItemsConforming(to: ImagePaster.urlTypes), privacy: .public)")
         if info.hasItemsConforming(to: ImagePaster.urlTypes) {
             let itemProviders: [NSItemProvider] = info.itemProviders(for: ImagePaster.urlTypes)

@@ -9,28 +9,26 @@ import SwiftUI
 import UniformTypeIdentifiers
 import OSLog
 
-class ImagePaster {
+class ImagePaster: ImagePasting {
+    static let shared = ImagePaster()
+    
     private static let logger = Logger()
     
     private static let imageTypes: [UTType] = [.png, .jpeg, .webP]
     private static let fileTypes: [UTType] = [.fileURL]
     private static let urlTypes: [UTType] = [.url]
     
-    static let maxDataSize = 1_000_000
-    static let maxResizeSize = CGSize(width: 128, height: 128)
+    private static let maxDataSize = 1_000_000
+    private static let maxResizeSize = CGSize(width: 128, height: 128)
     
-    static func getData(from info: DropInfo, completionHandler: @escaping (Data?, Error?) -> Void) ->Void {
-        if info.hasItemsConforming(to: ImagePaster.imageTypes) {
-        }
-        
-        
+    func getData(from info: DropInfo, completionHandler: @escaping (Data?, Error?) -> Void) ->Void {
         ImagePaster.logger.log("loadData")
-        ImagePaster.loadData(from: info) { data, error in
+        loadData(from: info) { data, error in
             var image: Data?
             
             if let imageData = data, let nsImage = NSImage(data: imageData) {
                 if imageData.count > ImagePaster.maxDataSize {
-                    if let resized = ImagePaster.resize(nsImage: nsImage, within: ImagePaster.maxResizeSize).tiffRepresentation,
+                    if let resized = self.resize(nsImage: nsImage, within: ImagePaster.maxResizeSize).tiffRepresentation,
                        let imageRep = NSBitmapImageRep(data: resized) {
                         image = imageRep.representation(using: NSBitmapImageRep.FileType.png, properties: [:])
                     } else {
@@ -46,7 +44,7 @@ class ImagePaster {
                 completionHandler(image, error)
             } else {
                 ImagePaster.logger.log("loadFile")
-                ImagePaster.loadFile(from: info) { item, error in
+                self.loadFile(from: info) { item, error in
                     var imageData: Data?
                     if let item = item, let url = URL(dataRepresentation: item as! Data, relativeTo: nil) {
                         imageData = try? Data(contentsOf: url)
@@ -59,7 +57,7 @@ class ImagePaster {
                         completionHandler(nil, BelongingsError.noImage)
                     } else {
                         ImagePaster.logger.log("download")
-                        ImagePaster.download(from: info) { data, error in
+                        self.download(from: info) { data, error in
                             var imageData: Data?
                             if let data = data, let _ = NSImage(data: data) {
                                 imageData = data
@@ -73,7 +71,7 @@ class ImagePaster {
         }
     }
     
-    static func loadData(from info: DropInfo, completionHandler: @escaping (Data?, Error?) -> Void) ->Void {
+    func loadData(from info: DropInfo, completionHandler: @escaping (Data?, Error?) -> Void) ->Void {
         if info.hasItemsConforming(to: ImagePaster.imageTypes) {
             let itemProviders = info.itemProviders(for: ImagePaster.imageTypes)
             if !itemProviders.isEmpty {
@@ -96,7 +94,7 @@ class ImagePaster {
         }
     }
     
-    static func loadFile(from info: DropInfo, completionHandler: @escaping NSItemProvider.CompletionHandler) -> Void {
+    func loadFile(from info: DropInfo, completionHandler: @escaping NSItemProvider.CompletionHandler) -> Void {
         if info.hasItemsConforming(to: ImagePaster.fileTypes) {
             let itemProviders = info.itemProviders(for: ImagePaster.fileTypes)
             if !itemProviders.isEmpty {
@@ -117,14 +115,14 @@ class ImagePaster {
         }
     }
     
-    static func download(from info: DropInfo, completionHandler: @escaping (Data?, Error?) -> Void) -> Void {
+    func download(from info: DropInfo, completionHandler: @escaping (Data?, Error?) -> Void) -> Void {
         ImagePaster.logger.log("info.hasItemsConforming(to: ImagePaster.urlTypes)=\(info.hasItemsConforming(to: ImagePaster.urlTypes), privacy: .public)")
         if info.hasItemsConforming(to: ImagePaster.urlTypes) {
             getData(from: .drag, forType: .URL, completionHandler: completionHandler)
         }
     }
     
-    static func resize(nsImage: NSImage, within size: CGSize) -> NSImage {
+    func resize(nsImage: NSImage, within size: CGSize) -> NSImage {
         let widthScale = size.width / nsImage.size.width
         let heightScale = size.height / nsImage.size.height
         ImagePaster.logger.log("widthScale = \(widthScale, privacy: .public), heightScale = \(heightScale, privacy: .public)")
@@ -145,13 +143,13 @@ class ImagePaster {
         return newImage
     }
     
-    static func paste(completionHandler: @escaping (Data?, Error?) -> Void) ->Void {
-        urlTypes
+    func paste(completionHandler: @escaping (Data?, Error?) -> Void) ->Void {
+        ImagePaster.urlTypes
             .map { NSPasteboard.PasteboardType($0.identifier) }
             .forEach { getData(from: .general, forType: $0, completionHandler: completionHandler) }
     }
     
-    private static func getData(from pasteboard: NSPasteboard.Name, forType dataType: NSPasteboard.PasteboardType, completionHandler: @escaping (Data?, Error?) -> Void) -> Void {
+    private func getData(from pasteboard: NSPasteboard.Name, forType dataType: NSPasteboard.PasteboardType, completionHandler: @escaping (Data?, Error?) -> Void) -> Void {
         let pasteboard = NSPasteboard(name: pasteboard)
         
         if let data = pasteboard.data(forType: dataType) {
@@ -172,9 +170,9 @@ class ImagePaster {
         }
     }
     
-    static func hasImage() -> Bool {
+    func hasImage() -> Bool {
         var result = false
-        for urlType in urlTypes {
+        for urlType in ImagePaster.urlTypes {
             if NSPasteboard.general.data(forType: NSPasteboard.PasteboardType(urlType.identifier)) != nil {
                 result = true
                 break

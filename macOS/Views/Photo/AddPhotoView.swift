@@ -46,7 +46,7 @@ struct AddPhotoView: View, DropDelegate {
     }
     
     func performDrop(info: DropInfo) -> Bool {
-        ImagePaster.getData(from: info) { data, error in
+        viewModel.getData(from: info) { data, error in
             guard let data = data else {
                 if let localizedDescription = error?.localizedDescription {
                     details = localizedDescription
@@ -106,7 +106,7 @@ struct AddPhotoView: View, DropDelegate {
         HStack {
             Spacer()
             
-            if ImagePaster.hasImage() {
+            if viewModel.hasImage() {
                 Spacer()
                 
                 Button {
@@ -119,7 +119,7 @@ struct AddPhotoView: View, DropDelegate {
     }
     
     private func pasteImage() -> Void {
-        ImagePaster.paste { data, error in
+        viewModel.paste { data, error in
             if let data = data {
                 selectedImage = data
             } else {

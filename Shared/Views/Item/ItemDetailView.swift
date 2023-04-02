@@ -133,12 +133,14 @@ struct ItemDetailView: View {
             .sheet(isPresented: $presentPhotoView, content: {
                 #if os(macOS)
                 EditPhotoView(originalImage: item.image, image: $imageData)
+                    .environmentObject(viewModel)
                     .frame(minWidth: 0.5 * geometry.size.width, minHeight: 0.5 * geometry.size.height)
                     .onChange(of: imageData) { _ in
                         isEdited = true
                     }
                 #else
                 EditPhotoView(originalImage: item.image, image: $imageData)
+                    .environmentObject(viewModel)
                     .onChange(of: imageData) { _ in
                         isEdited = true
                     }
