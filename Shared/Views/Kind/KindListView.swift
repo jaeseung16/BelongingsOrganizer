@@ -15,9 +15,9 @@ struct KindListView: View {
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
     
-    @State var kinds: [Kind]
+    @State var kinds: [KindDTO]
     
-    private var filteredKinds: [Kind] {
+    private var filteredKinds: [KindDTO] {
         kinds.filter { viewModel.checkIfStringToSearchContainedIn($0.name) }
     }
     
@@ -85,18 +85,34 @@ struct KindListView: View {
         }
     }
     
-    private func getItems(_ kind: Kind) -> [Item] {
-        guard let items = kind.items else {
-            return [Item]()
-        }
-        
-        return items.compactMap { $0 as? Item }
+    private func getItems(_ kind: KindDTO) -> [Item] {
+        return viewModel.items
+            .filter { item in
+                if let kindSet = item.kind {
+                    let matchedKind = kindSet.filter { element in
+                        if let kindEntity = element as? Kind, kindEntity.uuid == kind.id {
+                            return true
+                        } else {
+                            return false
+                        }
+                    }
+                    return !matchedKind.isEmpty
+                } else {
+                    return false
+                }
+            }
             .sorted { ($0.obtained ?? Date()) > ($1.obtained ?? Date()) }
     }
     
     private func deleteKinds(offsets: IndexSet) {
         withAnimation {
-            viewModel.delete(offsets.map { filteredKinds[$0] }) { _ in
+            viewModel.delete(offsets.compactMap {
+                if let id = filteredKinds[$0].id {
+                    return viewModel.get(entity: .Kind, id: id)
+                } else {
+                    return nil
+                }
+            }) { _ in
                 showAlertForDeletion.toggle()
             }
         }

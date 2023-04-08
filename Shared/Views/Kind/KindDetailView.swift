@@ -10,7 +10,7 @@ import SwiftUI
 struct KindDetailView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
     
-    @State var kind: Kind
+    @State var kind: KindDTO
     @State var name = ""
     var items: [Item]
     
@@ -49,7 +49,7 @@ struct KindDetailView: View {
         DetailHeaderView(isEdited: $isEdited) {
             reset()
         } update: {
-            viewModel.kindDTO = KindDTO(id: kind.uuid, name: name)
+            viewModel.kindDTO = KindDTO(id: kind.id, name: name)
             isEdited = false
         }
     }

@@ -11,7 +11,7 @@ struct ItemDetailView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
     
     @State var item: Item
-    @State private var kind = [Kind]()
+    @State private var kind = [KindDTO]()
     @State private var brand: BrandDTO?
     @State private var seller: SellerDTO?
     
@@ -193,7 +193,11 @@ struct ItemDetailView: View {
                         kind.removeFromItems(item)
                     }
                 }
-                kind.forEach { $0.addToItems(item) }
+                kind.forEach {
+                    if let id = $0.id, let kindEntity: Kind = viewModel.get(entity: .Kind, id: id) {
+                        kindEntity.addToItems(item)
+                    }
+                }
             }
             
             if let brand = brand {
@@ -365,8 +369,18 @@ struct ItemDetailView: View {
         return kinds?.first
     }
     
-    private var itemKinds: [Kind] {
-        item.kind?.filter { $0 is Kind }.map { $0 as! Kind } ?? [Kind]()
+    private var itemKinds: [KindDTO] {
+        let kinds = item.kind?
+            .filter { $0 is Kind }
+            .compactMap {
+                if let kind = $0 as? Kind {
+                    return KindDTO(id: kind.uuid, name: kind.name, created: kind.created, lastupd: kind.lastupd)
+                } else {
+                    return nil
+                }
+            }
+        return kinds ?? [KindDTO]()
+        
     }
     
     private var itemBrand: BrandDTO? {

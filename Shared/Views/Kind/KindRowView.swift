@@ -10,7 +10,7 @@ import SwiftUI
 struct KindRowView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
     
-    @State var kind: Kind {
+    @State var kind: KindDTO {
         didSet {
             refresh()
         }
@@ -37,7 +37,12 @@ struct KindRowView: View {
     }
     
     private func refresh() {
-        name = kind.name
-        itemCount = kind.items?.count ?? 0
+        if let id = kind.id, let kindEntity: Kind = viewModel.get(entity: .Kind, id: id) {
+            name = kind.name
+            itemCount = kindEntity.items?.count ?? 0
+        } else {
+            name = kind.name
+            itemCount = 0
+        }
     }
 }

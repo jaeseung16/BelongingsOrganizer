@@ -67,13 +67,13 @@ class BelongingsViewModel: NSObject, ObservableObject {
         fetch(NSFetchRequest<Item>(entityName: "Item"))
     }
     
-    var kinds: [Kind] {
+    var kinds: [KindDTO] {
         let sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
                                NSSortDescriptor(key: "created", ascending: false)]
         
         let fetchRequest = NSFetchRequest<Kind>(entityName: "Kind")
         fetchRequest.sortDescriptors = sortDescriptors
-        return fetch(fetchRequest)
+        return fetch(fetchRequest).map { KindDTO(id: $0.uuid, name: $0.name, created: $0.created, lastupd: $0.lastupd) }
     }
     
     var brands: [BrandDTO] {
@@ -376,7 +376,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
         addItemViewModel.imageData = imageData
     }
     
-    public func saveBelonging(name: String, kind: [Kind], brand: BrandDTO?, seller: SellerDTO?, note: String, obtained: Date, buyPrice: Double?, quantity: Int64?, buyCurrency: String) -> Void {
+    public func saveBelonging(name: String, kind: [KindDTO], brand: BrandDTO?, seller: SellerDTO?, note: String, obtained: Date, buyPrice: Double?, quantity: Int64?, buyCurrency: String) -> Void {
         let created = Date()
         
         let newItem = Item(context: addItemViewModel.viewContext)
@@ -391,6 +391,14 @@ class BelongingsViewModel: NSObject, ObservableObject {
         newItem.uuid = UUID()
         newItem.image = imageData
         
+        let kindEntityList = kind.compactMap {
+            var kindEntity: Kind?
+            if let kindId = $0.id {
+                kindEntity = get(entity: .Kind, id: kindId)
+            }
+            return kindEntity
+        }
+        
         var brandEntity: Brand?
         if let brandId = brand?.id {
             brandEntity = get(entity: .Brand, id: brandId)
@@ -401,7 +409,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
             sellerEntity = get(entity: .Seller, id: sellerId)
         }
        
-        addItemViewModel.save(item: newItem, kind: kind, brand: brandEntity, seller: sellerEntity) { result in
+        addItemViewModel.save(item: newItem, kind: kindEntityList, brand: brandEntity, seller: sellerEntity) { result in
             switch result {
             case .success(()):
                 DispatchQueue.main.async {

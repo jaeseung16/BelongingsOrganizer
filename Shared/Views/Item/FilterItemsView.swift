@@ -164,7 +164,7 @@ struct FilterItemsView: View {
                                 selectedKinds.insert(kind)
                             }
                         } label: {
-                            KindRowView(kind: kind)
+                            KindRowView(kind: KindDTO(id: kind.uuid, name: kind.name, created: kind.created, lastupd: kind.lastupd))
                         }
                     }
                 }

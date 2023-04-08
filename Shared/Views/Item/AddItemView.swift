@@ -27,7 +27,7 @@ struct AddItemView: View {
     @State private var presentCurrencyView = false
     @State private var presentPhotoView = false
     
-    @State private var kind = [Kind]()
+    @State private var kind = [KindDTO]()
     @State private var brand: BrandDTO?
     @State private var seller: SellerDTO?
     
