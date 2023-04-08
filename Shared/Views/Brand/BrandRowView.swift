@@ -10,7 +10,7 @@ import SwiftUI
 struct BrandRowView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
     
-    @State var brand: Brand {
+    @State var brand: BrandDTO {
         didSet {
             refresh()
         }
@@ -37,8 +37,13 @@ struct BrandRowView: View {
     }
     
     private func refresh() {
-        name = brand.name
-        itemCount = brand.items?.count ?? 0
+        if let id = brand.id, let brandEntity: Brand = viewModel.get(entity: .Brand, id: id) {
+            name = brand.name
+            itemCount = brandEntity.items?.count ?? 0
+        } else {
+            name = brand.name
+            itemCount = 0
+        }
     }
 }
 

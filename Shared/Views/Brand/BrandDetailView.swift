@@ -10,7 +10,7 @@ import SwiftUI
 struct BrandDetailView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
     
-    @State var brand: Brand
+    @State var brand: BrandDTO
     @State var name = ""
     @State var urlString = ""
     var items: [Item]
@@ -61,7 +61,7 @@ struct BrandDetailView: View {
         DetailHeaderView(isEdited: $isEdited) {
             reset()
         } update: {
-            viewModel.brandDTO = BrandDTO(id: brand.uuid, name: name, url: URL(string: urlString))
+            viewModel.brandDTO = BrandDTO(id: brand.id, name: name, url: URL(string: urlString))
             isEdited = false
         }
     }

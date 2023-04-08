@@ -13,7 +13,7 @@ struct ChooseBrandView: View {
 
     @State var presentAddBrand = false
     
-    @Binding var brand: Brand?
+    @Binding var brand: BrandDTO?
     
     @State private var showAlertForDeletion = false
     
@@ -98,7 +98,13 @@ struct ChooseBrandView: View {
     
     private func deleteBrands(offsets: IndexSet) {
         withAnimation {
-            viewModel.delete(offsets.map { viewModel.brands[$0] }) { error in
+            viewModel.delete(offsets.compactMap {
+                if let id = viewModel.brands[$0].id {
+                    return viewModel.get(entity: .Brand, id: id)
+                } else {
+                    return nil
+                }
+            }) { error in
                 let nsError = error as NSError
                 print("While deleting a category, occured an unresolved error \(nsError), \(nsError.userInfo)")
                 showAlertForDeletion.toggle()

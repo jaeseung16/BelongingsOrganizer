@@ -12,7 +12,7 @@ struct ItemDetailView: View {
     
     @State var item: Item
     @State private var kind = [Kind]()
-    @State private var brand: Brand?
+    @State private var brand: BrandDTO?
     @State private var seller: SellerDTO?
     
     @State private var isEditing = false
@@ -196,13 +196,16 @@ struct ItemDetailView: View {
                 kind.forEach { $0.addToItems(item) }
             }
             
-            if brand != nil {
+            if let brand = brand {
                 item.brand?.forEach {
                     if let brand = $0 as? Brand {
                         brand.removeFromItems(item)
                     }
                 }
-                brand?.addToItems(item)
+                
+                if let id = brand.id, let brandEntity: Brand = viewModel.get(entity: .Brand, id: id) {
+                    brandEntity.addToItems(item)
+                }
             }
             
             if let seller = seller {
@@ -366,8 +369,16 @@ struct ItemDetailView: View {
         item.kind?.filter { $0 is Kind }.map { $0 as! Kind } ?? [Kind]()
     }
     
-    private var itemBrand: Brand? {
-        let brands = item.brand?.filter { $0 is Brand }.map { $0 as! Brand }
+    private var itemBrand: BrandDTO? {
+        let brands = item.brand?
+            .filter { $0 is Brand }
+            .compactMap {
+                if let brand = $0 as? Brand {
+                    return BrandDTO(id: brand.uuid, name: brand.name, url: brand.url, created: brand.created, lastupd: brand.lastupd)
+                } else {
+                    return nil
+                }
+            }
         return brands?.first
     }
     

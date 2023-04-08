@@ -15,9 +15,9 @@ struct BrandListView: View {
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
     
-    @State var brands: [Brand]
+    @State var brands: [BrandDTO]
     
-    private var filteredBrands: [Brand] {
+    private var filteredBrands: [BrandDTO] {
         brands.filter { viewModel.checkIfStringToSearchContainedIn($0.name) }
     }
     
@@ -87,18 +87,34 @@ struct BrandListView: View {
         }
     }
     
-    private func getItems(_ brand: Brand) -> [Item] {
-        guard let items = brand.items else {
-            return [Item]()
-        }
-        
-        return items.compactMap { $0 as? Item }
+    private func getItems(_ brand: BrandDTO) -> [Item] {
+        return viewModel.items
+            .filter { item in
+                if let brandSet = item.brand {
+                    let matchedBrand = brandSet.filter { element in
+                        if let brandEntity = element as? Brand, brandEntity.uuid == brand.id {
+                            return true
+                        } else {
+                            return false
+                        }
+                    }
+                    return !matchedBrand.isEmpty
+                } else {
+                    return false
+                }
+            }
             .sorted { ($0.obtained ?? Date()) > ($1.obtained ?? Date()) }
     }
     
     private func deleteBrands(offsets: IndexSet) {
         withAnimation {
-            viewModel.delete(offsets.map { filteredBrands[$0] }) { _ in
+            viewModel.delete(offsets.compactMap {
+                if let id = filteredBrands[$0].id {
+                    return viewModel.get(entity: .Brand, id: id)
+                } else {
+                    return nil
+                }
+            }) { _ in
                 showAlertForDeletion.toggle()
             }
         }

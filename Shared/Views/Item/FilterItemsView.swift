@@ -178,7 +178,7 @@ struct FilterItemsView: View {
                                 selectedBrands.insert(brand)
                             }
                         } label: {
-                            BrandRowView(brand: brand)
+                            BrandRowView(brand: BrandDTO(id: brand.uuid, name: brand.name, url: brand.url, created: brand.created, lastupd: brand.lastupd))
                         }
                     }
                 }

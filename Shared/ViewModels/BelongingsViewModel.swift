@@ -76,13 +76,13 @@ class BelongingsViewModel: NSObject, ObservableObject {
         return fetch(fetchRequest)
     }
     
-    var brands: [Brand] {
+    var brands: [BrandDTO] {
         let sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
                                NSSortDescriptor(key: "created", ascending: false)]
         
         let fetchRequest = NSFetchRequest<Brand>(entityName: "Brand")
         fetchRequest.sortDescriptors = sortDescriptors
-        return fetch(fetchRequest)
+        return fetch(fetchRequest).map { BrandDTO(id: $0.uuid, name: $0.name, url: $0.url, created: $0.created, lastupd: $0.lastupd) }
     }
     
     var sellers: [SellerDTO] {
@@ -376,7 +376,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
         addItemViewModel.imageData = imageData
     }
     
-    public func saveBelonging(name: String, kind: [Kind], brand: Brand?, seller: SellerDTO?, note: String, obtained: Date, buyPrice: Double?, quantity: Int64?, buyCurrency: String) -> Void {
+    public func saveBelonging(name: String, kind: [Kind], brand: BrandDTO?, seller: SellerDTO?, note: String, obtained: Date, buyPrice: Double?, quantity: Int64?, buyCurrency: String) -> Void {
         let created = Date()
         
         let newItem = Item(context: addItemViewModel.viewContext)
@@ -391,12 +391,17 @@ class BelongingsViewModel: NSObject, ObservableObject {
         newItem.uuid = UUID()
         newItem.image = imageData
         
+        var brandEntity: Brand?
+        if let brandId = brand?.id {
+            brandEntity = get(entity: .Brand, id: brandId)
+        }
+        
         var sellerEntity: Seller?
         if let sellerId = seller?.id {
             sellerEntity = get(entity: .Seller, id: sellerId)
         }
        
-        addItemViewModel.save(item: newItem, kind: kind, brand: brand, seller: sellerEntity) { result in
+        addItemViewModel.save(item: newItem, kind: kind, brand: brandEntity, seller: sellerEntity) { result in
             switch result {
             case .success(()):
                 DispatchQueue.main.async {
