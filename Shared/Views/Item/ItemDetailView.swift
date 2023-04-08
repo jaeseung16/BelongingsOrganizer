@@ -13,7 +13,7 @@ struct ItemDetailView: View {
     @State var item: Item
     @State private var kind = [Kind]()
     @State private var brand: Brand?
-    @State private var seller: Seller?
+    @State private var seller: SellerDTO?
     
     @State private var isEditing = false
     @State private var isEdited = false
@@ -205,13 +205,16 @@ struct ItemDetailView: View {
                 brand?.addToItems(item)
             }
             
-            if seller != nil {
+            if let seller = seller {
                 item.seller?.forEach {
                     if let seller = $0 as? Seller {
                         seller.removeFromItems(item)
                     }
                 }
-                seller?.addToItems(item)
+                
+                if let id = seller.id, let sellerEntity: Seller = viewModel.get(entity: .Seller, id: id) {
+                    sellerEntity.addToItems(item)
+                }
             }
             
             viewModel.itemDTO = ItemDTO(id: item.uuid,
@@ -368,8 +371,16 @@ struct ItemDetailView: View {
         return brands?.first
     }
     
-    private var itemSeller: Seller? {
-        let sellers = item.seller?.filter { $0 is Seller }.map { $0 as! Seller }
+    private var itemSeller: SellerDTO? {
+        let sellers = item.seller?
+            .filter { $0 is Seller }
+            .compactMap {
+                if let seller = $0 as? Seller {
+                    return SellerDTO(id: seller.uuid, name: seller.name, url: seller.url, created: seller.created, lastupd: seller.lastupd)
+                } else {
+                    return nil
+                }
+            }
         return sellers?.first
     }
     

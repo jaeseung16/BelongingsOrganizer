@@ -13,7 +13,7 @@ struct ChooseSellerView: View {
     
     @State var presentAddSeller = false
     
-    @Binding var seller: Seller?
+    @Binding var seller: SellerDTO?
     
     @State private var showAlertForDeletion = false
     
@@ -97,7 +97,13 @@ struct ChooseSellerView: View {
     
     private func deleteSellers(offsets: IndexSet) {
         withAnimation {
-            viewModel.delete(offsets.map { viewModel.sellers[$0] }) { error in
+            viewModel.delete(offsets.compactMap {
+                if let id = viewModel.sellers[$0].id {
+                    return viewModel.get(entity: .Seller, id: id)
+                } else {
+                    return nil
+                }
+            }) { error in
                 let nsError = error as NSError
                 print("While deleting a category, occured an unresolved error \(nsError), \(nsError.userInfo)")
                 showAlertForDeletion.toggle()

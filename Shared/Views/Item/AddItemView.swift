@@ -29,7 +29,7 @@ struct AddItemView: View {
     
     @State private var kind = [Kind]()
     @State private var brand: Brand?
-    @State private var seller: Seller?
+    @State private var seller: SellerDTO?
     
     @FocusState private var quantityIsFocused: Bool
     @FocusState private var buyPriceIsFocused: Bool

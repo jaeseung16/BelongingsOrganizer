@@ -15,14 +15,14 @@ struct SellerListView: View {
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
     
-    @State var sellers: [Seller] {
+    @State var sellers: [SellerDTO] {
         didSet {
             filteredSellers =  sellers.filter { viewModel.checkIfStringToSearchContainedIn($0.name) }
         }
     }
     
-    @State var filteredSellers = [Seller]()
-    @State var selectedSeller: Seller?
+    @State var filteredSellers = [SellerDTO]()
+    @State var selectedSeller: SellerDTO?
     
     var body: some View {
         NavigationView {
@@ -93,32 +93,34 @@ struct SellerListView: View {
         }
     }
     
-    private func getItems(_ seller: Seller) -> [Item] {
-        guard let items = seller.items else {
-            return [Item]()
-        }
-        
-        return items.compactMap { $0 as? Item }
-            .sorted { ($0.obtained ?? Date()) > ($1.obtained ?? Date()) }
-    }
-    
-    private func sellerRowView(_ seller: Seller, name: String) -> some View {
-        HStack {
-            Text(name)
-            
-            Spacer()
-            
-            if let items = seller.items {
-                Text("\(items.count) items")
-                    .font(.callout)
-                    .foregroundColor(.secondary)
+    private func getItems(_ seller: SellerDTO) -> [Item] {
+        return viewModel.items
+            .filter { item in
+                if let sellerSet = item.seller {
+                    let matchedSeller = sellerSet.filter { element in
+                        if let sellerEntity = element as? Seller, sellerEntity.uuid == seller.id {
+                            return true
+                        } else {
+                            return false
+                        }
+                    }
+                    return !matchedSeller.isEmpty
+                } else {
+                    return false
+                }
             }
-        }
+            .sorted { ($0.obtained ?? Date()) > ($1.obtained ?? Date()) }
     }
     
     private func deleteSellers(offsets: IndexSet) {
         withAnimation {
-            viewModel.delete(offsets.map { filteredSellers[$0] }) { _ in
+            viewModel.delete(offsets.compactMap {
+                if let id = filteredSellers[$0].id {
+                    return viewModel.get(entity: .Seller, id: id)
+                } else {
+                    return nil
+                }
+            }) { _ in
                 showAlertForDeletion.toggle()
             }
         }
