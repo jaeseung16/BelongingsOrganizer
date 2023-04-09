@@ -69,6 +69,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     
     private func fetchEntities() -> Void {
         fetchKinds()
+        fetchBrands()
         fetchSellers()
     }
     
@@ -78,7 +79,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     
     @Published var kinds = [KindDTO]()
     
-    func fetchKinds() {
+    func fetchKinds() -> Void {
         let sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
                                NSSortDescriptor(key: "created", ascending: false)]
         
@@ -87,18 +88,20 @@ class BelongingsViewModel: NSObject, ObservableObject {
         kinds = fetch(fetchRequest).map { KindDTO(id: $0.uuid, name: $0.name, created: $0.created, lastupd: $0.lastupd) }
     }
     
-    var brands: [BrandDTO] {
+    @Published var brands = [BrandDTO]()
+    
+    func fetchBrands() -> Void {
         let sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
                                NSSortDescriptor(key: "created", ascending: false)]
         
         let fetchRequest = NSFetchRequest<Brand>(entityName: "Brand")
         fetchRequest.sortDescriptors = sortDescriptors
-        return fetch(fetchRequest).map { BrandDTO(id: $0.uuid, name: $0.name, url: $0.url, created: $0.created, lastupd: $0.lastupd) }
+        brands = fetch(fetchRequest).map { BrandDTO(id: $0.uuid, name: $0.name, url: $0.url, created: $0.created, lastupd: $0.lastupd) }
     }
     
     @Published var sellers = [SellerDTO]()
     
-    func fetchSellers() {
+    func fetchSellers() -> Void {
         let sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
                                NSSortDescriptor(key: "created", ascending: false)]
         
@@ -131,15 +134,15 @@ class BelongingsViewModel: NSObject, ObservableObject {
                 existingEntity.image = itemDTO.image
                 existingEntity.lastupd = Date()
                 
-                saveContext() { [self] error in
-                    let nsError = error as NSError
-                    self.logger.error("While saving \(self.itemDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
-                    self.message = "Cannot update name = \(String(describing: itemDTO.name))"
+                saveContext() { error in
+                    guard let error = error else {
+                        return
+                    }
+                    self.logger.error("While saving \(self.itemDTO) occured an unresolved error \(error.localizedDescription, privacy: .public)")
+                    self.message = "Cannot update name = \(String(describing: self.itemDTO.name))"
                     self.showAlert.toggle()
                 }
             }
-            
-            self.fetchKinds()
         }
     }
     
@@ -150,6 +153,9 @@ class BelongingsViewModel: NSObject, ObservableObject {
                 existingEntity.lastupd = Date()
                 
                 saveContext() { error in
+                    guard let error = error else {
+                        return
+                    }
                     self.logger.error("While saving \(self.kindDTO) occured an unresolved error \(error.localizedDescription, privacy: .public)")
                     self.message = "Cannot update name = \(String(describing: self.kindDTO.name))"
                     DispatchQueue.main.async {
@@ -168,6 +174,9 @@ class BelongingsViewModel: NSObject, ObservableObject {
                 existingEntity.lastupd = Date()
                 
                 saveContext() { error in
+                    guard let error = error else {
+                        return
+                    }
                     self.logger.error("While saving \(self.brandDTO) occured an unresolved error \(error.localizedDescription, privacy: .public)")
                     self.message = "Cannot update name = \(String(describing: self.brandDTO.name)) and url = \(String(describing: self.brandDTO.url))"
                     DispatchQueue.main.async {
@@ -186,6 +195,9 @@ class BelongingsViewModel: NSObject, ObservableObject {
                 existingEntity.lastupd = Date()
                 
                 saveContext() { error in
+                    guard let error = error else {
+                        return
+                    }
                     self.logger.error("While saving \(self.sellerDTO) occured an unresolved error \(error.localizedDescription, privacy: .public)")
                     self.message = "Cannot update name = \(String(describing: self.sellerDTO.name)) and url = \(String(describing: self.sellerDTO.url))"
                     DispatchQueue.main.async {
@@ -193,8 +205,6 @@ class BelongingsViewModel: NSObject, ObservableObject {
                     }
                 }
             }
-            
-            self.fetchSellers()
         }
     }
     
@@ -215,19 +225,19 @@ class BelongingsViewModel: NSObject, ObservableObject {
         return fetchedLinks.isEmpty ? nil : fetchedLinks[0]
     }
     
-    func delete(_ objects: [NSManagedObject], completionHandler: @escaping (Error) -> Void) -> Void {
+    func delete(_ objects: [NSManagedObject], completionHandler: @escaping (Error?) -> Void) -> Void {
         objects.forEach(persistenceContainer.viewContext.delete)
         saveContext(completionHandler: completionHandler)
     }
     
-    private func saveContext(completionHandler: @escaping (Error) -> Void) -> Void {
+    private func saveContext(completionHandler: @escaping (Error?) -> Void) -> Void {
         persistenceContainer.viewContext.transactionAuthor = "App"
         persistence.save { result in
             switch result {
             case .success(_):
                 DispatchQueue.main.async {
                     self.updated.toggle()
-                    self.fetchEntities()
+                    completionHandler(nil)
                 }
             case .failure(let error):
                 self.logger.log("Error while saving data: \(error.localizedDescription, privacy: .public)")
@@ -487,7 +497,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
             case .success(()):
                 DispatchQueue.main.async {
                     self.updated.toggle()
-                    self.fetchKinds()
+                    self.fetchBrands()
                 }
             case .failure(let error):
                 self.logger.error("While saving a new brand, occured an unresolved error \(error, privacy: .public)")

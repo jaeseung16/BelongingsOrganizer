@@ -38,7 +38,7 @@ struct BrandRowView: View {
     
     private func refresh() {
         if let id = brand.id, let brandEntity: Brand = viewModel.get(entity: .Brand, id: id) {
-            name = brand.name
+            name = brandEntity.name
             itemCount = brandEntity.items?.count ?? 0
         } else {
             name = brand.name

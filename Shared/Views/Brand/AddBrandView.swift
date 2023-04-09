@@ -77,8 +77,3 @@ struct AddBrandView: View {
     }
 }
 
-struct AddBrandView_Previews: PreviewProvider {
-    static var previews: some View {
-        AddBrandView()
-    }
-}

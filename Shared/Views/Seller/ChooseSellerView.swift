@@ -104,9 +104,11 @@ struct ChooseSellerView: View {
                     return nil
                 }
             }) { error in
-                let nsError = error as NSError
-                print("While deleting a category, occured an unresolved error \(nsError), \(nsError.userInfo)")
-                showAlertForDeletion.toggle()
+                if let error = error {
+                    showAlertForDeletion.toggle()
+                } else {
+                    viewModel.fetchSellers()
+                }
             }
         }
     }

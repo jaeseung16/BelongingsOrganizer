@@ -15,11 +15,14 @@ struct BrandListView: View {
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
     
-    @State var brands: [BrandDTO]
-    
-    private var filteredBrands: [BrandDTO] {
-        brands.filter { viewModel.checkIfStringToSearchContainedIn($0.name) }
+    @State var brands: [BrandDTO] {
+        didSet {
+            filteredBrands = brands.filter { viewModel.checkIfStringToSearchContainedIn($0.name) }
+        }
     }
+    
+    @State var filteredBrands = [BrandDTO]()
+    
     
     var body: some View {
         NavigationView {
@@ -40,6 +43,9 @@ struct BrandListView: View {
         }
         .onReceive(viewModel.$updated) { _ in
             brands = viewModel.brands
+        }
+        .onReceive(viewModel.$stringToSearch) { _ in
+            filteredBrands = brands.filter { viewModel.checkIfStringToSearchContainedIn($0.name) }
         }
         .onChange(of: viewModel.showAlert) { _ in
             showAlert = viewModel.showAlert
@@ -85,6 +91,7 @@ struct BrandListView: View {
             }
             .onDelete(perform: deleteBrands)
         }
+        .id(UUID())
     }
     
     private func getItems(_ brand: BrandDTO) -> [Item] {
@@ -114,8 +121,12 @@ struct BrandListView: View {
                 } else {
                     return nil
                 }
-            }) { _ in
-                showAlertForDeletion.toggle()
+            }) { error in
+                if error != nil {
+                    showAlertForDeletion.toggle()
+                } else {
+                    viewModel.fetchBrands()
+                }
             }
         }
     }

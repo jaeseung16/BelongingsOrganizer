@@ -122,8 +122,12 @@ struct SellerListView: View {
                 } else {
                     return nil
                 }
-            }) { _ in
-                showAlertForDeletion.toggle()
+            }) { error in
+                if error != nil {
+                    showAlertForDeletion.toggle()
+                } else {
+                    viewModel.fetchSellers()
+                }
             }
         }
     }
