@@ -41,7 +41,7 @@ struct BrandListView: View {
                 .navigationTitle("Brands")
             }
         }
-        .onReceive(viewModel.$updated) { _ in
+        .onChange(of: viewModel.brands) { _ in
             brands = viewModel.brands
         }
         .onReceive(viewModel.$stringToSearch) { _ in

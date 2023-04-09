@@ -41,7 +41,7 @@ struct KindListView: View {
                 .navigationTitle("Categories")
             }
         }
-        .onReceive(viewModel.$updated) { _ in
+        .onChange(of: viewModel.kinds) { _ in
             kinds = viewModel.kinds
         }
         .onReceive(viewModel.$stringToSearch) { _ in
