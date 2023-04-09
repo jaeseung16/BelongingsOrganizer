@@ -15,11 +15,13 @@ struct KindListView: View {
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
     
-    @State var kinds: [KindDTO]
-    
-    private var filteredKinds: [KindDTO] {
-        kinds.filter { viewModel.checkIfStringToSearchContainedIn($0.name) }
+    @State var kinds: [KindDTO] {
+        didSet {
+            filteredKinds = kinds.filter { viewModel.checkIfStringToSearchContainedIn($0.name) }
+        }
     }
+    
+    @State var filteredKinds = [KindDTO]()
     
     var body: some View {
         NavigationView {
@@ -41,6 +43,9 @@ struct KindListView: View {
         }
         .onReceive(viewModel.$updated) { _ in
             kinds = viewModel.kinds
+        }
+        .onReceive(viewModel.$stringToSearch) { _ in
+            filteredKinds = kinds.filter { viewModel.checkIfStringToSearchContainedIn($0.name) }
         }
         .onChange(of: viewModel.showAlert) { _ in
             showAlert = viewModel.showAlert
@@ -83,6 +88,7 @@ struct KindListView: View {
             }
             .onDelete(perform: deleteKinds)
         }
+        .id(UUID())
     }
     
     private func getItems(_ kind: KindDTO) -> [Item] {

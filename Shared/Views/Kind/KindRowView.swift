@@ -38,7 +38,7 @@ struct KindRowView: View {
     
     private func refresh() {
         if let id = kind.id, let kindEntity: Kind = viewModel.get(entity: .Kind, id: id) {
-            name = kind.name
+            name = kindEntity.name
             itemCount = kindEntity.items?.count ?? 0
         } else {
             name = kind.name

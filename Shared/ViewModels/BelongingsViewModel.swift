@@ -68,6 +68,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     }
     
     private func fetchEntities() -> Void {
+        fetchKinds()
         fetchSellers()
     }
     
@@ -75,13 +76,15 @@ class BelongingsViewModel: NSObject, ObservableObject {
         fetch(NSFetchRequest<Item>(entityName: "Item"))
     }
     
-    var kinds: [KindDTO] {
+    @Published var kinds = [KindDTO]()
+    
+    func fetchKinds() {
         let sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
                                NSSortDescriptor(key: "created", ascending: false)]
         
         let fetchRequest = NSFetchRequest<Kind>(entityName: "Kind")
         fetchRequest.sortDescriptors = sortDescriptors
-        return fetch(fetchRequest).map { KindDTO(id: $0.uuid, name: $0.name, created: $0.created, lastupd: $0.lastupd) }
+        kinds = fetch(fetchRequest).map { KindDTO(id: $0.uuid, name: $0.name, created: $0.created, lastupd: $0.lastupd) }
     }
     
     var brands: [BrandDTO] {
@@ -135,6 +138,8 @@ class BelongingsViewModel: NSObject, ObservableObject {
                     self.showAlert.toggle()
                 }
             }
+            
+            self.fetchKinds()
         }
     }
     
@@ -455,6 +460,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
             case .success(()):
                 DispatchQueue.main.async {
                     self.updated.toggle()
+                    self.fetchKinds()
                 }
             case .failure(let error):
                 self.logger.error("While saving a new category, occured an unresolved error \(error, privacy: .public)")
@@ -481,6 +487,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
             case .success(()):
                 DispatchQueue.main.async {
                     self.updated.toggle()
+                    self.fetchKinds()
                 }
             case .failure(let error):
                 self.logger.error("While saving a new brand, occured an unresolved error \(error, privacy: .public)")
