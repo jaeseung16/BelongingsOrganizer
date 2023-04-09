@@ -135,10 +135,11 @@ class BelongingsViewModel: NSObject, ObservableObject {
                 existingEntity.lastupd = Date()
                 
                 saveContext() { error in
-                    let nsError = error as NSError
-                    self.logger.error("While saving \(self.kindDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
+                    self.logger.error("While saving \(self.kindDTO) occured an unresolved error \(error.localizedDescription, privacy: .public)")
                     self.message = "Cannot update name = \(String(describing: self.kindDTO.name))"
-                    self.showAlert.toggle()
+                    DispatchQueue.main.async {
+                        self.showAlert.toggle()
+                    }
                 }
             }
         }
@@ -152,10 +153,11 @@ class BelongingsViewModel: NSObject, ObservableObject {
                 existingEntity.lastupd = Date()
                 
                 saveContext() { error in
-                    let nsError = error as NSError
-                    self.logger.error("While saving \(self.brandDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
+                    self.logger.error("While saving \(self.brandDTO) occured an unresolved error \(error.localizedDescription, privacy: .public)")
                     self.message = "Cannot update name = \(String(describing: self.brandDTO.name)) and url = \(String(describing: self.brandDTO.url))"
-                    self.showAlert.toggle()
+                    DispatchQueue.main.async {
+                        self.showAlert.toggle()
+                    }
                 }
             }
         }
@@ -169,10 +171,11 @@ class BelongingsViewModel: NSObject, ObservableObject {
                 existingEntity.lastupd = Date()
                 
                 saveContext() { error in
-                    let nsError = error as NSError
-                    self.logger.error("While saving \(self.sellerDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
+                    self.logger.error("While saving \(self.sellerDTO) occured an unresolved error \(error.localizedDescription, privacy: .public)")
                     self.message = "Cannot update name = \(String(describing: self.sellerDTO.name)) and url = \(String(describing: self.sellerDTO.url))"
-                    self.showAlert.toggle()
+                    DispatchQueue.main.async {
+                        self.showAlert.toggle()
+                    }
                 }
             }
         }
