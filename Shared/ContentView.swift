@@ -14,30 +14,35 @@ struct ContentView: View {
     var body: some View {
         TabView {
             ItemListView(items: viewModel.items)
+                .environmentObject(viewModel)
                 .tabItem {
                     Image(systemName: "gift.fill")
                     Text("Items")
                 }
             
             KindListView(kinds: viewModel.kinds)
+                .environmentObject(viewModel)
                 .tabItem {
                     Image(systemName: "list.dash")
                     Text("Categories")
                 }
             
             BrandListView(brands: viewModel.brands)
+                .environmentObject(viewModel)
                 .tabItem {
                     Image(systemName: "r.circle")
                     Text("Brands")
                 }
             
             SellerListView(sellers: viewModel.sellers)
+                .environmentObject(viewModel)
                 .tabItem {
                     Image(systemName: "shippingbox.fill")
                     Text("Sellers")
                 }
             
             StatsView()
+                .environmentObject(viewModel)
                 .tabItem {
                     Image(systemName: "chart.xyaxis.line")
                     Text("Stats")

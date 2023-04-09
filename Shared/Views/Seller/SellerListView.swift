@@ -17,7 +17,8 @@ struct SellerListView: View {
     
     @State var sellers: [SellerDTO] {
         didSet {
-            filteredSellers =  sellers.filter { viewModel.checkIfStringToSearchContainedIn($0.name) }
+            filteredSellers = sellers.filter { viewModel.checkIfStringToSearchContainedIn($0.name) }
+            print("filtered sellers=\(filteredSellers)")
         }
     }
     
@@ -41,14 +42,14 @@ struct SellerListView: View {
                 .navigationTitle("Seller")
             }
         }
-        .onReceive(viewModel.$updated) { _ in
+        .onChange(of: viewModel.sellers) { _ in
             sellers = viewModel.sellers
+        }
+        .onReceive(viewModel.$stringToSearch) { _ in
+            filteredSellers = sellers.filter { viewModel.checkIfStringToSearchContainedIn($0.name) }
         }
         .onChange(of: viewModel.showAlert) { _ in
             showAlert = viewModel.showAlert
-        }
-        .onChange(of: viewModel.stringToSearch) { _ in
-            filteredSellers = sellers.filter { viewModel.checkIfStringToSearchContainedIn($0.name) }
         }
         .alert("Unable to Save Data", isPresented: $showAlert) {
             Button("Dismiss") {
@@ -91,6 +92,7 @@ struct SellerListView: View {
             }
             .onDelete(perform: deleteSellers)
         }
+        .id(UUID())
     }
     
     private func getItems(_ seller: SellerDTO) -> [Item] {

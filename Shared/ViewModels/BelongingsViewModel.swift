@@ -39,7 +39,9 @@ class BelongingsViewModel: NSObject, ObservableObject {
     
     @Published var changedPeristentContext = NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave)
     @Published var showAlert = false
+    
     @Published var stringToSearch = ""
+    
     @Published var updated = false
     
     var message = ""
@@ -61,6 +63,12 @@ class BelongingsViewModel: NSObject, ObservableObject {
         SDImageCodersManager.shared.addCoder(webPCoder)
         
         self.persistence.container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        
+        fetchEntities()
+    }
+    
+    private func fetchEntities() -> Void {
+        fetchSellers()
     }
     
     var items: [Item] {
@@ -85,13 +93,15 @@ class BelongingsViewModel: NSObject, ObservableObject {
         return fetch(fetchRequest).map { BrandDTO(id: $0.uuid, name: $0.name, url: $0.url, created: $0.created, lastupd: $0.lastupd) }
     }
     
-    var sellers: [SellerDTO] {
+    @Published var sellers = [SellerDTO]()
+    
+    func fetchSellers() {
         let sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
                                NSSortDescriptor(key: "created", ascending: false)]
         
         let fetchRequest = NSFetchRequest<Seller>(entityName: "Seller")
         fetchRequest.sortDescriptors = sortDescriptors
-        return fetch(fetchRequest).map { SellerDTO(id: $0.uuid, name: $0.name, url: $0.url, created: $0.created, lastupd: $0.lastupd) }
+        sellers = fetch(fetchRequest).map { SellerDTO(id: $0.uuid, name: $0.name, url: $0.url, created: $0.created, lastupd: $0.lastupd) }
     }
     
     private func fetch<Element>(_ fetchRequest: NSFetchRequest<Element>) -> [Element] {
@@ -178,6 +188,8 @@ class BelongingsViewModel: NSObject, ObservableObject {
                     }
                 }
             }
+            
+            self.fetchSellers()
         }
     }
     
@@ -210,6 +222,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
             case .success(_):
                 DispatchQueue.main.async {
                     self.updated.toggle()
+                    self.fetchEntities()
                 }
             case .failure(let error):
                 self.logger.log("Error while saving data: \(error.localizedDescription, privacy: .public)")
@@ -494,6 +507,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
             case .success(()):
                 DispatchQueue.main.async {
                     self.updated.toggle()
+                    self.fetchSellers()
                 }
             case .failure(let error):
                 self.logger.error("While saving a new seller, occured an unresolved error \(error, privacy: .public)")

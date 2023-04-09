@@ -184,7 +184,7 @@ struct FilterItemsView: View {
                 }
             case .seller:
                 ForEach(sellers, id: \.id) { seller in
-                    if seller.name != nil {
+                    if let sellerName = seller.name {
                         Button {
                             if selectedSellers.contains(seller) {
                                 selectedSellers.remove(seller)
@@ -192,7 +192,7 @@ struct FilterItemsView: View {
                                 selectedSellers.insert(seller)
                             }
                         } label: {
-                            SellerRowView(seller: SellerDTO(id: seller.uuid, name: seller.name, url: seller.url, created: seller.created, lastupd: seller.lastupd))
+                            SellerRowView(seller: SellerDTO(id: seller.uuid, name: sellerName, url: seller.url, created: seller.created, lastupd: seller.lastupd))
                         }
                     }
                 }
