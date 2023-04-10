@@ -96,7 +96,7 @@ struct KindListView: View {
             .filter { item in
                 if let kindSet = item.kinds {
                     let matchedKind = kindSet.filter { element in
-                        if let kindEntity = element as? Kind, kindEntity.uuid == kind.id {
+                        if element.id == kind.id {
                             return true
                         } else {
                             return false

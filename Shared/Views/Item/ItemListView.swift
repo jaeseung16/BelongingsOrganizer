@@ -24,9 +24,15 @@ struct ItemListView: View {
     @State private var sortType = SortType.lastupd
     @State private var sortDirection = SortDirection.descending
     
-    @State var items: [ItemDTO]
+    @State var items: [ItemDTO] {
+        didSet {
+            filteredItems = filter(items)
+        }
+    }
     
-    var filteredItems: [ItemDTO] {
+    @State var filteredItems = [ItemDTO]()
+    
+    private func filter(_ items: [ItemDTO]) -> [ItemDTO] {
         items.filter {
             var filter = true
             
@@ -101,11 +107,14 @@ struct ItemListView: View {
                 .frame(minWidth: 350, minHeight: 100)
                 .padding()
         }
-        .onReceive(viewModel.$updated) { _ in
+        .onChange(of: viewModel.items) { _ in
             items = viewModel.items
         }
         .onChange(of: viewModel.showAlert) { _ in
             showAlert = viewModel.showAlert
+        }
+        .onReceive(viewModel.$stringToSearch) { _ in
+            filteredItems = filter(items)
         }
         .alert("Unable to Save Data", isPresented: $showAlert) {
             Button("Dismiss") {

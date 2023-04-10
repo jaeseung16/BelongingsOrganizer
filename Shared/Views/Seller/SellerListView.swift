@@ -100,7 +100,7 @@ struct SellerListView: View {
             .filter { item in
                 if let sellerSet = item.sellers {
                     let matchedSeller = sellerSet.filter { element in
-                        if let sellerEntity = element as? Seller, sellerEntity.uuid == seller.id {
+                        if element.id == seller.id {
                             return true
                         } else {
                             return false

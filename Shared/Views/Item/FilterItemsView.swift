@@ -183,7 +183,6 @@ struct FilterItemsView: View {
                 }
             }
         }
-        .id(UUID())
     }
     
     func header() -> some View {

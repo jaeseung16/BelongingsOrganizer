@@ -104,7 +104,7 @@ struct ChooseSellerView: View {
                     return nil
                 }
             }) { error in
-                if let error = error {
+                if error != nil {
                     showAlertForDeletion.toggle()
                 } else {
                     viewModel.fetchSellers()
