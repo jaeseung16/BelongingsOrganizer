@@ -85,6 +85,7 @@ struct BrandListView: View {
             }
             .onDelete(perform: deleteBrands)
         }
+        .id(UUID())
     }
     
     private func getItems(_ brand: Brand) -> [Item] {

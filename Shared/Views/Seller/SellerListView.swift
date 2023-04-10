@@ -85,12 +85,13 @@ struct SellerListView: View {
                                                                  name: sellerName,
                                                                  urlString: seller.url?.absoluteString ?? "",
                                                                  items: getItems(seller))) {
-                        SellerRowView(seller: seller)
+                        SellerRowView(name: sellerName, itemCount: getItems(seller).count)
                     }
                 }
             }
             .onDelete(perform: deleteSellers)
         }
+        .id(UUID())
     }
     
     private func getItems(_ seller: Seller) -> [Item] {
