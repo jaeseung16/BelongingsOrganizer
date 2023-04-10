@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct BrandDTO: Identifiable, CustomStringConvertible, Equatable {
+struct BrandDTO: Identifiable, CustomStringConvertible, Equatable, Hashable {
     var id: UUID?
     var name: String?
     var url: URL?

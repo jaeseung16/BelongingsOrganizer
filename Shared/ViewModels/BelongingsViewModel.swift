@@ -68,13 +68,59 @@ class BelongingsViewModel: NSObject, ObservableObject {
     }
     
     private func fetchEntities() -> Void {
+        fetchItems()
         fetchKinds()
         fetchBrands()
         fetchSellers()
+        logger.log("items.count=\(self.items.count)")
+        logger.log("kinds.count=\(self.kinds.count)")
+        logger.log("brands.count=\(self.brands.count)")
+        logger.log("sellers.count=\(self.sellers.count)")
     }
     
-    var items: [Item] {
-        fetch(NSFetchRequest<Item>(entityName: "Item"))
+    @Published var items = [ItemDTO]()
+    
+    func fetchItems() -> Void {
+        items = fetch(NSFetchRequest<Item>(entityName: "Item"))
+            .map {
+                var kinds: Set<KindDTO>?
+                if let kindSet = $0.kind as? Set<Kind> {
+                    kinds = Set(kindSet.map {
+                        KindDTO(id: $0.uuid, name: $0.name, created: $0.created, lastupd: $0.lastupd)
+                    })
+                }
+                
+                var brands: Set<BrandDTO>?
+                if let brandSet = $0.brand as? Set<Brand> {
+                    brands = Set(brandSet.map {
+                        BrandDTO(id: $0.uuid, name: $0.name, url: $0.url, created: $0.created, lastupd: $0.lastupd)
+                    })
+                }
+                
+                var sellers: Set<SellerDTO>?
+                if let sellerSet = $0.seller as? Set<Seller> {
+                    sellers = Set(sellerSet.map {
+                        SellerDTO(id: $0.uuid, name: $0.name, url: $0.url, created: $0.created, lastupd: $0.lastupd)
+                    })
+                }
+                
+                return ItemDTO(id: $0.uuid,
+                               name: $0.name,
+                               note: $0.note,
+                               quantity: $0.quantity,
+                               buyPrice: $0.buyPrice,
+                               sellPrice: $0.sellPrice,
+                               buyCurrency: $0.buyCurrency,
+                               sellCurrency: $0.sellCurrency,
+                               obtained: $0.obtained,
+                               disposed: $0.disposed,
+                               image: $0.image,
+                               created: $0.created,
+                               lastupd: $0.lastupd,
+                               kinds: kinds,
+                               brands: brands,
+                               sellers: sellers)
+            }
     }
     
     @Published var kinds = [KindDTO]()
@@ -321,7 +367,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
         let calendar = Calendar.current
         let startDate = calendar.startOfDay(for: start)
         let endDate = calendar.startOfDay(for: end)
-        return items.filter { item in
+        return fetch(NSFetchRequest<Item>(entityName: "Item")).filter { item in
             if item.kind != nil, let obtained = item.obtained {
                 return calendar.compare(startDate, to: obtained, toGranularity: .hour) != .orderedDescending && calendar.compare(obtained, to: endDate, toGranularity: .hour) != .orderedDescending
             } else {

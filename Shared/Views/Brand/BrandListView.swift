@@ -94,12 +94,12 @@ struct BrandListView: View {
         .id(UUID())
     }
     
-    private func getItems(_ brand: BrandDTO) -> [Item] {
+    private func getItems(_ brand: BrandDTO) -> [ItemDTO] {
         return viewModel.items
             .filter { item in
-                if let brandSet = item.brand {
-                    let matchedBrand = brandSet.filter { element in
-                        if let brandEntity = element as? Brand, brandEntity.uuid == brand.id {
+                if let brandSet = item.brands {
+                    let matchedBrand = brandSet.filter {
+                        if $0.id == brand.id {
                             return true
                         } else {
                             return false

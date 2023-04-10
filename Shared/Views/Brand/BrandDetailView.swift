@@ -13,7 +13,7 @@ struct BrandDetailView: View {
     @State var brand: BrandDTO
     @State var name = ""
     @State var urlString = ""
-    var items: [Item]
+    var items: [ItemDTO]
     
     @State private var showAlert = false
     @State private var isEdited = false

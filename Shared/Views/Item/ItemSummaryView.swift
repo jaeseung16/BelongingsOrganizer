@@ -8,23 +8,20 @@
 import SwiftUI
 
 struct ItemSummaryView: View {
-    @State var item: Item
+    @State var item: ItemDTO
     
     private let notApplicable = "N/A"
     
-    private var kind: Kind? {
-        let kinds = item.kind?.filter { $0 is Kind }.map { $0 as! Kind }
-        return kinds?.first
+    private var kind: KindDTO? {
+        return item.kinds?.first
     }
     
-    private var brand: Brand? {
-        let brands = item.brand?.filter { $0 is Brand }.map { $0 as! Brand }
-        return brands?.first
+    private var brand: BrandDTO? {
+        return item.brands?.first
     }
     
-    private var seller: Seller? {
-        let sellers = item.seller?.filter { $0 is Seller }.map { $0 as! Seller }
-        return sellers?.first
+    private var seller: SellerDTO? {
+        return item.sellers?.first
     }
     
     var body: some View {
@@ -149,7 +146,7 @@ struct ItemSummaryView: View {
             
             SectionTitleView(title: "QUANTITY")
 
-            Text(quantityFormatter.string(from: NSNumber(value: item.quantity)) ?? notApplicable)
+            Text(quantityFormatter.string(from: NSNumber(value: item.quantity ?? 0)) ?? notApplicable)
                 .multilineTextAlignment(.trailing)
             Spacer()
         }
@@ -174,7 +171,7 @@ struct ItemSummaryView: View {
             VStack {
                 SectionTitleView(title: "BUY PRICE")
 
-                Text(priceFormatter.string(from: NSNumber(value: item.buyPrice)) ?? notApplicable)
+                Text(priceFormatter.string(from: NSNumber(value: item.buyPrice ?? 0.0)) ?? notApplicable)
                     .multilineTextAlignment(.trailing)
             }
             
@@ -209,7 +206,7 @@ struct ItemSummaryView: View {
             VStack {
                 SectionTitleView(title: "SELL PRICE")
 
-                Text(priceFormatter.string(from: NSNumber(value: item.sellPrice)) ?? notApplicable)
+                Text(priceFormatter.string(from: NSNumber(value: item.sellPrice ?? 0.0)) ?? notApplicable)
                     .multilineTextAlignment(.trailing)
             }
             

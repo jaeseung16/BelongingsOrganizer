@@ -95,10 +95,10 @@ struct SellerListView: View {
         .id(UUID())
     }
     
-    private func getItems(_ seller: SellerDTO) -> [Item] {
+    private func getItems(_ seller: SellerDTO) -> [ItemDTO] {
         return viewModel.items
             .filter { item in
-                if let sellerSet = item.seller {
+                if let sellerSet = item.sellers {
                     let matchedSeller = sellerSet.filter { element in
                         if let sellerEntity = element as? Seller, sellerEntity.uuid == seller.id {
                             return true

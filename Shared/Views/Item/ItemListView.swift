@@ -14,9 +14,9 @@ struct ItemListView: View {
     @State var presentFilterItemsView = false
     @State var presentSortItemView = false
 
-    @State var selectedKinds = Set<Kind>()
-    @State var selectedBrands = Set<Brand>()
-    @State var selectedSellers = Set<Seller>()
+    @State var selectedKinds = Set<KindDTO>()
+    @State var selectedBrands = Set<BrandDTO>()
+    @State var selectedSellers = Set<SellerDTO>()
     
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
@@ -24,21 +24,21 @@ struct ItemListView: View {
     @State private var sortType = SortType.lastupd
     @State private var sortDirection = SortDirection.descending
     
-    @State var items: [Item]
+    @State var items: [ItemDTO]
     
-    var filteredItems: [Item] {
+    var filteredItems: [ItemDTO] {
         items.filter {
             var filter = true
             
-            if let kind = $0.kind as? Set<Kind>, !selectedKinds.isEmpty && selectedKinds.intersection(kind).isEmpty {
+            if let kinds = $0.kinds, !selectedKinds.isEmpty && selectedKinds.intersection(kinds).isEmpty {
                 filter = false
             }
             
-            if let brand = $0.brand as? Set<Brand>, !selectedBrands.isEmpty && selectedBrands.intersection(brand).isEmpty {
+            if let brands = $0.brands, !selectedBrands.isEmpty && selectedBrands.intersection(brands).isEmpty {
                 filter = false
             }
             
-            if let seller = $0.seller as? Set<Seller>, !selectedSellers.isEmpty && selectedSellers.intersection(seller).isEmpty {
+            if let sellers = $0.sellers, !selectedSellers.isEmpty && selectedSellers.intersection(sellers).isEmpty {
                 filter = false
             }
             
@@ -160,9 +160,9 @@ struct ItemListView: View {
                     NavigationLink(destination: ItemDetailView(item: item,
                                                                imageData: item.image,
                                                                name: itemName,
-                                                               quantity: Int(item.quantity),
-                                                               buyPrice: item.buyPrice,
-                                                               sellPrice: item.sellPrice,
+                                                               quantity: Int(item.quantity ?? 0),
+                                                               buyPrice: item.buyPrice ?? 0.0,
+                                                               sellPrice: item.sellPrice ?? 0.0,
                                                                buyCurrency: item.buyCurrency ?? "USD",
                                                                sellCurrency: item.sellCurrency ?? "USD",
                                                                note: item.note ?? "",
@@ -178,8 +178,18 @@ struct ItemListView: View {
     
     private func deleteItems(offsets: IndexSet) {
         withAnimation {
-            viewModel.delete(offsets.map { filteredItems[$0] }) { _ in
-                showAlert.toggle()
+            viewModel.delete(offsets.compactMap {
+                if let id = filteredItems[$0].id {
+                    return viewModel.get(entity: .Item, id: id)
+                } else {
+                    return nil
+                }
+            }) { error in
+                if error != nil {
+                    showAlertForDeletion.toggle()
+                } else {
+                    viewModel.fetchItems()
+                }
             }
         }
     }

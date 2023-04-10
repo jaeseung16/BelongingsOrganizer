@@ -15,24 +15,9 @@ struct FilterItemsView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var viewModel: BelongingsViewModel
 
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Kind.name, ascending: true)],
-        animation: .default)
-    private var kinds: FetchedResults<Kind>
-    
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Brand.name, ascending: true)],
-        animation: .default)
-    private var brands: FetchedResults<Brand>
-    
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Seller.name, ascending: true)],
-        animation: .default)
-    private var sellers: FetchedResults<Seller>
-    
-    @Binding var selectedKinds: Set<Kind>
-    @Binding var selectedBrands: Set<Brand>
-    @Binding var selectedSellers: Set<Seller>
+    @Binding var selectedKinds: Set<KindDTO>
+    @Binding var selectedBrands: Set<BrandDTO>
+    @Binding var selectedSellers: Set<SellerDTO>
     
     @State private var selectedFilter = Filter.kind
     
@@ -155,7 +140,7 @@ struct FilterItemsView: View {
         List {
             switch (selectedFilter) {
             case .kind:
-                ForEach(kinds, id: \.id) { kind in
+                ForEach(viewModel.kinds, id: \.id) { kind in
                     if kind.name != nil {
                         Button {
                             if selectedKinds.contains(kind) {
@@ -164,12 +149,12 @@ struct FilterItemsView: View {
                                 selectedKinds.insert(kind)
                             }
                         } label: {
-                            KindRowView(kind: KindDTO(id: kind.uuid, name: kind.name, created: kind.created, lastupd: kind.lastupd))
+                            KindRowView(kind: KindDTO(id: kind.id, name: kind.name, created: kind.created, lastupd: kind.lastupd))
                         }
                     }
                 }
             case .brand:
-                ForEach(brands, id: \.id) { brand in
+                ForEach(viewModel.brands, id: \.id) { brand in
                     if brand.name != nil {
                         Button {
                             if selectedBrands.contains(brand) {
@@ -178,12 +163,12 @@ struct FilterItemsView: View {
                                 selectedBrands.insert(brand)
                             }
                         } label: {
-                            BrandRowView(brand: BrandDTO(id: brand.uuid, name: brand.name, url: brand.url, created: brand.created, lastupd: brand.lastupd))
+                            BrandRowView(brand: BrandDTO(id: brand.id, name: brand.name, url: brand.url, created: brand.created, lastupd: brand.lastupd))
                         }
                     }
                 }
             case .seller:
-                ForEach(sellers, id: \.id) { seller in
+                ForEach(viewModel.sellers, id: \.id) { seller in
                     if let sellerName = seller.name {
                         Button {
                             if selectedSellers.contains(seller) {
@@ -192,12 +177,13 @@ struct FilterItemsView: View {
                                 selectedSellers.insert(seller)
                             }
                         } label: {
-                            SellerRowView(seller: SellerDTO(id: seller.uuid, name: sellerName, url: seller.url, created: seller.created, lastupd: seller.lastupd))
+                            SellerRowView(seller: SellerDTO(id: seller.id, name: sellerName, url: seller.url, created: seller.created, lastupd: seller.lastupd))
                         }
                     }
                 }
             }
         }
+        .id(UUID())
     }
     
     func header() -> some View {

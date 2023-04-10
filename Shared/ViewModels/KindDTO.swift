@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct KindDTO: Identifiable, CustomStringConvertible, Equatable {
+struct KindDTO: Identifiable, CustomStringConvertible, Equatable, Hashable {
     var id: UUID?
     var name: String?
     var created: Date?

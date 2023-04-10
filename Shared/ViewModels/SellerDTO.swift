@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct SellerDTO: Identifiable, CustomStringConvertible, Equatable {
+struct SellerDTO: Identifiable, CustomStringConvertible, Equatable, Hashable {
     var id: UUID?
     var name: String?
     var url: URL?

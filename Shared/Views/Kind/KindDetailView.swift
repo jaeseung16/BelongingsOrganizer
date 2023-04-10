@@ -12,7 +12,7 @@ struct KindDetailView: View {
     
     @State var kind: KindDTO
     @State var name = ""
-    var items: [Item]
+    var items: [ItemDTO]
     
     @State private var isEdited = false
     

@@ -10,7 +10,7 @@ import SwiftUI
 struct ItemDetailView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
     
-    @State var item: Item
+    @State var item: ItemDTO
     @State private var kind = [KindDTO]()
     @State private var brand: BrandDTO?
     @State private var seller: SellerDTO?
@@ -164,9 +164,9 @@ struct ItemDetailView: View {
     private func reset() -> Void {
         imageData = item.image
         name = item.name ?? ""
-        quantity = Int(item.quantity)
-        buyPrice = item.buyPrice
-        sellPrice = item.sellPrice
+        quantity = Int(item.quantity ?? 0)
+        buyPrice = item.buyPrice ?? 0.0
+        sellPrice = item.sellPrice ?? 0.0
         buyCurrency = item.buyCurrency ?? "USD"
         sellCurrency = item.sellCurrency ?? "USD"
         note = item.note ?? ""
@@ -187,44 +187,48 @@ struct ItemDetailView: View {
         DetailHeaderView(isEdited: $isEdited) {
             reset()
         } update: {
+            guard let id = item.id, let itemEntity: Item = viewModel.get(entity: .Item, id: id) else {
+                return
+            }
+            
             if !kind.isEmpty {
-                item.kind?.forEach {
+                itemEntity.kind?.forEach {
                     if let kind = $0 as? Kind {
-                        kind.removeFromItems(item)
+                        kind.removeFromItems(itemEntity)
                     }
                 }
                 kind.forEach {
                     if let id = $0.id, let kindEntity: Kind = viewModel.get(entity: .Kind, id: id) {
-                        kindEntity.addToItems(item)
+                        kindEntity.addToItems(itemEntity)
                     }
                 }
             }
             
             if let brand = brand {
-                item.brand?.forEach {
+                itemEntity.brand?.forEach {
                     if let brand = $0 as? Brand {
-                        brand.removeFromItems(item)
+                        brand.removeFromItems(itemEntity)
                     }
                 }
                 
                 if let id = brand.id, let brandEntity: Brand = viewModel.get(entity: .Brand, id: id) {
-                    brandEntity.addToItems(item)
+                    brandEntity.addToItems(itemEntity)
                 }
             }
             
             if let seller = seller {
-                item.seller?.forEach {
+                itemEntity.seller?.forEach {
                     if let seller = $0 as? Seller {
-                        seller.removeFromItems(item)
+                        seller.removeFromItems(itemEntity)
                     }
                 }
                 
                 if let id = seller.id, let sellerEntity: Seller = viewModel.get(entity: .Seller, id: id) {
-                    sellerEntity.addToItems(item)
+                    sellerEntity.addToItems(itemEntity)
                 }
             }
             
-            viewModel.itemDTO = ItemDTO(id: item.uuid,
+            viewModel.itemDTO = ItemDTO(id: itemEntity.uuid,
                                         name: name,
                                         note: note,
                                         quantity: Int64(quantity),
@@ -232,9 +236,9 @@ struct ItemDetailView: View {
                                         sellPrice: sellPrice,
                                         buyCurrency: buyCurrency,
                                         sellCurrency: sellCurrency,
-                                        obtained: isObtainedDateEdited ? obtained : item.obtained,
-                                        disposed: isDisposedDateEdited ? disposed : item.disposed,
-                                        image: imageData ?? item.image)
+                                        obtained: isObtainedDateEdited ? obtained : itemEntity.obtained,
+                                        disposed: isDisposedDateEdited ? disposed : itemEntity.disposed,
+                                        image: imageData ?? itemEntity.image)
             isEdited = false
         }
     }
@@ -364,49 +368,22 @@ struct ItemDetailView: View {
         }
     }
     
-    private var itemKind: Kind? {
-        let kinds = item.kind?.filter { $0 is Kind }.map { $0 as! Kind }
-        return kinds?.first
+    private var itemKind: KindDTO? {
+        return item.kinds?.first
     }
     
     private var itemKinds: [KindDTO] {
-        let kinds = item.kind?
-            .filter { $0 is Kind }
-            .compactMap {
-                if let kind = $0 as? Kind {
-                    return KindDTO(id: kind.uuid, name: kind.name, created: kind.created, lastupd: kind.lastupd)
-                } else {
-                    return nil
-                }
-            }
+        let kinds = item.kinds?.compactMap { $0 }
         return kinds ?? [KindDTO]()
         
     }
     
     private var itemBrand: BrandDTO? {
-        let brands = item.brand?
-            .filter { $0 is Brand }
-            .compactMap {
-                if let brand = $0 as? Brand {
-                    return BrandDTO(id: brand.uuid, name: brand.name, url: brand.url, created: brand.created, lastupd: brand.lastupd)
-                } else {
-                    return nil
-                }
-            }
-        return brands?.first
+        return item.brands?.first
     }
     
     private var itemSeller: SellerDTO? {
-        let sellers = item.seller?
-            .filter { $0 is Seller }
-            .compactMap {
-                if let seller = $0 as? Seller {
-                    return SellerDTO(id: seller.uuid, name: seller.name, url: seller.url, created: seller.created, lastupd: seller.lastupd)
-                } else {
-                    return nil
-                }
-            }
-        return sellers?.first
+        return item.sellers?.first
     }
     
     private func categoryView() -> some View {
@@ -499,7 +476,7 @@ struct ItemDetailView: View {
             TextField("quantity", value: $quantity, formatter: quantityFormatter, prompt: Text("0"))
                 .focused($quantityIsFocused)
                 .onChange(of: quantity) { newValue in
-                    isEdited = newValue != Int(item.quantity)
+                    isEdited = newValue != Int(item.quantity ?? 0)
                 }
                 .multilineTextAlignment(.trailing)
                 .frame(maxWidth: 80)

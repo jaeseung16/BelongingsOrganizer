@@ -10,7 +10,7 @@ import SwiftUI
 struct ItemRowView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
     
-    @State var item: Item {
+    @State var item: ItemDTO {
         didSet {
             refresh()
         }
@@ -77,8 +77,13 @@ struct ItemRowView: View {
     }
     
     private func refresh() {
-        name = item.name ?? ""
-        imageData = item.image
+        if let id = item.id, let itemEntity: Item = viewModel.get(entity: .Item, id: id) {
+            name = itemEntity.name ?? ""
+            imageData = itemEntity.image
+        } else {
+            name = item.name ?? ""
+            imageData = item.image
+        }
     }
 }
 

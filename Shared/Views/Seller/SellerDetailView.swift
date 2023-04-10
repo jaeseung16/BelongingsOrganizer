@@ -13,7 +13,7 @@ struct SellerDetailView: View {
     @State var seller: SellerDTO
     @State var name = ""
     @State var urlString = ""
-    var items: [Item]
+    var items: [ItemDTO]
     
     @State private var showAlert = false
     @State private var isEdited = false

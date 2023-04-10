@@ -91,10 +91,10 @@ struct KindListView: View {
         .id(UUID())
     }
     
-    private func getItems(_ kind: KindDTO) -> [Item] {
+    private func getItems(_ kind: KindDTO) -> [ItemDTO] {
         return viewModel.items
             .filter { item in
-                if let kindSet = item.kind {
+                if let kindSet = item.kinds {
                     let matchedKind = kindSet.filter { element in
                         if let kindEntity = element as? Kind, kindEntity.uuid == kind.id {
                             return true
