@@ -184,7 +184,7 @@ struct FilterItemsView: View {
                 }
             case .seller:
                 ForEach(sellers, id: \.id) { seller in
-                    if seller.name != nil {
+                    if let sellerName = seller.name {
                         Button {
                             if selectedSellers.contains(seller) {
                                 selectedSellers.remove(seller)
@@ -192,13 +192,23 @@ struct FilterItemsView: View {
                                 selectedSellers.insert(seller)
                             }
                         } label: {
-                            SellerRowView(seller: seller)
+                            SellerRowView(name: sellerName, itemCount: getItems(seller).count)
                         }
                     }
                 }
             }
         }
     }
+    
+    private func getItems(_ seller: Seller) -> [Item] {
+        guard let items = seller.items else {
+            return [Item]()
+        }
+        
+        return items.compactMap { $0 as? Item }
+            .sorted { ($0.obtained ?? Date()) > ($1.obtained ?? Date()) }
+    }
+    
     
     func header() -> some View {
         HStack {

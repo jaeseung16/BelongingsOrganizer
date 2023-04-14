@@ -83,6 +83,7 @@ struct KindListView: View {
             }
             .onDelete(perform: deleteKinds)
         }
+        .id(UUID())
     }
     
     private func getItems(_ kind: Kind) -> [Item] {
