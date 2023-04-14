@@ -44,12 +44,12 @@ class BelongingsViewModel: NSObject, ObservableObject {
     
     var message = ""
     
-    let addItemViewModel: AddItemViewModel
+    let persistenceHelper: PersistenceHelper
     let imagePaster = ImagePaster.shared
     
     init(persistence: Persistence) {
         self.persistence = persistence
-        self.addItemViewModel = AddItemViewModel(persistence: persistence)
+        self.persistenceHelper = PersistenceHelper(persistence: persistence)
         super.init()
         
         NotificationCenter.default
@@ -118,11 +118,15 @@ class BelongingsViewModel: NSObject, ObservableObject {
                 existingEntity.image = itemDTO.image
                 existingEntity.lastupd = Date()
                 
-                saveContext() { [self] error in
-                    let nsError = error as NSError
-                    self.logger.error("While saving \(self.itemDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
-                    self.message = "Cannot update name = \(String(describing: itemDTO.name))"
-                    self.showAlert.toggle()
+                persistenceHelper.save { result in
+                    switch result {
+                    case .success(_):
+                        self.handleSuccess()
+                    case .failure(let error):
+                        self.logger.log("Error while deleting data: \(error.localizedDescription, privacy: .public)")
+                        self.message = "Cannot update name = \(String(describing: self.itemDTO.name))"
+                        self.handle(error: error, completionHandler: nil)
+                    }
                 }
             }
         }
@@ -134,11 +138,15 @@ class BelongingsViewModel: NSObject, ObservableObject {
                 existingEntity.name = kindDTO.name?.trimmingCharacters(in: .whitespaces)
                 existingEntity.lastupd = Date()
                 
-                saveContext() { error in
-                    let nsError = error as NSError
-                    self.logger.error("While saving \(self.kindDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
-                    self.message = "Cannot update name = \(String(describing: self.kindDTO.name))"
-                    self.showAlert.toggle()
+                persistenceHelper.save { result in
+                    switch result {
+                    case .success(_):
+                        self.handleSuccess()
+                    case .failure(let error):
+                        self.logger.log("Error while deleting data: \(error.localizedDescription, privacy: .public)")
+                        self.message = "Cannot update name = \(String(describing: self.kindDTO.name))"
+                        self.handle(error: error, completionHandler: nil)
+                    }
                 }
             }
         }
@@ -151,11 +159,15 @@ class BelongingsViewModel: NSObject, ObservableObject {
                 existingEntity.url = brandDTO.url
                 existingEntity.lastupd = Date()
                 
-                saveContext() { error in
-                    let nsError = error as NSError
-                    self.logger.error("While saving \(self.brandDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
-                    self.message = "Cannot update name = \(String(describing: self.brandDTO.name)) and url = \(String(describing: self.brandDTO.url))"
-                    self.showAlert.toggle()
+                persistenceHelper.save { result in
+                    switch result {
+                    case .success(_):
+                        self.handleSuccess()
+                    case .failure(let error):
+                        self.logger.log("Error while deleting data: \(error.localizedDescription, privacy: .public)")
+                        self.message = "Cannot update name = \(String(describing: self.brandDTO.name)) and url = \(String(describing: self.brandDTO.url))"
+                        self.handle(error: error, completionHandler: nil)
+                    }
                 }
             }
         }
@@ -168,11 +180,15 @@ class BelongingsViewModel: NSObject, ObservableObject {
                 existingEntity.url = sellerDTO.url
                 existingEntity.lastupd = Date()
                 
-                saveContext() { error in
-                    let nsError = error as NSError
-                    self.logger.error("While saving \(self.sellerDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
-                    self.message = "Cannot update name = \(String(describing: self.sellerDTO.name)) and url = \(String(describing: self.sellerDTO.url))"
-                    self.showAlert.toggle()
+                persistenceHelper.save { result in
+                    switch result {
+                    case .success(_):
+                        self.handleSuccess()
+                    case .failure(let error):
+                        self.logger.log("Error while deleting data: \(error.localizedDescription, privacy: .public)")
+                        self.message = "Cannot update name = \(String(describing: self.sellerDTO.name)) and url = \(String(describing: self.sellerDTO.url))"
+                        self.handle(error: error, completionHandler: nil)
+                    }
                 }
             }
         }
@@ -196,30 +212,30 @@ class BelongingsViewModel: NSObject, ObservableObject {
     }
     
     func delete(_ objects: [NSManagedObject], completionHandler: @escaping (Error) -> Void) -> Void {
-        objects.forEach(persistenceContainer.viewContext.delete)
-        saveContext(completionHandler: completionHandler)
-    }
-    
-    private func saveContext(completionHandler: @escaping (Error) -> Void) -> Void {
-        persistenceContainer.viewContext.transactionAuthor = "App"
-        persistence.save { result in
+        persistenceHelper.delete(objects) { result in
             switch result {
             case .success(_):
-                DispatchQueue.main.async {
-                    self.updated.toggle()
-                }
+                self.handleSuccess()
             case .failure(let error):
-                self.logger.log("Error while saving data: \(error.localizedDescription, privacy: .public)")
-                self.logger.log("Error while saving data: \(Thread.callStackSymbols, privacy: .public)")
-                print("Error while saving data: \(Thread.callStackSymbols)")
-                DispatchQueue.main.async {
-                    self.showAlert.toggle()
-                    completionHandler(error)
-                }
+                self.logger.log("Error while deleting data: \(error.localizedDescription, privacy: .public)")
+                self.handle(error: error, completionHandler: completionHandler)
             }
         }
-        
-        persistenceContainer.viewContext.transactionAuthor = nil
+    }
+    
+    private func handleSuccess() -> Void {
+        DispatchQueue.main.async {
+            self.updated.toggle()
+        }
+    }
+    
+    private func handle(error: Error, completionHandler: ((Error) -> Void)?) -> Void {
+        DispatchQueue.main.async {
+            self.showAlert.toggle()
+            if let completionHandler = completionHandler {
+                completionHandler(error)
+            }
+        }
     }
     
     // MARK: - Persistence History Request
@@ -369,17 +385,17 @@ class BelongingsViewModel: NSObject, ObservableObject {
     
     // MARK: - AddItemViewModel
     public var imageData: Data? {
-        return addItemViewModel.imageData
+        return persistenceHelper.imageData
     }
     
     public func updateImage(_ imageData: Data?) {
-        addItemViewModel.imageData = imageData
+        persistenceHelper.imageData = imageData
     }
     
     public func saveBelonging(name: String, kind: [Kind], brand: Brand?, seller: Seller?, note: String, obtained: Date, buyPrice: Double?, quantity: Int64?, buyCurrency: String) -> Void {
         let created = Date()
         
-        let newItem = Item(context: addItemViewModel.viewContext)
+        let newItem = Item(context: persistenceHelper.viewContext)
         newItem.created = created
         newItem.lastupd = created
         newItem.name = name
@@ -391,7 +407,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
         newItem.uuid = UUID()
         newItem.image = imageData
        
-        addItemViewModel.save(item: newItem, kind: kind, brand: brand, seller: seller) { result in
+        persistenceHelper.save(item: newItem, kind: kind, brand: brand, seller: seller) { result in
             switch result {
             case .success(()):
                 DispatchQueue.main.async {
@@ -410,13 +426,13 @@ class BelongingsViewModel: NSObject, ObservableObject {
     public func saveKind(name: String) -> Void {
         let created = Date()
         
-        let newKind = Kind(context: addItemViewModel.viewContext)
+        let newKind = Kind(context: persistenceHelper.viewContext)
         newKind.created = created
         newKind.lastupd = created
         newKind.name = name.trimmingCharacters(in: .whitespaces)
         newKind.uuid = UUID()
         
-        addItemViewModel.save(kind: newKind) { result in
+        persistenceHelper.save() { result in
             switch result {
             case .success(()):
                 DispatchQueue.main.async {
@@ -435,14 +451,14 @@ class BelongingsViewModel: NSObject, ObservableObject {
     public func saveBrand(name: String, urlString: String) -> Void {
         let created = Date()
         
-        let newBrand = Brand(context: addItemViewModel.viewContext)
+        let newBrand = Brand(context: persistenceHelper.viewContext)
         newBrand.created = created
         newBrand.lastupd = created
         newBrand.name = name.trimmingCharacters(in: .whitespaces)
         newBrand.url = URL(string: urlString)
         newBrand.uuid = UUID()
 
-        addItemViewModel.save(brand: newBrand) { result in
+        persistenceHelper.save() { result in
             switch result {
             case .success(()):
                 DispatchQueue.main.async {
@@ -461,14 +477,14 @@ class BelongingsViewModel: NSObject, ObservableObject {
     public func saveSeller(name: String, urlString: String) -> Void {
         let created = Date()
         
-        let newSeller = Seller(context: addItemViewModel.viewContext)
+        let newSeller = Seller(context: persistenceHelper.viewContext)
         newSeller.created = created
         newSeller.lastupd = created
         newSeller.name = name.trimmingCharacters(in: .whitespaces)
         newSeller.url = URL(string: urlString)
         newSeller.uuid = UUID()
 
-        addItemViewModel.save(seller: newSeller) { result in
+        persistenceHelper.save() { result in
             switch result {
             case .success(()):
                 DispatchQueue.main.async {

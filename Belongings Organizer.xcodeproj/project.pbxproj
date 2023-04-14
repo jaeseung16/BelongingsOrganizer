@@ -43,8 +43,8 @@
 		904498EB26EBF70600002A6F /* KindListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 904498E926EBF70600002A6F /* KindListView.swift */; };
 		90596B8626E6ACD20001CCA5 /* AddKindView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90596B8526E6ACD20001CCA5 /* AddKindView.swift */; };
 		906CE2E926FA871900DC12C3 /* AddPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 906CE2E726FA871900DC12C3 /* AddPhotoView.swift */; };
-		906CE2EB26FA970100DC12C3 /* AddItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 906CE2EA26FA970100DC12C3 /* AddItemViewModel.swift */; };
-		906CE2EC26FA970100DC12C3 /* AddItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 906CE2EA26FA970100DC12C3 /* AddItemViewModel.swift */; };
+		906CE2EB26FA970100DC12C3 /* PersistenceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 906CE2EA26FA970100DC12C3 /* PersistenceHelper.swift */; };
+		906CE2EC26FA970100DC12C3 /* PersistenceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 906CE2EA26FA970100DC12C3 /* PersistenceHelper.swift */; };
 		906EA8A126F7EFF300235302 /* EditDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 906EA8A026F7EFF300235302 /* EditDateView.swift */; };
 		906EA8A226F7EFF300235302 /* EditDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 906EA8A026F7EFF300235302 /* EditDateView.swift */; };
 		90704CF629CFA65300F66908 /* BelongingsError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90704CF529CFA65300F66908 /* BelongingsError.swift */; };
@@ -187,7 +187,7 @@
 		904498E926EBF70600002A6F /* KindListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KindListView.swift; sourceTree = "<group>"; };
 		90596B8526E6ACD20001CCA5 /* AddKindView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddKindView.swift; sourceTree = "<group>"; };
 		906CE2E726FA871900DC12C3 /* AddPhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPhotoView.swift; sourceTree = "<group>"; };
-		906CE2EA26FA970100DC12C3 /* AddItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItemViewModel.swift; sourceTree = "<group>"; };
+		906CE2EA26FA970100DC12C3 /* PersistenceHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceHelper.swift; sourceTree = "<group>"; };
 		906EA8A026F7EFF300235302 /* EditDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditDateView.swift; sourceTree = "<group>"; };
 		90704CF529CFA65300F66908 /* BelongingsError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BelongingsError.swift; sourceTree = "<group>"; };
 		9072232C26E9352700965653 /* ChooseBrandView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseBrandView.swift; sourceTree = "<group>"; };
@@ -476,7 +476,7 @@
 			isa = PBXGroup;
 			children = (
 				907C26DE29C7566E00116BC1 /* Stats */,
-				906CE2EA26FA970100DC12C3 /* AddItemViewModel.swift */,
+				906CE2EA26FA970100DC12C3 /* PersistenceHelper.swift */,
 				90D3F23126EA594E00955316 /* BelongingsViewModel.swift */,
 				90D3F23426EA5B3400955316 /* Entities.swift */,
 				90D3F23726EA7F7E00955316 /* SellerDTO.swift */,
@@ -752,7 +752,7 @@
 				90E238E32706799D00E03624 /* ItemsView.swift in Sources */,
 				90D3F23826EA7F7E00955316 /* SellerDTO.swift in Sources */,
 				90735E8B29DA141200159CBA /* ImagePasting.swift in Sources */,
-				906CE2EB26FA970100DC12C3 /* AddItemViewModel.swift in Sources */,
+				906CE2EB26FA970100DC12C3 /* PersistenceHelper.swift in Sources */,
 				900FF63E2775393300F08528 /* SellerRowView.swift in Sources */,
 				9086B53B29D247C800DB4568 /* StatsType.swift in Sources */,
 				90C172D526F13FAF00244A9C /* SellerDetailView.swift in Sources */,
@@ -820,7 +820,7 @@
 				90D3F23F26EA8CDC00955316 /* SellerDTO.swift in Sources */,
 				90B46BC82700F53E00BEED75 /* EditPhotoView.swift in Sources */,
 				90C172D626F13FAF00244A9C /* SellerDetailView.swift in Sources */,
-				906CE2EC26FA970100DC12C3 /* AddItemViewModel.swift in Sources */,
+				906CE2EC26FA970100DC12C3 /* PersistenceHelper.swift in Sources */,
 				900DDBEF26E036CB0034A155 /* ContentView.swift in Sources */,
 				90C172D326F13EC200244A9C /* BrandDetailView.swift in Sources */,
 				90CB46AE26ED43AD00A9468B /* ItemDetailView.swift in Sources */,

@@ -14,7 +14,7 @@ import CoreImage
 import os
 import Persistence
 
-class AddItemViewModel {
+class PersistenceHelper {
     private static let logger = Logger()
     
     private let persistence: Persistence
@@ -25,7 +25,7 @@ class AddItemViewModel {
     init(persistence: Persistence) {
         self.persistence = persistence
     }
-
+    
     var classificationResult: String = ""
     var imageData: Data?
     
@@ -46,25 +46,9 @@ class AddItemViewModel {
             seller!.addToItems(item)
         }
         
-        let originalMergePolicy = viewContext.mergePolicy
-        viewContext.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
-        persistence.save(completionHandler: completionHandler)
-        viewContext.mergePolicy = originalMergePolicy
+        saveContext(completionHandler: completionHandler)
     }
     
-    func save(kind: Kind, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
-        persistence.save(completionHandler: completionHandler)
-    }
-    
-
-    func save(brand: Brand, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
-        persistence.save(completionHandler: completionHandler)
-    }
-    
-    func save(seller: Seller, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
-        persistence.save(completionHandler: completionHandler)
-    }
- 
     // MARK: - Image Classification
     lazy var classificationRequest: VNCoreMLRequest = {
         do {
@@ -80,7 +64,7 @@ class AddItemViewModel {
             
             let request = VNCoreMLRequest(model: model, completionHandler: { [weak self] request, error in
                 let classifications = request.results as! [VNClassificationObservation]
-            
+                
                 if classifications.isEmpty {
                     self?.classificationResult = "Nothing recognized."
                 } else {
@@ -88,7 +72,7 @@ class AddItemViewModel {
                     let topClassifications = classifications.prefix(2)
                     let descriptions = topClassifications.map { classification in
                         // Formats the classification for display; e.g. "(0.37) cliff, drop, drop-off".
-                       return String(format: "  (%.2f) %@", classification.confidence, classification.identifier)
+                        return String(format: "  (%.2f) %@", classification.confidence, classification.identifier)
                     }
                     
                     DispatchQueue.main.async {
@@ -124,4 +108,23 @@ class AddItemViewModel {
             }
         }
     }
+    
+    private func saveContext(completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
+        viewContext.transactionAuthor = "App"
+        let originalMergePolicy = viewContext.mergePolicy
+        viewContext.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+        persistence.save(completionHandler: completionHandler)
+        viewContext.mergePolicy = originalMergePolicy
+        viewContext.transactionAuthor = nil
+    }
+    
+    func delete(_ objects: [NSManagedObject], completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
+        objects.forEach(viewContext.delete)
+        saveContext(completionHandler: completionHandler)
+    }
+    
+    func save(completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
+        saveContext(completionHandler: completionHandler)
+    }
+    
 }
