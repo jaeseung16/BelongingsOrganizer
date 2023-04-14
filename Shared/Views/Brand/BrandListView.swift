@@ -63,7 +63,7 @@ struct BrandListView: View {
     private func header() -> some View {
         HStack {
             Button(action: {
-                viewModel.addItemViewModel.reset()
+                viewModel.persistenceHelper.reset()
                 presentAddBrandView = true
             }) {
                 Label("Add a brand", systemImage: "plus")

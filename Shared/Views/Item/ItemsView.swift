@@ -20,13 +20,16 @@ struct ItemsView: View {
                 Spacer()
             }
             
-            #if os(macOS)
-            NavigationView {
-                itemList()
+            NavigationStack {
+                List(items) { item in
+                    NavigationLink(value: item) {
+                        ItemRowView(item: item, imageWidth: 40.0)
+                    }
+                }
+                .navigationDestination(for: Item.self) { item in
+                    ItemSummaryView(item: item)
+                }
             }
-            #else
-            itemList()
-            #endif
         }
     }
     

@@ -142,7 +142,7 @@ struct ItemListView: View {
             Spacer()
             
             Button(action: {
-                viewModel.addItemViewModel.reset()
+                viewModel.persistenceHelper.reset()
                 presentAddItemView = true
             }) {
                 Label("Add", systemImage: "plus")

@@ -25,20 +25,32 @@ struct SellerListView: View {
     @State var selectedSeller: Seller?
     
     var body: some View {
-        NavigationView {
-            GeometryReader { geometry in
+        GeometryReader { geometry in
+            NavigationSplitView {
                 VStack {
                     header()
                     
-                    sellerListView()
-                    .sheet(isPresented: $presentAddSelleriew, content: {
-                        AddSellerView()
-                            .environmentObject(viewModel)
-                            .frame(minWidth: 350, minHeight: 450)
-                            .padding()
-                    })
+                    List(selection: $selectedSeller) {
+                        ForEach(filteredSellers, id: \.self) { seller in
+                            if let sellerName = seller.name {
+                                SellerRowView(name: sellerName, itemCount: getItems(seller).count)
+                            }
+                        }
+                        .onDelete(perform: deleteSellers)
+                    }
+                    .navigationTitle("Sellers")
+                    .id(UUID())
                 }
-                .navigationTitle("Seller")
+            } detail: {
+                if let seller = selectedSeller, let name = seller.name {
+                    SellerDetailView(seller: seller,
+                                     name: name,
+                                     urlString: seller.url?.absoluteString ?? "",
+                                     items: getItems(seller))
+                    .id(UUID())
+                } else {
+                    Text("Sellect a seller")
+                }
             }
         }
         .onReceive(viewModel.$updated) { _ in
@@ -50,6 +62,12 @@ struct SellerListView: View {
         .onChange(of: viewModel.stringToSearch) { _ in
             filteredSellers = sellers.filter { viewModel.checkIfStringToSearchContainedIn($0.name) }
         }
+        .sheet(isPresented: $presentAddSelleriew, content: {
+            AddSellerView()
+                .environmentObject(viewModel)
+                .frame(minWidth: 350, minHeight: 450)
+                .padding()
+        })
         .alert("Unable to Save Data", isPresented: $showAlert) {
             Button("Dismiss") {
                 showAlert.toggle()
@@ -69,7 +87,7 @@ struct SellerListView: View {
     private func header() -> some View {
         HStack {
             Button(action: {
-                viewModel.addItemViewModel.reset()
+                viewModel.persistenceHelper.reset()
                 presentAddSelleriew = true
             }) {
                 Label("Add a seller", systemImage: "plus")
