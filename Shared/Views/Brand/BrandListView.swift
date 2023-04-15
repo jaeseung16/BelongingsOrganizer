@@ -21,21 +21,38 @@ struct BrandListView: View {
         brands.filter { viewModel.checkIfStringToSearchContainedIn($0.name) }
     }
     
+    @State private var selectedBrand: Brand?
+    
     var body: some View {
-        NavigationView {
-            GeometryReader { geometry in
+        GeometryReader { geometry in
+            NavigationSplitView {
                 VStack {
                     header()
                     
-                    brandListView()
-                    .sheet(isPresented: $presentAddBrandView, content: {
-                        AddBrandView()
-                            .environmentObject(viewModel)
-                            .frame(minWidth: 350, minHeight: 450)
-                            .padding()
-                    })
+                    List(selection: $selectedBrand) {
+                        ForEach(filteredBrands, id: \.self) { brand in
+                            if let brandName = brand.name {
+                                NavigationLink(value: brand) {
+                                    BrandRowView(name: brandName, itemCount: getItems(brand).count)
+                                }
+                            }
+                        }
+                        .onDelete(perform: deleteBrands)
+                    }
+                    .navigationTitle("Brands")
+                    .id(UUID())
                 }
-                .navigationTitle("Brands")
+                
+            } detail: {
+                if let brand = selectedBrand, let name = brand.name {
+                    BrandDetailView(brand: brand,
+                                    name: name,
+                                    urlString: brand.url?.absoluteString ?? "",
+                                    items: getItems(brand))
+                    .id(UUID())
+                } else {
+                    Text("Sellect a seller")
+                }
             }
         }
         .onReceive(viewModel.$updated) { _ in
@@ -44,6 +61,12 @@ struct BrandListView: View {
         .onChange(of: viewModel.showAlert) { _ in
             showAlert = viewModel.showAlert
         }
+        .sheet(isPresented: $presentAddBrandView, content: {
+            AddBrandView()
+                .environmentObject(viewModel)
+                .frame(minWidth: 350, minHeight: 450)
+                .padding()
+        })
         .alert("Unable to Save Data", isPresented: $showAlert) {
             Button("Dismiss") {
                 showAlert.toggle()
@@ -69,23 +92,6 @@ struct BrandListView: View {
                 Label("Add a brand", systemImage: "plus")
             }
         }
-    }
-    
-    private func brandListView() -> some View {
-        List {
-            ForEach(filteredBrands) { brand in
-                if let brandName = brand.name {
-                    NavigationLink(destination: BrandDetailView(brand: brand,
-                                                                name: brandName,
-                                                                urlString: brand.url?.absoluteString ?? "",
-                                                                items: getItems(brand))) {
-                        BrandRowView(brand: brand)
-                    }
-                }
-            }
-            .onDelete(perform: deleteBrands)
-        }
-        .id(UUID())
     }
     
     private func getItems(_ brand: Brand) -> [Item] {

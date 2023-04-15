@@ -21,22 +21,34 @@ struct KindListView: View {
         kinds.filter { viewModel.checkIfStringToSearchContainedIn($0.name) }
     }
     
+    @State var selectedKind: Kind?
+    
     var body: some View {
-        NavigationView {
-            GeometryReader { geometry in
+        GeometryReader { geometry in
+            NavigationSplitView {
                 VStack {
                     header()
                     
-                    kindListView()
-                        .sheet(isPresented: $presentAddKindView) {
-                            AddKindView()
-                                .environmentObject(viewModel)
-                                .frame(minWidth: 350, minHeight: 450)
-                                .padding()
-                            
+                    List(selection: $selectedKind) {
+                        ForEach(filteredKinds, id: \.self) { kind in
+                            if let kindName = kind.name {
+                                NavigationLink(value: kind) {
+                                    KindRowView(name: kindName, itemCount: getItems(kind).count)
+                                }
+                            }
                         }
+                        .onDelete(perform: deleteKinds)
+                    }
+                    .navigationTitle("Categories")
+                    .id(UUID())
                 }
-                .navigationTitle("Categories")
+            } detail: {
+                if let kind = selectedKind, let name = kind.name {
+                    KindDetailView(kind: kind, name: name, items: getItems(kind))
+                    .id(UUID())
+                } else {
+                    Text("Sellect a seller")
+                }
             }
         }
         .onReceive(viewModel.$updated) { _ in
@@ -44,6 +56,12 @@ struct KindListView: View {
         }
         .onChange(of: viewModel.showAlert) { _ in
             showAlert = viewModel.showAlert
+        }
+        .sheet(isPresented: $presentAddKindView) {
+            AddKindView()
+                .environmentObject(viewModel)
+                .frame(minWidth: 350, minHeight: 450)
+                .padding()
         }
         .alert("Unable to Save Data", isPresented: $showAlert) {
             Button("Dismiss") {
@@ -70,20 +88,6 @@ struct KindListView: View {
                 Label("Add a category", systemImage: "plus")
             }
         }
-    }
-    
-    private func kindListView() -> some View {
-        List {
-            ForEach(filteredKinds) { kind in
-                if let kindName = kind.name {
-                    NavigationLink(destination: KindDetailView(kind: kind, name: kindName, items: getItems(kind))) {
-                        KindRowView(kind: kind)
-                    }
-                }
-            }
-            .onDelete(perform: deleteKinds)
-        }
-        .id(UUID())
     }
     
     private func getItems(_ kind: Kind) -> [Item] {

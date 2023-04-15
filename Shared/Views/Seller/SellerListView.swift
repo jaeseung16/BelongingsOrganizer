@@ -33,7 +33,9 @@ struct SellerListView: View {
                     List(selection: $selectedSeller) {
                         ForEach(filteredSellers, id: \.self) { seller in
                             if let sellerName = seller.name {
-                                SellerRowView(name: sellerName, itemCount: getItems(seller).count)
+                                NavigationLink(value: seller) {
+                                    SellerRowView(name: sellerName, itemCount: getItems(seller).count)
+                                }
                             }
                         }
                         .onDelete(perform: deleteSellers)

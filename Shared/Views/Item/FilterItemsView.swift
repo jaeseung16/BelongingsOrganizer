@@ -156,7 +156,7 @@ struct FilterItemsView: View {
             switch (selectedFilter) {
             case .kind:
                 ForEach(kinds, id: \.id) { kind in
-                    if kind.name != nil {
+                    if let kindName = kind.name {
                         Button {
                             if selectedKinds.contains(kind) {
                                 selectedKinds.remove(kind)
@@ -164,13 +164,13 @@ struct FilterItemsView: View {
                                 selectedKinds.insert(kind)
                             }
                         } label: {
-                            KindRowView(kind: kind)
+                            KindRowView(name: kindName, itemCount: getItems(kind).count)
                         }
                     }
                 }
             case .brand:
                 ForEach(brands, id: \.id) { brand in
-                    if brand.name != nil {
+                    if let brandName = brand.name {
                         Button {
                             if selectedBrands.contains(brand) {
                                 selectedBrands.remove(brand)
@@ -178,7 +178,7 @@ struct FilterItemsView: View {
                                 selectedBrands.insert(brand)
                             }
                         } label: {
-                            BrandRowView(brand: brand)
+                            BrandRowView(name: brandName, itemCount: getItems(brand).count)
                         }
                     }
                 }
@@ -200,6 +200,24 @@ struct FilterItemsView: View {
         }
     }
     
+    private func getItems(_ kind: Kind) -> [Item] {
+        guard let items = kind.items else {
+            return [Item]()
+        }
+        
+        return items.compactMap { $0 as? Item }
+            .sorted { ($0.obtained ?? Date()) > ($1.obtained ?? Date()) }
+    }
+    
+    private func getItems(_ brand: Brand) -> [Item] {
+        guard let items = brand.items else {
+            return [Item]()
+        }
+        
+        return items.compactMap { $0 as? Item }
+            .sorted { ($0.obtained ?? Date()) > ($1.obtained ?? Date()) }
+    }
+    
     private func getItems(_ seller: Seller) -> [Item] {
         guard let items = seller.items else {
             return [Item]()
@@ -208,7 +226,6 @@ struct FilterItemsView: View {
         return items.compactMap { $0 as? Item }
             .sorted { ($0.obtained ?? Date()) > ($1.obtained ?? Date()) }
     }
-    
     
     func header() -> some View {
         HStack {
