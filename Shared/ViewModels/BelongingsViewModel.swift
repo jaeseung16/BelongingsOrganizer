@@ -383,7 +383,59 @@ class BelongingsViewModel: NSObject, ObservableObject {
         
     }
     
-    // MARK: - AddItemViewModel
+    func getItems(_ kind: Kind) -> [Item] {
+        guard let items = kind.items else {
+            return [Item]()
+        }
+        return getSortedItems(items)
+    }
+    
+    func getItemCount(_ kind: Kind) -> Int {
+        guard let items = kind.items else {
+            return 0
+        }
+        return getItemCount(items)
+    }
+    
+    func getItems(_ brand: Brand) -> [Item] {
+        guard let items = brand.items else {
+            return [Item]()
+        }
+        return getSortedItems(items)
+    }
+    
+    func getItemCount(_ brand: Brand) -> Int {
+        guard let items = brand.items else {
+            return 0
+        }
+        return getItemCount(items)
+    }
+    
+    func getItems(_ seller: Seller) -> [Item] {
+        guard let items = seller.items else {
+            return [Item]()
+        }
+        return getSortedItems(items)
+    }
+    
+    func getItemCount(_ seller: Seller) -> Int {
+        guard let items = seller.items else {
+            return 0
+        }
+        return getItemCount(items)
+    }
+    
+    private func getSortedItems(_ items: NSSet) -> [Item] {
+        return items.compactMap { $0 as? Item }
+            .sorted { ($0.obtained ?? Date()) > ($1.obtained ?? Date()) }
+    }
+    
+    private func getItemCount(_ items: NSSet) -> Int {
+        return items.compactMap { $0 as? Item }.count
+    }
+    
+    
+    // MARK: - PersistenceHelper
     public var imageData: Data? {
         return persistenceHelper.imageData
     }

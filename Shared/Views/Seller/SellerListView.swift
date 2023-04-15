@@ -34,7 +34,7 @@ struct SellerListView: View {
                         ForEach(filteredSellers, id: \.self) { seller in
                             if let sellerName = seller.name {
                                 NavigationLink(value: seller) {
-                                    SellerRowView(name: sellerName, itemCount: getItems(seller).count)
+                                    SellerRowView(name: sellerName, itemCount: viewModel.getItemCount(seller))
                                 }
                             }
                         }
@@ -48,7 +48,7 @@ struct SellerListView: View {
                     SellerDetailView(seller: seller,
                                      name: name,
                                      urlString: seller.url?.absoluteString ?? "",
-                                     items: getItems(seller))
+                                     items: viewModel.getItems(seller))
                     .id(UUID())
                 } else {
                     Text("Sellect a seller")
@@ -95,32 +95,6 @@ struct SellerListView: View {
                 Label("Add a seller", systemImage: "plus")
             }
         }
-    }
-    
-    private func sellerListView() -> some View {
-        List {
-            ForEach(filteredSellers) { seller in
-                if let sellerName = seller.name {
-                    NavigationLink(destination: SellerDetailView(seller: seller,
-                                                                 name: sellerName,
-                                                                 urlString: seller.url?.absoluteString ?? "",
-                                                                 items: getItems(seller))) {
-                        SellerRowView(name: sellerName, itemCount: getItems(seller).count)
-                    }
-                }
-            }
-            .onDelete(perform: deleteSellers)
-        }
-        .id(UUID())
-    }
-    
-    private func getItems(_ seller: Seller) -> [Item] {
-        guard let items = seller.items else {
-            return [Item]()
-        }
-        
-        return items.compactMap { $0 as? Item }
-            .sorted { ($0.obtained ?? Date()) > ($1.obtained ?? Date()) }
     }
     
     private func sellerRowView(_ seller: Seller, name: String) -> some View {

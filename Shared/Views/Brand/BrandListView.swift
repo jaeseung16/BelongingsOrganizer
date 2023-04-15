@@ -33,7 +33,7 @@ struct BrandListView: View {
                         ForEach(filteredBrands, id: \.self) { brand in
                             if let brandName = brand.name {
                                 NavigationLink(value: brand) {
-                                    BrandRowView(name: brandName, itemCount: getItems(brand).count)
+                                    BrandRowView(name: brandName, itemCount: viewModel.getItemCount(brand))
                                 }
                             }
                         }
@@ -48,7 +48,7 @@ struct BrandListView: View {
                     BrandDetailView(brand: brand,
                                     name: name,
                                     urlString: brand.url?.absoluteString ?? "",
-                                    items: getItems(brand))
+                                    items: viewModel.getItems(brand))
                     .id(UUID())
                 } else {
                     Text("Sellect a seller")
@@ -92,15 +92,6 @@ struct BrandListView: View {
                 Label("Add a brand", systemImage: "plus")
             }
         }
-    }
-    
-    private func getItems(_ brand: Brand) -> [Item] {
-        guard let items = brand.items else {
-            return [Item]()
-        }
-        
-        return items.compactMap { $0 as? Item }
-            .sorted { ($0.obtained ?? Date()) > ($1.obtained ?? Date()) }
     }
     
     private func deleteBrands(offsets: IndexSet) {

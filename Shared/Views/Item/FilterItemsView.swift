@@ -164,7 +164,7 @@ struct FilterItemsView: View {
                                 selectedKinds.insert(kind)
                             }
                         } label: {
-                            KindRowView(name: kindName, itemCount: getItems(kind).count)
+                            KindRowView(name: kindName, itemCount: viewModel.getItemCount(kind))
                         }
                     }
                 }
@@ -178,7 +178,7 @@ struct FilterItemsView: View {
                                 selectedBrands.insert(brand)
                             }
                         } label: {
-                            BrandRowView(name: brandName, itemCount: getItems(brand).count)
+                            BrandRowView(name: brandName, itemCount: viewModel.getItemCount(brand))
                         }
                     }
                 }
@@ -192,39 +192,12 @@ struct FilterItemsView: View {
                                 selectedSellers.insert(seller)
                             }
                         } label: {
-                            SellerRowView(name: sellerName, itemCount: getItems(seller).count)
+                            SellerRowView(name: sellerName, itemCount: viewModel.getItemCount(seller))
                         }
                     }
                 }
             }
         }
-    }
-    
-    private func getItems(_ kind: Kind) -> [Item] {
-        guard let items = kind.items else {
-            return [Item]()
-        }
-        
-        return items.compactMap { $0 as? Item }
-            .sorted { ($0.obtained ?? Date()) > ($1.obtained ?? Date()) }
-    }
-    
-    private func getItems(_ brand: Brand) -> [Item] {
-        guard let items = brand.items else {
-            return [Item]()
-        }
-        
-        return items.compactMap { $0 as? Item }
-            .sorted { ($0.obtained ?? Date()) > ($1.obtained ?? Date()) }
-    }
-    
-    private func getItems(_ seller: Seller) -> [Item] {
-        guard let items = seller.items else {
-            return [Item]()
-        }
-        
-        return items.compactMap { $0 as? Item }
-            .sorted { ($0.obtained ?? Date()) > ($1.obtained ?? Date()) }
     }
     
     func header() -> some View {

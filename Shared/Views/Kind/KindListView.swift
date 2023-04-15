@@ -33,7 +33,7 @@ struct KindListView: View {
                         ForEach(filteredKinds, id: \.self) { kind in
                             if let kindName = kind.name {
                                 NavigationLink(value: kind) {
-                                    KindRowView(name: kindName, itemCount: getItems(kind).count)
+                                    KindRowView(name: kindName, itemCount: viewModel.getItemCount(kind))
                                 }
                             }
                         }
@@ -44,7 +44,7 @@ struct KindListView: View {
                 }
             } detail: {
                 if let kind = selectedKind, let name = kind.name {
-                    KindDetailView(kind: kind, name: name, items: getItems(kind))
+                    KindDetailView(kind: kind, name: name, items: viewModel.getItems(kind))
                     .id(UUID())
                 } else {
                     Text("Sellect a seller")
@@ -88,15 +88,6 @@ struct KindListView: View {
                 Label("Add a category", systemImage: "plus")
             }
         }
-    }
-    
-    private func getItems(_ kind: Kind) -> [Item] {
-        guard let items = kind.items else {
-            return [Item]()
-        }
-        
-        return items.compactMap { $0 as? Item }
-            .sorted { ($0.obtained ?? Date()) > ($1.obtained ?? Date()) }
     }
     
     private func deleteKinds(offsets: IndexSet) {
