@@ -15,13 +15,12 @@ struct SellerListView: View {
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
     
-    @State var sellers: [Seller] {
-        didSet {
-            filteredSellers =  sellers.filter { viewModel.checkIfStringToSearchContainedIn($0.name) }
-        }
+    @State var sellers: [Seller]
+
+    private var filteredSellers: [Seller] {
+        sellers.filter { viewModel.checkIfStringToSearchContainedIn($0.name) }
     }
     
-    @State var filteredSellers = [Seller]()
     @State var selectedSeller: Seller?
     
     var body: some View {
@@ -55,14 +54,11 @@ struct SellerListView: View {
                 }
             }
         }
-        .onReceive(viewModel.$updated) { _ in
+        .onChange(of: viewModel) { _ in
             sellers = viewModel.sellers
         }
         .onChange(of: viewModel.showAlert) { _ in
             showAlert = viewModel.showAlert
-        }
-        .onChange(of: viewModel.stringToSearch) { _ in
-            filteredSellers = sellers.filter { viewModel.checkIfStringToSearchContainedIn($0.name) }
         }
         .sheet(isPresented: $presentAddSelleriew, content: {
             AddSellerView()

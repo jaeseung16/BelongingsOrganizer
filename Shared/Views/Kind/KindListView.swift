@@ -51,7 +51,7 @@ struct KindListView: View {
                 }
             }
         }
-        .onReceive(viewModel.$updated) { _ in
+        .onChange(of: viewModel.kinds) { _ in
             kinds = viewModel.kinds
         }
         .onChange(of: viewModel.showAlert) { _ in

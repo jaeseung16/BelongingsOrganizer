@@ -40,7 +40,11 @@ class BelongingsViewModel: NSObject, ObservableObject {
     @Published var changedPeristentContext = NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave)
     @Published var showAlert = false
     @Published var stringToSearch = ""
-    @Published var updated = false
+    @Published var updated = false {
+        didSet {
+            fetchEntities()
+        }
+    }
     
     var message = ""
     
@@ -61,37 +65,57 @@ class BelongingsViewModel: NSObject, ObservableObject {
         SDImageCodersManager.shared.addCoder(webPCoder)
         
         self.persistence.container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        
+        fetchEntities()
     }
     
-    var items: [Item] {
-        fetch(NSFetchRequest<Item>(entityName: "Item"))
+    private func fetchEntities() -> Void {
+        fetchItems()
+        fetchKinds()
+        fetchBrands()
+        fetchSellers()
     }
     
-    var kinds: [Kind] {
+    var items = [Item]()
+    
+    func fetchItems() -> Void {
+        items = fetch(NSFetchRequest<Item>(entityName: "Item"))
+    }
+    
+    var kinds = [Kind]()
+    
+    func fetchKinds() {
         let sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
                                NSSortDescriptor(key: "created", ascending: false)]
         
         let fetchRequest = NSFetchRequest<Kind>(entityName: "Kind")
         fetchRequest.sortDescriptors = sortDescriptors
-        return fetch(fetchRequest)
+        kinds = fetch(fetchRequest)
     }
     
-    var brands: [Brand] {
+    var brands = [Brand]()
+    
+    func fetchBrands() -> Void {
         let sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
                                NSSortDescriptor(key: "created", ascending: false)]
         
         let fetchRequest = NSFetchRequest<Brand>(entityName: "Brand")
         fetchRequest.sortDescriptors = sortDescriptors
-        return fetch(fetchRequest)
+        brands = fetch(fetchRequest)
     }
     
-    var sellers: [Seller] {
+    var sellers = [Seller]()
+    
+    func fetchSellers() -> Void {
         let sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
                                NSSortDescriptor(key: "created", ascending: false)]
         
         let fetchRequest = NSFetchRequest<Seller>(entityName: "Seller")
         fetchRequest.sortDescriptors = sortDescriptors
-        return fetch(fetchRequest)
+        sellers = fetch(fetchRequest)
+        self.sellers.forEach {
+            self.logger.log("seller=\(String(describing: $0.name))")
+        }
     }
     
     private func fetch<Element>(_ fetchRequest: NSFetchRequest<Element>) -> [Element] {

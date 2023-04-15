@@ -101,7 +101,7 @@ struct ItemListView: View {
                 .frame(minWidth: 350, minHeight: 100)
                 .padding()
         }
-        .onReceive(viewModel.$updated) { _ in
+        .onChange(of: viewModel.items) { _ in
             items = viewModel.items
         }
         .onChange(of: viewModel.showAlert) { _ in

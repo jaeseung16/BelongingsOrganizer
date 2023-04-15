@@ -55,7 +55,7 @@ struct BrandListView: View {
                 }
             }
         }
-        .onReceive(viewModel.$updated) { _ in
+        .onChange(of: viewModel.brands) { newValue in
             brands = viewModel.brands
         }
         .onChange(of: viewModel.showAlert) { _ in
