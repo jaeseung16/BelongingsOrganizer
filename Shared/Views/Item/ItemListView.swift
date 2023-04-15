@@ -71,24 +71,40 @@ struct ItemListView: View {
         }
     }
     
+    @State private var seletedItem: Item?
+    
     var body: some View {
-        NavigationView {
-            GeometryReader { geometry in
+        GeometryReader { geometry in
+            NavigationSplitView {
                 VStack {
                     header()
-                        .frame(width: geometry.size.width)
                     
-                    Divider()
-                    
-                    itemListView()
-                        .sheet(isPresented: $presentAddItemView) {
-                            AddItemView(geometry: geometry)
-                                .environmentObject(viewModel)
-                                .frame(minWidth: 350, minHeight: 550)
-                                .padding()
+                    List(selection: $seletedItem) {
+                        ForEach(filteredItems, id: \.self) { item in
+                            NavigationLink(value: item) {
+                                ItemRowView(item: item)
+                                    .id(UUID())
+                            }
                         }
+                        .onDelete(perform: deleteItems)
+                    }
+                    .navigationTitle("Items")
                 }
-                .navigationTitle("Items")
+            } detail: {
+                if let item = seletedItem {
+                    ItemDetailView(item: item,
+                                   imageData: item.image,
+                                   name: item.name ?? "",
+                                   quantity: Int(item.quantity),
+                                   buyPrice: item.buyPrice,
+                                   sellPrice: item.sellPrice,
+                                   buyCurrency: item.buyCurrency ?? "USD",
+                                   sellCurrency: item.sellCurrency ?? "USD",
+                                   note: item.note ?? "",
+                                   obtained: item.obtained ?? Date(),
+                                   disposed: item.disposed ?? Date())
+                    .id(UUID())
+                }
             }
         }
         .sheet(isPresented: $presentFilterItemsView) {

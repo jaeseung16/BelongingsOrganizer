@@ -43,8 +43,6 @@ struct KindListView: View {
                                    name: kind.name ?? "",
                                    items: viewModel.getItems(kind))
                     .id(UUID())
-                } else {
-                    Text("Sellect a seller")
                 }
             }
         }
