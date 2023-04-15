@@ -76,13 +76,19 @@ class BelongingsViewModel: NSObject, ObservableObject {
         fetchSellers()
     }
     
-    var items = [Item]()
+    @Published var items = [Item]()
+    var filteredItems: [Item] {
+        items.filter { checkIfStringToSearchContainedIn($0.name) }
+    }
     
     func fetchItems() -> Void {
         items = fetch(NSFetchRequest<Item>(entityName: "Item"))
     }
     
-    var kinds = [Kind]()
+    @Published var kinds = [Kind]()
+    var filteredKinds: [Kind] {
+        kinds.filter { checkIfStringToSearchContainedIn($0.name) }
+    }
     
     func fetchKinds() {
         let sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
@@ -93,7 +99,10 @@ class BelongingsViewModel: NSObject, ObservableObject {
         kinds = fetch(fetchRequest)
     }
     
-    var brands = [Brand]()
+    @Published var brands = [Brand]()
+    var filteredBrands: [Brand] {
+        brands.filter { checkIfStringToSearchContainedIn($0.name) }
+    }
     
     func fetchBrands() -> Void {
         let sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
@@ -104,7 +113,10 @@ class BelongingsViewModel: NSObject, ObservableObject {
         brands = fetch(fetchRequest)
     }
     
-    var sellers = [Seller]()
+    @Published var sellers = [Seller]()
+    var filteredSellers: [Seller] {
+        sellers.filter { checkIfStringToSearchContainedIn($0.name) }
+    }
     
     func fetchSellers() -> Void {
         let sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
@@ -113,9 +125,6 @@ class BelongingsViewModel: NSObject, ObservableObject {
         let fetchRequest = NSFetchRequest<Seller>(entityName: "Seller")
         fetchRequest.sortDescriptors = sortDescriptors
         sellers = fetch(fetchRequest)
-        self.sellers.forEach {
-            self.logger.log("seller=\(String(describing: $0.name))")
-        }
     }
     
     private func fetch<Element>(_ fetchRequest: NSFetchRequest<Element>) -> [Element] {

@@ -15,11 +15,7 @@ struct SellerListView: View {
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
     
-    @State var sellers: [Seller]
-
-    private var filteredSellers: [Seller] {
-        sellers.filter { viewModel.checkIfStringToSearchContainedIn($0.name) }
-    }
+    @State private var filteredSellers = [Seller]()
     
     @State var selectedSeller: Seller?
     
@@ -31,21 +27,20 @@ struct SellerListView: View {
                     
                     List(selection: $selectedSeller) {
                         ForEach(filteredSellers, id: \.self) { seller in
-                            if let sellerName = seller.name {
-                                NavigationLink(value: seller) {
-                                    SellerRowView(name: sellerName, itemCount: viewModel.getItemCount(seller))
-                                }
+                            NavigationLink(value: seller) {
+                                SellerRowView(name: seller.name ?? "",
+                                              itemCount: viewModel.getItemCount(seller))
+                                    .id(UUID())
                             }
                         }
                         .onDelete(perform: deleteSellers)
                     }
                     .navigationTitle("Sellers")
-                    .id(UUID())
                 }
             } detail: {
-                if let seller = selectedSeller, let name = seller.name {
+                if let seller = selectedSeller {
                     SellerDetailView(seller: seller,
-                                     name: name,
+                                     name: seller.name ?? "",
                                      urlString: seller.url?.absoluteString ?? "",
                                      items: viewModel.getItems(seller))
                     .id(UUID())
@@ -54,11 +49,14 @@ struct SellerListView: View {
                 }
             }
         }
-        .onChange(of: viewModel) { _ in
-            sellers = viewModel.sellers
+        .onReceive(viewModel.$sellers) { _ in
+            filteredSellers = viewModel.filteredSellers
         }
         .onChange(of: viewModel.showAlert) { _ in
             showAlert = viewModel.showAlert
+        }
+        .onReceive(viewModel.$stringToSearch) { _ in
+            filteredSellers = viewModel.filteredSellers
         }
         .sheet(isPresented: $presentAddSelleriew, content: {
             AddSellerView()
@@ -84,25 +82,10 @@ struct SellerListView: View {
     
     private func header() -> some View {
         HStack {
-            Button(action: {
-                viewModel.persistenceHelper.reset()
+            Button {
                 presentAddSelleriew = true
-            }) {
+            } label: {
                 Label("Add a seller", systemImage: "plus")
-            }
-        }
-    }
-    
-    private func sellerRowView(_ seller: Seller, name: String) -> some View {
-        HStack {
-            Text(name)
-            
-            Spacer()
-            
-            if let items = seller.items {
-                Text("\(items.count) items")
-                    .font(.callout)
-                    .foregroundColor(.secondary)
             }
         }
     }

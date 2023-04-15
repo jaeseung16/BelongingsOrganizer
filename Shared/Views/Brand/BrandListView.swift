@@ -15,12 +15,7 @@ struct BrandListView: View {
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
     
-    @State var brands: [Brand]
-    
-    private var filteredBrands: [Brand] {
-        brands.filter { viewModel.checkIfStringToSearchContainedIn($0.name) }
-    }
-    
+    @State private var filteredBrands = [Brand]()
     @State private var selectedBrand: Brand?
     
     var body: some View {
@@ -31,22 +26,21 @@ struct BrandListView: View {
                     
                     List(selection: $selectedBrand) {
                         ForEach(filteredBrands, id: \.self) { brand in
-                            if let brandName = brand.name {
-                                NavigationLink(value: brand) {
-                                    BrandRowView(name: brandName, itemCount: viewModel.getItemCount(brand))
-                                }
+                            NavigationLink(value: brand) {
+                                BrandRowView(name: brand.name ?? "",
+                                             itemCount: viewModel.getItemCount(brand))
+                                .id(UUID())
                             }
                         }
                         .onDelete(perform: deleteBrands)
                     }
                     .navigationTitle("Brands")
-                    .id(UUID())
                 }
                 
             } detail: {
-                if let brand = selectedBrand, let name = brand.name {
+                if let brand = selectedBrand {
                     BrandDetailView(brand: brand,
-                                    name: name,
+                                    name: brand.name ?? "",
                                     urlString: brand.url?.absoluteString ?? "",
                                     items: viewModel.getItems(brand))
                     .id(UUID())
@@ -55,11 +49,14 @@ struct BrandListView: View {
                 }
             }
         }
-        .onChange(of: viewModel.brands) { newValue in
-            brands = viewModel.brands
+        .onReceive(viewModel.$brands) { _ in
+            filteredBrands = viewModel.filteredBrands
         }
         .onChange(of: viewModel.showAlert) { _ in
             showAlert = viewModel.showAlert
+        }
+        .onReceive(viewModel.$stringToSearch) { _ in
+            filteredBrands = viewModel.filteredBrands
         }
         .sheet(isPresented: $presentAddBrandView, content: {
             AddBrandView()

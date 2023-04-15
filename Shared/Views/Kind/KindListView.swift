@@ -15,11 +15,7 @@ struct KindListView: View {
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
     
-    @State var kinds: [Kind]
-    
-    private var filteredKinds: [Kind] {
-        kinds.filter { viewModel.checkIfStringToSearchContainedIn($0.name) }
-    }
+    @State private var filteredKinds = [Kind]()
     
     @State var selectedKind: Kind?
     
@@ -31,31 +27,35 @@ struct KindListView: View {
                     
                     List(selection: $selectedKind) {
                         ForEach(filteredKinds, id: \.self) { kind in
-                            if let kindName = kind.name {
-                                NavigationLink(value: kind) {
-                                    KindRowView(name: kindName, itemCount: viewModel.getItemCount(kind))
-                                }
+                            NavigationLink(value: kind) {
+                                KindRowView(name: kind.name ?? "",
+                                            itemCount: viewModel.getItemCount(kind))
                             }
+                            .id(UUID())
                         }
                         .onDelete(perform: deleteKinds)
                     }
                     .navigationTitle("Categories")
-                    .id(UUID())
                 }
             } detail: {
-                if let kind = selectedKind, let name = kind.name {
-                    KindDetailView(kind: kind, name: name, items: viewModel.getItems(kind))
+                if let kind = selectedKind {
+                    KindDetailView(kind: kind,
+                                   name: kind.name ?? "",
+                                   items: viewModel.getItems(kind))
                     .id(UUID())
                 } else {
                     Text("Sellect a seller")
                 }
             }
         }
-        .onChange(of: viewModel.kinds) { _ in
-            kinds = viewModel.kinds
+        .onReceive(viewModel.$kinds) { _ in
+            filteredKinds = viewModel.filteredKinds
         }
         .onChange(of: viewModel.showAlert) { _ in
             showAlert = viewModel.showAlert
+        }
+        .onReceive(viewModel.$stringToSearch) { _ in
+            filteredKinds = viewModel.filteredKinds
         }
         .sheet(isPresented: $presentAddKindView) {
             AddKindView()
