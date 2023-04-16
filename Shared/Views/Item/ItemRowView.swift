@@ -10,20 +10,12 @@ import SwiftUI
 struct ItemRowView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
     
-    @State var item: Item {
-        didSet {
-            refresh()
-        }
-    }
-    
+    @State var item: Item
     var imageWidth: CGFloat = 50
-    
-    @State private var name: String = ""
-    @State private var imageData: Data?
     
     var body: some View {
         HStack {
-            if let imageData = imageData {
+            if let imageData = item.image {
             #if os(macOS)
                 if let nsImage = NSImage(data: imageData) {
                     Image(nsImage: nsImage)
@@ -51,7 +43,7 @@ struct ItemRowView: View {
             
             VStack {
                 HStack {
-                    Text(name)
+                    Text(item.name ?? "")
                     Spacer()
                 }
                 
@@ -71,14 +63,7 @@ struct ItemRowView: View {
                 }
             }
         }
-        .onReceive(viewModel.$updated) { _ in
-            refresh()
-        }
     }
-    
-    private func refresh() {
-        name = item.name ?? ""
-        imageData = item.image
-    }
+
 }
 

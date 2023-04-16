@@ -15,12 +15,6 @@ struct SellerListView: View {
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
     
-    @State var sellers: [Seller] {
-        didSet {
-            filteredSellers =  sellers.filter { viewModel.checkIfStringToSearchContainedIn($0.name) }
-        }
-    }
-    
     @State var filteredSellers = [Seller]()
     @State var selectedSeller: Seller?
     
@@ -41,14 +35,14 @@ struct SellerListView: View {
                 .navigationTitle("Seller")
             }
         }
-        .onReceive(viewModel.$updated) { _ in
-            sellers = viewModel.sellers
+        .onReceive(viewModel.$sellers) { _ in
+            filteredSellers = viewModel.filteredSellers
         }
         .onChange(of: viewModel.showAlert) { _ in
             showAlert = viewModel.showAlert
         }
-        .onChange(of: viewModel.stringToSearch) { _ in
-            filteredSellers = sellers.filter { viewModel.checkIfStringToSearchContainedIn($0.name) }
+        .onReceive(viewModel.$stringToSearch) { _ in
+            filteredSellers = viewModel.filteredSellers
         }
         .alert("Unable to Save Data", isPresented: $showAlert) {
             Button("Dismiss") {
@@ -82,10 +76,8 @@ struct SellerListView: View {
             ForEach(filteredSellers) { seller in
                 NavigationLink {
                     SellerDetailView(seller: seller, name: seller.name ?? "", urlString: seller.url?.absoluteString ?? "", items: viewModel.getItems(seller))
-                        .id(UUID())
                 } label: {
                     SellerRowView(name: seller.name ?? "", itemCount: viewModel.getItemCount(seller))
-                        .id(UUID())
                 }
             }
             .onDelete(perform: deleteSellers)

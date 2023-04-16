@@ -40,7 +40,11 @@ class BelongingsViewModel: NSObject, ObservableObject {
     @Published var changedPeristentContext = NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave)
     @Published var showAlert = false
     @Published var stringToSearch = ""
-    @Published var updated = false
+    @Published var updated = false {
+        didSet {
+            fetchEntities()
+        }
+    }
     
     var message = ""
     
@@ -61,37 +65,63 @@ class BelongingsViewModel: NSObject, ObservableObject {
         SDImageCodersManager.shared.addCoder(webPCoder)
         
         self.persistence.container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        
+        fetchEntities()
     }
     
-    var items: [Item] {
-        fetch(NSFetchRequest<Item>(entityName: "Item"))
+    private func fetchEntities() -> Void {
+        fetchItems()
+        fetchKinds()
+        fetchBrands()
+        fetchSellers()
     }
     
-    var kinds: [Kind] {
+    @Published var items = [Item]()
+    
+    func fetchItems() -> Void {
+        items = fetch(NSFetchRequest<Item>(entityName: "Item"))
+    }
+    
+    @Published var kinds = [Kind]()
+    var filteredKinds: [Kind] {
+        kinds.filter { checkIfStringToSearchContainedIn($0.name) }
+    }
+    
+    func fetchKinds() -> Void {
         let sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
                                NSSortDescriptor(key: "created", ascending: false)]
         
         let fetchRequest = NSFetchRequest<Kind>(entityName: "Kind")
         fetchRequest.sortDescriptors = sortDescriptors
-        return fetch(fetchRequest)
+        kinds = fetch(fetchRequest)
     }
     
-    var brands: [Brand] {
+    @Published var brands = [Brand]()
+    var filteredBrands: [Brand] {
+        brands.filter { checkIfStringToSearchContainedIn($0.name) }
+    }
+    
+    func fetchBrands() -> Void {
         let sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
                                NSSortDescriptor(key: "created", ascending: false)]
         
         let fetchRequest = NSFetchRequest<Brand>(entityName: "Brand")
         fetchRequest.sortDescriptors = sortDescriptors
-        return fetch(fetchRequest)
+        brands = fetch(fetchRequest)
     }
     
-    var sellers: [Seller] {
+    @Published var sellers = [Seller]()
+    var filteredSellers: [Seller] {
+        sellers.filter { checkIfStringToSearchContainedIn($0.name) }
+    }
+    
+    func fetchSellers() -> Void {
         let sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
                                NSSortDescriptor(key: "created", ascending: false)]
         
         let fetchRequest = NSFetchRequest<Seller>(entityName: "Seller")
         fetchRequest.sortDescriptors = sortDescriptors
-        return fetch(fetchRequest)
+        sellers = fetch(fetchRequest)
     }
     
     private func fetch<Element>(_ fetchRequest: NSFetchRequest<Element>) -> [Element] {
@@ -461,15 +491,11 @@ class BelongingsViewModel: NSObject, ObservableObject {
         persistenceHelper.save(item: newItem, kind: kind, brand: brand, seller: seller) { result in
             switch result {
             case .success(()):
-                DispatchQueue.main.async {
-                    self.updated.toggle()
-                }
+                self.handleSuccess()
             case .failure(let error):
                 self.logger.error("While saving a new item, occured an unresolved error \(error, privacy: .public)")
                 self.message = "Cannot save a new item with name = \(String(describing: name))"
-                DispatchQueue.main.async {
-                    self.showAlert.toggle()
-                }
+                self.handle(error: error, completionHandler: nil)
             }
         }
     }
@@ -486,15 +512,11 @@ class BelongingsViewModel: NSObject, ObservableObject {
         persistenceHelper.save() { result in
             switch result {
             case .success(()):
-                DispatchQueue.main.async {
-                    self.updated.toggle()
-                }
+                self.handleSuccess()
             case .failure(let error):
                 self.logger.error("While saving a new category, occured an unresolved error \(error, privacy: .public)")
                 self.message = "Cannot save a new category with name = \(String(describing: name))"
-                DispatchQueue.main.async {
-                    self.showAlert.toggle()
-                }
+                self.handle(error: error, completionHandler: nil)
             }
         }
     }
@@ -512,15 +534,11 @@ class BelongingsViewModel: NSObject, ObservableObject {
         persistenceHelper.save() { result in
             switch result {
             case .success(()):
-                DispatchQueue.main.async {
-                    self.updated.toggle()
-                }
+                self.handleSuccess()
             case .failure(let error):
                 self.logger.error("While saving a new brand, occured an unresolved error \(error, privacy: .public)")
                 self.message = "Cannot save a new brand with name = \(String(describing: name))"
-                DispatchQueue.main.async {
-                    self.showAlert.toggle()
-                }
+                self.handle(error: error, completionHandler: nil)
             }
         }
     }
@@ -538,17 +556,12 @@ class BelongingsViewModel: NSObject, ObservableObject {
         persistenceHelper.save() { result in
             switch result {
             case .success(()):
-                DispatchQueue.main.async {
-                    self.updated.toggle()
-                }
+                self.handleSuccess()
             case .failure(let error):
                 self.logger.error("While saving a new seller, occured an unresolved error \(error, privacy: .public)")
                 self.message = "Cannot save a new seller with name = \(String(describing: name))"
-                DispatchQueue.main.async {
-                    self.showAlert.toggle()
-                }
+                self.handle(error: error, completionHandler: nil)
             }
-            
         }
     }
     

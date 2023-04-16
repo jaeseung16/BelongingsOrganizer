@@ -14,12 +14,8 @@ struct KindListView: View {
 
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
-    
-    @State var kinds: [Kind]
-    
-    private var filteredKinds: [Kind] {
-        kinds.filter { viewModel.checkIfStringToSearchContainedIn($0.name) }
-    }
+
+    @State private var filteredKinds = [Kind]()
     
     var body: some View {
         NavigationView {
@@ -39,11 +35,14 @@ struct KindListView: View {
                 .navigationTitle("Categories")
             }
         }
-        .onReceive(viewModel.$updated) { _ in
-            kinds = viewModel.kinds
+        .onReceive(viewModel.$kinds) { _ in
+            filteredKinds = viewModel.filteredKinds
         }
         .onChange(of: viewModel.showAlert) { _ in
             showAlert = viewModel.showAlert
+        }
+        .onReceive(viewModel.$stringToSearch) { _ in
+            filteredKinds = viewModel.filteredKinds
         }
         .alert("Unable to Save Data", isPresented: $showAlert) {
             Button("Dismiss") {
@@ -77,10 +76,8 @@ struct KindListView: View {
             ForEach(filteredKinds) { kind in
                 NavigationLink {
                     KindDetailView(kind: kind, name: kind.name ?? "", items: viewModel.getItems(kind))
-                        .id(UUID())
                 } label: {
                     KindRowView(name: kind.name ?? "", itemCount: viewModel.getItemCount(kind))
-                        .id(UUID())
                 }
             }
             .onDelete(perform: deleteKinds)

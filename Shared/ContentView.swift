@@ -19,19 +19,19 @@ struct ContentView: View {
                     Text("Items")
                 }
             
-            KindListView(kinds: viewModel.kinds)
+            KindListView()
                 .tabItem {
                     Image(systemName: "list.dash")
                     Text("Categories")
                 }
             
-            BrandListView(brands: viewModel.brands)
+            BrandListView()
                 .tabItem {
                     Image(systemName: "r.circle")
                     Text("Brands")
                 }
             
-            SellerListView(sellers: viewModel.sellers)
+            SellerListView()
                 .tabItem {
                     Image(systemName: "shippingbox.fill")
                     Text("Sellers")

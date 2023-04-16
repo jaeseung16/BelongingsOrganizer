@@ -15,11 +15,7 @@ struct BrandListView: View {
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
     
-    @State var brands: [Brand]
-    
-    private var filteredBrands: [Brand] {
-        brands.filter { viewModel.checkIfStringToSearchContainedIn($0.name) }
-    }
+    @State private var filteredBrands = [Brand]()
     
     var body: some View {
         NavigationView {
@@ -38,11 +34,14 @@ struct BrandListView: View {
                 .navigationTitle("Brands")
             }
         }
-        .onReceive(viewModel.$updated) { _ in
-            brands = viewModel.brands
+        .onReceive(viewModel.$brands) { _ in
+            filteredBrands = viewModel.filteredBrands
         }
         .onChange(of: viewModel.showAlert) { _ in
             showAlert = viewModel.showAlert
+        }
+        .onReceive(viewModel.$stringToSearch) { _ in
+            filteredBrands = viewModel.filteredBrands
         }
         .alert("Unable to Save Data", isPresented: $showAlert) {
             Button("Dismiss") {
@@ -76,10 +75,8 @@ struct BrandListView: View {
             ForEach(filteredBrands) { brand in
                 NavigationLink {
                     BrandDetailView(brand: brand, name: brand.name ?? "", urlString: brand.url?.absoluteString ?? "", items: viewModel.getItems(brand))
-                        .id(UUID())
                 } label: {
                     BrandRowView(name: brand.name ?? "", itemCount: viewModel.getItemCount(brand))
-                        .id(UUID())
                 }
             }
             .onDelete(perform: deleteBrands)
