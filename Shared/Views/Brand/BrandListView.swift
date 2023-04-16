@@ -74,27 +74,17 @@ struct BrandListView: View {
     private func brandListView() -> some View {
         List {
             ForEach(filteredBrands) { brand in
-                if let brandName = brand.name {
-                    NavigationLink(destination: BrandDetailView(brand: brand,
-                                                                name: brandName,
-                                                                urlString: brand.url?.absoluteString ?? "",
-                                                                items: getItems(brand))) {
-                        BrandRowView(brand: brand)
-                    }
+                NavigationLink {
+                    BrandDetailView(brand: brand, name: brand.name ?? "", urlString: brand.url?.absoluteString ?? "", items: viewModel.getItems(brand))
+                        .id(UUID())
+                } label: {
+                    BrandRowView(name: brand.name ?? "", itemCount: viewModel.getItemCount(brand))
+                        .id(UUID())
                 }
             }
             .onDelete(perform: deleteBrands)
         }
         .id(UUID())
-    }
-    
-    private func getItems(_ brand: Brand) -> [Item] {
-        guard let items = brand.items else {
-            return [Item]()
-        }
-        
-        return items.compactMap { $0 as? Item }
-            .sorted { ($0.obtained ?? Date()) > ($1.obtained ?? Date()) }
     }
     
     private func deleteBrands(offsets: IndexSet) {

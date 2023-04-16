@@ -156,7 +156,7 @@ struct FilterItemsView: View {
             switch (selectedFilter) {
             case .kind:
                 ForEach(kinds, id: \.id) { kind in
-                    if kind.name != nil {
+                    if let kindName = kind.name {
                         Button {
                             if selectedKinds.contains(kind) {
                                 selectedKinds.remove(kind)
@@ -164,13 +164,13 @@ struct FilterItemsView: View {
                                 selectedKinds.insert(kind)
                             }
                         } label: {
-                            KindRowView(kind: kind)
+                            KindRowView(name: kindName, itemCount: viewModel.getItemCount(kind))
                         }
                     }
                 }
             case .brand:
                 ForEach(brands, id: \.id) { brand in
-                    if brand.name != nil {
+                    if let brandName = brand.name {
                         Button {
                             if selectedBrands.contains(brand) {
                                 selectedBrands.remove(brand)
@@ -178,7 +178,7 @@ struct FilterItemsView: View {
                                 selectedBrands.insert(brand)
                             }
                         } label: {
-                            BrandRowView(brand: brand)
+                            BrandRowView(name: brandName, itemCount: viewModel.getItemCount(brand))
                         }
                     }
                 }

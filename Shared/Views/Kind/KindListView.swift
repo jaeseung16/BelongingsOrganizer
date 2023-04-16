@@ -75,26 +75,19 @@ struct KindListView: View {
     private func kindListView() -> some View {
         List {
             ForEach(filteredKinds) { kind in
-                if let kindName = kind.name {
-                    NavigationLink(destination: KindDetailView(kind: kind, name: kindName, items: getItems(kind))) {
-                        KindRowView(kind: kind)
-                    }
+                NavigationLink {
+                    KindDetailView(kind: kind, name: kind.name ?? "", items: viewModel.getItems(kind))
+                        .id(UUID())
+                } label: {
+                    KindRowView(name: kind.name ?? "", itemCount: viewModel.getItemCount(kind))
+                        .id(UUID())
                 }
             }
             .onDelete(perform: deleteKinds)
         }
         .id(UUID())
     }
-    
-    private func getItems(_ kind: Kind) -> [Item] {
-        guard let items = kind.items else {
-            return [Item]()
-        }
-        
-        return items.compactMap { $0 as? Item }
-            .sorted { ($0.obtained ?? Date()) > ($1.obtained ?? Date()) }
-    }
-    
+
     private func deleteKinds(offsets: IndexSet) {
         withAnimation {
             viewModel.delete(offsets.map { filteredKinds[$0] }) { _ in

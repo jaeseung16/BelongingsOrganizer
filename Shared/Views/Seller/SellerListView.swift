@@ -80,27 +80,17 @@ struct SellerListView: View {
     private func sellerListView() -> some View {
         List {
             ForEach(filteredSellers) { seller in
-                if let sellerName = seller.name {
-                    NavigationLink(destination: SellerDetailView(seller: seller,
-                                                                 name: sellerName,
-                                                                 urlString: seller.url?.absoluteString ?? "",
-                                                                 items: getItems(seller))) {
-                        SellerRowView(name: sellerName, itemCount: getItems(seller).count)
-                    }
+                NavigationLink {
+                    SellerDetailView(seller: seller, name: seller.name ?? "", urlString: seller.url?.absoluteString ?? "", items: viewModel.getItems(seller))
+                        .id(UUID())
+                } label: {
+                    SellerRowView(name: seller.name ?? "", itemCount: viewModel.getItemCount(seller))
+                        .id(UUID())
                 }
             }
             .onDelete(perform: deleteSellers)
         }
         .id(UUID())
-    }
-    
-    private func getItems(_ seller: Seller) -> [Item] {
-        guard let items = seller.items else {
-            return [Item]()
-        }
-        
-        return items.compactMap { $0 as? Item }
-            .sorted { ($0.obtained ?? Date()) > ($1.obtained ?? Date()) }
     }
     
     private func sellerRowView(_ seller: Seller, name: String) -> some View {

@@ -10,14 +10,8 @@ import SwiftUI
 struct BrandRowView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
     
-    @State var brand: Brand {
-        didSet {
-            refresh()
-        }
-    }
-    
-    @State private var name: String?
-    @State private var itemCount = 0
+    @State var name: String?
+    @State var itemCount = 0
     
     var body: some View {
         HStack {
@@ -31,14 +25,7 @@ struct BrandRowView: View {
                 .font(.callout)
                 .foregroundColor(.secondary)
         }
-        .onReceive(viewModel.$updated) { _ in
-            refresh()
-        }
     }
-    
-    private func refresh() {
-        name = brand.name
-        itemCount = brand.items?.count ?? 0
-    }
+
 }
 

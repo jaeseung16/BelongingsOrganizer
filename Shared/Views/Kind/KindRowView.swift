@@ -10,14 +10,8 @@ import SwiftUI
 struct KindRowView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
     
-    @State var kind: Kind {
-        didSet {
-            refresh()
-        }
-    }
-    
-    @State private var name: String?
-    @State private var itemCount = 0
+    @State var name: String?
+    @State var itemCount = 0
     
     var body: some View {
         HStack {
@@ -31,13 +25,6 @@ struct KindRowView: View {
                 .font(.callout)
                 .foregroundColor(.secondary)
         }
-        .onReceive(viewModel.$updated) { _ in
-            refresh()
-        }
     }
-    
-    private func refresh() {
-        name = kind.name
-        itemCount = kind.items?.count ?? 0
-    }
+
 }
