@@ -106,6 +106,12 @@ struct ItemListView: View {
                     .id(UUID())
                 }
             }
+            .sheet(isPresented: $presentAddItemView) {
+                AddItemView(geometry: geometry)
+                    .environmentObject(viewModel)
+                    .frame(minWidth: 350, minHeight: 550)
+                    .padding()
+            }
         }
         .sheet(isPresented: $presentFilterItemsView) {
             FilterItemsView(selectedKinds: $selectedKinds, selectedBrands: $selectedBrands, selectedSellers: $selectedSellers)
