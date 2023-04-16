@@ -15,34 +15,32 @@ struct SellerListView: View {
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
     
-    @State var filteredSellers = [Seller]()
+    @State var sellers = [Seller]()
     @State var selectedSeller: Seller?
     
     var body: some View {
         NavigationView {
-            GeometryReader { geometry in
-                VStack {
-                    header()
-                    
-                    sellerListView()
-                    .sheet(isPresented: $presentAddSelleriew, content: {
-                        AddSellerView()
-                            .environmentObject(viewModel)
-                            .frame(minWidth: 350, minHeight: 450)
-                            .padding()
-                    })
-                }
-                .navigationTitle("Seller")
+            VStack {
+                header()
+                
+                sellerListView()
+                .sheet(isPresented: $presentAddSelleriew, content: {
+                    AddSellerView()
+                        .environmentObject(viewModel)
+                        .frame(minWidth: 350, minHeight: 450)
+                        .padding()
+                })
             }
+            .navigationTitle("Seller")
         }
-        .onReceive(viewModel.$sellers) { _ in
-            filteredSellers = viewModel.filteredSellers
+        .onChange(of: viewModel.sellers) { _ in
+            sellers = viewModel.filteredSellers
         }
         .onChange(of: viewModel.showAlert) { _ in
             showAlert = viewModel.showAlert
         }
-        .onReceive(viewModel.$stringToSearch) { _ in
-            filteredSellers = viewModel.filteredSellers
+        .onChange(of: viewModel.stringToSearch) { _ in
+            sellers = viewModel.filteredSellers
         }
         .alert("Unable to Save Data", isPresented: $showAlert) {
             Button("Dismiss") {
@@ -73,7 +71,7 @@ struct SellerListView: View {
     
     private func sellerListView() -> some View {
         List {
-            ForEach(filteredSellers) { seller in
+            ForEach(sellers) { seller in
                 NavigationLink {
                     SellerDetailView(seller: seller, name: seller.name ?? "", urlString: seller.url?.absoluteString ?? "", items: viewModel.getItems(seller))
                 } label: {
@@ -101,7 +99,7 @@ struct SellerListView: View {
     
     private func deleteSellers(offsets: IndexSet) {
         withAnimation {
-            viewModel.delete(offsets.map { filteredSellers[$0] }) { _ in
+            viewModel.delete(offsets.map { sellers[$0] }) { _ in
                 showAlertForDeletion.toggle()
             }
         }

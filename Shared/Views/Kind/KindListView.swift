@@ -15,34 +15,32 @@ struct KindListView: View {
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
 
-    @State private var filteredKinds = [Kind]()
+    @State var kinds = [Kind]()
     
     var body: some View {
         NavigationView {
-            GeometryReader { geometry in
-                VStack {
-                    header()
-                    
-                    kindListView()
-                        .sheet(isPresented: $presentAddKindView) {
-                            AddKindView()
-                                .environmentObject(viewModel)
-                                .frame(minWidth: 350, minHeight: 450)
-                                .padding()
-                            
-                        }
-                }
-                .navigationTitle("Categories")
+            VStack {
+                header()
+                
+                kindListView()
+                    .sheet(isPresented: $presentAddKindView) {
+                        AddKindView()
+                            .environmentObject(viewModel)
+                            .frame(minWidth: 350, minHeight: 450)
+                            .padding()
+                        
+                    }
             }
+            .navigationTitle("Categories")
         }
-        .onReceive(viewModel.$kinds) { _ in
-            filteredKinds = viewModel.filteredKinds
+        .onChange(of: viewModel.kinds) { _ in
+            kinds = viewModel.filteredKinds
         }
         .onChange(of: viewModel.showAlert) { _ in
             showAlert = viewModel.showAlert
         }
-        .onReceive(viewModel.$stringToSearch) { _ in
-            filteredKinds = viewModel.filteredKinds
+        .onChange(of: viewModel.stringToSearch) { _ in
+            kinds = viewModel.filteredKinds
         }
         .alert("Unable to Save Data", isPresented: $showAlert) {
             Button("Dismiss") {
@@ -73,7 +71,7 @@ struct KindListView: View {
     
     private func kindListView() -> some View {
         List {
-            ForEach(filteredKinds) { kind in
+            ForEach(kinds) { kind in
                 NavigationLink {
                     KindDetailView(kind: kind, name: kind.name ?? "", items: viewModel.getItems(kind))
                 } label: {
@@ -87,7 +85,7 @@ struct KindListView: View {
 
     private func deleteKinds(offsets: IndexSet) {
         withAnimation {
-            viewModel.delete(offsets.map { filteredKinds[$0] }) { _ in
+            viewModel.delete(offsets.map { kinds[$0] }) { _ in
                 showAlertForDeletion.toggle()
             }
         }

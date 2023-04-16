@@ -45,6 +45,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
             fetchEntities()
         }
     }
+    @Published var cloudUpdated = false
     
     var message = ""
     
@@ -84,7 +85,13 @@ class BelongingsViewModel: NSObject, ObservableObject {
     
     @Published var kinds = [Kind]()
     var filteredKinds: [Kind] {
-        kinds.filter { checkIfStringToSearchContainedIn($0.name) }
+        kinds.filter {
+            if let name = $0.name {
+                return checkIfStringToSearchContainedIn(name)
+            } else {
+                return false
+            }
+        }
     }
     
     func fetchKinds() -> Void {
@@ -98,7 +105,13 @@ class BelongingsViewModel: NSObject, ObservableObject {
     
     @Published var brands = [Brand]()
     var filteredBrands: [Brand] {
-        brands.filter { checkIfStringToSearchContainedIn($0.name) }
+        brands.filter {
+            if let name = $0.name {
+                return checkIfStringToSearchContainedIn(name)
+            } else {
+                return false
+            }
+        }
     }
     
     func fetchBrands() -> Void {
@@ -112,7 +125,13 @@ class BelongingsViewModel: NSObject, ObservableObject {
     
     @Published var sellers = [Seller]()
     var filteredSellers: [Seller] {
-        sellers.filter { checkIfStringToSearchContainedIn($0.name) }
+        sellers.filter {
+            if let name = $0.name {
+                return checkIfStringToSearchContainedIn(name)
+            } else {
+                return false
+            }
+        }
     }
     
     func fetchSellers() -> Void {
@@ -235,7 +254,9 @@ class BelongingsViewModel: NSObject, ObservableObject {
             fetchedLinks = try persistenceContainer.viewContext.fetch(fetchRequest)
         } catch {
             logger.error("Failed to fetch \(entity.rawValue) with uuid = \(id): \(error.localizedDescription)")
-            showAlert.toggle()
+            DispatchQueue.main.async {
+                self.showAlert.toggle()
+            }
         }
         
         return fetchedLinks.isEmpty ? nil : fetchedLinks[0]
@@ -275,7 +296,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
             switch result {
             case .success(()):
                 DispatchQueue.main.async {
-                    self.updated.toggle()
+                    self.cloudUpdated.toggle()
                 }
             case .failure(let error):
                 self.logger.log("Error while updating history: \(error.localizedDescription, privacy: .public) \(Thread.callStackSymbols, privacy: .public)")
@@ -284,13 +305,11 @@ class BelongingsViewModel: NSObject, ObservableObject {
     }
     
     // MARK: -
-    public func checkIfStringToSearchContainedIn(_ input: String?) -> Bool {
+    public func checkIfStringToSearchContainedIn(_ input: String) -> Bool {
         if stringToSearch == "" {
             return true
-        } else if let input = input {
-            return input.lowercased().contains(stringToSearch.lowercased())
         } else {
-            return false
+            return input.lowercased().contains(stringToSearch.lowercased())
         }
     }
     

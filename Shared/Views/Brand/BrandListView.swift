@@ -15,33 +15,31 @@ struct BrandListView: View {
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
     
-    @State private var filteredBrands = [Brand]()
+    @State var brands = [Brand]()
     
     var body: some View {
         NavigationView {
-            GeometryReader { geometry in
-                VStack {
-                    header()
-                    
-                    brandListView()
-                    .sheet(isPresented: $presentAddBrandView, content: {
-                        AddBrandView()
-                            .environmentObject(viewModel)
-                            .frame(minWidth: 350, minHeight: 450)
-                            .padding()
-                    })
-                }
-                .navigationTitle("Brands")
+            VStack {
+                header()
+                
+                brandListView()
+                .sheet(isPresented: $presentAddBrandView, content: {
+                    AddBrandView()
+                        .environmentObject(viewModel)
+                        .frame(minWidth: 350, minHeight: 450)
+                        .padding()
+                })
             }
+            .navigationTitle("Brands")
         }
-        .onReceive(viewModel.$brands) { _ in
-            filteredBrands = viewModel.filteredBrands
+        .onChange(of: viewModel.brands) { _ in
+            brands = viewModel.filteredBrands
         }
         .onChange(of: viewModel.showAlert) { _ in
             showAlert = viewModel.showAlert
         }
-        .onReceive(viewModel.$stringToSearch) { _ in
-            filteredBrands = viewModel.filteredBrands
+        .onChange(of: viewModel.stringToSearch) { _ in
+            brands = viewModel.filteredBrands
         }
         .alert("Unable to Save Data", isPresented: $showAlert) {
             Button("Dismiss") {
@@ -72,7 +70,7 @@ struct BrandListView: View {
     
     private func brandListView() -> some View {
         List {
-            ForEach(filteredBrands) { brand in
+            ForEach(brands) { brand in
                 NavigationLink {
                     BrandDetailView(brand: brand, name: brand.name ?? "", urlString: brand.url?.absoluteString ?? "", items: viewModel.getItems(brand))
                 } label: {
@@ -86,7 +84,7 @@ struct BrandListView: View {
     
     private func deleteBrands(offsets: IndexSet) {
         withAnimation {
-            viewModel.delete(offsets.map { filteredBrands[$0] }) { _ in
+            viewModel.delete(offsets.map { brands[$0] }) { _ in
                 showAlertForDeletion.toggle()
             }
         }
