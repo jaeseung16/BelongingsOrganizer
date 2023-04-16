@@ -320,7 +320,7 @@ struct ItemDetailView: View {
                 
                 Button {
                     presentPhotoView = true
-                    viewModel.addItemViewModel.reset()
+                    viewModel.persistenceHelper.reset()
                 } label: {
                     Text("edit")
                 }

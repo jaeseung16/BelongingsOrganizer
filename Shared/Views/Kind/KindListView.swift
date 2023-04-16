@@ -64,7 +64,7 @@ struct KindListView: View {
     private func header() -> some View {
         HStack {
             Button(action: {
-                viewModel.addItemViewModel.reset()
+                viewModel.persistenceHelper.reset()
                 presentAddKindView = true
             }) {
                 Label("Add a category", systemImage: "plus")

@@ -69,7 +69,7 @@ struct SellerListView: View {
     private func header() -> some View {
         HStack {
             Button(action: {
-                viewModel.addItemViewModel.reset()
+                viewModel.persistenceHelper.reset()
                 presentAddSelleriew = true
             }) {
                 Label("Add a seller", systemImage: "plus")
