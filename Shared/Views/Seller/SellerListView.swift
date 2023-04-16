@@ -44,8 +44,6 @@ struct SellerListView: View {
                                      urlString: seller.url?.absoluteString ?? "",
                                      items: viewModel.getItems(seller))
                     .id(UUID())
-                } else {
-                    Text("Sellect a seller")
                 }
             }
         }
