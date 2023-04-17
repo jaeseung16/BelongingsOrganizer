@@ -85,23 +85,26 @@ struct ItemListView: View {
                     Divider()
                     
                     itemListView()
-                        .sheet(isPresented: $presentAddItemView) {
-                            AddItemView(geometry: geometry)
-                                .environmentObject(viewModel)
-                                .frame(minWidth: 350, minHeight: 550)
-                                .padding()
-                        }
+                    
                 }
                 .navigationTitle("Items")
             }
         }
+        .sheet(isPresented: $presentAddItemView) {
+            AddItemView()
+                .environmentObject(viewModel)
+                .frame(minWidth: 350, minHeight: 550)
+                .padding()
+        }
         .sheet(isPresented: $presentFilterItemsView) {
             FilterItemsView(selectedKinds: $selectedKinds, selectedBrands: $selectedBrands, selectedSellers: $selectedSellers)
+                .environmentObject(viewModel)
                 .frame(minWidth: 350, minHeight: 450)
                 .padding()
         }
         .sheet(isPresented: $presentSortItemView) {
             SortItemsView(sortType: $sortType, sortDirection: $sortDirection)
+                .environmentObject(viewModel)
                 .frame(minWidth: 350, minHeight: 100)
                 .padding()
         }
@@ -160,25 +163,22 @@ struct ItemListView: View {
     private func itemListView() -> some View {
         List {
             ForEach(filteredItems) { item in
-                if let itemName = item.name {
-                    NavigationLink(destination: ItemDetailView(item: item,
-                                                               imageData: item.image,
-                                                               name: itemName,
-                                                               quantity: Int(item.quantity),
-                                                               buyPrice: item.buyPrice,
-                                                               sellPrice: item.sellPrice,
-                                                               buyCurrency: item.buyCurrency ?? "USD",
-                                                               sellCurrency: item.sellCurrency ?? "USD",
-                                                               note: item.note ?? "",
-                                                               obtained: item.obtained ?? Date(),
-                                                               disposed: item.disposed ?? Date())) {
-                        ItemRowView(item: item)
-                    }
+                NavigationLink(destination: ItemDetailView(item: item,
+                                                           imageData: item.image,
+                                                           name: item.name ?? "",
+                                                           quantity: Int(item.quantity),
+                                                           buyPrice: item.buyPrice,
+                                                           sellPrice: item.sellPrice,
+                                                           buyCurrency: item.buyCurrency ?? "USD",
+                                                           sellCurrency: item.sellCurrency ?? "USD",
+                                                           note: item.note ?? "",
+                                                           obtained: item.obtained ?? Date(),
+                                                           disposed: item.disposed ?? Date())) {
+                    ItemRowView(item: item)
                 }
             }
             .onDelete(perform: deleteItems)
         }
-        .id(UUID())
     }
     
     private func deleteItems(offsets: IndexSet) {

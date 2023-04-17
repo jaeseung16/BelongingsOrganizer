@@ -41,8 +41,6 @@ struct AddItemView: View {
     
     @State private var classificationResult = "classificationResult"
     
-    var geometry: GeometryProxy
-    
     var body: some View {
         GeometryReader { geometry in
             VStack {
@@ -57,6 +55,7 @@ struct AddItemView: View {
                 
                 actions()
             }
+            .padding()
             .sheet(isPresented: $presentChooseKindView, content: {
                 ChooseKindView(selectedKinds: $kind)
                     .environmentObject(viewModel)
@@ -346,21 +345,19 @@ struct AddItemView: View {
         HStack {
             Spacer()
             
-            Button(action: {
+            Button {
                 dismiss.callAsFunction()
-            },
-            label: {
+            } label: {
                 Text("Cancel")
-            })
+            }
             
             Spacer()
             
-            Button(action: {
+            Button {
                 saveBelonging()
-            },
-            label: {
+            } label: {
                 Label("Save", systemImage: "square.and.arrow.down")
-            })
+            }
             
             Spacer()
         }
