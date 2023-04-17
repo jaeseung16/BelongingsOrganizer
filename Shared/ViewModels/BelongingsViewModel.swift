@@ -45,7 +45,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
             fetchEntities()
         }
     }
-    @Published var cloudUpdated = false
+    var cloudUpdated = false
     
     var message = ""
     
@@ -68,6 +68,24 @@ class BelongingsViewModel: NSObject, ObservableObject {
         self.persistence.container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         
         fetchEntities()
+        
+        /*
+        $cloudUpdated
+            .throttle(for: .seconds(60), scheduler: DispatchQueue.main, latest: true)
+            .sink { _ in
+                self.logger.info("cloudUpdated=\(self.cloudUpdated)")
+                self.fetchEntities()
+            }
+            .store(in: &subscriptions)
+        */
+        /*
+        $stringToSearch
+            .throttle(for: .seconds(2), scheduler: DispatchQueue.main, latest: true)
+            .sink { _ in
+                self.logger.info("\(self.stringToSearch)")
+            }
+            .store(in: &subscriptions)
+        */
     }
     
     private func fetchEntities() -> Void {

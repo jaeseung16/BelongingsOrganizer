@@ -105,7 +105,7 @@ struct ItemListView: View {
                 .frame(minWidth: 350, minHeight: 100)
                 .padding()
         }
-        .onReceive(viewModel.$updated) { _ in
+        .onChange(of: viewModel.items) { _ in
             items = viewModel.items
         }
         .onChange(of: viewModel.showAlert) { _ in
@@ -137,18 +137,18 @@ struct ItemListView: View {
             
             Spacer()
             
-            Button(action: {
+            Button {
                 presentSortItemView = true
-            }) {
+            } label: {
                 Label("Sort", systemImage: "list.number")
             }
             
             Spacer()
             
-            Button(action: {
+            Button {
                 viewModel.persistenceHelper.reset()
                 presentAddItemView = true
-            }) {
+            } label: {
                 Label("Add", systemImage: "plus")
             }
             
@@ -178,6 +178,7 @@ struct ItemListView: View {
             }
             .onDelete(perform: deleteItems)
         }
+        .id(UUID())
     }
     
     private func deleteItems(offsets: IndexSet) {

@@ -57,7 +57,6 @@ class ImagePaster: ImagePasting {
                     } else {
                         ImagePaster.logger.log("download")
                         self.download(from: info) { item, error in
-                            var imageData: Data?
                             if let item = item as? Data, let url = URL(dataRepresentation: item, relativeTo: nil) {
                                 ImagePaster.logger.log("url=\(url, privacy: .public)")
                                 let request = URLRequest(url: url as URL, timeoutInterval: 15)
@@ -72,7 +71,7 @@ class ImagePaster: ImagePasting {
                                 task.resume()
                             }
                             ImagePaster.logger.log("download: imageData=\(String(describing: imageData), privacy: .public)")
-                            completionHandler(imageData, error)
+                            completionHandler(nil, error)
                         }
                     }
                 }
