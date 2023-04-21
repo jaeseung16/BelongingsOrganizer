@@ -8,7 +8,7 @@
 import Foundation
 
 enum StatsType: CaseIterable, Identifiable {
-    case kind, brand, seller
+    case obtained, disposed
     
     var id: Self { self }
 }

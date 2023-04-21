@@ -335,26 +335,26 @@ class BelongingsViewModel: NSObject, ObservableObject {
     private let maxCountForStats = 10
     private let others = "others"
     
-    public func itemCountsByKind(from start: Date, to end: Date) -> [KindStats] {
+    public func itemCountsByKind(type: StatsType, from start: Date, to end: Date) -> [KindStats] {
         var result = [KindStats]()
-        let itemsObtainedBetweenStartAndEnd = itemsObtainedBetween(from: start, to: end)
+        let itemsBetweenStartAndEnd = type == .obtained ? itemsObtainedBetween(from: start, to: end) : itemsDisposedBetween(from: start, to: end)
         
-        var itemsObtainedByKind = [String: Int]()
-        for item in itemsObtainedBetweenStartAndEnd {
+        var itemsByKind = [String: Int]()
+        for item in itemsBetweenStartAndEnd {
             if let kindSet = item.kind {
                 for kind in kindSet {
                     if let kind = kind as? Kind, let name = kind.name {
-                        if let itemcount = itemsObtainedByKind[name] {
-                            itemsObtainedByKind[name] = itemcount + 1
+                        if let itemcount = itemsByKind[name] {
+                            itemsByKind[name] = itemcount + 1
                         } else {
-                            itemsObtainedByKind[name] = 1
+                            itemsByKind[name] = 1
                         }
                     }
                 }
             }
         }
         
-        let itemCountsByKind = itemsObtainedByKind.map { (name, itemCount) in
+        let itemCountsByKind = itemsByKind.map { (name, itemCount) in
             return KindStats(name: name, itemCount: itemCount)
         }.sorted(by: { $0.itemCount > $1.itemCount })
         
@@ -366,7 +366,6 @@ class BelongingsViewModel: NSObject, ObservableObject {
         }
         
         return result
-        
     }
     
     private func itemsObtainedBetween(from start: Date, to end: Date) -> [Item] {
@@ -382,26 +381,39 @@ class BelongingsViewModel: NSObject, ObservableObject {
         }
     }
     
-    public func itemCountByBrand(from start: Date, to end: Date) -> [BrandStats] {
+    private func itemsDisposedBetween(from start: Date, to end: Date) -> [Item] {
+        let calendar = Calendar.current
+        let startDate = calendar.startOfDay(for: start)
+        let endDate = calendar.startOfDay(for: end)
+        return items.filter { item in
+            if item.kind != nil, let obtained = item.disposed {
+                return calendar.compare(startDate, to: obtained, toGranularity: .hour) != .orderedDescending && calendar.compare(obtained, to: endDate, toGranularity: .hour) != .orderedDescending
+            } else {
+                return false
+            }
+        }
+    }
+    
+    public func itemCountByBrand(type: StatsType, from start: Date, to end: Date) -> [BrandStats] {
         var result = [BrandStats]()
-        let itemsObtainedBetweenStartAndEnd = itemsObtainedBetween(from: start, to: end)
+        let itemsBetweenStartAndEnd = type == .obtained ? itemsObtainedBetween(from: start, to: end) : itemsDisposedBetween(from: start, to: end)
         
-        var itemsObtainedByBrand = [String: Int]()
-        for item in itemsObtainedBetweenStartAndEnd {
+        var itemsByBrand = [String: Int]()
+        for item in itemsBetweenStartAndEnd {
             if let brandSet = item.brand {
                 for brand in brandSet {
                     if let brand = brand as? Brand, let name = brand.name {
-                        if let itemcount = itemsObtainedByBrand[name] {
-                            itemsObtainedByBrand[name] = itemcount + 1
+                        if let itemcount = itemsByBrand[name] {
+                            itemsByBrand[name] = itemcount + 1
                         } else {
-                            itemsObtainedByBrand[name] = 1
+                            itemsByBrand[name] = 1
                         }
                     }
                 }
             }
         }
         
-        let itemCountsByBrand = itemsObtainedByBrand.map { (name, itemCount) in
+        let itemCountsByBrand = itemsByBrand.map { (name, itemCount) in
             return BrandStats(name: name, itemCount: itemCount)
         }.sorted(by: { $0.itemCount > $1.itemCount })
         
@@ -416,26 +428,26 @@ class BelongingsViewModel: NSObject, ObservableObject {
         
     }
     
-    public func itemCountBySeller(from start: Date, to end: Date) -> [SellerStats] {
+    public func itemCountBySeller(type: StatsType, from start: Date, to end: Date) -> [SellerStats] {
         var result = [SellerStats]()
-        let itemsObtainedBetweenStartAndEnd = itemsObtainedBetween(from: start, to: end)
+        let itemsBetweenStartAndEnd = type == .obtained ? itemsObtainedBetween(from: start, to: end) : itemsDisposedBetween(from: start, to: end)
         
-        var itemsObtainedBySeller = [String: Int]()
-        for item in itemsObtainedBetweenStartAndEnd {
+        var itemsBySeller = [String: Int]()
+        for item in itemsBetweenStartAndEnd {
             if let brandSet = item.brand {
                 for brand in brandSet {
                     if let brand = brand as? Brand, let name = brand.name {
-                        if let itemcount = itemsObtainedBySeller[name] {
-                            itemsObtainedBySeller[name] = itemcount + 1
+                        if let itemcount = itemsBySeller[name] {
+                            itemsBySeller[name] = itemcount + 1
                         } else {
-                            itemsObtainedBySeller[name] = 1
+                            itemsBySeller[name] = 1
                         }
                     }
                 }
             }
         }
         
-        let itemCountsBySeller =  itemsObtainedBySeller.map { (name, itemCount) in
+        let itemCountsBySeller =  itemsBySeller.map { (name, itemCount) in
             return SellerStats(name: name, itemCount: itemCount)
         }.sorted(by: { $0.itemCount > $1.itemCount })
         

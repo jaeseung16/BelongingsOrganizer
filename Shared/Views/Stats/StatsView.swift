@@ -11,30 +11,26 @@ import SwiftUI
 struct StatsView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
     
-    @State private var statsType = StatsType.kind
+    @State private var statsType = StatsType.obtained
     @State private var start = Calendar.current.date(byAdding: DateComponents(day: -7), to: Date())!
     @State private var end = Date()
     
     private var itemCountByKind: [KindStats] {
-        viewModel.itemCountsByKind(from: start, to: end)
+        viewModel.itemCountsByKind(type: statsType, from: start, to: end)
     }
     
     private var itemCountByBrand: [BrandStats] {
-        viewModel.itemCountByBrand(from: start, to: end)
+        viewModel.itemCountByBrand(type: statsType, from: start, to: end)
     }
     
     private var itemCountBySeller: [SellerStats] {
-        viewModel.itemCountBySeller(from: start, to: end)
+        viewModel.itemCountBySeller(type: statsType, from: start, to: end)
     }
     
     var body: some View {
         GeometryReader { geometry in
             VStack {
-                HStack {
-                    Spacer()
-                    header
-                        .frame(width: 250, height: 0.1 * geometry.size.height)
-                }
+                header(geometry)
                 
                 Spacer(minLength: 20.0)
                 
@@ -64,10 +60,19 @@ struct StatsView: View {
         }
     }
     
-    private var header: some View {
-        VStack {
-            DatePicker("Start Date", selection: $start, displayedComponents: [.date])
-            DatePicker("End Date", selection: $end, displayedComponents: [.date])
+    private func header(_ geometry: GeometryProxy) -> some View {
+        HStack {
+            Spacer()
+            VStack {
+                Picker("Obtained/Disposed", selection: $statsType) {
+                    Text("Obtained").tag(StatsType.obtained)
+                    Text("Disposed").tag(StatsType.disposed)
+                }
+                .pickerStyle(.segmented)
+                DatePicker("Start Date", selection: $start, displayedComponents: [.date])
+                DatePicker("End Date", selection: $end, displayedComponents: [.date])
+            }
+            .frame(width: 250, height: 0.1 * geometry.size.height)
         }
     }
     
