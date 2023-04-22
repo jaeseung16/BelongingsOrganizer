@@ -371,7 +371,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     private func itemsObtainedBetween(from start: Date, to end: Date) -> [Item] {
         let calendar = Calendar.current
         let startDate = calendar.startOfDay(for: start)
-        let endDate = calendar.startOfDay(for: end)
+        let endDate = calendar.date(byAdding: DateComponents(day: 1), to: calendar.startOfDay(for: end))!
         return items.filter { item in
             if let obtained = item.obtained {
                 return calendar.compare(startDate, to: obtained, toGranularity: .hour) != .orderedDescending && calendar.compare(obtained, to: endDate, toGranularity: .hour) != .orderedDescending
