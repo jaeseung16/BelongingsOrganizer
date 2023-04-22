@@ -434,9 +434,9 @@ class BelongingsViewModel: NSObject, ObservableObject {
         
         var itemsBySeller = [String: Int]()
         for item in itemsBetweenStartAndEnd {
-            if let brandSet = item.brand {
-                for brand in brandSet {
-                    if let brand = brand as? Brand, let name = brand.name {
+            if let sellerSet = item.seller {
+                for seller in sellerSet {
+                    if let seller = seller as? Seller, let name = seller.name {
                         if let itemcount = itemsBySeller[name] {
                             itemsBySeller[name] = itemcount + 1
                         } else {
