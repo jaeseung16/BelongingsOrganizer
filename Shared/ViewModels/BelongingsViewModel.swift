@@ -181,6 +181,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
                 existingEntity.sellPrice = itemDTO.sellPrice ?? 0.0
                 existingEntity.buyCurrency = itemDTO.buyCurrency
                 existingEntity.sellCurrency = itemDTO.sellCurrency
+                existingEntity.obtained = itemDTO.obtained
                 existingEntity.disposed = itemDTO.disposed
                 existingEntity.image = itemDTO.image
                 existingEntity.lastupd = Date()

@@ -62,11 +62,3 @@ struct EditDateView: View {
     }
 }
 
-struct EditDateView_Previews: PreviewProvider {
-    @State static var date = Date()
-    @State static var isEdited = false
-    
-    static var previews: some View {
-        EditDateView(date: EditDateView_Previews.$date, originalDate: EditDateView_Previews.date, isEdited: EditDateView_Previews.$isEdited)
-    }
-}
