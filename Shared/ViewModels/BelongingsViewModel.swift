@@ -373,7 +373,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
         let startDate = calendar.startOfDay(for: start)
         let endDate = calendar.startOfDay(for: end)
         return items.filter { item in
-            if item.kind != nil, let obtained = item.obtained {
+            if let obtained = item.obtained {
                 return calendar.compare(startDate, to: obtained, toGranularity: .hour) != .orderedDescending && calendar.compare(obtained, to: endDate, toGranularity: .hour) != .orderedDescending
             } else {
                 return false
@@ -386,7 +386,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
         let startDate = calendar.startOfDay(for: start)
         let endDate = calendar.startOfDay(for: end)
         return items.filter { item in
-            if item.kind != nil, let obtained = item.disposed {
+            if let obtained = item.disposed {
                 return calendar.compare(startDate, to: obtained, toGranularity: .hour) != .orderedDescending && calendar.compare(obtained, to: endDate, toGranularity: .hour) != .orderedDescending
             } else {
                 return false
