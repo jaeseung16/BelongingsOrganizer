@@ -39,11 +39,12 @@ struct AddSellerView: View {
             
             TextField("url", text: $urlString, prompt: nil)
                 .onSubmit {
-                    if let url = URLValidator.validate(urlString: urlString) {
-                        print("url = \(url)")
-                        self.urlString = url.absoluteString
-                    } else {
-                        showAlert = true
+                    viewModel.validatedURL(from: urlString) { url in
+                        if let url = url {
+                            self.urlString = url.absoluteString
+                        } else {
+                            self.showAlert = true
+                        }
                     }
                 }
             #if os(iOS)

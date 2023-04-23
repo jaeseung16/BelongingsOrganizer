@@ -39,11 +39,12 @@ struct AddBrandView: View {
             
             TextField("url", text: $urlString, prompt: nil)
                 .onSubmit {
-                    if let url = URLValidator.validate(urlString: urlString) {
-                        print("url = \(url)")
-                        self.urlString = url.absoluteString
-                    } else {
-                        showAlert = true
+                    viewModel.validatedURL(from: urlString) { url in
+                        if let url = url {
+                            self.urlString = url.absoluteString
+                        } else {
+                            self.showAlert = true
+                        }
                     }
                 }
             #if os(iOS)
@@ -74,11 +75,5 @@ struct AddBrandView: View {
         }, message: {
             Text("Cannot access the URL. Try a different one or leave it empty.")
         })
-    }
-}
-
-struct AddBrandView_Previews: PreviewProvider {
-    static var previews: some View {
-        AddBrandView()
     }
 }

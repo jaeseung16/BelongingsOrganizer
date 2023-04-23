@@ -627,5 +627,10 @@ class BelongingsViewModel: NSObject, ObservableObject {
     func getData(from info: DropInfo, completionHandler: @escaping (Data?, Error?) -> Void) ->Void {
         imagePaster.getData(from: info, completionHandler: completionHandler)
     }
+    
+    // MARK: - URL Vaildation
+    func validatedURL(from urlString: String, completionHandler: @escaping (URL?) -> Void) -> Void {
+        URLValidator.validatedURL(from: urlString) { completionHandler($0) }
+    }
 }
 
