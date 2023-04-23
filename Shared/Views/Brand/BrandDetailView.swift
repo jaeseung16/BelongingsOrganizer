@@ -18,6 +18,8 @@ struct BrandDetailView: View {
     @State private var showAlert = false
     @State private var isEdited = false
     
+    @State private var showProgress = false
+    
     var body: some View {
         GeometryReader { geometry in
             VStack {
@@ -40,6 +42,11 @@ struct BrandDetailView: View {
             }
             .navigationTitle(name)
             .padding()
+            .overlay {
+                ProgressView("Please wait...")
+                    .progressViewStyle(.circular)
+                    .opacity(showProgress ? 1 : 0)
+            }
             .alert("Invalid URL", isPresented: $showAlert, actions: {
                 Button("Dismiss")  {
                     urlString = brand.url?.absoluteString ?? ""
@@ -100,7 +107,9 @@ struct BrandDetailView: View {
                 .onSubmit {
                     isEdited = true
                     
+                    showProgress = true
                     viewModel.validatedURL(from: urlString) { url in
+                        self.showProgress = false
                         if let url = url {
                             self.urlString = url.absoluteString
                         } else {

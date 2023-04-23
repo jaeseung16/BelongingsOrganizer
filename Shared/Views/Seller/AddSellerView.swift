@@ -16,6 +16,8 @@ struct AddSellerView: View {
     @State private var isEditing = false
     @State private var showAlert = false
     
+    @State private var showProgress = false
+    
     var body: some View {
         VStack(alignment: .leading) {
             Spacer()
@@ -39,7 +41,9 @@ struct AddSellerView: View {
             
             TextField("url", text: $urlString, prompt: nil)
                 .onSubmit {
+                    showProgress = true
                     viewModel.validatedURL(from: urlString) { url in
+                        self.showProgress = false
                         if let url = url {
                             self.urlString = url.absoluteString
                         } else {
@@ -67,6 +71,11 @@ struct AddSellerView: View {
             Spacer()
         }
         .padding()
+        .overlay {
+            ProgressView("Please wait...")
+                .progressViewStyle(.circular)
+                .opacity(showProgress ? 1 : 0)
+        }
         .frame(minHeight: 200.0)
         .alert("Invalid URL", isPresented: $showAlert, actions: {
             Button("Dismiss")  {
