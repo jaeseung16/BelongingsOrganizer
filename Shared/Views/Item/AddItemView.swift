@@ -9,9 +9,8 @@ import SwiftUI
 import CoreData
 
 struct AddItemView: View {
-    @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var viewModel: AddItemViewModel
+    @EnvironmentObject var viewModel: BelongingsViewModel
     
     @State private var name = ""
     @State private var note = ""
@@ -42,8 +41,6 @@ struct AddItemView: View {
     
     @State private var classificationResult = "classificationResult"
     
-    var geometry: GeometryProxy
-    
     var body: some View {
         GeometryReader { geometry in
             VStack {
@@ -58,21 +55,19 @@ struct AddItemView: View {
                 
                 actions()
             }
+            .padding()
             .sheet(isPresented: $presentChooseKindView, content: {
                 ChooseKindView(selectedKinds: $kind)
-                    .environment(\.managedObjectContext, viewContext)
                     .environmentObject(viewModel)
                     .frame(width: geometry.size.width, height: geometry.size.height)
             })
             .sheet(isPresented: $presentBrandView, content: {
                 ChooseBrandView(brand: $brand)
-                    .environment(\.managedObjectContext, viewContext)
                     .environmentObject(viewModel)
                     .frame(width: geometry.size.width, height: geometry.size.height)
             })
             .sheet(isPresented: $presentSellerView, content: {
                 ChooseSellerView(seller: $seller)
-                    .environment(\.managedObjectContext, viewContext)
                     .environmentObject(viewModel)
                     .frame(width: geometry.size.width, height: geometry.size.height)
             })
@@ -350,21 +345,19 @@ struct AddItemView: View {
         HStack {
             Spacer()
             
-            Button(action: {
+            Button {
                 dismiss.callAsFunction()
-            },
-            label: {
+            } label: {
                 Text("Cancel")
-            })
+            }
             
             Spacer()
             
-            Button(action: {
+            Button {
                 saveBelonging()
-            },
-            label: {
+            } label: {
                 Label("Save", systemImage: "square.and.arrow.down")
-            })
+            }
             
             Spacer()
         }

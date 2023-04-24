@@ -8,65 +8,46 @@
 import SwiftUI
 
 struct KindListView: View {
-    @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var viewModel: BelongingsViewModel
     
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
-                          NSSortDescriptor(key: "created", ascending: false)],
-        animation: .default)
-    private var kinds: FetchedResults<Kind>
-
     @State var presentAddKindView = false
 
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
-    
-    var filteredKinds: Array<Kind> {
-        kinds.filter { kind in
-            if viewModel.stringToSearch == "" {
-                return true
-            } else if let name = kind.name {
-                return name.lowercased().contains(viewModel.stringToSearch.lowercased())
-            } else {
-                return false
-            }
-        }
-    }
+
+    @State var kinds = [Kind]()
     
     var body: some View {
         NavigationView {
-            GeometryReader { geometry in
-                VStack {
-                    header()
-                    
-                    kindListView()
-                        .sheet(isPresented: $presentAddKindView) {
-                            AddKindView()
-                                .environmentObject(viewModel.addItemViewModel)
-                                .frame(minWidth: 350, minHeight: 450)
-                                .padding()
-                            
-                        }
-                    
-                    #if os(iOS)
-                    Spacer()
-                    BannerAd()
-                        .frame(height: 50)
-                    #endif
-                }
-                .navigationTitle("Categories")
+            VStack {
+                header()
+                
+                kindListView()
+                    .sheet(isPresented: $presentAddKindView) {
+                        AddKindView()
+                            .environmentObject(viewModel)
+                            .frame(minWidth: 350, minHeight: 450)
+                            .padding()
+                        
+                    }
             }
+            .navigationTitle("Categories")
         }
-        .onChange(of: viewModel.addItemViewModel.showAlert) { _ in
-            showAlert = viewModel.addItemViewModel.showAlert
+        .onChange(of: viewModel.kinds) { _ in
+            kinds = viewModel.filteredKinds
+        }
+        .onChange(of: viewModel.showAlert) { _ in
+            showAlert = viewModel.showAlert
+        }
+        .onChange(of: viewModel.stringToSearch) { _ in
+            kinds = viewModel.filteredKinds
         }
         .alert("Unable to Save Data", isPresented: $showAlert) {
             Button("Dismiss") {
                 showAlert.toggle()
             }
         } message: {
-            Text(viewModel.addItemViewModel.message)
+            Text(viewModel.message)
         }
         .alert("Unable to Delete Data", isPresented: $showAlertForDeletion) {
             Button("Dismiss") {
@@ -80,7 +61,7 @@ struct KindListView: View {
     private func header() -> some View {
         HStack {
             Button(action: {
-                viewModel.addItemViewModel.reset()
+                viewModel.persistenceHelper.reset()
                 presentAddKindView = true
             }) {
                 Label("Add a category", systemImage: "plus")
@@ -90,28 +71,23 @@ struct KindListView: View {
     
     private func kindListView() -> some View {
         List {
-            ForEach(filteredKinds) { kind in
-                if let kindName = kind.name {
-                    NavigationLink(destination: KindDetailView(kind: kind, name: kindName)) {
-                        KindRowView(kind: kind, name: kindName)
-                    }
+            ForEach(kinds) { kind in
+                NavigationLink {
+                    KindDetailView(kind: kind, name: kind.name ?? "", items: viewModel.getItems(kind))
+                } label: {
+                    KindRowView(name: kind.name ?? "", itemCount: viewModel.getItemCount(kind))
                 }
             }
             .onDelete(perform: deleteKinds)
         }
+        .id(UUID())
     }
-    
+
     private func deleteKinds(offsets: IndexSet) {
         withAnimation {
-            viewModel.delete(offsets.map { filteredKinds[$0] }) { _ in
+            viewModel.delete(offsets.map { kinds[$0] }) { _ in
                 showAlertForDeletion.toggle()
             }
         }
-    }
-}
-
-struct KindListView_Previews: PreviewProvider {
-    static var previews: some View {
-        KindListView()
     }
 }

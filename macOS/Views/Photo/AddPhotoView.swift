@@ -11,10 +11,12 @@ import UniformTypeIdentifiers
 
 struct AddPhotoView: View, DropDelegate {
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var viewModel: AddItemViewModel
+    @EnvironmentObject var viewModel: BelongingsViewModel
     
     @State private var selectedImage: Data?
     @State private var isTargeted = false
+    @State private var failed = false
+    @State private var details = ""
     
     var body: some View {
         GeometryReader { geometry in
@@ -27,41 +29,34 @@ struct AddPhotoView: View, DropDelegate {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(height: 100)
+                
+                Divider()
+                
+                footer()
             }
             .padding()
             .frame(width: geometry.size.width, height: geometry.size.height)
-            .onDrop(of: ["public.image", "public.file-url"], delegate: self)
+            .onDrop(of: ["public.image", "public.file-url", "public.url"], delegate: self)
+        }
+        .alert("Cannot add a photo", isPresented: $failed, presenting: details) { details in
+            Button("Dismiss") {
+                
+            }
         }
     }
     
     func performDrop(info: DropInfo) -> Bool {
-        ImagePaster.loadData(from: info) { data, _ in
-            if let imageData = data {
-                if imageData.count > ImagePaster.maxDataSize, let nsImage = NSImage(data: imageData) {
-                    if let resized = ImagePaster.resize(nsImage: nsImage, within: ImagePaster.maxResizeSize).tiffRepresentation,
-                       let imageRep = NSBitmapImageRep(data: resized) {
-                        selectedImage = imageRep.representation(using: NSBitmapImageRep.FileType.png, properties: [:])
-                    } else {
-                        selectedImage = imageData
-                    }
-                } else {
-                    selectedImage = imageData
+        viewModel.getData(from: info) { data, error in
+            guard let data = data else {
+                if let localizedDescription = error?.localizedDescription {
+                    details = localizedDescription
                 }
+                self.selectedImage = nil
+                failed.toggle()
+                return
             }
-        }
-        
-        ImagePaster.loadFile(from: info) { item, error in
-            if let url = URL(dataRepresentation: item as! Data, relativeTo: nil) {
-                if url.absoluteString.contains(".webp") {
-                    if let data: Data = try? Data(contentsOf: url) {
-                        let image = SDImageWebPCoder.shared.decodedImage(with: data, options: nil)
-                        self.selectedImage = image?.tiffRepresentation
-                    }
-                } else {
-                    self.selectedImage = try? Data(contentsOf: url)
-                }
-            }
-            print("selectedImage = \(String(describing: selectedImage))")
+            
+            self.selectedImage = data
         }
         
         return selectedImage != nil
@@ -91,7 +86,7 @@ struct AddPhotoView: View, DropDelegate {
             Spacer()
             
             Button(action: {
-                viewModel.imageData = selectedImage
+                viewModel.updateImage(selectedImage)
                 dismiss.callAsFunction()
             }, label: {
                 Text("Done")
@@ -106,4 +101,34 @@ struct AddPhotoView: View, DropDelegate {
             return Image(systemName: "photo.on.rectangle")
         }
     }
+    
+    private func footer() -> some View {
+        HStack {
+            Spacer()
+            
+            if viewModel.hasImage() {
+                Spacer()
+                
+                Button {
+                    pasteImage()
+                } label: {
+                    Label("Paste", systemImage: "doc.on.clipboard.fill")
+                }
+            }
+        }
+    }
+    
+    private func pasteImage() -> Void {
+        viewModel.paste { data, error in
+            if let data = data {
+                selectedImage = data
+            } else {
+                if let localizedDescription = error?.localizedDescription {
+                    details = localizedDescription
+                }
+                failed.toggle()
+            }
+        }
+    }
+    
 }

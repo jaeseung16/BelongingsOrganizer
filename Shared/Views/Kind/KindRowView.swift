@@ -8,20 +8,23 @@
 import SwiftUI
 
 struct KindRowView: View {
-    var kind: Kind
-    var name: String
+    @EnvironmentObject var viewModel: BelongingsViewModel
+    
+    @State var name: String?
+    @State var itemCount = 0
     
     var body: some View {
         HStack {
-            Text(name)
+            if let name = name {
+                Text(name)
+            }
             
             Spacer()
             
-            if let items = kind.items {
-                Text("\(items.count) items")
-                    .font(.callout)
-                    .foregroundColor(.secondary)
-            }
+            Text("\(itemCount) items")
+                .font(.callout)
+                .foregroundColor(.secondary)
         }
     }
+
 }

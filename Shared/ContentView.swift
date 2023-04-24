@@ -13,39 +13,40 @@ import GoogleMobileAds
 #endif
 
 struct ContentView: View {
-    @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var viewModel: BelongingsViewModel
-    
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Item.lastupd, ascending: false)],
-        animation: .default)
-    private var items: FetchedResults<Item>
 
     var body: some View {
         TabView {
-            ItemListView()
+            ItemListView(items: viewModel.items)
                 .tabItem {
                     Image(systemName: "gift.fill")
                     Text("Items")
                 }
             
-            KindListView()
+            KindListView(kinds: viewModel.filteredKinds)
                 .tabItem {
                     Image(systemName: "list.dash")
                     Text("Categories")
                 }
             
-            BrandListView()
+            BrandListView(brands: viewModel.filteredBrands)
                 .tabItem {
                     Image(systemName: "r.circle")
                     Text("Brands")
                 }
             
-            SellerListView()
+            SellerListView(sellers: viewModel.filteredSellers)
                 .tabItem {
                     Image(systemName: "shippingbox.fill")
                     Text("Sellers")
                 }
+            
+            StatsView()
+                .tabItem {
+                    Image(systemName: "chart.xyaxis.line")
+                    Text("Stats")
+                }
+            
         }
         .searchable(text: $viewModel.stringToSearch)
         .alert("Unable to save data", isPresented: $viewModel.showAlert) {

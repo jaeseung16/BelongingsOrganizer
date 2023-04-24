@@ -8,64 +8,45 @@
 import SwiftUI
 
 struct BrandListView: View {
-    @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var viewModel: BelongingsViewModel
     
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
-                          NSSortDescriptor(key: "created", ascending: false)],
-        animation: .default)
-    private var brands: FetchedResults<Brand>
-
     @State var presentAddBrandView = false
 
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
     
-    var filteredBrands: Array<Brand> {
-        brands.filter { brand in
-            if viewModel.stringToSearch == "" {
-                return true
-            } else if let name = brand.name {
-                return name.lowercased().contains(viewModel.stringToSearch.lowercased())
-            } else {
-                return false
-            }
-        }
-    }
+    @State var brands = [Brand]()
     
     var body: some View {
         NavigationView {
-            GeometryReader { geometry in
-                VStack {
-                    header()
-                    
-                    brandListView()
-                    .sheet(isPresented: $presentAddBrandView, content: {
-                        AddBrandView()
-                            .environmentObject(viewModel.addItemViewModel)
-                            .frame(minWidth: 350, minHeight: 450)
-                            .padding()
-                    })
-                    
-                    #if os(iOS)
-                    Spacer()
-                    BannerAd()
-                        .frame(height: 50)
-                    #endif
-                }
-                .navigationTitle("Brands")
+            VStack {
+                header()
+                
+                brandListView()
+                .sheet(isPresented: $presentAddBrandView, content: {
+                    AddBrandView()
+                        .environmentObject(viewModel)
+                        .frame(minWidth: 350, minHeight: 450)
+                        .padding()
+                })
             }
+            .navigationTitle("Brands")
         }
-        .onChange(of: viewModel.addItemViewModel.showAlert) { _ in
-            showAlert = viewModel.addItemViewModel.showAlert
+        .onChange(of: viewModel.brands) { _ in
+            brands = viewModel.filteredBrands
+        }
+        .onChange(of: viewModel.showAlert) { _ in
+            showAlert = viewModel.showAlert
+        }
+        .onChange(of: viewModel.stringToSearch) { _ in
+            brands = viewModel.filteredBrands
         }
         .alert("Unable to Save Data", isPresented: $showAlert) {
             Button("Dismiss") {
                 showAlert.toggle()
             }
         } message: {
-            Text(viewModel.addItemViewModel.message)
+            Text(viewModel.message)
         }
         .alert("Unable to Delete Data", isPresented: $showAlertForDeletion) {
             Button("Dismiss") {
@@ -79,7 +60,7 @@ struct BrandListView: View {
     private func header() -> some View {
         HStack {
             Button(action: {
-                viewModel.addItemViewModel.reset()
+                viewModel.persistenceHelper.reset()
                 presentAddBrandView = true
             }) {
                 Label("Add a brand", systemImage: "plus")
@@ -89,30 +70,24 @@ struct BrandListView: View {
     
     private func brandListView() -> some View {
         List {
-            ForEach(filteredBrands) { brand in
-                if let brandName = brand.name {
-                    NavigationLink(destination: BrandDetailView(brand: brand,
-                                                                name: brandName,
-                                                                urlString: brand.url?.absoluteString ?? "")) {
-                        BrandRowView(brand: brand, name: brandName)
-                    }
+            ForEach(brands) { brand in
+                NavigationLink {
+                    BrandDetailView(brand: brand, name: brand.name ?? "", urlString: brand.url?.absoluteString ?? "", items: viewModel.getItems(brand))
+                } label: {
+                    BrandRowView(name: brand.name ?? "", itemCount: viewModel.getItemCount(brand))
                 }
             }
             .onDelete(perform: deleteBrands)
         }
+        .id(UUID())
     }
     
     private func deleteBrands(offsets: IndexSet) {
         withAnimation {
-            viewModel.delete(offsets.map { filteredBrands[$0] }) { _ in
+            viewModel.delete(offsets.map { brands[$0] }) { _ in
                 showAlertForDeletion.toggle()
             }
         }
     }
 }
 
-struct BrandListView_Previews: PreviewProvider {
-    static var previews: some View {
-        BrandListView()
-    }
-}

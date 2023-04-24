@@ -8,14 +8,8 @@
 import SwiftUI
 
 struct ChooseKindView: View {
-    @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var viewModel: BelongingsViewModel
-    
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare))],
-        animation: .default)
-    private var kinds: FetchedResults<Kind>
     
     @State var presentAddItem = false
     
@@ -53,10 +47,10 @@ struct ChooseKindView: View {
                 #if os(macOS)
                 AddKindView()
                     .frame(minWidth: 0.5 * geometry.size.width)
-                    .environmentObject(viewModel.addItemViewModel)
+                    .environmentObject(viewModel)
                 #else
                 AddKindView()
-                    .environmentObject(viewModel.addItemViewModel)
+                    .environmentObject(viewModel)
                 #endif
             })
             .alert(isPresented: $showAlertForDeletion) {
@@ -95,7 +89,7 @@ struct ChooseKindView: View {
     
     private func kindList() -> some View {
         List {
-            ForEach(kinds) { kind in
+            ForEach(viewModel.kinds) { kind in
                 Button {
                     if selectedKinds.contains(kind) {
                         if let index = selectedKinds.firstIndex(of: kind) {
@@ -114,7 +108,7 @@ struct ChooseKindView: View {
     
     private func deleteItems(offsets: IndexSet) {
         withAnimation {
-            viewModel.delete(offsets.map { kinds[$0] }) { error in
+            viewModel.delete(offsets.map { viewModel.kinds[$0] }) { error in
                 let nsError = error as NSError
                 print("While deleting a category, occured an unresolved error \(nsError), \(nsError.userInfo)")
                 showAlertForDeletion.toggle()
@@ -123,10 +117,3 @@ struct ChooseKindView: View {
     }
 }
 
-struct ChooseKindView_Previews: PreviewProvider {
-    @State private static var selectedKinds = [Kind]()
-    
-    static var previews: some View {
-        ChooseKindView(selectedKinds: ChooseKindView_Previews.$selectedKinds)
-    }
-}

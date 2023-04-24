@@ -10,9 +10,12 @@ import SDWebImageWebPCoder
 
 struct EditPhotoView: View, DropDelegate {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject var viewModel: BelongingsViewModel
     
     @State var originalImage: Data?
     @Binding var image: Data?
+    @State private var failed = false
+    @State private var details = ""
     
     var body: some View {
         GeometryReader { geometry in
@@ -26,9 +29,18 @@ struct EditPhotoView: View, DropDelegate {
                     .aspectRatio(contentMode: .fit)
                     .frame(height: 100)
                     .onDrop(of: ["public.image", "public.file-url"], delegate: self)
+                
+                Divider()
+                
+                footer()
             }
             .padding()
             .frame(width: geometry.size.width, height: geometry.size.height)
+        }
+        .alert("Cannot replace a photo", isPresented: $failed, presenting: details) { details in
+            Button("Dismiss") {
+                
+            }
         }
     }
     
@@ -75,34 +87,48 @@ struct EditPhotoView: View, DropDelegate {
     }
     
     func performDrop(info: DropInfo) -> Bool {
-        ImagePaster.loadData(from: info) { data, _ in
-            if let imageData = data {
-                if imageData.count > ImagePaster.maxDataSize, let nsImage = NSImage(data: imageData) {
-                    if let resized = ImagePaster.resize(nsImage: nsImage, within: ImagePaster.maxResizeSize).tiffRepresentation,
-                       let imageRep = NSBitmapImageRep(data: resized) {
-                        image = imageRep.representation(using: NSBitmapImageRep.FileType.png, properties: [:])
-                    } else {
-                        image = imageData
-                    }
-                } else {
-                    image = imageData
+        viewModel.getData(from: info) { data, error in
+            guard let data = data else {
+                if let localizedDescription = error?.localizedDescription {
+                    details = localizedDescription
                 }
+                self.image = nil
+                failed.toggle()
+                return
             }
-        }
-        
-        ImagePaster.loadFile(from: info) { item, error in
-            if let url = URL(dataRepresentation: item as! Data, relativeTo: nil) {
-                if url.absoluteString.contains(".webp") {
-                    if let data: Data = try? Data(contentsOf: url) {
-                        let image = SDImageWebPCoder.shared.decodedImage(with: data, options: nil)
-                        self.image = image?.tiffRepresentation
-                    }
-                } else {
-                    self.image = try? Data(contentsOf: url)
-                }
-            }
+            
+            self.image = data
         }
         
         return image != nil
+    }
+    
+    private func footer() -> some View {
+        HStack {
+            Spacer()
+            
+            if viewModel.hasImage() {
+                Spacer()
+                
+                Button {
+                    pasteImage()
+                } label: {
+                    Label("Paste", systemImage: "doc.on.clipboard.fill")
+                }
+            }
+        }
+    }
+    
+    private func pasteImage() -> Void {
+        viewModel.paste { data, error in
+            if let data = data {
+                image = data
+            } else {
+                if let localizedDescription = error?.localizedDescription {
+                    details = localizedDescription
+                }
+                failed.toggle()
+            }
+        }
     }
 }

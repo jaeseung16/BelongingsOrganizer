@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 53;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -43,10 +43,12 @@
 		904498EB26EBF70600002A6F /* KindListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 904498E926EBF70600002A6F /* KindListView.swift */; };
 		90596B8626E6ACD20001CCA5 /* AddKindView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90596B8526E6ACD20001CCA5 /* AddKindView.swift */; };
 		906CE2E926FA871900DC12C3 /* AddPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 906CE2E726FA871900DC12C3 /* AddPhotoView.swift */; };
-		906CE2EB26FA970100DC12C3 /* AddItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 906CE2EA26FA970100DC12C3 /* AddItemViewModel.swift */; };
-		906CE2EC26FA970100DC12C3 /* AddItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 906CE2EA26FA970100DC12C3 /* AddItemViewModel.swift */; };
+		906CE2EB26FA970100DC12C3 /* PersistenceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 906CE2EA26FA970100DC12C3 /* PersistenceHelper.swift */; };
+		906CE2EC26FA970100DC12C3 /* PersistenceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 906CE2EA26FA970100DC12C3 /* PersistenceHelper.swift */; };
 		906EA8A126F7EFF300235302 /* EditDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 906EA8A026F7EFF300235302 /* EditDateView.swift */; };
 		906EA8A226F7EFF300235302 /* EditDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 906EA8A026F7EFF300235302 /* EditDateView.swift */; };
+		90704CF629CFA65300F66908 /* BelongingsError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90704CF529CFA65300F66908 /* BelongingsError.swift */; };
+		90704CF729CFA65300F66908 /* BelongingsError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90704CF529CFA65300F66908 /* BelongingsError.swift */; };
 		9072232D26E9352700965653 /* ChooseBrandView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9072232C26E9352700965653 /* ChooseBrandView.swift */; };
 		9072232E26E9352700965653 /* ChooseBrandView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9072232C26E9352700965653 /* ChooseBrandView.swift */; };
 		9072233026E93A0500965653 /* AddBrandView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9072232F26E93A0500965653 /* AddBrandView.swift */; };
@@ -55,6 +57,26 @@
 		9072233426E93CDC00965653 /* ChooseSellerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9072233226E93CDC00965653 /* ChooseSellerView.swift */; };
 		9072233626E93CE800965653 /* AddSellerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9072233526E93CE800965653 /* AddSellerView.swift */; };
 		9072233726E93CE800965653 /* AddSellerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9072233526E93CE800965653 /* AddSellerView.swift */; };
+		90735E8B29DA141200159CBA /* ImagePasting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90735E8A29DA141200159CBA /* ImagePasting.swift */; };
+		90735E8C29DA141200159CBA /* ImagePasting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90735E8A29DA141200159CBA /* ImagePasting.swift */; };
+		9075183629D8C5CD00E34A84 /* BelongingsStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9075183529D8C5CD00E34A84 /* BelongingsStats.swift */; };
+		9075183729D8C5CD00E34A84 /* BelongingsStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9075183529D8C5CD00E34A84 /* BelongingsStats.swift */; };
+		907614A829D0ED860068365C /* KindStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 907614A729D0ED860068365C /* KindStats.swift */; };
+		907614A929D0ED860068365C /* KindStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 907614A729D0ED860068365C /* KindStats.swift */; };
+		907614AB29D0ED920068365C /* BrandStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 907614AA29D0ED920068365C /* BrandStats.swift */; };
+		907614AC29D0ED920068365C /* BrandStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 907614AA29D0ED920068365C /* BrandStats.swift */; };
+		907614AE29D0ED9E0068365C /* SellerStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 907614AD29D0ED9E0068365C /* SellerStats.swift */; };
+		907614AF29D0ED9E0068365C /* SellerStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 907614AD29D0ED9E0068365C /* SellerStats.swift */; };
+		90785B9629BFD91300BFE933 /* SortItemsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90785B9529BFD91300BFE933 /* SortItemsView.swift */; };
+		90785B9729BFD91300BFE933 /* SortItemsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90785B9529BFD91300BFE933 /* SortItemsView.swift */; };
+		90785B9929BFD9B300BFE933 /* SortType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90785B9829BFD9B300BFE933 /* SortType.swift */; };
+		90785B9A29BFD9B300BFE933 /* SortType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90785B9829BFD9B300BFE933 /* SortType.swift */; };
+		90785B9C29BFDC1F00BFE933 /* SortDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90785B9B29BFDC1F00BFE933 /* SortDirection.swift */; };
+		90785B9D29BFDC1F00BFE933 /* SortDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90785B9B29BFDC1F00BFE933 /* SortDirection.swift */; };
+		907C26DD29C754C200116BC1 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 907C26DC29C754C200116BC1 /* StatsView.swift */; };
+		907C26E229C7A6B500116BC1 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 907C26DC29C754C200116BC1 /* StatsView.swift */; };
+		9086B53B29D247C800DB4568 /* StatsType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9086B53A29D247C800DB4568 /* StatsType.swift */; };
+		9086B53C29D247C800DB4568 /* StatsType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9086B53A29D247C800DB4568 /* StatsType.swift */; };
 		90884D1E26E180C000D01A55 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90884D1D26E180C000D01A55 /* CloudKit.framework */; };
 		90884D2126E180E400D01A55 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90884D2026E180E400D01A55 /* CloudKit.framework */; };
 		9089734326FBFFEA005A03A8 /* SDWebImageWebPCoder in Frameworks */ = {isa = PBXBuildFile; productRef = 9089734226FBFFEA005A03A8 /* SDWebImageWebPCoder */; };
@@ -174,12 +196,23 @@
 		904498E926EBF70600002A6F /* KindListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KindListView.swift; sourceTree = "<group>"; };
 		90596B8526E6ACD20001CCA5 /* AddKindView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddKindView.swift; sourceTree = "<group>"; };
 		906CE2E726FA871900DC12C3 /* AddPhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPhotoView.swift; sourceTree = "<group>"; };
-		906CE2EA26FA970100DC12C3 /* AddItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItemViewModel.swift; sourceTree = "<group>"; };
+		906CE2EA26FA970100DC12C3 /* PersistenceHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceHelper.swift; sourceTree = "<group>"; };
 		906EA8A026F7EFF300235302 /* EditDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditDateView.swift; sourceTree = "<group>"; };
+		90704CF529CFA65300F66908 /* BelongingsError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BelongingsError.swift; sourceTree = "<group>"; };
 		9072232C26E9352700965653 /* ChooseBrandView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseBrandView.swift; sourceTree = "<group>"; };
 		9072232F26E93A0500965653 /* AddBrandView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBrandView.swift; sourceTree = "<group>"; };
 		9072233226E93CDC00965653 /* ChooseSellerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseSellerView.swift; sourceTree = "<group>"; };
 		9072233526E93CE800965653 /* AddSellerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddSellerView.swift; sourceTree = "<group>"; };
+		90735E8A29DA141200159CBA /* ImagePasting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePasting.swift; sourceTree = "<group>"; };
+		9075183529D8C5CD00E34A84 /* BelongingsStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BelongingsStats.swift; sourceTree = "<group>"; };
+		907614A729D0ED860068365C /* KindStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KindStats.swift; sourceTree = "<group>"; };
+		907614AA29D0ED920068365C /* BrandStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrandStats.swift; sourceTree = "<group>"; };
+		907614AD29D0ED9E0068365C /* SellerStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SellerStats.swift; sourceTree = "<group>"; };
+		90785B9529BFD91300BFE933 /* SortItemsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortItemsView.swift; sourceTree = "<group>"; };
+		90785B9829BFD9B300BFE933 /* SortType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortType.swift; sourceTree = "<group>"; };
+		90785B9B29BFDC1F00BFE933 /* SortDirection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortDirection.swift; sourceTree = "<group>"; };
+		907C26DC29C754C200116BC1 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
+		9086B53A29D247C800DB4568 /* StatsType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsType.swift; sourceTree = "<group>"; };
 		90884D1D26E180C000D01A55 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		90884D1F26E180E100D01A55 /* Belongings.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Belongings.entitlements; sourceTree = "<group>"; };
 		90884D2026E180E400D01A55 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.5.sdk/System/Library/Frameworks/CloudKit.framework; sourceTree = DEVELOPER_DIR; };
@@ -361,6 +394,7 @@
 				9089734926FD3B3F005A03A8 /* ItemSummaryView.swift */,
 				90E238E12706794200E03624 /* ItemsView.swift */,
 				90FF8FD3276FABC70099A23B /* ItemRowView.swift */,
+				90785B9529BFD91300BFE933 /* SortItemsView.swift */,
 			);
 			path = Item;
 			sourceTree = "<group>";
@@ -426,6 +460,7 @@
 		90596B8426E6ACC30001CCA5 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				907C26DB29C754B200116BC1 /* Stats */,
 				900FF64427753AAD00F08528 /* Common */,
 				900FF640277539E700F08528 /* Item */,
 				900FF64127753A0000F08528 /* Brand */,
@@ -433,6 +468,26 @@
 				900FF64227753A0F00F08528 /* Seller */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		907C26DB29C754B200116BC1 /* Stats */ = {
+			isa = PBXGroup;
+			children = (
+				907C26DC29C754C200116BC1 /* StatsView.swift */,
+			);
+			path = Stats;
+			sourceTree = "<group>";
+		};
+		907C26DE29C7566E00116BC1 /* Stats */ = {
+			isa = PBXGroup;
+			children = (
+				907614A729D0ED860068365C /* KindStats.swift */,
+				907614AA29D0ED920068365C /* BrandStats.swift */,
+				907614AD29D0ED9E0068365C /* SellerStats.swift */,
+				9086B53A29D247C800DB4568 /* StatsType.swift */,
+				9075183529D8C5CD00E34A84 /* BelongingsStats.swift */,
+			);
+			path = Stats;
 			sourceTree = "<group>";
 		};
 		90884D1C26E180C000D01A55 /* Frameworks */ = {
@@ -461,7 +516,8 @@
 		90D3F23026EA593B00955316 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
-				906CE2EA26FA970100DC12C3 /* AddItemViewModel.swift */,
+				907C26DE29C7566E00116BC1 /* Stats */,
+				906CE2EA26FA970100DC12C3 /* PersistenceHelper.swift */,
 				90D3F23126EA594E00955316 /* BelongingsViewModel.swift */,
 				90D3F23426EA5B3400955316 /* Entities.swift */,
 				90D3F23726EA7F7E00955316 /* SellerDTO.swift */,
@@ -472,6 +528,10 @@
 				90F3B6AA26FFEA2900C4859D /* ItemProperty.swift */,
 				9089734626FD10CC005A03A8 /* URLValidator.swift */,
 				90CD27EC270908A1001A89B5 /* ImageType.swift */,
+				90785B9829BFD9B300BFE933 /* SortType.swift */,
+				90785B9B29BFDC1F00BFE933 /* SortDirection.swift */,
+				90704CF529CFA65300F66908 /* BelongingsError.swift */,
+				90735E8A29DA141200159CBA /* ImagePasting.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -612,8 +672,9 @@
 		900DDBB926E036C90034A155 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1250;
-				LastUpgradeCheck = 1300;
+				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					900DDBC726E036CA0034A155 = {
 						CreatedOnToolsVersion = 12.5.1;
@@ -705,11 +766,15 @@
 				90F4444B27B49C5100768A49 /* BannerAd.swift in Sources */,
 				90CF0CF62730A1C300E93917 /* SectionTitleView.swift in Sources */,
 				90CB46B726ED6A1900A9468B /* FilterItemsView.swift in Sources */,
+				9075183629D8C5CD00E34A84 /* BelongingsStats.swift in Sources */,
 				90DE25542707AD4C0030AEFF /* ImagePaster.swift in Sources */,
+				907C26DD29C754C200116BC1 /* StatsView.swift in Sources */,
 				90C0D98B26E7DEF600158C85 /* AddItemView.swift in Sources */,
 				90DD8C2926F936E60079424A /* MobileNet.mlmodel in Sources */,
 				9089734726FD10CC005A03A8 /* URLValidator.swift in Sources */,
 				9072233026E93A0500965653 /* AddBrandView.swift in Sources */,
+				90785B9C29BFDC1F00BFE933 /* SortDirection.swift in Sources */,
+				90704CF629CFA65300F66908 /* BelongingsError.swift in Sources */,
 				901A21E828568B2E006CF1A4 /* AppDelegate.swift in Sources */,
 				904498E426EBD7A800002A6F /* SheetBottom.swift in Sources */,
 				900FF6382775385C00F08528 /* KindRowView.swift in Sources */,
@@ -719,9 +784,12 @@
 				90F3B6AB26FFEA2900C4859D /* ItemProperty.swift in Sources */,
 				90D3F23C26EA801F00955316 /* KindDTO.swift in Sources */,
 				90D3F23526EA5B3400955316 /* Entities.swift in Sources */,
+				907614A829D0ED860068365C /* KindStats.swift in Sources */,
 				90CD27ED270908A1001A89B5 /* ImageType.swift in Sources */,
+				907614AB29D0ED920068365C /* BrandStats.swift in Sources */,
 				900FF63B277538AD00F08528 /* BrandRowView.swift in Sources */,
 				90F4444927B49BDF00768A49 /* BannerAdViewController.swift in Sources */,
+				90785B9929BFD9B300BFE933 /* SortType.swift in Sources */,
 				90C0D98E26E8001700158C85 /* ChooseKindView.swift in Sources */,
 				90DD8C2C26F95A1B0079424A /* EditPhotoView.swift in Sources */,
 				904498E726EBDEDB00002A6F /* ItemListView.swift in Sources */,
@@ -731,11 +799,14 @@
 				9072233626E93CE800965653 /* AddSellerView.swift in Sources */,
 				9072233326E93CDC00965653 /* ChooseSellerView.swift in Sources */,
 				90B23E6626EE901900B29063 /* KindDetailView.swift in Sources */,
+				907614AE29D0ED9E0068365C /* SellerStats.swift in Sources */,
 				9089734A26FD3B3F005A03A8 /* ItemSummaryView.swift in Sources */,
 				90E238E32706799D00E03624 /* ItemsView.swift in Sources */,
 				90D3F23826EA7F7E00955316 /* SellerDTO.swift in Sources */,
-				906CE2EB26FA970100DC12C3 /* AddItemViewModel.swift in Sources */,
+				90735E8B29DA141200159CBA /* ImagePasting.swift in Sources */,
+				906CE2EB26FA970100DC12C3 /* PersistenceHelper.swift in Sources */,
 				900FF63E2775393300F08528 /* SellerRowView.swift in Sources */,
+				9086B53B29D247C800DB4568 /* StatsType.swift in Sources */,
 				90C172D526F13FAF00244A9C /* SellerDetailView.swift in Sources */,
 				90E2EA9926F402940014A8C6 /* AddPhotoView.swift in Sources */,
 				900DDBEE26E036CB0034A155 /* ContentView.swift in Sources */,
@@ -743,6 +814,7 @@
 				90CB46AD26ED43AD00A9468B /* ItemDetailView.swift in Sources */,
 				90596B8626E6ACD20001CCA5 /* AddKindView.swift in Sources */,
 				90E238E027065D5300E03624 /* PhotoAlertView.swift in Sources */,
+				90785B9629BFD91300BFE933 /* SortItemsView.swift in Sources */,
 				90CB46AA26ED3F0F00A9468B /* SellerListView.swift in Sources */,
 				90D3F23A26EA7FE000955316 /* BrandDTO.swift in Sources */,
 				90CB46A726ED3CB600A9468B /* BrandListView.swift in Sources */,
@@ -756,10 +828,15 @@
 			files = (
 				904498E226EBD30500002A6F /* NothingSelectedText.swift in Sources */,
 				90D3F24226EA8CE300955316 /* ItemDTO.swift in Sources */,
+				90735E8C29DA141200159CBA /* ImagePasting.swift in Sources */,
 				90D3F23326EA599D00955316 /* BelongingsViewModel.swift in Sources */,
 				9072232E26E9352700965653 /* ChooseBrandView.swift in Sources */,
+				90785B9A29BFD9B300BFE933 /* SortType.swift in Sources */,
 				904498EB26EBF70600002A6F /* KindListView.swift in Sources */,
+				907614A929D0ED860068365C /* KindStats.swift in Sources */,
 				90CB46B826ED6A1900A9468B /* FilterItemsView.swift in Sources */,
+				907C26E229C7A6B500116BC1 /* StatsView.swift in Sources */,
+				9075183729D8C5CD00E34A84 /* BelongingsStats.swift in Sources */,
 				90CD27F1270908D3001A89B5 /* ImagePaster.swift in Sources */,
 				90E238DD270659C600E03624 /* SelectImageButton.swift in Sources */,
 				90C0D98C26E7DEF600158C85 /* AddItemView.swift in Sources */,
@@ -773,6 +850,7 @@
 				900FF63C277538AD00F08528 /* BrandRowView.swift in Sources */,
 				900DDBEB26E036CB0034A155 /* Belongings.xcdatamodeld in Sources */,
 				9089734B26FD3B3F005A03A8 /* ItemSummaryView.swift in Sources */,
+				90704CF729CFA65300F66908 /* BelongingsError.swift in Sources */,
 				904498DE26EBBB2500002A6F /* ChooseCurrencyView.swift in Sources */,
 				90D3F24126EA8CE100955316 /* KindDTO.swift in Sources */,
 				901A21EB28568BB8006CF1A4 /* BelongingsOrganizerConstants.swift in Sources */,
@@ -783,8 +861,10 @@
 				90C0D98F26E8001700158C85 /* ChooseKindView.swift in Sources */,
 				900F8D7B2735C5210069CE07 /* DetailHeaderView.swift in Sources */,
 				904498E826EBDEDB00002A6F /* ItemListView.swift in Sources */,
+				9086B53C29D247C800DB4568 /* StatsType.swift in Sources */,
 				9072233726E93CE800965653 /* AddSellerView.swift in Sources */,
 				9072233426E93CDC00965653 /* ChooseSellerView.swift in Sources */,
+				907614AC29D0ED920068365C /* BrandStats.swift in Sources */,
 				90B23E6726EE901900B29063 /* KindDetailView.swift in Sources */,
 				906EA8A226F7EFF300235302 /* EditDateView.swift in Sources */,
 				90CD27EE270908A1001A89B5 /* ImageType.swift in Sources */,
@@ -792,16 +872,19 @@
 				90D3F23F26EA8CDC00955316 /* SellerDTO.swift in Sources */,
 				90B46BC82700F53E00BEED75 /* EditPhotoView.swift in Sources */,
 				90C172D626F13FAF00244A9C /* SellerDetailView.swift in Sources */,
-				906CE2EC26FA970100DC12C3 /* AddItemViewModel.swift in Sources */,
+				906CE2EC26FA970100DC12C3 /* PersistenceHelper.swift in Sources */,
 				900DDBEF26E036CB0034A155 /* ContentView.swift in Sources */,
 				90C172D326F13EC200244A9C /* BrandDetailView.swift in Sources */,
 				90CB46AE26ED43AD00A9468B /* ItemDetailView.swift in Sources */,
+				90785B9D29BFDC1F00BFE933 /* SortDirection.swift in Sources */,
 				90C0D98926E7D08200158C85 /* AddKindView.swift in Sources */,
+				90785B9729BFD91300BFE933 /* SortItemsView.swift in Sources */,
 				900FF6392775385C00F08528 /* KindRowView.swift in Sources */,
 				90CB46AB26ED3F0F00A9468B /* SellerListView.swift in Sources */,
 				90D3F24026EA8CDE00955316 /* BrandDTO.swift in Sources */,
 				90CB46A826ED3CB600A9468B /* BrandListView.swift in Sources */,
 				90CF0CF72730A1C300E93917 /* SectionTitleView.swift in Sources */,
+				907614AF29D0ED9E0068365C /* SellerStats.swift in Sources */,
 				900FF63F2775393300F08528 /* SellerRowView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -872,6 +955,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -889,8 +973,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -934,6 +1018,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -945,8 +1030,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				OTHER_LDFLAGS = "-ObjC";
@@ -963,17 +1048,19 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Belongings.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				INFOPLIST_KEY_CFBundleDisplayName = "Belongings Organizer";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jlee.BelongingsWithAds;
+				MARKETING_VERSION = 1.4;
+				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jlee.Belongings;
 				PRODUCT_NAME = "Belongings Organizer";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
@@ -989,17 +1076,19 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Belongings.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				INFOPLIST_KEY_CFBundleDisplayName = "Belongings Organizer";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jlee.BelongingsWithAds;
+				MARKETING_VERSION = 1.4;
+				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jlee.Belongings;
 				PRODUCT_NAME = "Belongings Organizer";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
@@ -1018,7 +1107,8 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 21;
+				CURRENT_PROJECT_VERSION = 34;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -1027,8 +1117,8 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 1.4;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jlee.Belongings;
 				PRODUCT_NAME = "Belongings Organizer";
 				SDKROOT = macosx;
@@ -1046,7 +1136,8 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 21;
+				CURRENT_PROJECT_VERSION = 34;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -1055,8 +1146,8 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 1.4;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jlee.Belongings;
 				PRODUCT_NAME = "Belongings Organizer";
 				SDKROOT = macosx;
@@ -1115,6 +1206,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				INFOPLIST_FILE = "Tests macOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1137,6 +1229,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				INFOPLIST_FILE = "Tests macOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (

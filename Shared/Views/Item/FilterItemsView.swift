@@ -12,7 +12,6 @@ enum Filter: String, CaseIterable {
 }
 
 struct FilterItemsView: View {
-    @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var viewModel: BelongingsViewModel
 
@@ -70,7 +69,7 @@ struct FilterItemsView: View {
     
     func selectedKindsSection() -> some View {
         VStack(alignment: .leading) {
-            Text("KIND")
+            Text("CATEGORY")
                 .font(.caption)
                 .foregroundColor(.secondary)
             
@@ -157,7 +156,7 @@ struct FilterItemsView: View {
             switch (selectedFilter) {
             case .kind:
                 ForEach(kinds, id: \.id) { kind in
-                    if let name = kind.name {
+                    if let kindName = kind.name {
                         Button {
                             if selectedKinds.contains(kind) {
                                 selectedKinds.remove(kind)
@@ -165,13 +164,13 @@ struct FilterItemsView: View {
                                 selectedKinds.insert(kind)
                             }
                         } label: {
-                            KindRowView(kind: kind, name: name)
+                            KindRowView(name: kindName, itemCount: viewModel.getItemCount(kind))
                         }
                     }
                 }
             case .brand:
                 ForEach(brands, id: \.id) { brand in
-                    if let name = brand.name {
+                    if let brandName = brand.name {
                         Button {
                             if selectedBrands.contains(brand) {
                                 selectedBrands.remove(brand)
@@ -179,13 +178,13 @@ struct FilterItemsView: View {
                                 selectedBrands.insert(brand)
                             }
                         } label: {
-                            BrandRowView(brand: brand, name: name)
+                            BrandRowView(name: brandName, itemCount: viewModel.getItemCount(brand))
                         }
                     }
                 }
             case .seller:
                 ForEach(sellers, id: \.id) { seller in
-                    if let name = seller.name {
+                    if let sellerName = seller.name {
                         Button {
                             if selectedSellers.contains(seller) {
                                 selectedSellers.remove(seller)
@@ -193,13 +192,23 @@ struct FilterItemsView: View {
                                 selectedSellers.insert(seller)
                             }
                         } label: {
-                            SellerRowView(seller: seller, name: name)
+                            SellerRowView(name: sellerName, itemCount: getItems(seller).count)
                         }
                     }
                 }
             }
         }
     }
+    
+    private func getItems(_ seller: Seller) -> [Item] {
+        guard let items = seller.items else {
+            return [Item]()
+        }
+        
+        return items.compactMap { $0 as? Item }
+            .sorted { ($0.obtained ?? Date()) > ($1.obtained ?? Date()) }
+    }
+    
     
     func header() -> some View {
         HStack {

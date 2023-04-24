@@ -8,16 +8,11 @@
 import SwiftUI
 
 struct ItemListView: View {
-    @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var viewModel: BelongingsViewModel
     
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Item.lastupd, ascending: false)],
-        animation: .default)
-    private var items: FetchedResults<Item>
-
     @State var presentAddItemView = false
     @State var presentFilterItemsView = false
+    @State var presentSortItemView = false
 
     @State var selectedKinds = Set<Kind>()
     @State var selectedBrands = Set<Brand>()
@@ -26,31 +21,56 @@ struct ItemListView: View {
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
     
-    var filteredItems: Array<Item> {
-        items.filter { item in
+    @State private var sortType = SortType.lastupd
+    @State private var sortDirection = SortDirection.descending
+    
+    @State var items: [Item]
+    
+    var filteredItems: [Item] {
+        items.filter {
             var filter = true
             
-            if let kind = item.kind as? Set<Kind>, !selectedKinds.isEmpty && selectedKinds.intersection(kind).isEmpty {
+            if let kind = $0.kind as? Set<Kind>, !selectedKinds.isEmpty && selectedKinds.intersection(kind).isEmpty {
                 filter = false
             }
             
-            if let brand = item.brand as? Set<Brand>, !selectedBrands.isEmpty && selectedBrands.intersection(brand).isEmpty {
+            if let brand = $0.brand as? Set<Brand>, !selectedBrands.isEmpty && selectedBrands.intersection(brand).isEmpty {
                 filter = false
             }
             
-            if let seller = item.seller as? Set<Seller>, !selectedSellers.isEmpty && selectedSellers.intersection(seller).isEmpty {
+            if let seller = $0.seller as? Set<Seller>, !selectedSellers.isEmpty && selectedSellers.intersection(seller).isEmpty {
                 filter = false
             }
             
             return filter
         }
-        .filter { item in
-            if viewModel.stringToSearch == "" {
-                return true
-            } else if let name = item.name {
-                return name.lowercased().contains(viewModel.stringToSearch.lowercased())
+        .filter {
+            if let name = $0.name {
+                return viewModel.checkIfStringToSearchContainedIn(name)
             } else {
                 return false
+            }
+        }
+        .sorted {
+            switch sortType {
+            case .lastupd:
+                if let lastupd1 = $0.lastupd, let lastupd2 = $1.lastupd {
+                    return sortDirection == .ascending ? lastupd1 < lastupd2 : lastupd2 < lastupd1
+                } else {
+                    return false
+                }
+            case .obtained:
+                if let obtained1 = $0.obtained, let obtained2 = $1.obtained {
+                    return sortDirection == .ascending ? obtained1 < obtained2 : obtained2 < obtained1
+                } else {
+                    return false
+                }
+            case .name:
+                if let name1 = $0.name, let name2 = $1.name {
+                    return sortDirection == .ascending ? name1 < name2 : name2 < name1
+                } else {
+                    return false
+                }
             }
         }
     }
@@ -81,19 +101,35 @@ struct ItemListView: View {
                 .navigationTitle("Items")
             }
         }
+        .sheet(isPresented: $presentAddItemView) {
+            AddItemView()
+                .environmentObject(viewModel)
+                .frame(minWidth: 350, minHeight: 550)
+                .padding()
+        }
         .sheet(isPresented: $presentFilterItemsView) {
             FilterItemsView(selectedKinds: $selectedKinds, selectedBrands: $selectedBrands, selectedSellers: $selectedSellers)
+                .environmentObject(viewModel)
                 .frame(minWidth: 350, minHeight: 450)
                 .padding()
         }
-        .onChange(of: viewModel.addItemViewModel.showAlert) { _ in
-            showAlert = viewModel.addItemViewModel.showAlert
+        .sheet(isPresented: $presentSortItemView) {
+            SortItemsView(sortType: $sortType, sortDirection: $sortDirection)
+                .environmentObject(viewModel)
+                .frame(minWidth: 350, minHeight: 100)
+                .padding()
+        }
+        .onChange(of: viewModel.items) { _ in
+            items = viewModel.items
+        }
+        .onChange(of: viewModel.showAlert) { _ in
+            showAlert = viewModel.showAlert
         }
         .alert("Unable to Save Data", isPresented: $showAlert) {
             Button("Dismiss") {
             }
         } message: {
-            Text(viewModel.addItemViewModel.message)
+            Text(viewModel.message)
         }
         .alert("Unable to Delete Data", isPresented: $showAlertForDeletion) {
             Button("Dismiss") {
@@ -115,10 +151,18 @@ struct ItemListView: View {
             
             Spacer()
             
-            Button(action: {
-                viewModel.addItemViewModel.reset()
+            Button {
+                presentSortItemView = true
+            } label: {
+                Label("Sort", systemImage: "list.number")
+            }
+            
+            Spacer()
+            
+            Button {
+                viewModel.persistenceHelper.reset()
                 presentAddItemView = true
-            }) {
+            } label: {
                 Label("Add", systemImage: "plus")
             }
             
@@ -130,20 +174,18 @@ struct ItemListView: View {
     private func itemListView() -> some View {
         List {
             ForEach(filteredItems) { item in
-                if let itemName = item.name {
-                    NavigationLink(destination: ItemDetailView(item: item,
-                                                               imageData: item.image,
-                                                               name: itemName,
-                                                               quantity: Int(item.quantity),
-                                                               buyPrice: item.buyPrice,
-                                                               sellPrice: item.sellPrice,
-                                                               buyCurrency: item.buyCurrency ?? "USD",
-                                                               sellCurrency: item.sellCurrency ?? "USD",
-                                                               note: item.note ?? "",
-                                                               obtained: item.obtained ?? Date(),
-                                                               disposed: item.disposed ?? Date())) {
-                        ItemRowView(item: item, name: itemName)
-                    }
+                NavigationLink(destination: ItemDetailView(item: item,
+                                                           imageData: item.image,
+                                                           name: item.name ?? "",
+                                                           quantity: Int(item.quantity),
+                                                           buyPrice: item.buyPrice,
+                                                           sellPrice: item.sellPrice,
+                                                           buyCurrency: item.buyCurrency ?? "USD",
+                                                           sellCurrency: item.sellCurrency ?? "USD",
+                                                           note: item.note ?? "",
+                                                           obtained: item.obtained ?? Date(),
+                                                           disposed: item.disposed ?? Date())) {
+                    ItemRowView(item: item)
                 }
             }
             .onDelete(perform: deleteItems)
@@ -156,11 +198,5 @@ struct ItemListView: View {
                 showAlert.toggle()
             }
         }
-    }
-}
-
-struct ItemListView_Previews: PreviewProvider {
-    static var previews: some View {
-        ItemListView()
     }
 }

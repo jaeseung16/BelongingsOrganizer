@@ -11,7 +11,7 @@ import SDWebImageWebPCoder
 
 struct AddPhotoView: View, DropDelegate {
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var viewModel: AddItemViewModel
+    @EnvironmentObject var viewModel: BelongingsViewModel
 
     @State private var selectedImage: Data?
     @State private var showImagePickerView = false
@@ -19,6 +19,8 @@ struct AddPhotoView: View, DropDelegate {
     @State private var progress: Progress?
     @State private var showAlert = false
     @State private var errorMessage = ""
+    @State private var failed = false
+    @State private var details = ""
     
     var body: some View {
         GeometryReader { geometry in
@@ -62,6 +64,11 @@ struct AddPhotoView: View, DropDelegate {
                 }
                     .padding()
             }
+            .alert("Cannot add a photo", isPresented: $failed, presenting: details) { details in
+                Button("Dismiss") {
+                    
+                }
+            }
         }
     }
     
@@ -76,7 +83,7 @@ struct AddPhotoView: View, DropDelegate {
             Spacer()
             
             Button(action: {
-                viewModel.imageData = selectedImage
+                viewModel.updateImage(selectedImage)
                 dismiss.callAsFunction()
             }, label: {
                 Text("Done")
@@ -110,7 +117,7 @@ struct AddPhotoView: View, DropDelegate {
                 Label("Photos", systemImage: "photo.on.rectangle")
             }
             
-            if ImagePaster.hasImage() {
+            if viewModel.hasImage() {
                 Spacer()
                 
                 Button {
@@ -123,7 +130,7 @@ struct AddPhotoView: View, DropDelegate {
     }
     
     private func pasteImage() -> Void {
-        ImagePaster.paste { data, _ in
+        viewModel.paste { data, _ in
             if let data = data {
                 selectedImage = data
             }
@@ -131,35 +138,17 @@ struct AddPhotoView: View, DropDelegate {
     }
     
     func performDrop(info: DropInfo) -> Bool {
-        ImagePaster.loadData(from: info) { data, _ in
-            if let imageData = data {
-                if imageData.count > ImagePaster.maxDataSize, let uiImage = UIImage(data: imageData) {
-                    if let resized = ImagePaster.resize(uiImage: uiImage, within: ImagePaster.maxResizeSize),
-                       let data = resized.pngData() {
-                        selectedImage = data
-                    } else {
-                        selectedImage = imageData
-                    }
-                } else {
-                    selectedImage = imageData
+        viewModel.getData(from: info) { data, error in
+            guard let data = data else {
+                if let localizedDescription = error?.localizedDescription {
+                    details = localizedDescription
                 }
+                self.selectedImage = nil
+                failed.toggle()
+                return
             }
-        }
-        
-        ImagePaster.loadFile(from: info) { item, error in
-            if let url = URL(dataRepresentation: item as! Data, relativeTo: nil) {
-                if url.absoluteString.contains(".webp") {
-                    let _ = url.startAccessingSecurityScopedResource()
-                    if let data: Data = try? Data(contentsOf: url) {
-                        let image = SDImageWebPCoder.shared.decodedImage(with: data, options: nil)
-                        self.selectedImage = image?.pngData()
-                    }
-                    url.stopAccessingSecurityScopedResource()
-                } else {
-                    self.selectedImage = try? Data(contentsOf: url)
-                }
-            }
-            print("selectedImage = \(String(describing: selectedImage))")
+            
+            self.selectedImage = data
         }
         
         return selectedImage != nil

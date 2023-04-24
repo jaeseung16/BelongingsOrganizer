@@ -8,22 +8,23 @@
 import SwiftUI
 
 struct ItemRowView: View {
-    var item: Item
-    var name: String
+    @EnvironmentObject var viewModel: BelongingsViewModel
+    
+    @State var item: Item
     var imageWidth: CGFloat = 50
     
     var body: some View {
         HStack {
-            if let data = item.image {
+            if let imageData = item.image {
             #if os(macOS)
-                if let nsImage = NSImage(data: data) {
+                if let nsImage = NSImage(data: imageData) {
                     Image(nsImage: nsImage)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: imageWidth)
                 }
             #else
-                if let uiImage = UIImage(data: data) {
+                if let uiImage = UIImage(data: imageData) {
                     Image(uiImage: uiImage)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
@@ -42,7 +43,7 @@ struct ItemRowView: View {
             
             VStack {
                 HStack {
-                    Text(name)
+                    Text(item.name ?? "")
                     Spacer()
                 }
                 
@@ -63,5 +64,6 @@ struct ItemRowView: View {
             }
         }
     }
+
 }
 

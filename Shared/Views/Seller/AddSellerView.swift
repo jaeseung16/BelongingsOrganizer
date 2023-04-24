@@ -8,14 +8,15 @@
 import SwiftUI
 
 struct AddSellerView: View {
-    @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var viewModel: AddItemViewModel
+    @EnvironmentObject var viewModel: BelongingsViewModel
     
     @State private var name = ""
     @State private var urlString = ""
     @State private var isEditing = false
     @State private var showAlert = false
+    
+    @State private var showProgress = false
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -40,11 +41,14 @@ struct AddSellerView: View {
             
             TextField("url", text: $urlString, prompt: nil)
                 .onSubmit {
-                    if let url = URLValidator.validate(urlString: urlString) {
-                        print("url = \(url)")
-                        self.urlString = url.absoluteString
-                    } else {
-                        showAlert = true
+                    showProgress = true
+                    viewModel.validatedURL(from: urlString) { url in
+                        self.showProgress = false
+                        if let url = url {
+                            self.urlString = url.absoluteString
+                        } else {
+                            self.showAlert = true
+                        }
                     }
                 }
             #if os(iOS)
@@ -67,6 +71,11 @@ struct AddSellerView: View {
             Spacer()
         }
         .padding()
+        .overlay {
+            ProgressView("Please wait...")
+                .progressViewStyle(.circular)
+                .opacity(showProgress ? 1 : 0)
+        }
         .frame(minHeight: 200.0)
         .alert("Invalid URL", isPresented: $showAlert, actions: {
             Button("Dismiss")  {
@@ -78,8 +87,3 @@ struct AddSellerView: View {
     }
 }
 
-struct AddSellerView_Previews: PreviewProvider {
-    static var previews: some View {
-        AddSellerView()
-    }
-}

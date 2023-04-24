@@ -8,8 +8,10 @@
 import SwiftUI
 
 struct SellerRowView: View {
-    var seller: Seller
-    var name: String
+    @EnvironmentObject var viewModel: BelongingsViewModel
+    
+    @State var name: String
+    @State var itemCount: Int
     
     var body: some View {
         HStack {
@@ -17,12 +19,11 @@ struct SellerRowView: View {
             
             Spacer()
             
-            if let items = seller.items {
-                Text("\(items.count) items")
-                    .font(.callout)
-                    .foregroundColor(.secondary)
-            }
+            Text("\(itemCount) items")
+                .font(.callout)
+                .foregroundColor(.secondary)
         }
     }
+    
 }
 

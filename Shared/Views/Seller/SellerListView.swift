@@ -8,64 +8,46 @@
 import SwiftUI
 
 struct SellerListView: View {
-    @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var viewModel: BelongingsViewModel
-    
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
-                          NSSortDescriptor(key: "created", ascending: false)],
-        animation: .default)
-    private var sellers: FetchedResults<Seller>
 
     @State var presentAddSelleriew = false
 
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
     
-    var filteredSellers: Array<Seller> {
-        sellers.filter { seller in
-            if viewModel.stringToSearch == "" {
-                return true
-            } else if let name = seller.name {
-                return name.lowercased().contains(viewModel.stringToSearch.lowercased())
-            } else {
-                return false
-            }
-        }
-    }
+    @State var sellers = [Seller]()
+    @State var selectedSeller: Seller?
     
     var body: some View {
         NavigationView {
-            GeometryReader { geometry in
-                VStack {
-                    header()
-                    
-                    sellerListView()
-                    .sheet(isPresented: $presentAddSelleriew, content: {
-                        AddSellerView()
-                            .environmentObject(viewModel.addItemViewModel)
-                            .frame(minWidth: 350, minHeight: 450)
-                            .padding()
-                    })
-                    
-                    #if os(iOS)
-                    Spacer()
-                    BannerAd()
-                        .frame(height: 50)
-                    #endif
-                }
-                .navigationTitle("Seller")
+            VStack {
+                header()
+                
+                sellerListView()
+                .sheet(isPresented: $presentAddSelleriew, content: {
+                    AddSellerView()
+                        .environmentObject(viewModel)
+                        .frame(minWidth: 350, minHeight: 450)
+                        .padding()
+                })
             }
+            .navigationTitle("Seller")
         }
-        .onChange(of: viewModel.addItemViewModel.showAlert) { _ in
-            showAlert = viewModel.addItemViewModel.showAlert
+        .onChange(of: viewModel.sellers) { _ in
+            sellers = viewModel.filteredSellers
+        }
+        .onChange(of: viewModel.showAlert) { _ in
+            showAlert = viewModel.showAlert
+        }
+        .onChange(of: viewModel.stringToSearch) { _ in
+            sellers = viewModel.filteredSellers
         }
         .alert("Unable to Save Data", isPresented: $showAlert) {
             Button("Dismiss") {
                 showAlert.toggle()
             }
         } message: {
-            Text(viewModel.addItemViewModel.message)
+            Text(viewModel.message)
         }
         .alert("Unable to Delete Data", isPresented: $showAlertForDeletion) {
             Button("Dismiss") {
@@ -79,7 +61,7 @@ struct SellerListView: View {
     private func header() -> some View {
         HStack {
             Button(action: {
-                viewModel.addItemViewModel.reset()
+                viewModel.persistenceHelper.reset()
                 presentAddSelleriew = true
             }) {
                 Label("Add a seller", systemImage: "plus")
@@ -89,17 +71,16 @@ struct SellerListView: View {
     
     private func sellerListView() -> some View {
         List {
-            ForEach(filteredSellers) { seller in
-                if let sellerName = seller.name {
-                    NavigationLink(destination: SellerDetailView(seller: seller,
-                                                                 name: sellerName,
-                                                                 urlString: seller.url?.absoluteString ?? "")) {
-                        SellerRowView(seller: seller, name: sellerName)
-                    }
+            ForEach(sellers) { seller in
+                NavigationLink {
+                    SellerDetailView(seller: seller, name: seller.name ?? "", urlString: seller.url?.absoluteString ?? "", items: viewModel.getItems(seller))
+                } label: {
+                    SellerRowView(name: seller.name ?? "", itemCount: viewModel.getItemCount(seller))
                 }
             }
             .onDelete(perform: deleteSellers)
         }
+        .id(UUID())
     }
     
     private func sellerRowView(_ seller: Seller, name: String) -> some View {
@@ -118,15 +99,10 @@ struct SellerListView: View {
     
     private func deleteSellers(offsets: IndexSet) {
         withAnimation {
-            viewModel.delete(offsets.map { filteredSellers[$0] }) { _ in
+            viewModel.delete(offsets.map { sellers[$0] }) { _ in
                 showAlertForDeletion.toggle()
             }
         }
     }
 }
 
-struct SellerListView_Previews: PreviewProvider {
-    static var previews: some View {
-        SellerListView()
-    }
-}
