@@ -1,0 +1,41 @@
+{
+  "pins" : [
+    {
+      "identity" : "libwebp-xcode",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SDWebImage/libwebp-Xcode.git",
+      "state" : {
+        "revision" : "2b3b43faaef54d1b897482428428357b7f7cd08b",
+        "version" : "1.2.1"
+      }
+    },
+    {
+      "identity" : "persistenceswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/jaeseung16/PersistenceSwift",
+      "state" : {
+        "branch" : "main",
+        "revision" : "03b18e40816b35a9635277bd047a1c88c460df49"
+      }
+    },
+    {
+      "identity" : "sdwebimage",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SDWebImage/SDWebImage.git",
+      "state" : {
+        "revision" : "b729cc14f65e1412efc781a4cc46bd7f4720a3ae",
+        "version" : "5.12.6"
+      }
+    },
+    {
+      "identity" : "sdwebimagewebpcoder",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SDWebImage/SDWebImageWebPCoder",
+      "state" : {
+        "revision" : "95a6838df13bc08d8064cf7e048b787b6e52348d",
+        "version" : "0.8.4"
+      }
+    }
+  ],
+  "version" : 2
+}
