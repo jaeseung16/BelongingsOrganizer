@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 53;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -75,23 +75,16 @@
 		90785B9D29BFDC1F00BFE933 /* SortDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90785B9B29BFDC1F00BFE933 /* SortDirection.swift */; };
 		907C26DD29C754C200116BC1 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 907C26DC29C754C200116BC1 /* StatsView.swift */; };
 		907C26E229C7A6B500116BC1 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 907C26DC29C754C200116BC1 /* StatsView.swift */; };
+		907C67C22AC0CE7D00041BF2 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 907C67C12AC0CE7D00041BF2 /* GoogleMobileAds */; };
 		9086B53B29D247C800DB4568 /* StatsType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9086B53A29D247C800DB4568 /* StatsType.swift */; };
 		9086B53C29D247C800DB4568 /* StatsType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9086B53A29D247C800DB4568 /* StatsType.swift */; };
 		90884D1E26E180C000D01A55 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90884D1D26E180C000D01A55 /* CloudKit.framework */; };
-		90884D2126E180E400D01A55 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90884D2026E180E400D01A55 /* CloudKit.framework */; };
 		9089734326FBFFEA005A03A8 /* SDWebImageWebPCoder in Frameworks */ = {isa = PBXBuildFile; productRef = 9089734226FBFFEA005A03A8 /* SDWebImageWebPCoder */; };
 		9089734526FBFFF5005A03A8 /* SDWebImageWebPCoder in Frameworks */ = {isa = PBXBuildFile; productRef = 9089734426FBFFF5005A03A8 /* SDWebImageWebPCoder */; };
 		9089734726FD10CC005A03A8 /* URLValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9089734626FD10CC005A03A8 /* URLValidator.swift */; };
 		9089734826FD10CC005A03A8 /* URLValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9089734626FD10CC005A03A8 /* URLValidator.swift */; };
 		9089734A26FD3B3F005A03A8 /* ItemSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9089734926FD3B3F005A03A8 /* ItemSummaryView.swift */; };
 		9089734B26FD3B3F005A03A8 /* ItemSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9089734926FD3B3F005A03A8 /* ItemSummaryView.swift */; };
-		909A7E8527B349B8007227A2 /* GoogleAppMeasurement.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 909A7E8427B349B8007227A2 /* GoogleAppMeasurement.xcframework */; };
-		909A7E8727B349CE007227A2 /* GoogleAppMeasurementIdentitySupport.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 909A7E8627B349CE007227A2 /* GoogleAppMeasurementIdentitySupport.xcframework */; };
-		909A7E8927B349F2007227A2 /* GoogleMobileAds.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 909A7E8827B349F2007227A2 /* GoogleMobileAds.xcframework */; };
-		909A7E8B27B34A07007227A2 /* GoogleUtilities.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 909A7E8A27B34A07007227A2 /* GoogleUtilities.xcframework */; };
-		909A7E8D27B34A19007227A2 /* nanopb.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 909A7E8C27B34A19007227A2 /* nanopb.xcframework */; };
-		909A7E8F27B34A26007227A2 /* PromisesObjC.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 909A7E8E27B34A26007227A2 /* PromisesObjC.xcframework */; };
-		909A7E9127B34A31007227A2 /* UserMessagingPlatform.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 909A7E9027B34A31007227A2 /* UserMessagingPlatform.xcframework */; };
 		90B23E6626EE901900B29063 /* KindDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B23E6526EE901900B29063 /* KindDetailView.swift */; };
 		90B23E6726EE901900B29063 /* KindDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B23E6526EE901900B29063 /* KindDetailView.swift */; };
 		90B46BC82700F53E00BEED75 /* EditPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B46BC62700F53E00BEED75 /* EditPhotoView.swift */; };
@@ -215,16 +208,8 @@
 		9086B53A29D247C800DB4568 /* StatsType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsType.swift; sourceTree = "<group>"; };
 		90884D1D26E180C000D01A55 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		90884D1F26E180E100D01A55 /* Belongings.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Belongings.entitlements; sourceTree = "<group>"; };
-		90884D2026E180E400D01A55 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.5.sdk/System/Library/Frameworks/CloudKit.framework; sourceTree = DEVELOPER_DIR; };
 		9089734626FD10CC005A03A8 /* URLValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLValidator.swift; sourceTree = "<group>"; };
 		9089734926FD3B3F005A03A8 /* ItemSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemSummaryView.swift; sourceTree = "<group>"; };
-		909A7E8427B349B8007227A2 /* GoogleAppMeasurement.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = GoogleAppMeasurement.xcframework; sourceTree = "<group>"; };
-		909A7E8627B349CE007227A2 /* GoogleAppMeasurementIdentitySupport.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = GoogleAppMeasurementIdentitySupport.xcframework; sourceTree = "<group>"; };
-		909A7E8827B349F2007227A2 /* GoogleMobileAds.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = GoogleMobileAds.xcframework; sourceTree = "<group>"; };
-		909A7E8A27B34A07007227A2 /* GoogleUtilities.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = GoogleUtilities.xcframework; sourceTree = "<group>"; };
-		909A7E8C27B34A19007227A2 /* nanopb.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = nanopb.xcframework; sourceTree = "<group>"; };
-		909A7E8E27B34A26007227A2 /* PromisesObjC.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = PromisesObjC.xcframework; sourceTree = "<group>"; };
-		909A7E9027B34A31007227A2 /* UserMessagingPlatform.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = UserMessagingPlatform.xcframework; sourceTree = "<group>"; };
 		90B23E6526EE901900B29063 /* KindDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KindDetailView.swift; sourceTree = "<group>"; };
 		90B46BC62700F53E00BEED75 /* EditPhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPhotoView.swift; sourceTree = "<group>"; };
 		90C0D98A26E7DEF600158C85 /* AddItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItemView.swift; sourceTree = "<group>"; };
@@ -265,16 +250,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				907C67C22AC0CE7D00041BF2 /* GoogleMobileAds in Frameworks */,
 				901A21E528568A95006CF1A4 /* Persistence in Frameworks */,
 				9089734326FBFFEA005A03A8 /* SDWebImageWebPCoder in Frameworks */,
-				909A7E8927B349F2007227A2 /* GoogleMobileAds.xcframework in Frameworks */,
-				909A7E8727B349CE007227A2 /* GoogleAppMeasurementIdentitySupport.xcframework in Frameworks */,
-				909A7E8527B349B8007227A2 /* GoogleAppMeasurement.xcframework in Frameworks */,
-				90884D2126E180E400D01A55 /* CloudKit.framework in Frameworks */,
-				909A7E8B27B34A07007227A2 /* GoogleUtilities.xcframework in Frameworks */,
-				909A7E8D27B34A19007227A2 /* nanopb.xcframework in Frameworks */,
-				909A7E9127B34A31007227A2 /* UserMessagingPlatform.xcframework in Frameworks */,
-				909A7E8F27B34A26007227A2 /* PromisesObjC.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -308,7 +286,6 @@
 		900DDBB826E036C90034A155 = {
 			isa = PBXGroup;
 			children = (
-				909A7E8327B34998007227A2 /* AdMob */,
 				90884D1F26E180E100D01A55 /* Belongings.entitlements */,
 				900DDBBD26E036C90034A155 /* Shared */,
 				900DDBCA26E036CA0034A155 /* iOS */,
@@ -493,24 +470,9 @@
 		90884D1C26E180C000D01A55 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				90884D2026E180E400D01A55 /* CloudKit.framework */,
 				90884D1D26E180C000D01A55 /* CloudKit.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		909A7E8327B34998007227A2 /* AdMob */ = {
-			isa = PBXGroup;
-			children = (
-				909A7E9027B34A31007227A2 /* UserMessagingPlatform.xcframework */,
-				909A7E8E27B34A26007227A2 /* PromisesObjC.xcframework */,
-				909A7E8C27B34A19007227A2 /* nanopb.xcframework */,
-				909A7E8A27B34A07007227A2 /* GoogleUtilities.xcframework */,
-				909A7E8827B349F2007227A2 /* GoogleMobileAds.xcframework */,
-				909A7E8627B349CE007227A2 /* GoogleAppMeasurementIdentitySupport.xcframework */,
-				909A7E8427B349B8007227A2 /* GoogleAppMeasurement.xcframework */,
-			);
-			path = AdMob;
 			sourceTree = "<group>";
 		};
 		90D3F23026EA593B00955316 /* ViewModels */ = {
@@ -604,6 +566,7 @@
 			packageProductDependencies = (
 				9089734226FBFFEA005A03A8 /* SDWebImageWebPCoder */,
 				901A21E428568A95006CF1A4 /* Persistence */,
+				907C67C12AC0CE7D00041BF2 /* GoogleMobileAds */,
 			);
 			productName = "Belongings (iOS)";
 			productReference = 900DDBC826E036CA0034A155 /* Belongings Organizer.app */;
@@ -674,7 +637,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1250;
-				LastUpgradeCheck = 1430;
+				LastUpgradeCheck = 1500;
 				TargetAttributes = {
 					900DDBC726E036CA0034A155 = {
 						CreatedOnToolsVersion = 12.5.1;
@@ -704,6 +667,7 @@
 			packageReferences = (
 				9089734126FBFFEA005A03A8 /* XCRemoteSwiftPackageReference "SDWebImageWebPCoder" */,
 				901A21E328568A95006CF1A4 /* XCRemoteSwiftPackageReference "PersistenceSwift" */,
+				907C67C02AC0CE7D00041BF2 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
 			);
 			productRefGroup = 900DDBC926E036CA0034A155 /* Products */;
 			projectDirPath = "";
@@ -959,6 +923,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -1022,6 +987,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -1305,6 +1271,14 @@
 				kind = branch;
 			};
 		};
+		907C67C02AC0CE7D00041BF2 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googleads/swift-package-manager-google-mobile-ads.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.10.0;
+			};
+		};
 		9089734126FBFFEA005A03A8 /* XCRemoteSwiftPackageReference "SDWebImageWebPCoder" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SDWebImage/SDWebImageWebPCoder";
@@ -1325,6 +1299,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 901A21E328568A95006CF1A4 /* XCRemoteSwiftPackageReference "PersistenceSwift" */;
 			productName = Persistence;
+		};
+		907C67C12AC0CE7D00041BF2 /* GoogleMobileAds */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 907C67C02AC0CE7D00041BF2 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
+			productName = GoogleMobileAds;
 		};
 		9089734226FBFFEA005A03A8 /* SDWebImageWebPCoder */ = {
 			isa = XCSwiftPackageProductDependency;
