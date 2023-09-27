@@ -16,7 +16,7 @@ struct KindListView: View {
     @State private var showAlertForDeletion = false
 
     var kinds: [Kind] {
-        return viewModel.kinds
+        return viewModel.filteredKinds
     }
     
     var body: some View {
