@@ -15,31 +15,22 @@ struct BrandListView: View {
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
     
-    @State var brands = [Brand]()
+    var brands: [Brand] {
+        return viewModel.filteredBrands
+    }
     
     var body: some View {
-        NavigationView {
-            VStack {
-                header()
-                
-                brandListView()
-                .sheet(isPresented: $presentAddBrandView, content: {
-                    AddBrandView()
-                        .environmentObject(viewModel)
-                        .frame(minWidth: 350, minHeight: 450)
-                        .padding()
-                })
+        VStack {
+            brandListView()
+            .sheet(isPresented: $presentAddBrandView) {
+                AddBrandView()
+                    .environmentObject(viewModel)
+                    .frame(minWidth: 350, minHeight: 450)
+                    .padding()
             }
-            .navigationTitle("Brands")
-        }
-        .onChange(of: viewModel.brands) { _ in
-            brands = viewModel.filteredBrands
         }
         .onChange(of: viewModel.showAlert) { _ in
             showAlert = viewModel.showAlert
-        }
-        .onChange(of: viewModel.stringToSearch) { _ in
-            brands = viewModel.filteredBrands
         }
         .alert("Unable to Save Data", isPresented: $showAlert) {
             Button("Dismiss") {
@@ -57,29 +48,37 @@ struct BrandListView: View {
         }
     }
     
-    private func header() -> some View {
-        HStack {
-            Button(action: {
+    private func header() -> ToolbarItemGroup<some View> {
+        ToolbarItemGroup(placement: .topBarLeading) {
+            Button{
                 viewModel.persistenceHelper.reset()
                 presentAddBrandView = true
-            }) {
+            } label: {
                 Label("Add a brand", systemImage: "plus")
             }
         }
     }
     
     private func brandListView() -> some View {
-        List {
-            ForEach(brands) { brand in
-                NavigationLink {
-                    BrandDetailView(brand: brand, name: brand.name ?? "", urlString: brand.url?.absoluteString ?? "", items: viewModel.getItems(brand))
-                } label: {
-                    BrandRowView(name: brand.name ?? "", itemCount: viewModel.getItemCount(brand))
+        NavigationStack {
+            List {
+                ForEach(brands) { brand in
+                    NavigationLink(value: brand) {
+                        BrandRowView(name: brand.name ?? "", itemCount: viewModel.getItemCount(brand))
+                    }
                 }
+                .onDelete(perform: deleteBrands)
+                //.id(UUID())
             }
-            .onDelete(perform: deleteBrands)
+            .navigationDestination(for: Brand.self) { brand in
+                BrandDetailView(brand: brand, name: brand.name ?? "", urlString: brand.url?.absoluteString ?? "", items: viewModel.getItems(brand))
+                    .environmentObject(viewModel)
+            }
+            .toolbar {
+                header()
+            }
+            .navigationTitle("Brands")
         }
-        .id(UUID())
     }
     
     private func deleteBrands(offsets: IndexSet) {

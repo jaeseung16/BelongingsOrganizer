@@ -29,7 +29,7 @@ struct ContentView: View {
                     Text("Categories")
                 }
             
-            BrandListView(brands: viewModel.filteredBrands)
+            BrandListView()
                 .tabItem {
                     Image(systemName: "r.circle")
                     Text("Brands")
