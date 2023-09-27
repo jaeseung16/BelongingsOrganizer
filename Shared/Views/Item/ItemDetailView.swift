@@ -58,7 +58,6 @@ struct ItemDetailView: View {
                 
                 footer()
             }
-            .navigationTitle(name)
             .padding()
             .sheet(isPresented: $presentChooseKindView, content: {
                 #if os(macOS)

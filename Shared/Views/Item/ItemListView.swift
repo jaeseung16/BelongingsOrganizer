@@ -24,6 +24,8 @@ struct ItemListView: View {
     @State private var sortType = SortType.lastupd
     @State private var sortDirection = SortDirection.descending
     
+    @State private var selectedItem: Item?
+    
     var filteredItems: [Item] {
         viewModel.items.filter {
             var filter = true
@@ -83,11 +85,6 @@ struct ItemListView: View {
                             .frame(minWidth: 350, minHeight: 550)
                             .padding()
                     }
-                #if os(iOS)
-                Spacer()
-                BannerAd()
-                    .frame(height: 50)
-                #endif
             }
         }
         .sheet(isPresented: $presentAddItemView) {
@@ -149,16 +146,26 @@ struct ItemListView: View {
     }
     
     private func itemListView() -> some View {
-        NavigationStack {
-            List {
-                ForEach(filteredItems) { item in
-                    NavigationLink(value: item) {
-                        ItemRowView(item: item)
+        NavigationSplitView {
+            VStack {
+                List(selection: $selectedItem) {
+                    ForEach(filteredItems) { item in
+                        NavigationLink(value: item) {
+                            ItemRowView(item: item)
+                        }
                     }
+                    .onDelete(perform: deleteItems)
                 }
-                .onDelete(perform: deleteItems)
+                .navigationTitle("Items")
+                
+                #if os(iOS)
+                Spacer()
+                BannerAd()
+                    .frame(height: 50)
+                #endif
             }
-            .navigationDestination(for: Item.self) { item in
+        } detail: {
+            if let item = selectedItem {
                 ItemDetailView(item: item,
                                imageData: item.image,
                                name: item.name ?? "",
@@ -171,11 +178,10 @@ struct ItemListView: View {
                                obtained: item.obtained ?? Date(),
                                disposed: item.disposed ?? Date())
                 .environmentObject(viewModel)
+                .id(UUID())
+                .navigationBarTitleDisplayMode(.inline)
             }
-            .toolbar {
-                header()
-            }
-            .navigationTitle("Items")
+            
         }
     }
     
