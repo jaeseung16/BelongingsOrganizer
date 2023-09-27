@@ -17,7 +17,7 @@ struct ContentView: View {
 
     var body: some View {
         TabView {
-            ItemListView(items: viewModel.items)
+            ItemListView()
                 .tabItem {
                     Image(systemName: "gift.fill")
                     Text("Items")
