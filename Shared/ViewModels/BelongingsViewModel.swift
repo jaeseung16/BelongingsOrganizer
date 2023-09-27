@@ -40,13 +40,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     @Published var changedPeristentContext = NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave)
     @Published var showAlert = false
     @Published var stringToSearch = ""
-    @Published var updated = false {
-        didSet {
-            fetchEntities()
-        }
-    }
-    var cloudUpdated = false
-    
+
     var message = ""
     
     let persistenceHelper: PersistenceHelper
@@ -69,15 +63,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
         
         fetchEntities()
         
-        /*
-        $cloudUpdated
-            .throttle(for: .seconds(60), scheduler: DispatchQueue.main, latest: true)
-            .sink { _ in
-                self.logger.info("cloudUpdated=\(self.cloudUpdated)")
-                self.fetchEntities()
-            }
-            .store(in: &subscriptions)
-        */
+
         /*
         $stringToSearch
             .throttle(for: .seconds(2), scheduler: DispatchQueue.main, latest: true)
@@ -295,7 +281,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     
     private func handleSuccess() -> Void {
         DispatchQueue.main.async {
-            self.updated.toggle()
+            self.fetchEntities()
         }
     }
     
@@ -313,9 +299,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
         persistence.fetchUpdates(notification) { result in
             switch result {
             case .success(()):
-                DispatchQueue.main.async {
-                    self.cloudUpdated.toggle()
-                }
+                return
             case .failure(let error):
                 self.logger.log("Error while updating history: \(error.localizedDescription, privacy: .public) \(Thread.callStackSymbols, privacy: .public)")
             }
