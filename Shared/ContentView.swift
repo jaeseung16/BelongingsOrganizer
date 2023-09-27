@@ -23,7 +23,7 @@ struct ContentView: View {
                     Text("Items")
                 }
             
-            KindListView(kinds: viewModel.filteredKinds)
+            KindListView()
                 .tabItem {
                     Image(systemName: "list.dash")
                     Text("Categories")

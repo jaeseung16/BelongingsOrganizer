@@ -15,32 +15,23 @@ struct KindListView: View {
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
 
-    @State var kinds = [Kind]()
+    var kinds: [Kind] {
+        return viewModel.kinds
+    }
     
     var body: some View {
-        NavigationView {
-            VStack {
-                header()
-                
-                kindListView()
-                    .sheet(isPresented: $presentAddKindView) {
-                        AddKindView()
-                            .environmentObject(viewModel)
-                            .frame(minWidth: 350, minHeight: 450)
-                            .padding()
-                        
-                    }
-            }
-            .navigationTitle("Categories")
-        }
-        .onChange(of: viewModel.kinds) { _ in
-            kinds = viewModel.filteredKinds
+        VStack {
+            kindListView()
+                .sheet(isPresented: $presentAddKindView) {
+                    AddKindView()
+                        .environmentObject(viewModel)
+                        .frame(minWidth: 350, minHeight: 450)
+                        .padding()
+                    
+                }
         }
         .onChange(of: viewModel.showAlert) { _ in
             showAlert = viewModel.showAlert
-        }
-        .onChange(of: viewModel.stringToSearch) { _ in
-            kinds = viewModel.filteredKinds
         }
         .alert("Unable to Save Data", isPresented: $showAlert) {
             Button("Dismiss") {
@@ -58,29 +49,37 @@ struct KindListView: View {
         }
     }
     
-    private func header() -> some View {
-        HStack {
-            Button(action: {
+    private func header() -> ToolbarItemGroup<some View> {
+        ToolbarItemGroup(placement: .topBarLeading) {
+            Button {
                 viewModel.persistenceHelper.reset()
                 presentAddKindView = true
-            }) {
+            } label: {
                 Label("Add a category", systemImage: "plus")
             }
         }
     }
     
     private func kindListView() -> some View {
-        List {
-            ForEach(kinds) { kind in
-                NavigationLink {
-                    KindDetailView(kind: kind, name: kind.name ?? "", items: viewModel.getItems(kind))
-                } label: {
-                    KindRowView(name: kind.name ?? "", itemCount: viewModel.getItemCount(kind))
+        NavigationStack {
+            List {
+                ForEach(kinds) { kind in
+                    NavigationLink(value: kind) {
+                        KindRowView(name: kind.name ?? "", itemCount: viewModel.getItemCount(kind))
+                    }
                 }
+                .onDelete(perform: deleteKinds)
+                //.id(UUID())
             }
-            .onDelete(perform: deleteKinds)
+            .navigationDestination(for: Kind.self) { kind in
+                KindDetailView(kind: kind, name: kind.name ?? "", items: viewModel.getItems(kind))
+                    .environmentObject(viewModel)
+            }
+            .toolbar {
+                header()
+            }
+            .navigationTitle("Categories")
         }
-        .id(UUID())
     }
 
     private func deleteKinds(offsets: IndexSet) {
