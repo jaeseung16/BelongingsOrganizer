@@ -15,32 +15,24 @@ struct SellerListView: View {
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
     
-    @State var sellers = [Seller]()
+    var sellers: [Seller] {
+        return viewModel.filteredSellers
+    }
+    
     @State var selectedSeller: Seller?
     
     var body: some View {
-        NavigationView {
-            VStack {
-                header()
-                
-                sellerListView()
-                .sheet(isPresented: $presentAddSelleriew, content: {
-                    AddSellerView()
-                        .environmentObject(viewModel)
-                        .frame(minWidth: 350, minHeight: 450)
-                        .padding()
-                })
-            }
-            .navigationTitle("Seller")
-        }
-        .onChange(of: viewModel.sellers) { _ in
-            sellers = viewModel.filteredSellers
+        VStack {
+            sellerListView()
+            .sheet(isPresented: $presentAddSelleriew, content: {
+                AddSellerView()
+                    .environmentObject(viewModel)
+                    .frame(minWidth: 350, minHeight: 450)
+                    .padding()
+            })
         }
         .onChange(of: viewModel.showAlert) { _ in
             showAlert = viewModel.showAlert
-        }
-        .onChange(of: viewModel.stringToSearch) { _ in
-            sellers = viewModel.filteredSellers
         }
         .alert("Unable to Save Data", isPresented: $showAlert) {
             Button("Dismiss") {
@@ -58,29 +50,37 @@ struct SellerListView: View {
         }
     }
     
-    private func header() -> some View {
-        HStack {
-            Button(action: {
+    private func header() -> ToolbarItemGroup<some View> {
+        ToolbarItemGroup(placement: .topBarLeading) {
+            Button {
                 viewModel.persistenceHelper.reset()
                 presentAddSelleriew = true
-            }) {
+            } label: {
                 Label("Add a seller", systemImage: "plus")
             }
         }
     }
     
     private func sellerListView() -> some View {
-        List {
-            ForEach(sellers) { seller in
-                NavigationLink {
-                    SellerDetailView(seller: seller, name: seller.name ?? "", urlString: seller.url?.absoluteString ?? "", items: viewModel.getItems(seller))
-                } label: {
-                    SellerRowView(name: seller.name ?? "", itemCount: viewModel.getItemCount(seller))
+        NavigationStack {
+            List {
+                ForEach(sellers) { seller in
+                    NavigationLink(value: seller) {
+                        SellerRowView(name: seller.name ?? "", itemCount: viewModel.getItemCount(seller))
+                    }
                 }
+                .onDelete(perform: deleteSellers)
+                //.id(UUID())
             }
-            .onDelete(perform: deleteSellers)
+            .navigationDestination(for: Seller.self) { seller in
+                SellerDetailView(seller: seller, name: seller.name ?? "", urlString: seller.url?.absoluteString ?? "", items: viewModel.getItems(seller))
+                    .environmentObject(viewModel)
+            }
+            .toolbar {
+                header()
+            }
+            .navigationTitle("Sellers")
         }
-        .id(UUID())
     }
     
     private func sellerRowView(_ seller: Seller, name: String) -> some View {

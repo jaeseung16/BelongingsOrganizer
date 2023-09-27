@@ -35,7 +35,7 @@ struct ContentView: View {
                     Text("Brands")
                 }
             
-            SellerListView(sellers: viewModel.filteredSellers)
+            SellerListView()
                 .tabItem {
                     Image(systemName: "shippingbox.fill")
                     Text("Sellers")
