@@ -84,7 +84,8 @@ class BelongingsViewModel: NSObject, ObservableObject {
     @Published var items = [Item]()
     
     func fetchItems() -> Void {
-        items = fetch(NSFetchRequest<Item>(entityName: "Item"))
+        let fetchRequest = persistenceHelper.getFetchRequest(for: Item.self, entityName: "Item", sortDescriptors: [])
+        items = persistenceHelper.perform(fetchRequest)
     }
     
     @Published var kinds = [Kind]()
@@ -101,10 +102,8 @@ class BelongingsViewModel: NSObject, ObservableObject {
     func fetchKinds() -> Void {
         let sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
                                NSSortDescriptor(key: "created", ascending: false)]
-        
-        let fetchRequest = NSFetchRequest<Kind>(entityName: "Kind")
-        fetchRequest.sortDescriptors = sortDescriptors
-        kinds = fetch(fetchRequest)
+        let fetchRequest = persistenceHelper.getFetchRequest(for: Kind.self, entityName: "Kind", sortDescriptors: sortDescriptors)
+        kinds = persistenceHelper.perform(fetchRequest)
     }
     
     @Published var brands = [Brand]()
@@ -121,10 +120,8 @@ class BelongingsViewModel: NSObject, ObservableObject {
     func fetchBrands() -> Void {
         let sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
                                NSSortDescriptor(key: "created", ascending: false)]
-        
-        let fetchRequest = NSFetchRequest<Brand>(entityName: "Brand")
-        fetchRequest.sortDescriptors = sortDescriptors
-        brands = fetch(fetchRequest)
+        let fetchRequest = persistenceHelper.getFetchRequest(for: Brand.self, entityName: "Brand", sortDescriptors: sortDescriptors)
+        brands = persistenceHelper.perform(fetchRequest)
     }
     
     @Published var sellers = [Seller]()
@@ -141,25 +138,13 @@ class BelongingsViewModel: NSObject, ObservableObject {
     func fetchSellers() -> Void {
         let sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
                                NSSortDescriptor(key: "created", ascending: false)]
-        
-        let fetchRequest = NSFetchRequest<Seller>(entityName: "Seller")
-        fetchRequest.sortDescriptors = sortDescriptors
-        sellers = fetch(fetchRequest)
-    }
-    
-    private func fetch<Element>(_ fetchRequest: NSFetchRequest<Element>) -> [Element] {
-        var fetchedEntities = [Element]()
-        do {
-            fetchedEntities = try persistenceContainer.viewContext.fetch(fetchRequest)
-        } catch {
-            self.logger.error("Failed to fetch: \(error.localizedDescription)")
-        }
-        return fetchedEntities
+        let fetchRequest = persistenceHelper.getFetchRequest(for: Seller.self, entityName: "Seller", sortDescriptors: sortDescriptors)
+        sellers = persistenceHelper.perform(fetchRequest)
     }
     
     var itemDTO = ItemDTO() {
         didSet {
-            if itemDTO.id != nil, let existingEntity: Item = get(entity: .Item, id: itemDTO.id!) {
+            if itemDTO.id != nil, let existingEntity = persistenceHelper.get(entity: .item, id: itemDTO.id!) as? Item {
                 existingEntity.name = itemDTO.name
                 existingEntity.note = itemDTO.note
                 existingEntity.quantity = itemDTO.quantity ?? 0
@@ -188,7 +173,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     
     var kindDTO = KindDTO() {
         didSet {
-            if kindDTO.id != nil, let existingEntity: Kind = get(entity: .Kind, id: kindDTO.id!) {
+            if kindDTO.id != nil, let existingEntity = persistenceHelper.get(entity: .kind, id: kindDTO.id!) as? Kind {
                 existingEntity.name = kindDTO.name?.trimmingCharacters(in: .whitespaces)
                 existingEntity.lastupd = Date()
                 
@@ -208,7 +193,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     
     var brandDTO = BrandDTO() {
         didSet {
-            if brandDTO.id != nil, let existingEntity: Brand = get(entity: .Brand, id: brandDTO.id!) {
+            if brandDTO.id != nil, let existingEntity = persistenceHelper.get(entity: .brand, id: brandDTO.id!) as? Brand {
                 existingEntity.name = brandDTO.name?.trimmingCharacters(in: .whitespaces)
                 existingEntity.url = brandDTO.url
                 existingEntity.lastupd = Date()
@@ -229,7 +214,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     
     var sellerDTO = SellerDTO() {
         didSet {
-            if sellerDTO.id != nil, let existingEntity: Seller = get(entity: .Seller, id: sellerDTO.id!) {
+            if sellerDTO.id != nil, let existingEntity = persistenceHelper.get(entity: .seller, id: sellerDTO.id!) as? Seller {
                 existingEntity.name = sellerDTO.name?.trimmingCharacters(in: .whitespaces)
                 existingEntity.url = sellerDTO.url
                 existingEntity.lastupd = Date()

@@ -49,6 +49,34 @@ class PersistenceHelper {
         saveContext(completionHandler: completionHandler)
     }
     
+    func perform<Element>(_ fetchRequest: NSFetchRequest<Element>) -> [Element] {
+        var fetchedEntities = [Element]()
+        do {
+            fetchedEntities = try viewContext.fetch(fetchRequest)
+        } catch {
+            PersistenceHelper.logger.error("Failed to fetch with fetchRequest=\(fetchRequest, privacy: .public): error=\(error.localizedDescription, privacy: .public)")
+        }
+        return fetchedEntities
+    }
+    
+    func getFetchRequest<Entity: NSFetchRequestResult>(for type: Entity.Type, entityName: String, sortDescriptors: [NSSortDescriptor] = [], predicate: NSPredicate? = nil) -> NSFetchRequest<Entity> {
+        let fetchRequest = NSFetchRequest<Entity>(entityName: entityName)
+        if !sortDescriptors.isEmpty {
+            fetchRequest.sortDescriptors = sortDescriptors
+        }
+        if let predicate = predicate {
+            fetchRequest.predicate = predicate
+        }
+        return fetchRequest
+    }
+    
+    func get(entity: Entities, id: UUID) -> NSManagedObject? {
+        let predicate = NSPredicate(format: "uuid == %@", argumentArray: [id])
+        let fetchRequest = getFetchRequest(for: entity.type, entityName: entity.rawValue, sortDescriptors: [], predicate: predicate)
+        let fetchedEntities = perform(fetchRequest)
+        return fetchedEntities.isEmpty ? nil : fetchedEntities[0]
+    }
+    
     // MARK: - Image Classification
     lazy var classificationRequest: VNCoreMLRequest = {
         do {
