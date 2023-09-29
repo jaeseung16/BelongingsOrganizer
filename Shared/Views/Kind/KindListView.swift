@@ -15,6 +15,8 @@ struct KindListView: View {
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
 
+    @State private var selectedKind: Kind?
+    
     var kinds: [Kind] {
         return viewModel.filteredKinds
     }
@@ -61,24 +63,28 @@ struct KindListView: View {
     }
     
     private func kindListView() -> some View {
-        NavigationStack {
-            List {
-                ForEach(kinds) { kind in
-                    NavigationLink(value: kind) {
-                        KindRowView(name: kind.name ?? "", itemCount: viewModel.getItemCount(kind))
+        NavigationSplitView {
+            VStack {
+                List(selection: $selectedKind) {
+                    ForEach(kinds) { kind in
+                        NavigationLink(value: kind) {
+                            KindRowView(name: kind.name ?? "", itemCount: viewModel.getItemCount(kind))
+                        }
                     }
+                    .onDelete(perform: deleteKinds)
                 }
-                .onDelete(perform: deleteKinds)
-                //.id(UUID())
+                .navigationTitle("Categories")
+                .toolbar {
+                    header()
+                }
             }
-            .navigationDestination(for: Kind.self) { kind in
+        } detail: {
+            if let kind = selectedKind {
                 KindDetailView(kind: kind, name: kind.name ?? "", items: viewModel.getItems(kind))
                     .environmentObject(viewModel)
+                    .id(UUID())
+                    .navigationBarTitleDisplayMode(.inline)
             }
-            .toolbar {
-                header()
-            }
-            .navigationTitle("Categories")
         }
     }
 
