@@ -157,6 +157,9 @@ struct ItemListView: View {
                     .onDelete(perform: deleteItems)
                 }
                 .navigationTitle("Items")
+                .toolbar {
+                    header()
+                }
                 
                 #if os(iOS)
                 Spacer()
@@ -181,7 +184,6 @@ struct ItemListView: View {
                 .id(UUID())
                 .navigationBarTitleDisplayMode(.inline)
             }
-            
         }
     }
     
