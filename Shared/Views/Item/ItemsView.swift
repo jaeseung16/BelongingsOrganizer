@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct ItemsView: View {
+    @State private var path: [Item] = []
+    
     var items: [Item]
     
     var body: some View {
@@ -31,13 +33,20 @@ struct ItemsView: View {
     }
     
     private func itemList() -> some View {
-        List {
-            ForEach(items) { item in
-                NavigationLink(destination: ItemSummaryView(item: item)) {
-                    ItemRowView(item: item, imageWidth: 40.0)
+        NavigationStack {
+            List {
+                ForEach(items) { item in
+                    NavigationLink(value: item) {
+                        ItemRowView(item: item, imageWidth: 40.0)
+                    }
                 }
             }
+            .navigationDestination(for: Item.self) { item in
+                ItemSummaryView(item: item)
+                    .id(UUID())
+            }
         }
+        
     }
 }
 

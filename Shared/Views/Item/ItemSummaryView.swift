@@ -68,7 +68,6 @@ struct ItemSummaryView: View {
 
             miscView()
         }
-        .navigationTitle(item.name ?? "")
         .padding()
     }
     
