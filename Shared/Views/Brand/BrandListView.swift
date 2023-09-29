@@ -15,6 +15,8 @@ struct BrandListView: View {
     @State private var showAlert = false
     @State private var showAlertForDeletion = false
     
+    @State private var selectedBrand: Brand?
+    
     var brands: [Brand] {
         return viewModel.filteredBrands
     }
@@ -60,24 +62,28 @@ struct BrandListView: View {
     }
     
     private func brandListView() -> some View {
-        NavigationStack {
-            List {
-                ForEach(brands) { brand in
-                    NavigationLink(value: brand) {
-                        BrandRowView(name: brand.name ?? "", itemCount: viewModel.getItemCount(brand))
+        NavigationSplitView {
+            VStack {
+                List(selection: $selectedBrand) {
+                    ForEach(brands) { brand in
+                        NavigationLink(value: brand) {
+                            BrandRowView(name: brand.name ?? "", itemCount: viewModel.getItemCount(brand))
+                        }
                     }
+                    .onDelete(perform: deleteBrands)
                 }
-                .onDelete(perform: deleteBrands)
-                //.id(UUID())
+                .navigationTitle("Brands")
+                .toolbar {
+                    header()
+                }
             }
-            .navigationDestination(for: Brand.self) { brand in
+        } detail: {
+            if let brand = selectedBrand {
                 BrandDetailView(brand: brand, name: brand.name ?? "", urlString: brand.url?.absoluteString ?? "", items: viewModel.getItems(brand))
                     .environmentObject(viewModel)
+                    .id(UUID())
+                    .navigationBarTitleDisplayMode(.inline)
             }
-            .toolbar {
-                header()
-            }
-            .navigationTitle("Brands")
         }
     }
     
