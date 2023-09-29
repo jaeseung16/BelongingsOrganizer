@@ -62,24 +62,28 @@ struct SellerListView: View {
     }
     
     private func sellerListView() -> some View {
-        NavigationStack {
-            List {
-                ForEach(sellers) { seller in
-                    NavigationLink(value: seller) {
-                        SellerRowView(name: seller.name ?? "", itemCount: viewModel.getItemCount(seller))
+        NavigationSplitView {
+            VStack {
+                List(selection: $selectedSeller) {
+                    ForEach(sellers) { seller in
+                        NavigationLink(value: seller) {
+                            SellerRowView(name: seller.name ?? "", itemCount: viewModel.getItemCount(seller))
+                        }
                     }
+                    .onDelete(perform: deleteSellers)
                 }
-                .onDelete(perform: deleteSellers)
-                //.id(UUID())
+                .navigationTitle("Sellers")
+                .toolbar {
+                    header()
+                }
             }
-            .navigationDestination(for: Seller.self) { seller in
+        } detail: {
+            if let seller = selectedSeller {
                 SellerDetailView(seller: seller, name: seller.name ?? "", urlString: seller.url?.absoluteString ?? "", items: viewModel.getItems(seller))
                     .environmentObject(viewModel)
+                    .id(UUID())
+                    .navigationBarTitleDisplayMode(.inline)
             }
-            .toolbar {
-                header()
-            }
-            .navigationTitle("Sellers")
         }
     }
     
