@@ -27,11 +27,3 @@ struct SheetBottom: View {
         }
     }
 }
-
-struct SheetBottom_Previews: PreviewProvider {
-    static var previews: some View {
-        SheetBottom(labelText: "Add a seller",
-                    labelAction: {},
-                    done: {})
-    }
-}
