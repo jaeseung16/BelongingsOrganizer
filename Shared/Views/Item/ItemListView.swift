@@ -167,6 +167,9 @@ struct ItemListView: View {
                     .frame(height: 50)
                 #endif
             }
+            .refreshable {
+                viewModel.fetchEntities()
+            }
         } detail: {
             if let item = selectedItem {
                 ItemDetailView(item: item,

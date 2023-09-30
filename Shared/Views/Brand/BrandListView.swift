@@ -77,6 +77,9 @@ struct BrandListView: View {
                     header()
                 }
             }
+            .refreshable {
+                viewModel.fetchEntities()
+            }
         } detail: {
             if let brand = selectedBrand {
                 BrandDetailView(brand: brand, name: brand.name ?? "", urlString: brand.url?.absoluteString ?? "", items: viewModel.getItems(brand))

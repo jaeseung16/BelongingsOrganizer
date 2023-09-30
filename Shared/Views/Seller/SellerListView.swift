@@ -77,6 +77,9 @@ struct SellerListView: View {
                     header()
                 }
             }
+            .refreshable {
+                viewModel.fetchEntities()
+            }
         } detail: {
             if let seller = selectedSeller {
                 SellerDetailView(seller: seller, name: seller.name ?? "", urlString: seller.url?.absoluteString ?? "", items: viewModel.getItems(seller))

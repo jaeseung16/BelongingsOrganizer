@@ -74,7 +74,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
         */
     }
     
-    private func fetchEntities() -> Void {
+    func fetchEntities() -> Void {
         fetchItems()
         fetchKinds()
         fetchBrands()

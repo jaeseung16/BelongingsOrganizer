@@ -78,6 +78,9 @@ struct KindListView: View {
                     header()
                 }
             }
+            .refreshable {
+                viewModel.fetchEntities()
+            }
         } detail: {
             if let kind = selectedKind {
                 KindDetailView(kind: kind, name: kind.name ?? "", items: viewModel.getItems(kind))
