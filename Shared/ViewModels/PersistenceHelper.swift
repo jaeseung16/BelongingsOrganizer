@@ -33,22 +33,6 @@ class PersistenceHelper {
         imageData = nil
     }
     
-    func save(item: Item, kind: [Kind], brand: Brand?, seller: Seller?, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
-        if !kind.isEmpty {
-            kind.forEach { $0.addToItems(item) }
-        }
-        
-        if brand != nil {
-            brand!.addToItems(item)
-        }
-        
-        if seller != nil {
-            seller!.addToItems(item)
-        }
-        
-        saveContext(completionHandler: completionHandler)
-    }
-    
     func perform<Element>(_ fetchRequest: NSFetchRequest<Element>) -> [Element] {
         var fetchedEntities = [Element]()
         do {
@@ -143,6 +127,46 @@ class PersistenceHelper {
         newSeller.url = dto.url
         newSeller.uuid = dto.id
 
+        saveContext(completionHandler: completionHandler)
+    }
+    
+    // MARK: - Update
+    public func update(_ item: Item, to dto: ItemDTO, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
+        item.name = dto.name
+        item.note = dto.note
+        item.quantity = dto.quantity ?? 0
+        item.buyPrice = dto.buyPrice ?? 0.0
+        item.sellPrice = dto.sellPrice ?? 0.0
+        item.buyCurrency = dto.buyCurrency
+        item.sellCurrency = dto.sellCurrency
+        item.obtained = dto.obtained
+        item.disposed = dto.disposed
+        item.image = dto.image
+        item.lastupd = Date()
+        
+        saveContext(completionHandler: completionHandler)
+    }
+    
+    public func update(_ kind: Kind, to dto: KindDTO, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
+        kind.name = dto.name?.trimmingCharacters(in: .whitespaces)
+        kind.lastupd = Date()
+        
+        saveContext(completionHandler: completionHandler)
+    }
+    
+    public func update(_ brand: Brand, to dto: BrandDTO, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
+        brand.name = dto.name?.trimmingCharacters(in: .whitespaces)
+        brand.url = dto.url
+        brand.lastupd = Date()
+        
+        saveContext(completionHandler: completionHandler)
+    }
+    
+    public func update(_ seller: Seller, to dto: SellerDTO, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
+        seller.name = dto.name?.trimmingCharacters(in: .whitespaces)
+        seller.url = dto.url
+        seller.lastupd = Date()
+        
         saveContext(completionHandler: completionHandler)
     }
     

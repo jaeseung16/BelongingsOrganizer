@@ -135,19 +135,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     var itemDTO = ItemDTO() {
         didSet {
             if itemDTO.id != nil, let existingEntity = persistenceHelper.get(entity: .item, id: itemDTO.id!) as? Item {
-                existingEntity.name = itemDTO.name
-                existingEntity.note = itemDTO.note
-                existingEntity.quantity = itemDTO.quantity ?? 0
-                existingEntity.buyPrice = itemDTO.buyPrice ?? 0.0
-                existingEntity.sellPrice = itemDTO.sellPrice ?? 0.0
-                existingEntity.buyCurrency = itemDTO.buyCurrency
-                existingEntity.sellCurrency = itemDTO.sellCurrency
-                existingEntity.obtained = itemDTO.obtained
-                existingEntity.disposed = itemDTO.disposed
-                existingEntity.image = itemDTO.image
-                existingEntity.lastupd = Date()
-                
-                persistenceHelper.save { result in
+                persistenceHelper.update(existingEntity, to: itemDTO) { result in
                     switch result {
                     case .success(_):
                         self.handleSuccess()
@@ -164,10 +152,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     var kindDTO = KindDTO() {
         didSet {
             if kindDTO.id != nil, let existingEntity = persistenceHelper.get(entity: .kind, id: kindDTO.id!) as? Kind {
-                existingEntity.name = kindDTO.name?.trimmingCharacters(in: .whitespaces)
-                existingEntity.lastupd = Date()
-                
-                persistenceHelper.save { result in
+                persistenceHelper.update(existingEntity, to: kindDTO) { result in
                     switch result {
                     case .success(_):
                         self.handleSuccess()
@@ -184,11 +169,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     var brandDTO = BrandDTO() {
         didSet {
             if brandDTO.id != nil, let existingEntity = persistenceHelper.get(entity: .brand, id: brandDTO.id!) as? Brand {
-                existingEntity.name = brandDTO.name?.trimmingCharacters(in: .whitespaces)
-                existingEntity.url = brandDTO.url
-                existingEntity.lastupd = Date()
-                
-                persistenceHelper.save { result in
+                persistenceHelper.update(existingEntity, to: brandDTO) { result in
                     switch result {
                     case .success(_):
                         self.handleSuccess()
@@ -205,11 +186,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     var sellerDTO = SellerDTO() {
         didSet {
             if sellerDTO.id != nil, let existingEntity = persistenceHelper.get(entity: .seller, id: sellerDTO.id!) as? Seller {
-                existingEntity.name = sellerDTO.name?.trimmingCharacters(in: .whitespaces)
-                existingEntity.url = sellerDTO.url
-                existingEntity.lastupd = Date()
-                
-                persistenceHelper.save { result in
+                persistenceHelper.update(existingEntity, to: sellerDTO) { result in
                     switch result {
                     case .success(_):
                         self.handleSuccess()
