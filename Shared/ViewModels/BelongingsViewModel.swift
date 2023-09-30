@@ -71,11 +71,22 @@ class BelongingsViewModel: NSObject, ObservableObject {
         fetchSellers()
     }
     
-    @Published var items = [Item]()
+    func fetchEntitiesToFilterItems() -> Void {
+        fetchAllKinds()
+        fetchAllBrands()
+        fetchAllSellers()
+    }
     
+    @Published var items = [Item]()
     func fetchItems() -> Void {
         let fetchRequest = persistenceHelper.getFetchRequest(for: Item.self, entityName: "Item", sortDescriptors: [])
         items = persistenceHelper.perform(fetchRequest)
+    }
+    
+    @Published var allItems = [Item]()
+    func fetchAllItems() -> Void {
+        let fetchRequest = persistenceHelper.getFetchRequest(for: Item.self, entityName: "Item", sortDescriptors: [])
+        allItems = persistenceHelper.perform(fetchRequest)
     }
     
     @Published var kinds = [Kind]()
@@ -96,6 +107,14 @@ class BelongingsViewModel: NSObject, ObservableObject {
         kinds = persistenceHelper.perform(fetchRequest)
     }
     
+    @Published var allKinds = [Kind]()
+    func fetchAllKinds() -> Void {
+        let sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
+                               NSSortDescriptor(key: "created", ascending: false)]
+        let fetchRequest = persistenceHelper.getFetchRequest(for: Kind.self, entityName: "Kind", sortDescriptors: sortDescriptors)
+        allKinds = persistenceHelper.perform(fetchRequest)
+    }
+    
     @Published var brands = [Brand]()
     var filteredBrands: [Brand] {
         brands.filter {
@@ -114,6 +133,14 @@ class BelongingsViewModel: NSObject, ObservableObject {
         brands = persistenceHelper.perform(fetchRequest)
     }
     
+    @Published var allBrands = [Brand]()
+    func fetchAllBrands() -> Void {
+        let sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
+                               NSSortDescriptor(key: "created", ascending: false)]
+        let fetchRequest = persistenceHelper.getFetchRequest(for: Brand.self, entityName: "Brand", sortDescriptors: sortDescriptors)
+        allBrands = persistenceHelper.perform(fetchRequest)
+    }
+    
     @Published var sellers = [Seller]()
     var filteredSellers: [Seller] {
         sellers.filter {
@@ -130,6 +157,14 @@ class BelongingsViewModel: NSObject, ObservableObject {
                                NSSortDescriptor(key: "created", ascending: false)]
         let fetchRequest = persistenceHelper.getFetchRequest(for: Seller.self, entityName: "Seller", sortDescriptors: sortDescriptors)
         sellers = persistenceHelper.perform(fetchRequest)
+    }
+    
+    @Published var allSellers = [Seller]()
+    func fetchAllSellers() -> Void {
+        let sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
+                               NSSortDescriptor(key: "created", ascending: false)]
+        let fetchRequest = persistenceHelper.getFetchRequest(for: Seller.self, entityName: "Seller", sortDescriptors: sortDescriptors)
+        allSellers = persistenceHelper.perform(fetchRequest)
     }
     
     var itemDTO = ItemDTO() {

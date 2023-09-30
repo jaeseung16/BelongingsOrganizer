@@ -15,21 +15,6 @@ struct FilterItemsView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var viewModel: BelongingsViewModel
 
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Kind.name, ascending: true)],
-        animation: .default)
-    private var kinds: FetchedResults<Kind>
-    
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Brand.name, ascending: true)],
-        animation: .default)
-    private var brands: FetchedResults<Brand>
-    
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Seller.name, ascending: true)],
-        animation: .default)
-    private var sellers: FetchedResults<Seller>
-    
     @Binding var selectedKinds: Set<Kind>
     @Binding var selectedBrands: Set<Brand>
     @Binding var selectedSellers: Set<Seller>
@@ -155,7 +140,7 @@ struct FilterItemsView: View {
         List {
             switch (selectedFilter) {
             case .kind:
-                ForEach(kinds, id: \.id) { kind in
+                ForEach(viewModel.allKinds, id: \.id) { kind in
                     if let kindName = kind.name {
                         Button {
                             if selectedKinds.contains(kind) {
@@ -169,7 +154,7 @@ struct FilterItemsView: View {
                     }
                 }
             case .brand:
-                ForEach(brands, id: \.id) { brand in
+                ForEach(viewModel.allBrands, id: \.id) { brand in
                     if let brandName = brand.name {
                         Button {
                             if selectedBrands.contains(brand) {
@@ -183,7 +168,7 @@ struct FilterItemsView: View {
                     }
                 }
             case .seller:
-                ForEach(sellers, id: \.id) { seller in
+                ForEach(viewModel.allSellers, id: \.id) { seller in
                     if let sellerName = seller.name {
                         Button {
                             if selectedSellers.contains(seller) {
