@@ -18,7 +18,6 @@ struct ItemListView: View {
     @State var selectedBrands = Set<Brand>()
     @State var selectedSellers = Set<Seller>()
     
-    @State private var showAlert = false
     @State private var showAlertForDeletion = false
     
     @State private var sortType = SortType.lastupd
@@ -105,15 +104,6 @@ struct ItemListView: View {
                 .frame(minWidth: 350, minHeight: 100)
                 .padding()
         }
-        .onChange(of: viewModel.showAlert) { _ in
-            showAlert = viewModel.showAlert
-        }
-        .alert("Unable to Save Data", isPresented: $showAlert) {
-            Button("Dismiss") {
-            }
-        } message: {
-            Text(viewModel.message)
-        }
         .alert("Unable to Delete Data", isPresented: $showAlertForDeletion) {
             Button("Dismiss") {
             }
@@ -193,7 +183,7 @@ struct ItemListView: View {
     private func deleteItems(offsets: IndexSet) {
         withAnimation {
             viewModel.delete(offsets.map { filteredItems[$0] }) { _ in
-                showAlert.toggle()
+                showAlertForDeletion.toggle()
             }
         }
     }

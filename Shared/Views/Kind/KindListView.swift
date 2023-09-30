@@ -12,7 +12,6 @@ struct KindListView: View {
     
     @State var presentAddKindView = false
 
-    @State private var showAlert = false
     @State private var showAlertForDeletion = false
 
     @State private var selectedKind: Kind?
@@ -32,19 +31,8 @@ struct KindListView: View {
                     
                 }
         }
-        .onChange(of: viewModel.showAlert) { _ in
-            showAlert = viewModel.showAlert
-        }
-        .alert("Unable to Save Data", isPresented: $showAlert) {
-            Button("Dismiss") {
-                showAlert.toggle()
-            }
-        } message: {
-            Text(viewModel.message)
-        }
         .alert("Unable to Delete Data", isPresented: $showAlertForDeletion) {
             Button("Dismiss") {
-                showAlert.toggle()
             }
         } message: {
             Text("Failed to delete the selected category")
