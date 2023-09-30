@@ -62,16 +62,6 @@ class BelongingsViewModel: NSObject, ObservableObject {
         self.persistence.container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         
         fetchEntities()
-        
-
-        /*
-        $stringToSearch
-            .throttle(for: .seconds(2), scheduler: DispatchQueue.main, latest: true)
-            .sink { _ in
-                self.logger.info("\(self.stringToSearch)")
-            }
-            .store(in: &subscriptions)
-        */
     }
     
     func fetchEntities() -> Void {
@@ -231,25 +221,6 @@ class BelongingsViewModel: NSObject, ObservableObject {
                 }
             }
         }
-    }
-    
-    func get<Entity: NSFetchRequestResult>(entity: Entities, id: UUID) -> Entity? {
-        let predicate = NSPredicate(format: "uuid == %@", argumentArray: [id])
-        
-        let fetchRequest = NSFetchRequest<Entity>(entityName: entity.rawValue)
-        fetchRequest.predicate = predicate
-        
-        var fetchedLinks = [Entity]()
-        do {
-            fetchedLinks = try persistenceContainer.viewContext.fetch(fetchRequest)
-        } catch {
-            logger.error("Failed to fetch \(entity.rawValue) with uuid = \(id): \(error.localizedDescription)")
-            DispatchQueue.main.async {
-                self.showAlert.toggle()
-            }
-        }
-        
-        return fetchedLinks.isEmpty ? nil : fetchedLinks[0]
     }
     
     func delete(_ objects: [NSManagedObject], completionHandler: @escaping (Error) -> Void) -> Void {
@@ -492,21 +463,8 @@ class BelongingsViewModel: NSObject, ObservableObject {
     }
     
     public func saveBelonging(name: String, kind: [Kind], brand: Brand?, seller: Seller?, note: String, obtained: Date, buyPrice: Double?, quantity: Int64?, buyCurrency: String) -> Void {
-        let created = Date()
-        
-        let newItem = Item(context: persistenceHelper.viewContext)
-        newItem.created = created
-        newItem.lastupd = created
-        newItem.name = name
-        newItem.note = note
-        newItem.quantity = quantity ?? 0
-        newItem.obtained = obtained
-        newItem.buyPrice = buyPrice ?? 0.0
-        newItem.buyCurrency = buyCurrency
-        newItem.uuid = UUID()
-        newItem.image = imageData
-       
-        persistenceHelper.save(item: newItem, kind: kind, brand: brand, seller: seller) { result in
+        let item = ItemDTO(id: UUID(), name: name, note: note, quantity: quantity, buyPrice: buyPrice, buyCurrency: buyCurrency, obtained: obtained, image: imageData)
+        persistenceHelper.save(item, kind: kind, brand: brand, seller: seller) { result in
             switch result {
             case .success(()):
                 self.handleSuccess()
@@ -519,15 +477,8 @@ class BelongingsViewModel: NSObject, ObservableObject {
     }
     
     public func saveKind(name: String) -> Void {
-        let created = Date()
-        
-        let newKind = Kind(context: persistenceHelper.viewContext)
-        newKind.created = created
-        newKind.lastupd = created
-        newKind.name = name.trimmingCharacters(in: .whitespaces)
-        newKind.uuid = UUID()
-        
-        persistenceHelper.save() { result in
+        let kind = KindDTO(id: UUID(), name: name.trimmingCharacters(in: .whitespaces))
+        persistenceHelper.save(kind) { result in
             switch result {
             case .success(()):
                 self.handleSuccess()
@@ -540,16 +491,8 @@ class BelongingsViewModel: NSObject, ObservableObject {
     }
     
     public func saveBrand(name: String, urlString: String) -> Void {
-        let created = Date()
-        
-        let newBrand = Brand(context: persistenceHelper.viewContext)
-        newBrand.created = created
-        newBrand.lastupd = created
-        newBrand.name = name.trimmingCharacters(in: .whitespaces)
-        newBrand.url = URL(string: urlString)
-        newBrand.uuid = UUID()
-
-        persistenceHelper.save() { result in
+        let brand = BrandDTO(id: UUID(), name: name.trimmingCharacters(in: .whitespaces), url: URL(string: urlString))
+        persistenceHelper.save(brand) { result in
             switch result {
             case .success(()):
                 self.handleSuccess()
@@ -562,16 +505,8 @@ class BelongingsViewModel: NSObject, ObservableObject {
     }
     
     public func saveSeller(name: String, urlString: String) -> Void {
-        let created = Date()
-        
-        let newSeller = Seller(context: persistenceHelper.viewContext)
-        newSeller.created = created
-        newSeller.lastupd = created
-        newSeller.name = name.trimmingCharacters(in: .whitespaces)
-        newSeller.url = URL(string: urlString)
-        newSeller.uuid = UUID()
-
-        persistenceHelper.save() { result in
+        let seller = SellerDTO(id: UUID(), name: name.trimmingCharacters(in: .whitespaces), url: URL(string: urlString))
+        persistenceHelper.save(seller) { result in
             switch result {
             case .success(()):
                 self.handleSuccess()

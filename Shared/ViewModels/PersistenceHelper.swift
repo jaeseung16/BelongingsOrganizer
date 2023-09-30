@@ -77,6 +77,75 @@ class PersistenceHelper {
         return fetchedEntities.isEmpty ? nil : fetchedEntities[0]
     }
     
+    // MARK: - Create
+    public func save(_ dto: ItemDTO, kind: [Kind], brand: Brand?, seller: Seller?, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
+        let created = Date()
+        
+        let newItem = Item(context: viewContext)
+        newItem.created = created
+        newItem.lastupd = created
+        newItem.name = dto.name
+        newItem.note = dto.note
+        newItem.quantity = dto.quantity ?? 0
+        newItem.obtained = dto.obtained
+        newItem.buyPrice = dto.buyPrice ?? 0.0
+        newItem.buyCurrency = dto.buyCurrency
+        newItem.uuid = dto.id
+        newItem.image = dto.image
+       
+        if !kind.isEmpty {
+            kind.forEach { $0.addToItems(newItem) }
+        }
+        
+        if let brand {
+            brand.addToItems(newItem)
+        }
+        
+        if let seller {
+            seller.addToItems(newItem)
+        }
+        
+        saveContext(completionHandler: completionHandler)
+    }
+    
+    public func save(_ dto: KindDTO, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
+        let created = Date()
+        
+        let newKind = Kind(context: viewContext)
+        newKind.created = created
+        newKind.lastupd = created
+        newKind.name = dto.name
+        newKind.uuid = dto.id
+        
+        saveContext(completionHandler: completionHandler)
+    }
+    
+    public func save(_ dto: BrandDTO, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
+        let created = Date()
+        
+        let newBrand = Brand(context: viewContext)
+        newBrand.created = created
+        newBrand.lastupd = created
+        newBrand.name = dto.name
+        newBrand.url = dto.url
+        newBrand.uuid = dto.id
+
+        saveContext(completionHandler: completionHandler)
+    }
+    
+    public func save(_ dto: SellerDTO, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
+        let created = Date()
+        
+        let newSeller = Seller(context: viewContext)
+        newSeller.created = created
+        newSeller.lastupd = created
+        newSeller.name = dto.name
+        newSeller.url = dto.url
+        newSeller.uuid = dto.id
+
+        saveContext(completionHandler: completionHandler)
+    }
+    
     // MARK: - Image Classification
     lazy var classificationRequest: VNCoreMLRequest = {
         do {
