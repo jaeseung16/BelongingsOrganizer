@@ -53,7 +53,7 @@ struct ContentView: View {
             Button("Dismiss") {
             }
         } message: {
-            Text("viewModel.message")
+            Text(viewModel.message)
         }
         #if os(iOS)
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
