@@ -549,5 +549,14 @@ class BelongingsViewModel: NSObject, ObservableObject {
     func validatedURL(from urlString: String, completionHandler: @escaping (URL?) -> Void) -> Void {
         URLValidator.validatedURL(from: urlString) { completionHandler($0) }
     }
+    
+    func validatedURL(from urlString: String) async -> URL? {
+        do {
+            return try await URLValidator.validatedURL(from: urlString)
+        } catch {
+            logger.error("Failed to validate url=\(urlString): \(error, privacy: .public)")
+            return nil
+        }
+    }
 }
 

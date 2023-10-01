@@ -14,6 +14,19 @@ class URLValidator {
     
     static private var schemeAuthoritySeparator = "://"
     
+    static func validatedURL(from urlString: String) async throws -> URL? {
+        if isSchemeSupported(urlString) {
+            return URL(string: urlString)
+        } else {
+            if try await isWorkingWithHttps(with: urlString) {
+                return URL(string: prefix(urlString, with: .https))
+            } else if try await isWorkingWithHttp(with: urlString) {
+                return URL(string: prefix(urlString, with: .http))
+            }
+        }
+        return nil
+    }
+    
     static func validatedURL(from urlString: String, completionHandler: @escaping (URL?) -> Void) -> Void {
         if isSchemeSupported(urlString) {
             completionHandler(URL(string: urlString))
@@ -41,6 +54,19 @@ class URLValidator {
         return scheme == Scheme.http.rawValue || scheme == Scheme.https.rawValue
     }
     
+    private static func canDownload(from urlString: String) async throws -> Bool {
+        guard let url = URL(string: urlString) else {
+            return false
+        }
+        
+        let (_, response) = try await URLSession.shared.data(from: url)
+        if let response = response as? HTTPURLResponse, response.statusCode == 200 {
+            return true
+        }
+        
+        return false
+    }
+    
     private static func canDownload(from urlString: String, completionHandler: @escaping (Bool) -> Void) -> Void {
         guard let url = URL(string: urlString) else {
             completionHandler(false)
@@ -57,9 +83,19 @@ class URLValidator {
         task.resume()
     }
     
+    private static func isWorkingWithHttps(with urlString: String) async throws -> Bool {
+        let urlStringPrefixedWithHttps = prefix(urlString, with: Scheme.https)
+        return try await canDownload(from: urlStringPrefixedWithHttps)
+    }
+    
     private static func isWorkingWithHttps(with urlString: String, completionHandler: @escaping (Bool) -> Void) -> Void {
         let urlStringPrefixedWithHttps = prefix(urlString, with: Scheme.https)
         canDownload(from: urlStringPrefixedWithHttps) { completionHandler($0) }
+    }
+    
+    private static func isWorkingWithHttp(with urlString: String) async throws -> Bool {
+        let urlStringPrefixedWithHttp = prefix(urlString, with: Scheme.http)
+        return try await canDownload(from: urlStringPrefixedWithHttp)
     }
     
     private static func isWorkingWithHttp(with urlString: String, completionHandler: @escaping (Bool) -> Void) -> Void {

@@ -42,13 +42,13 @@ struct AddBrandView: View {
             TextField("url", text: $urlString, prompt: nil)
                 .onSubmit {
                     showProgress = true
-                    viewModel.validatedURL(from: urlString) { url in
-                        self.showProgress = false
-                        if let url = url {
+                    Task {
+                        if let url = await viewModel.validatedURL(from: urlString) {
                             self.urlString = url.absoluteString
                         } else {
                             self.showAlert = true
                         }
+                        self.showProgress = false
                     }
                 }
             #if os(iOS)
