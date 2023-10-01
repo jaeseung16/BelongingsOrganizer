@@ -56,7 +56,7 @@ struct KindListView: View {
                 List(selection: $selectedKind) {
                     ForEach(kinds) { kind in
                         NavigationLink(value: kind) {
-                            KindRowView(name: kind.name ?? "", itemCount: viewModel.getItemCount(kind))
+                            BrandKindSellerRowView(name: kind.name ?? "", itemCount: viewModel.getItemCount(kind))
                         }
                     }
                     .onDelete(perform: deleteKinds)

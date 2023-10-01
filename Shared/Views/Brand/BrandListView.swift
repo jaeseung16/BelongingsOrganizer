@@ -56,7 +56,7 @@ struct BrandListView: View {
                 List(selection: $selectedBrand) {
                     ForEach(brands) { brand in
                         NavigationLink(value: brand) {
-                            BrandRowView(name: brand.name ?? "", itemCount: viewModel.getItemCount(brand))
+                            BrandKindSellerRowView(name: brand.name ?? "", itemCount: viewModel.getItemCount(brand))
                         }
                     }
                     .onDelete(perform: deleteBrands)
