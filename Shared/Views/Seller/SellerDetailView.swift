@@ -57,26 +57,29 @@ struct SellerDetailView: View {
         
     }
     
-    private func reset() {
-        name = seller.name ?? ""
-        urlString = seller.url?.absoluteString ?? ""
-        
-        isEdited = false
-    }
-    
     private func header() -> some View {
         DetailHeaderView(isEdited: $isEdited) {
             reset()
         } update: {
-            viewModel.sellerDTO = SellerDTO(id: seller.uuid, name: name, url: URL(string: urlString))
-            isEdited = false
+            update()
         }
+    }
+    
+    private func reset() {
+        name = seller.name ?? ""
+        urlString = seller.url?.absoluteString ?? ""
+        isEdited = false
+    }
+    
+    private func update() {
+        viewModel.sellerDTO = SellerDTO(id: seller.uuid, name: name, url: URL(string: urlString))
+        isEdited = false
     }
     
     private func nameView() -> some View {
         VStack {
             HStack {
-                SectionTitleView(title: "NAME")
+                SectionTitleView(title: .name)
                 
                 Spacer()
             }
@@ -91,7 +94,7 @@ struct SellerDetailView: View {
     private func urlView() -> some View {
         VStack {
             HStack {
-                SectionTitleView(title: "URL")
+                SectionTitleView(title: .url)
                 
                 Spacer()
                 
@@ -124,22 +127,10 @@ struct SellerDetailView: View {
     }
     
     private func addedView() -> some View {
-        HStack {
-            Spacer()
-            
-            SectionTitleView(title: "ADDED")
-            
-            Text("\(seller.created ?? Date(), formatter: BelongingsViewModel.dateFormatter)")
-        }
+        DateSectionView(sectionTitle: .added, date: seller.created ?? Date())
     }
     
     private func lastUpdatedView() -> some View {
-        HStack {
-            Spacer()
-            
-            SectionTitleView(title: "UPDATED")
-            
-            Text("\(seller.lastupd ?? Date(), formatter: BelongingsViewModel.dateFormatter)")
-        }
+        DateSectionView(sectionTitle: .updated, date: seller.lastupd ?? Date())
     }
 }

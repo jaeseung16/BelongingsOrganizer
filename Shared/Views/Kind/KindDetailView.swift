@@ -57,7 +57,7 @@ struct KindDetailView: View {
     private func nameView() -> some View {
         VStack {
             HStack {
-                SectionTitleView(title: "NAME")
+                SectionTitleView(title: .name)
                 
                 Spacer()
             }
@@ -70,23 +70,11 @@ struct KindDetailView: View {
     }
 
     private func addedView() -> some View {
-        HStack {
-            SectionTitleView(title: "ADDED")
-            
-            Spacer()
-            
-            Text("\(kind.created ?? Date(), formatter: BelongingsViewModel.dateFormatter)")
-        }
+        DateSectionView(sectionTitle: .added, date: kind.created ?? Date())
     }
     
     private func lastUpdatedView() -> some View {
-        HStack {
-            Spacer()
-            
-            SectionTitleView(title: "UPDATED")
-            
-            Text("\(kind.lastupd ?? Date(), formatter: BelongingsViewModel.dateFormatter)")
-        }
+        DateSectionView(sectionTitle: .updated, date: kind.lastupd ?? Date())
     }
 }
 

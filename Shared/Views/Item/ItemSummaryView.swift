@@ -117,7 +117,7 @@ struct ItemSummaryView: View {
             Spacer()
             
             VStack {
-                SectionTitleView(title: "CATEGORY")
+                SectionTitleView(title: .category)
 
                 Text(self.kind?.name ?? notApplicable)
             }
@@ -125,7 +125,7 @@ struct ItemSummaryView: View {
             Spacer()
             
             VStack {
-                SectionTitleView(title: "BRAND")
+                SectionTitleView(title: .brand)
 
                 Text(self.brand?.name ?? notApplicable)
             }
@@ -133,7 +133,7 @@ struct ItemSummaryView: View {
             Spacer()
             
             VStack {
-                SectionTitleView(title: "SELLER")
+                SectionTitleView(title: .seller)
 
                 Text(self.seller?.name ?? notApplicable)
             }
@@ -146,7 +146,7 @@ struct ItemSummaryView: View {
         HStack {
             Spacer()
             
-            SectionTitleView(title: "QUANTITY")
+            SectionTitleView(title: .quantity)
 
             Text(quantityFormatter.string(from: NSNumber(value: item.quantity)) ?? notApplicable)
                 .multilineTextAlignment(.trailing)
@@ -159,7 +159,7 @@ struct ItemSummaryView: View {
             Spacer()
             
             VStack {
-                SectionTitleView(title: "OBTAINED")
+                SectionTitleView(title: .obtained)
                 
                 if let obtained = item.obtained {
                     Text("\(obtained, formatter: BelongingsViewModel.dateFormatterWithDateOnly)")
@@ -171,7 +171,7 @@ struct ItemSummaryView: View {
             Spacer()
             
             VStack {
-                SectionTitleView(title: "BUY PRICE")
+                SectionTitleView(title: .buyPrice)
 
                 Text(priceFormatter.string(from: NSNumber(value: item.buyPrice)) ?? notApplicable)
                     .multilineTextAlignment(.trailing)
@@ -180,7 +180,7 @@ struct ItemSummaryView: View {
             Spacer()
             
             VStack {
-                SectionTitleView(title: "CURRENCY")
+                SectionTitleView(title: .currency)
 
                 Text(item.buyCurrency ?? notApplicable)
             }
@@ -194,7 +194,7 @@ struct ItemSummaryView: View {
             Spacer()
        
             VStack {
-                SectionTitleView(title: "DISPOSED")
+                SectionTitleView(title: .disposed)
   
                 if let disposed = item.disposed {
                     Text("\(disposed, formatter: BelongingsViewModel.dateFormatterWithDateOnly)")
@@ -206,7 +206,7 @@ struct ItemSummaryView: View {
             Spacer()
             
             VStack {
-                SectionTitleView(title: "SELL PRICE")
+                SectionTitleView(title: .sellPrice)
 
                 Text(priceFormatter.string(from: NSNumber(value: item.sellPrice)) ?? notApplicable)
                     .multilineTextAlignment(.trailing)
@@ -215,7 +215,7 @@ struct ItemSummaryView: View {
             Spacer()
             
             VStack {
-                SectionTitleView(title: "CURRENCY")
+                SectionTitleView(title: .currency)
 
                 Text(item.sellCurrency ?? notApplicable)
             }
@@ -226,7 +226,7 @@ struct ItemSummaryView: View {
     
     private func noteView() -> some View {
         VStack {
-            SectionTitleView(title: "NOTE")
+            SectionTitleView(title: .note)
             
             if let note = item.note, !note.isEmpty {
                 Text(note)
@@ -241,14 +241,14 @@ struct ItemSummaryView: View {
             Divider()
             
             HStack {
-                SectionTitleView(title: "CREATED")
+                SectionTitleView(title: .created)
 
                 Text("\(item.created ?? Date(), formatter: BelongingsViewModel.dateFormatter)")
                     .font(.callout)
             }
 
             HStack {
-                SectionTitleView(title: "UPDATED")
+                SectionTitleView(title: .updated)
 
                 Text("\(item.lastupd ?? Date(), formatter: BelongingsViewModel.dateFormatter)")
                     .font(.callout)

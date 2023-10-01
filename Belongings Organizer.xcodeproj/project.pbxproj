@@ -85,6 +85,10 @@
 		9089734826FD10CC005A03A8 /* URLValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9089734626FD10CC005A03A8 /* URLValidator.swift */; };
 		9089734A26FD3B3F005A03A8 /* ItemSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9089734926FD3B3F005A03A8 /* ItemSummaryView.swift */; };
 		9089734B26FD3B3F005A03A8 /* ItemSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9089734926FD3B3F005A03A8 /* ItemSummaryView.swift */; };
+		908EC8442AC9EF19004647A5 /* DateSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908EC8432AC9EF19004647A5 /* DateSectionView.swift */; };
+		908EC8452AC9EF19004647A5 /* DateSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908EC8432AC9EF19004647A5 /* DateSectionView.swift */; };
+		908EC8472AC9F138004647A5 /* SectionTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908EC8462AC9F138004647A5 /* SectionTitle.swift */; };
+		908EC8482AC9F138004647A5 /* SectionTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908EC8462AC9F138004647A5 /* SectionTitle.swift */; };
 		90B23E6626EE901900B29063 /* KindDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B23E6526EE901900B29063 /* KindDetailView.swift */; };
 		90B23E6726EE901900B29063 /* KindDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B23E6526EE901900B29063 /* KindDetailView.swift */; };
 		90B46BC82700F53E00BEED75 /* EditPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B46BC62700F53E00BEED75 /* EditPhotoView.swift */; };
@@ -210,6 +214,8 @@
 		90884D1F26E180E100D01A55 /* Belongings.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Belongings.entitlements; sourceTree = "<group>"; };
 		9089734626FD10CC005A03A8 /* URLValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLValidator.swift; sourceTree = "<group>"; };
 		9089734926FD3B3F005A03A8 /* ItemSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemSummaryView.swift; sourceTree = "<group>"; };
+		908EC8432AC9EF19004647A5 /* DateSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateSectionView.swift; sourceTree = "<group>"; };
+		908EC8462AC9F138004647A5 /* SectionTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionTitle.swift; sourceTree = "<group>"; };
 		90B23E6526EE901900B29063 /* KindDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KindDetailView.swift; sourceTree = "<group>"; };
 		90B46BC62700F53E00BEED75 /* EditPhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPhotoView.swift; sourceTree = "<group>"; };
 		90C0D98A26E7DEF600158C85 /* AddItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItemView.swift; sourceTree = "<group>"; };
@@ -430,6 +436,7 @@
 			children = (
 				904498E026EBD30500002A6F /* NothingSelectedText.swift */,
 				90CF0CF52730A1C300E93917 /* SectionTitleView.swift */,
+				908EC8432AC9EF19004647A5 /* DateSectionView.swift */,
 			);
 			path = Text;
 			sourceTree = "<group>";
@@ -494,6 +501,7 @@
 				90785B9B29BFDC1F00BFE933 /* SortDirection.swift */,
 				90704CF529CFA65300F66908 /* BelongingsError.swift */,
 				90735E8A29DA141200159CBA /* ImagePasting.swift */,
+				908EC8462AC9F138004647A5 /* SectionTitle.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -721,6 +729,7 @@
 			files = (
 				904498E126EBD30500002A6F /* NothingSelectedText.swift in Sources */,
 				90D3F23E26EA804E00955316 /* ItemDTO.swift in Sources */,
+				908EC8472AC9F138004647A5 /* SectionTitle.swift in Sources */,
 				90CB778D27025BB6008CDBC6 /* PHPickerView.swift in Sources */,
 				90D3F23226EA594E00955316 /* BelongingsViewModel.swift in Sources */,
 				9072232D26E9352700965653 /* ChooseBrandView.swift in Sources */,
@@ -759,6 +768,7 @@
 				904498E726EBDEDB00002A6F /* ItemListView.swift in Sources */,
 				90FF8FD4276FABC70099A23B /* ItemRowView.swift in Sources */,
 				901A21EA28568BB8006CF1A4 /* BelongingsOrganizerConstants.swift in Sources */,
+				908EC8442AC9EF19004647A5 /* DateSectionView.swift in Sources */,
 				9000E36B2771229700A224E0 /* BelongingsApp.swift in Sources */,
 				9072233626E93CE800965653 /* AddSellerView.swift in Sources */,
 				9072233326E93CDC00965653 /* ChooseSellerView.swift in Sources */,
@@ -792,6 +802,7 @@
 			files = (
 				904498E226EBD30500002A6F /* NothingSelectedText.swift in Sources */,
 				90D3F24226EA8CE300955316 /* ItemDTO.swift in Sources */,
+				908EC8452AC9EF19004647A5 /* DateSectionView.swift in Sources */,
 				90735E8C29DA141200159CBA /* ImagePasting.swift in Sources */,
 				90D3F23326EA599D00955316 /* BelongingsViewModel.swift in Sources */,
 				9072232E26E9352700965653 /* ChooseBrandView.swift in Sources */,
@@ -825,6 +836,7 @@
 				90C0D98F26E8001700158C85 /* ChooseKindView.swift in Sources */,
 				900F8D7B2735C5210069CE07 /* DetailHeaderView.swift in Sources */,
 				904498E826EBDEDB00002A6F /* ItemListView.swift in Sources */,
+				908EC8482AC9F138004647A5 /* SectionTitle.swift in Sources */,
 				9086B53C29D247C800DB4568 /* StatsType.swift in Sources */,
 				9072233726E93CE800965653 /* AddSellerView.swift in Sources */,
 				9072233426E93CDC00965653 /* ChooseSellerView.swift in Sources */,

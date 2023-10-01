@@ -186,6 +186,7 @@ struct ItemDetailView: View {
         DetailHeaderView(isEdited: $isEdited) {
             reset()
         } update: {
+            // TODO: -
             if !kind.isEmpty {
                 item.kind?.forEach {
                     if let kind = $0 as? Kind {
@@ -296,7 +297,7 @@ struct ItemDetailView: View {
     
     private func nameView() -> some View {
         HStack {
-            SectionTitleView(title: "NAME")
+            SectionTitleView(title: .name)
             
             Spacer()
             
@@ -313,7 +314,7 @@ struct ItemDetailView: View {
     private func photoView() -> some View {
         VStack {
             HStack {
-                SectionTitleView(title: "PHOTO")
+                SectionTitleView(title: .photo)
                 
                 Spacer()
                 
@@ -374,7 +375,7 @@ struct ItemDetailView: View {
     
     private func categoryView() -> some View {
         HStack {
-            SectionTitleView(title: "CATEGORY")
+            SectionTitleView(title: .category)
             
             Spacer()
             
@@ -403,7 +404,7 @@ struct ItemDetailView: View {
     
     private func brandView() -> some View {
         HStack {
-            SectionTitleView(title: "BRAND")
+            SectionTitleView(title: .brand)
             
             Spacer()
             
@@ -424,7 +425,7 @@ struct ItemDetailView: View {
     
     private func sellerView() -> some View {
         HStack {
-            SectionTitleView(title: "SELLER")
+            SectionTitleView(title: .seller)
             
             Spacer()
             
@@ -445,7 +446,7 @@ struct ItemDetailView: View {
     
     private func quantityView() -> some View {
         HStack {
-            SectionTitleView(title: "QUANTITY")
+            SectionTitleView(title: .quantity)
             
             Spacer()
             
@@ -484,7 +485,7 @@ struct ItemDetailView: View {
     private func obtainedView() -> some View {
         VStack {
             HStack {
-                SectionTitleView(title: "OBTAINED")
+                SectionTitleView(title: .obtained)
                 
                 Spacer()
                 if isObtainedDateEdited {
@@ -509,7 +510,7 @@ struct ItemDetailView: View {
         HStack {
             Spacer()
             
-            SectionTitleView(title: "PRICE")
+            SectionTitleView(title: .price)
             
             #if os(macOS)
             TextField("buy price", value: $buyPrice, formatter: priceFormatter, prompt: Text("0.00"))
@@ -553,7 +554,7 @@ struct ItemDetailView: View {
     private func disposedView() -> some View {
         VStack {
             HStack {
-                SectionTitleView(title: "DISPOSED")
+                SectionTitleView(title: .disposed)
 
                 Spacer()
                 
@@ -578,7 +579,7 @@ struct ItemDetailView: View {
         HStack {
             Spacer()
             
-            SectionTitleView(title: "PRICE")
+            SectionTitleView(title: .price)
             
             #if os(macOS)
             TextField("sell price", value: $sellPrice, formatter: priceFormatter, prompt: Text("0.00"))
@@ -621,7 +622,7 @@ struct ItemDetailView: View {
     
     private func noteView() -> some View {
         VStack(alignment: .leading) {
-            SectionTitleView(title: "NOTE")
+            SectionTitleView(title: .note)
             
             TextField(item.note ?? "", text: $note)
                 .onSubmit {
@@ -638,7 +639,7 @@ struct ItemDetailView: View {
             HStack {
                 Spacer()
                 
-                SectionTitleView(title: "CREATED")
+                SectionTitleView(title: .created)
 
                 Text("\(item.created ?? Date(), formatter: BelongingsViewModel.dateFormatter)")
                     .font(.callout)
@@ -647,7 +648,7 @@ struct ItemDetailView: View {
             HStack {
                 Spacer()
                 
-                SectionTitleView(title: "UPDATED")
+                SectionTitleView(title: .updated)
               
                 Text("\(item.lastupd ?? Date(), formatter: BelongingsViewModel.dateFormatter)")
                     .font(.callout)

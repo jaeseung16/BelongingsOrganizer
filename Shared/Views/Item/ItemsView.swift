@@ -8,16 +8,12 @@
 import SwiftUI
 
 struct ItemsView: View {
-    @State private var path: [Item] = []
-    
     var items: [Item]
     
     var body: some View {
         VStack {
             HStack {
-                Text("ITEMS")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                SectionTitleView(title: .items)
                 
                 Spacer()
             }
