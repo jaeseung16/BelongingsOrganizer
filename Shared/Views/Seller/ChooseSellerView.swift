@@ -84,7 +84,7 @@ struct ChooseSellerView: View {
     
     private func sellerList() -> some View {
         List {
-            ForEach(viewModel.sellers) { seller in
+            ForEach(viewModel.allSellers) { seller in
                 Button {
                     self.seller = seller
                 } label: {
@@ -97,7 +97,7 @@ struct ChooseSellerView: View {
     
     private func deleteSellers(offsets: IndexSet) {
         withAnimation {
-            viewModel.delete(offsets.map { viewModel.sellers[$0] }) { error in
+            viewModel.delete(offsets.map { viewModel.allSellers[$0] }) { error in
                 let nsError = error as NSError
                 print("While deleting a category, occured an unresolved error \(nsError), \(nsError.userInfo)")
                 showAlertForDeletion.toggle()

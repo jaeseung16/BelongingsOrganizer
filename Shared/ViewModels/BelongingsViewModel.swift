@@ -62,6 +62,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
         self.persistence.container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         
         fetchEntities()
+        fetchEntitiesToFilterItems()
     }
     
     func fetchEntities() -> Void {
@@ -250,6 +251,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     private func handleSuccess() -> Void {
         DispatchQueue.main.async {
             self.fetchEntities()
+            self.fetchEntitiesToFilterItems()
         }
     }
     

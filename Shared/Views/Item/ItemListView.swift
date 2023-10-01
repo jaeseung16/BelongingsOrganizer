@@ -115,7 +115,6 @@ struct ItemListView: View {
     private func header() -> ToolbarItemGroup<some View> {
         ToolbarItemGroup(placement: .topBarLeading) {
             Button  {
-                viewModel.fetchEntitiesToFilterItems()
                 presentFilterItemsView = true
             } label: {
                 Label("Filter", systemImage: "line.horizontal.3.decrease.circle")

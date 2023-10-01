@@ -123,11 +123,11 @@ struct AddItemView: View {
                 Text("PHOTO")
                     .font(.caption)
                 Spacer()
-                Button(action: {
+                Button {
                     presentPhotoView = true
-                }, label: {
+                } label: {
                     Label("add", systemImage: "plus")
-                })
+                }
             }
             
             if image == nil {
@@ -163,11 +163,12 @@ struct AddItemView: View {
                 Text("CATEGORY")
                     .font(.caption)
                 Spacer()
-                Button(action: {
+                Button {
+                    viewModel.fetchAllKinds()
                     presentChooseKindView = true
-                }, label: {
+                } label: {
                     Label("add", systemImage: "plus")
-                })
+                }
             }
             
             if kind.isEmpty {
@@ -194,11 +195,12 @@ struct AddItemView: View {
                 Text("BRAND")
                     .font(.caption)
                 Spacer()
-                Button(action: {
+                Button {
+                    viewModel.fetchAllBrands()
                     presentBrandView = true
-                }, label: {
+                } label: {
                     Label("add", systemImage: "plus")
-                })
+                }
             }
             
             if brand == nil {
@@ -222,11 +224,12 @@ struct AddItemView: View {
                 Text("SELLER")
                     .font(.caption)
                 Spacer()
-                Button(action: {
+                Button {
+                    viewModel.fetchAllSellers()
                     presentSellerView = true
-                }, label: {
+                } label: {
                     Label("add", systemImage: "plus")
-                })
+                }
             }
             
             if seller == nil {
@@ -267,11 +270,11 @@ struct AddItemView: View {
                     .frame(maxWidth: 50)
                     .background(RoundedRectangle(cornerRadius: 5.0)
                                     .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
-                Button(action: {
+                Button {
                     presentCurrencyView = true
-                }, label: {
+                } label: {
                     Text("select")
-                })
+                }
                 
             }
             

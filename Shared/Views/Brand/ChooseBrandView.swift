@@ -85,7 +85,7 @@ struct ChooseBrandView: View {
     
     private func brandList() -> some View {
         List {
-            ForEach(viewModel.brands) { brand in
+            ForEach(viewModel.allBrands) { brand in
                 Button {
                     self.brand = brand
                 } label: {
@@ -98,7 +98,7 @@ struct ChooseBrandView: View {
     
     private func deleteBrands(offsets: IndexSet) {
         withAnimation {
-            viewModel.delete(offsets.map { viewModel.brands[$0] }) { error in
+            viewModel.delete(offsets.map { viewModel.allBrands[$0] }) { error in
                 let nsError = error as NSError
                 print("While deleting a category, occured an unresolved error \(nsError), \(nsError.userInfo)")
                 showAlertForDeletion.toggle()
