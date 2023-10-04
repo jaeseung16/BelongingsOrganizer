@@ -80,7 +80,9 @@ struct SellerListView: View {
             }
             .onDelete(perform: deleteSellers)
         }
+        #if os(iOS)
         .id(UUID())
+        #endif
     }
     
     private func sellerRowView(_ seller: Seller, name: String) -> some View {

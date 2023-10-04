@@ -79,7 +79,9 @@ struct BrandListView: View {
             }
             .onDelete(perform: deleteBrands)
         }
+        #if os(iOS)
         .id(UUID())
+        #endif
     }
     
     private func deleteBrands(offsets: IndexSet) {

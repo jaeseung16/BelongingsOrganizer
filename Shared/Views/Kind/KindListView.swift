@@ -80,7 +80,9 @@ struct KindListView: View {
             }
             .onDelete(perform: deleteKinds)
         }
+        #if os(iOS)
         .id(UUID())
+        #endif
     }
 
     private func deleteKinds(offsets: IndexSet) {
