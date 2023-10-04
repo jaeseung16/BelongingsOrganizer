@@ -24,6 +24,8 @@
 	<string>This app uses the camera to take pictures of items.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
+		<key>UISceneConfigurations</key>
+		<dict/>
 		<key>UIApplicationSupportsMultipleScenes</key>
 		<true/>
 	</dict>
