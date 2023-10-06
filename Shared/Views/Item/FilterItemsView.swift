@@ -149,7 +149,7 @@ struct FilterItemsView: View {
                                 selectedKinds.insert(kind)
                             }
                         } label: {
-                            KindRowView(name: kindName, itemCount: viewModel.getItemCount(kind))
+                            BrandKindSellerRowView(name: kindName, itemCount: viewModel.getItemCount(kind))
                         }
                     }
                 }
@@ -163,7 +163,7 @@ struct FilterItemsView: View {
                                 selectedBrands.insert(brand)
                             }
                         } label: {
-                            BrandRowView(name: brandName, itemCount: viewModel.getItemCount(brand))
+                            BrandKindSellerRowView(name: brandName, itemCount: viewModel.getItemCount(brand))
                         }
                     }
                 }
@@ -177,7 +177,7 @@ struct FilterItemsView: View {
                                 selectedSellers.insert(seller)
                             }
                         } label: {
-                            SellerRowView(name: sellerName, itemCount: getItems(seller).count)
+                            BrandKindSellerRowView(name: sellerName, itemCount: getItems(seller).count)
                         }
                     }
                 }
