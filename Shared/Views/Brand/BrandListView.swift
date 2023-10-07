@@ -11,9 +11,7 @@ struct BrandListView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
     
     @State var presentAddBrandView = false
-
     @State private var showAlertForDeletion = false
-    
     @State private var selectedBrand: Brand?
     
     var brands: [Brand] {
@@ -22,13 +20,13 @@ struct BrandListView: View {
     
     var body: some View {
         VStack {
-            brandListView()
-            .sheet(isPresented: $presentAddBrandView) {
-                AddBrandView()
-                    .environmentObject(viewModel)
-                    .frame(minWidth: 350, minHeight: 450)
-                    .padding()
-            }
+            brandList
+                .sheet(isPresented: $presentAddBrandView) {
+                    AddBrandView()
+                        .environmentObject(viewModel)
+                        .frame(minWidth: 350, minHeight: 450)
+                        .padding()
+                }
         }
         .alert("Unable to Delete Data", isPresented: $showAlertForDeletion) {
             Button("Dismiss") {
@@ -39,18 +37,7 @@ struct BrandListView: View {
         }
     }
     
-    private func header() -> ToolbarItemGroup<some View> {
-        ToolbarItemGroup(placement: .topBarLeading) {
-            Button{
-                viewModel.persistenceHelper.reset()
-                presentAddBrandView = true
-            } label: {
-                Label("Add a brand", systemImage: "plus")
-            }
-        }
-    }
-    
-    private func brandListView() -> some View {
+    private var brandList: some View {
         NavigationSplitView {
             VStack {
                 List(selection: $selectedBrand) {
@@ -63,7 +50,7 @@ struct BrandListView: View {
                 }
                 .navigationTitle("Brands")
                 .toolbar {
-                    header()
+                    header
                 }
             }
             .refreshable {
@@ -75,6 +62,16 @@ struct BrandListView: View {
                     .environmentObject(viewModel)
                     .id(UUID())
                     .navigationBarTitleDisplayMode(.inline)
+            }
+        }
+    }
+    
+    private var header: ToolbarItemGroup<some View> {
+        ToolbarItemGroup(placement: .topBarLeading) {
+            Button{
+                presentAddBrandView = true
+            } label: {
+                Label("Add a brand", systemImage: "plus")
             }
         }
     }

@@ -11,7 +11,7 @@ struct ChooseKindView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var viewModel: BelongingsViewModel
     
-    @State var presentAddItem = false
+    @State private var presentAddItem = false
     @State private var showAlertForDeletion = false
     @Binding var kinds: [Kind]
     

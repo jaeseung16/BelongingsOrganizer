@@ -14,6 +14,7 @@ struct AddBrandView: View {
     @State private var name = ""
     @State private var urlString = ""
     @State private var isEditing = false
+    @State private var isEdited = false
     @State private var showAlert = false
     
     @State private var showProgress = false
@@ -27,38 +28,17 @@ struct AddBrandView: View {
             
             Divider()
             
-            Text("NAME")
-                .font(.caption)
+            NameView(name: $name, isEdited: $isEdited, color: .secondary) {
+                RoundedRectangle(cornerRadius: 5.0)
+                                .fill(Color(.sRGB, white: 0.5, opacity: 0.1))
+            }
             
-            TextField("name", text: $name)
-                .foregroundColor(.secondary)
-                .frame(maxWidth: .infinity, idealHeight: 50)
-                .background(RoundedRectangle(cornerRadius: 5.0)
-                                .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+            URLView(title: .url, urlString: $urlString, isEdited: $isEdited, showProgress: $showProgress, showAlert: $showAlert, color: .secondary) {
+                RoundedRectangle(cornerRadius: 5.0)
+                                .fill(Color(.sRGB, white: 0.5, opacity: 0.1))
+            }
+            .environmentObject(viewModel)
             
-            Text("URL")
-                .font(.caption)
-            
-            TextField("url", text: $urlString, prompt: nil)
-                .onSubmit {
-                    showProgress = true
-                    Task {
-                        if let url = await viewModel.validatedURL(from: urlString) {
-                            self.urlString = url.absoluteString
-                        } else {
-                            self.showAlert = true
-                        }
-                        self.showProgress = false
-                    }
-                }
-            #if os(iOS)
-            .textInputAutocapitalization(.never)
-            #endif
-            .foregroundColor(.secondary)
-            .frame(maxWidth: .infinity, idealHeight: 50)
-            .background(RoundedRectangle(cornerRadius: 5.0)
-                            .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
-
             Divider()
             
             AddBottomView {

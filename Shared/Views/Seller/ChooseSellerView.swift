@@ -11,12 +11,10 @@ struct ChooseSellerView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var viewModel: BelongingsViewModel
     
-    @State var presentAddSeller = false
-    
-    @Binding var seller: Seller?
-    
     @State private var showAlertForDeletion = false
-    
+    @State private var presentAddSeller = false
+    @Binding var seller: Seller?
+
     var body: some View {
         GeometryReader { geometry in
             VStack {

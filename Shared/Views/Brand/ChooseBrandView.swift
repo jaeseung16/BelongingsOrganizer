@@ -11,11 +11,9 @@ struct ChooseBrandView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var viewModel: BelongingsViewModel
 
-    @State var presentAddBrand = false
-    
-    @Binding var brand: Brand?
-    
+    @State private var presentAddBrand = false
     @State private var showAlertForDeletion = false
+    @Binding var brand: Brand?
     
     var body: some View {
         GeometryReader { geometry in
@@ -25,14 +23,14 @@ struct ChooseBrandView: View {
                 
                 Divider()
                 
-                selectedView()
+                selectedBrand
                     .frame(minHeight: 50)
                     .background(RoundedRectangle(cornerRadius: 10.0)
                                     .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
                 
                 Divider()
                 
-                brandList()
+                brandList
                 
                 Divider()
                 
@@ -61,7 +59,7 @@ struct ChooseBrandView: View {
         }
     }
     
-    private func selectedView() -> some View {
+    private var selectedBrand: some View {
         VStack {
             HStack {
                 Text("SELECTED")
@@ -83,7 +81,7 @@ struct ChooseBrandView: View {
         }
     }
     
-    private func brandList() -> some View {
+    private var brandList: some View {
         List {
             ForEach(viewModel.allBrands) { brand in
                 Button {
@@ -99,8 +97,6 @@ struct ChooseBrandView: View {
     private func deleteBrands(offsets: IndexSet) {
         withAnimation {
             viewModel.delete(offsets.map { viewModel.allBrands[$0] }) { error in
-                let nsError = error as NSError
-                print("While deleting a category, occured an unresolved error \(nsError), \(nsError.userInfo)")
                 showAlertForDeletion.toggle()
             }
         }
