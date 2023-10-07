@@ -14,7 +14,7 @@ struct AddPhotoView: View, DropDelegate {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var viewModel: BelongingsViewModel
 
-    @State private var selectedImage: Data?
+    @Binding var photo: Data?
     @State private var selectedPhoto: PhotosPickerItem?
     @State private var showImagePickerView = false
     @State private var progress: Progress?
@@ -55,7 +55,7 @@ struct AddPhotoView: View, DropDelegate {
                     .frame(minHeight: 120.0)
             }
             .sheet(isPresented: $showImagePickerView) {
-                ImagePickerView(selectedImage: $selectedImage, sourceType: .camera)
+                ImagePickerView(selectedImage: $photo, sourceType: .camera)
                     .padding()
             }
             .alert("Cannot add a photo", isPresented: $failed, presenting: details) { details in
@@ -66,7 +66,7 @@ struct AddPhotoView: View, DropDelegate {
             .onChange(of: selectedPhoto) { newValue in
                 Task {
                     if let data = try? await newValue?.loadTransferable(type: Data.self) {
-                        selectedImage = data
+                        photo = data
                     }
                 }
             }
@@ -75,26 +75,26 @@ struct AddPhotoView: View, DropDelegate {
     
     private func header() -> some View {
         HStack {
-            Button(action: {
+            Button {
                 dismiss.callAsFunction()
-            }, label: {
+            } label: {
                 Label("Cancel", systemImage: "chevron.backward")
-            })
+            }
             
             Spacer()
             
-            Button(action: {
-                viewModel.updateImage(selectedImage)
+            Button {
+                viewModel.updateImage(photo)
                 dismiss.callAsFunction()
-            }, label: {
+            } label: {
                 Text("Done")
-            })
+            }
         }
     }
     
     private func photoView() -> Image {
-        if selectedImage != nil {
-            return Image(uiImage: UIImage(data: selectedImage!)!)
+        if photo != nil {
+            return Image(uiImage: UIImage(data: photo!)!)
         } else {
             return Image(systemName: "photo.on.rectangle")
         }
@@ -130,7 +130,7 @@ struct AddPhotoView: View, DropDelegate {
     private func pasteImage() -> Void {
         viewModel.paste { data, _ in
             if let data = data {
-                selectedImage = data
+                photo = data
             }
         }
     }
@@ -141,14 +141,14 @@ struct AddPhotoView: View, DropDelegate {
                 if let localizedDescription = error?.localizedDescription {
                     details = localizedDescription
                 }
-                self.selectedImage = nil
+                self.photo = nil
                 failed.toggle()
                 return
             }
             
-            self.selectedImage = data
+            self.photo = data
         }
         
-        return selectedImage != nil
+        return photo != nil
     }
 }

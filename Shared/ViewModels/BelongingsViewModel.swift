@@ -476,8 +476,8 @@ class BelongingsViewModel: NSObject, ObservableObject {
         persistenceHelper.imageData = imageData
     }
     
-    public func saveBelonging(name: String, kind: [Kind], brand: Brand?, seller: Seller?, note: String, obtained: Date, buyPrice: Double?, quantity: Int64?, buyCurrency: String) -> Void {
-        let item = ItemDTO(id: UUID(), name: name, note: note, quantity: quantity, buyPrice: buyPrice, buyCurrency: buyCurrency, obtained: obtained, image: imageData)
+    public func saveBelonging(name: String, kind: [Kind], brand: Brand?, seller: Seller?, note: String, obtained: Date, buyPrice: Double?, quantity: Int64?, buyCurrency: String, image: Data?) -> Void {
+        let item = ItemDTO(id: UUID(), name: name, note: note, quantity: quantity, buyPrice: buyPrice, buyCurrency: buyCurrency, obtained: obtained, image: image)
         persistenceHelper.save(item, kind: kind, brand: brand, seller: seller) { result in
             switch result {
             case .success(()):

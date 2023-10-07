@@ -35,9 +35,7 @@ struct AddItemView: View {
     @FocusState private var buyPriceIsFocused: Bool
     
     //@State private var image: Data?
-    private var image: Data? {
-        viewModel.imageData
-    }
+    @State private var image: Data?
     
     @State private var classificationResult = "classificationResult"
     
@@ -76,7 +74,7 @@ struct AddItemView: View {
                     .frame(width: geometry.size.width, height: geometry.size.height)
             })
             .sheet(isPresented: $presentPhotoView, content: {
-                AddPhotoView()
+                AddPhotoView(photo: $image)
                     .environmentObject(viewModel)
                     .frame(width: geometry.size.width, height: geometry.size.height)
             })
@@ -380,7 +378,8 @@ struct AddItemView: View {
                                 obtained: obtained,
                                 buyPrice: Double(buyPrice),
                                 quantity: Int64(quantity),
-                                buyCurrency: currency)
+                                buyCurrency: currency,
+                                image: image)
         
         dismiss.callAsFunction()
     }
