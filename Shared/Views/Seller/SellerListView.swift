@@ -13,7 +13,7 @@ struct SellerListView: View {
     @State var presentAddSelleriew = false
 
     @State private var showAlertForDeletion = false
-    @State var selectedSeller: Seller?
+    @State var selected: Seller?
     
     private var sellers: [Seller] {
         return viewModel.filteredSellers
@@ -21,37 +21,26 @@ struct SellerListView: View {
     
     var body: some View {
         VStack {
-            sellerListView()
-            .sheet(isPresented: $presentAddSelleriew) {
-                AddSellerView()
-                    .environmentObject(viewModel)
-                    .frame(minWidth: 350, minHeight: 450)
-                    .padding()
+            sellerList
+                .sheet(isPresented: $presentAddSelleriew) {
+                    AddSellerView()
+                        .environmentObject(viewModel)
+                        .frame(minWidth: 350, minHeight: 450)
+                        .padding()
             }
         }
-        .alert("Unable to Delete Data", isPresented: $showAlertForDeletion) {
+        .alert("Failed to delete", isPresented: $showAlertForDeletion) {
             Button("Dismiss") {
             }
         } message: {
-            Text("Failed to delete the selected seller")
+            Text("Unable to delete the selected seller")
         }
     }
     
-    private func header() -> ToolbarItemGroup<some View> {
-        ToolbarItemGroup(placement: .topBarLeading) {
-            Button {
-                viewModel.persistenceHelper.reset()
-                presentAddSelleriew = true
-            } label: {
-                Label("Add a seller", systemImage: "plus")
-            }
-        }
-    }
-    
-    private func sellerListView() -> some View {
+    private var sellerList: some View {
         NavigationSplitView {
             VStack {
-                List(selection: $selectedSeller) {
+                List(selection: $selected) {
                     ForEach(sellers) { seller in
                         NavigationLink(value: seller) {
                             BrandKindSellerRowView(name: seller.name ?? "", itemCount: viewModel.getItemCount(seller))
@@ -61,18 +50,28 @@ struct SellerListView: View {
                 }
                 .navigationTitle("Sellers")
                 .toolbar {
-                    header()
+                    header
                 }
             }
             .refreshable {
                 viewModel.fetchEntities()
             }
         } detail: {
-            if let seller = selectedSeller {
+            if let seller = selected {
                 SellerDetailView(seller: seller, name: seller.name ?? "", urlString: seller.url?.absoluteString ?? "", items: viewModel.getItems(seller))
                     .environmentObject(viewModel)
                     .id(UUID())
                     .navigationBarTitleDisplayMode(.inline)
+            }
+        }
+    }
+    
+    private var header: ToolbarItemGroup<some View> {
+        ToolbarItemGroup(placement: .topBarLeading) {
+            Button {
+                presentAddSelleriew = true
+            } label: {
+                Label("Add a seller", systemImage: "plus")
             }
         }
     }

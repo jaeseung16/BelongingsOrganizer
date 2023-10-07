@@ -243,7 +243,9 @@ class BelongingsViewModel: NSObject, ObservableObject {
                 self.handleSuccess()
             case .failure(let error):
                 self.logger.log("Error while deleting data: \(error.localizedDescription, privacy: .public)")
-                self.handle(error: error, completionHandler: completionHandler)
+                DispatchQueue.main.async {
+                    completionHandler(error)
+                }
             }
         }
     }

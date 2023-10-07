@@ -23,17 +23,11 @@ struct SellerDetailView: View {
     var body: some View {
         GeometryReader { geometry in
             VStack {
-                header()
+                header
                 
                 Divider()
                 
-                nameView()
-                
-                urlView()
-                
-                addedView()
-                
-                lastUpdatedView()
+                detail
                 
                 Divider()
                 
@@ -57,7 +51,7 @@ struct SellerDetailView: View {
         
     }
     
-    private func header() -> some View {
+    private var header: some View {
         DetailHeaderView(isEdited: $isEdited) {
             reset()
         } update: {
@@ -76,61 +70,18 @@ struct SellerDetailView: View {
         isEdited = false
     }
     
-    private func nameView() -> some View {
+    private var detail: some View {
         VStack {
-            HStack {
-                SectionTitleView(title: .name)
-                
-                Spacer()
+            NameView(name: $name, isEdited: $isEdited) {
+                EmptyView()
             }
-            
-            TextField(seller.name ?? "", text: $name, prompt: nil)
-                .onSubmit {
-                    isEdited = true
-                }
+            URLView(title: .url, url: seller.url, urlString: $urlString, isEdited: $isEdited, showProgress: $showProgress, showAlert: $showAlert) {
+                EmptyView()
+            }
+            .environmentObject(viewModel)
+            DateSectionView(sectionTitle: .added, date: seller.created ?? Date())
+            DateSectionView(sectionTitle: .updated, date: seller.lastupd ?? Date())
         }
     }
     
-    private func urlView() -> some View {
-        VStack {
-            HStack {
-                SectionTitleView(title: .url)
-                
-                Spacer()
-                
-                if let url = seller.url {
-                    Link(destination: url) {
-                        Label("Open in Browser", systemImage: "link")
-                            .font(.caption)
-                    }
-                }
-            }
-            
-            TextField(seller.url?.absoluteString ?? "N/A", text: $urlString, prompt: nil)
-                .onSubmit {
-                    isEdited = true
-                    
-                    showProgress = true
-                    Task {
-                        if let url = await viewModel.validatedURL(from: urlString) {
-                            self.urlString = url.absoluteString
-                        } else {
-                            self.showAlert = true
-                        }
-                        self.showProgress = false
-                    }
-                }
-                #if os(iOS)
-                .textInputAutocapitalization(.never)
-                #endif
-        }
-    }
-    
-    private func addedView() -> some View {
-        DateSectionView(sectionTitle: .added, date: seller.created ?? Date())
-    }
-    
-    private func lastUpdatedView() -> some View {
-        DateSectionView(sectionTitle: .updated, date: seller.lastupd ?? Date())
-    }
 }
