@@ -55,7 +55,7 @@ struct AddItemView: View {
             }
             .padding()
             .sheet(isPresented: $presentChooseKindView, content: {
-                ChooseKindView(selectedKinds: $kind)
+                ChooseKindView(kinds: $kind)
                     .environmentObject(viewModel)
                     .frame(width: geometry.size.width, height: geometry.size.height)
             })

@@ -16,19 +16,14 @@ struct KindDetailView: View {
     
     @State private var isEdited = false
     
-    
     var body: some View {
         GeometryReader { geometry in
             VStack {
-                header()
+                header
                 
                 Divider()
                 
-                nameView()
-                
-                addedView()
-                
-                lastUpdatedView()
+                detail
                 
                 Divider()
                 
@@ -45,7 +40,7 @@ struct KindDetailView: View {
         isEdited = false
     }
     
-    private func header() -> some View {
+    private var header: some View {
         DetailHeaderView(isEdited: $isEdited) {
             reset()
         } update: {
@@ -54,27 +49,15 @@ struct KindDetailView: View {
         }
     }
     
-    private func nameView() -> some View {
+    private var detail: some View {
         VStack {
-            HStack {
-                SectionTitleView(title: .name)
-                
-                Spacer()
+            NameView(name: $name, isEdited: $isEdited) {
+                EmptyView()
             }
-            
-            TextField(kind.name ?? "", text: $name, prompt: nil)
-                .onSubmit {
-                    isEdited = true
-                }
+            DateSectionView(sectionTitle: .added, date: kind.created ?? Date())
+            DateSectionView(sectionTitle: .updated, date: kind.lastupd ?? Date())
         }
     }
-
-    private func addedView() -> some View {
-        DateSectionView(sectionTitle: .added, date: kind.created ?? Date())
-    }
     
-    private func lastUpdatedView() -> some View {
-        DateSectionView(sectionTitle: .updated, date: kind.lastupd ?? Date())
-    }
 }
 

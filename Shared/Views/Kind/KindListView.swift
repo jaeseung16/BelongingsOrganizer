@@ -11,10 +11,8 @@ struct KindListView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
     
     @State var presentAddKindView = false
-
     @State private var showAlertForDeletion = false
-
-    @State private var selectedKind: Kind?
+    @State private var selected: Kind?
     
     var kinds: [Kind] {
         return viewModel.filteredKinds
@@ -22,13 +20,12 @@ struct KindListView: View {
     
     var body: some View {
         VStack {
-            kindListView()
+            kindList
                 .sheet(isPresented: $presentAddKindView) {
                     AddKindView()
                         .environmentObject(viewModel)
                         .frame(minWidth: 350, minHeight: 450)
                         .padding()
-                    
                 }
         }
         .alert("Unable to Delete Data", isPresented: $showAlertForDeletion) {
@@ -39,21 +36,10 @@ struct KindListView: View {
         }
     }
     
-    private func header() -> ToolbarItemGroup<some View> {
-        ToolbarItemGroup(placement: .topBarLeading) {
-            Button {
-                viewModel.persistenceHelper.reset()
-                presentAddKindView = true
-            } label: {
-                Label("Add a category", systemImage: "plus")
-            }
-        }
-    }
-    
-    private func kindListView() -> some View {
+    private var kindList: some View {
         NavigationSplitView {
             VStack {
-                List(selection: $selectedKind) {
+                List(selection: $selected) {
                     ForEach(kinds) { kind in
                         NavigationLink(value: kind) {
                             BrandKindSellerRowView(name: kind.name ?? "", itemCount: viewModel.getItemCount(kind))
@@ -63,18 +49,28 @@ struct KindListView: View {
                 }
                 .navigationTitle("Categories")
                 .toolbar {
-                    header()
+                    header
                 }
             }
             .refreshable {
                 viewModel.fetchEntities()
             }
         } detail: {
-            if let kind = selectedKind {
+            if let kind = selected {
                 KindDetailView(kind: kind, name: kind.name ?? "", items: viewModel.getItems(kind))
                     .environmentObject(viewModel)
                     .id(UUID())
                     .navigationBarTitleDisplayMode(.inline)
+            }
+        }
+    }
+    
+    private var header: ToolbarItemGroup<some View> {
+        ToolbarItemGroup(placement: .topBarLeading) {
+            Button {
+                presentAddKindView = true
+            } label: {
+                Label("Add a category", systemImage: "plus")
             }
         }
     }

@@ -67,7 +67,7 @@ struct ItemDetailView: View {
                         isEdited = true
                     }
                 #else
-                ChooseKindView(selectedKinds: $kind)
+                ChooseKindView(kinds: $kind)
                     .onChange(of: kind) { _ in
                         isEdited = true
                     }
