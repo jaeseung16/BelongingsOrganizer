@@ -14,9 +14,7 @@ struct AddBrandView: View {
     @State private var name = ""
     @State private var urlString = ""
     @State private var isEditing = false
-    @State private var isEdited = false
-    @State private var showAlert = false
-    
+    @State private var isEdited = false    
     @State private var showProgress = false
     
     var body: some View {
@@ -33,7 +31,7 @@ struct AddBrandView: View {
                                 .fill(Color(.sRGB, white: 0.5, opacity: 0.1))
             }
             
-            URLView(title: .url, urlString: $urlString, isEdited: $isEdited, showProgress: $showProgress, showAlert: $showAlert, color: .secondary) {
+            URLView(title: .url, urlString: $urlString, isEdited: $isEdited, showProgress: $showProgress, color: .secondary) {
                 RoundedRectangle(cornerRadius: 5.0)
                                 .fill(Color(.sRGB, white: 0.5, opacity: 0.1))
             }
@@ -57,12 +55,5 @@ struct AddBrandView: View {
                 .opacity(showProgress ? 1 : 0)
         }
         .frame(minHeight: 200.0)
-        .alert("Invalid URL", isPresented: $showAlert, actions: {
-            Button("Dismiss")  {
-                urlString = ""
-            }
-        }, message: {
-            Text("Cannot access the URL. Try a different one or leave it empty.")
-        })
     }
 }

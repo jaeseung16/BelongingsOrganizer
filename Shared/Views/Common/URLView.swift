@@ -15,7 +15,7 @@ struct URLView<Background: View>: View {
     @Binding var urlString: String
     @Binding var isEdited: Bool
     @Binding var showProgress: Bool
-    @Binding var showAlert: Bool
+    @State private var showAlert = false
     var color = Color.primary
     @ViewBuilder var background: Background
     
@@ -56,6 +56,13 @@ struct URLView<Background: View>: View {
                 .background(alignment: .center) {
                     background
                 }
+        }
+        .alert("Invalid URL", isPresented: $showAlert) {
+            Button("Dismiss")  {
+                urlString = ""
+            }
+        } message: {
+            Text("Cannot access the URL. Try a different one or leave it empty.")
         }
     }
 }

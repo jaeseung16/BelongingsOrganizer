@@ -40,13 +40,6 @@ struct SellerDetailView: View {
                     .progressViewStyle(.circular)
                     .opacity(showProgress ? 1 : 0)
             }
-            .alert("Invalid URL", isPresented: $showAlert, actions: {
-                Button("Dismiss")  {
-                    urlString = seller.url?.absoluteString ?? ""
-                }
-            }, message: {
-                Text("Cannot access the URL. Try a different one or leave it empty.")
-            })
         }
         
     }
@@ -75,7 +68,7 @@ struct SellerDetailView: View {
             NameView(name: $name, isEdited: $isEdited) {
                 EmptyView()
             }
-            URLView(title: .url, url: seller.url, urlString: $urlString, isEdited: $isEdited, showProgress: $showProgress, showAlert: $showAlert) {
+            URLView(title: .url, url: seller.url, urlString: $urlString, isEdited: $isEdited, showProgress: $showProgress) {
                 EmptyView()
             }
             .environmentObject(viewModel)

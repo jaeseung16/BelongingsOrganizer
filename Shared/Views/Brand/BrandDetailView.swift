@@ -15,9 +15,7 @@ struct BrandDetailView: View {
     @State var urlString = ""
     var items: [Item]
     
-    @State private var showAlert = false
     @State private var isEdited = false
-    
     @State private var showProgress = false
     
     var body: some View {
@@ -41,13 +39,6 @@ struct BrandDetailView: View {
                     .progressViewStyle(.circular)
                     .opacity(showProgress ? 1 : 0)
             }
-            .alert("Invalid URL", isPresented: $showAlert, actions: {
-                Button("Dismiss")  {
-                    urlString = brand.url?.absoluteString ?? ""
-                }
-            }, message: {
-                Text("Cannot access the URL. Try a different one or leave it empty.")
-            })
         }
     }
     
@@ -72,7 +63,7 @@ struct BrandDetailView: View {
             NameView(name: $name, isEdited: $isEdited) {
                 EmptyView()
             }
-            URLView(title: .url, url: brand.url, urlString: $urlString, isEdited: $isEdited, showProgress: $showProgress, showAlert: $showAlert) {
+            URLView(title: .url, url: brand.url, urlString: $urlString, isEdited: $isEdited, showProgress: $showProgress) {
                 EmptyView()
             }
             .environmentObject(viewModel)
