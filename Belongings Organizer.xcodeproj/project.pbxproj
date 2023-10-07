@@ -15,8 +15,6 @@
 		900DDBEB26E036CB0034A155 /* Belongings.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 900DDBBE26E036C90034A155 /* Belongings.xcdatamodeld */; };
 		900DDBEE26E036CB0034A155 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900DDBC126E036C90034A155 /* ContentView.swift */; };
 		900DDBEF26E036CB0034A155 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900DDBC126E036C90034A155 /* ContentView.swift */; };
-		900DDBF226E036CB0034A155 /* Assets_old.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 900DDBC326E036CA0034A155 /* Assets_old.xcassets */; };
-		900DDBF326E036CB0034A155 /* Assets_old.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 900DDBC326E036CA0034A155 /* Assets_old.xcassets */; };
 		900F8D7A2735C5210069CE07 /* DetailHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900F8D792735C5210069CE07 /* DetailHeaderView.swift */; };
 		900F8D7B2735C5210069CE07 /* DetailHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900F8D792735C5210069CE07 /* DetailHeaderView.swift */; };
 		901A21E528568A95006CF1A4 /* Persistence in Frameworks */ = {isa = PBXBuildFile; productRef = 901A21E428568A95006CF1A4 /* Persistence */; };
@@ -107,7 +105,6 @@
 		90CB46AE26ED43AD00A9468B /* ItemDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CB46AC26ED43AD00A9468B /* ItemDetailView.swift */; };
 		90CB46B726ED6A1900A9468B /* FilterItemsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CB46B626ED6A1900A9468B /* FilterItemsView.swift */; };
 		90CB46B826ED6A1900A9468B /* FilterItemsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CB46B626ED6A1900A9468B /* FilterItemsView.swift */; };
-		90CB778D27025BB6008CDBC6 /* PHPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CB778C27025BB6008CDBC6 /* PHPickerView.swift */; };
 		90CD27ED270908A1001A89B5 /* ImageType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CD27EC270908A1001A89B5 /* ImageType.swift */; };
 		90CD27EE270908A1001A89B5 /* ImageType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CD27EC270908A1001A89B5 /* ImageType.swift */; };
 		90CD27F1270908D3001A89B5 /* ImagePaster.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CD27EF270908D3001A89B5 /* ImagePaster.swift */; };
@@ -166,7 +163,6 @@
 		9000E36A2771229700A224E0 /* BelongingsApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BelongingsApp.swift; sourceTree = "<group>"; };
 		900DDBBF26E036C90034A155 /* Shared.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Shared.xcdatamodel; sourceTree = "<group>"; };
 		900DDBC126E036C90034A155 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		900DDBC326E036CA0034A155 /* Assets_old.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets_old.xcassets; sourceTree = "<group>"; };
 		900DDBC826E036CA0034A155 /* Belongings Organizer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Belongings Organizer.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		900DDBCB26E036CA0034A155 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		900DDBD026E036CB0034A155 /* Belongings Organizer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Belongings Organizer.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -223,7 +219,6 @@
 		90CB46A926ED3F0F00A9468B /* SellerListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SellerListView.swift; sourceTree = "<group>"; };
 		90CB46AC26ED43AD00A9468B /* ItemDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDetailView.swift; sourceTree = "<group>"; };
 		90CB46B626ED6A1900A9468B /* FilterItemsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterItemsView.swift; sourceTree = "<group>"; };
-		90CB778C27025BB6008CDBC6 /* PHPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PHPickerView.swift; sourceTree = "<group>"; };
 		90CD27EC270908A1001A89B5 /* ImageType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageType.swift; sourceTree = "<group>"; };
 		90CD27EF270908D3001A89B5 /* ImagePaster.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePaster.swift; sourceTree = "<group>"; };
 		90CF0CF52730A1C300E93917 /* SectionTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionTitleView.swift; sourceTree = "<group>"; };
@@ -309,7 +304,6 @@
 				900DDBC126E036C90034A155 /* ContentView.swift */,
 				901A21E928568BA8006CF1A4 /* BelongingsOrganizerConstants.swift */,
 				901A21E628568AEF006CF1A4 /* AppDelegate.swift */,
-				900DDBC326E036CA0034A155 /* Assets_old.xcassets */,
 				909286FC2AD0C085006FADAE /* Assets.xcassets */,
 				900DDBBE26E036C90034A155 /* Belongings.xcdatamodeld */,
 			);
@@ -517,7 +511,6 @@
 				90DD8C2B26F95A1B0079424A /* EditPhotoView.swift */,
 				90DE25532707AD4C0030AEFF /* ImagePaster.swift */,
 				90E2EA9526F402150014A8C6 /* ImagePickerView.swift */,
-				90CB778C27025BB6008CDBC6 /* PHPickerView.swift */,
 				90E238DE27065CCC00E03624 /* PhotoAlertView.swift */,
 			);
 			path = Photo;
@@ -691,7 +684,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				909286FD2AD0C085006FADAE /* Assets.xcassets in Resources */,
-				900DDBF226E036CB0034A155 /* Assets_old.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -700,7 +692,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				909286FE2AD0C085006FADAE /* Assets.xcassets in Resources */,
-				900DDBF326E036CB0034A155 /* Assets_old.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -728,7 +719,6 @@
 				904498E126EBD30500002A6F /* NothingSelectedText.swift in Sources */,
 				90D3F23E26EA804E00955316 /* ItemDTO.swift in Sources */,
 				908EC8472AC9F138004647A5 /* SectionTitle.swift in Sources */,
-				90CB778D27025BB6008CDBC6 /* PHPickerView.swift in Sources */,
 				90D3F23226EA594E00955316 /* BelongingsViewModel.swift in Sources */,
 				9072232D26E9352700965653 /* ChooseBrandView.swift in Sources */,
 				90E54D1B2777D37300B6DF62 /* AddBottomView.swift in Sources */,
@@ -1017,7 +1007,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = Belongings.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 10;
@@ -1035,6 +1025,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jlee.Belongings;
 				PRODUCT_NAME = "Belongings Organizer";
 				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1045,7 +1038,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = Belongings.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 10;
@@ -1063,6 +1056,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jlee.Belongings;
 				PRODUCT_NAME = "Belongings Organizer";
 				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
