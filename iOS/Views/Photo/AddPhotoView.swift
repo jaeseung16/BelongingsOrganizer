@@ -8,14 +8,15 @@
 import SwiftUI
 import UniformTypeIdentifiers
 import SDWebImageWebPCoder
+import PhotosUI
 
 struct AddPhotoView: View, DropDelegate {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var viewModel: BelongingsViewModel
 
     @State private var selectedImage: Data?
+    @State private var selectedPhoto: PhotosPickerItem?
     @State private var showImagePickerView = false
-    @State private var showPHPickerView = false
     @State private var progress: Progress?
     @State private var showAlert = false
     @State private var errorMessage = ""
@@ -57,16 +58,16 @@ struct AddPhotoView: View, DropDelegate {
                 ImagePickerView(selectedImage: $selectedImage, sourceType: .camera)
                     .padding()
             }
-            .sheet(isPresented: $showPHPickerView) {
-                PHPickerView(selectedImage: $selectedImage, progress: $progress) { success, errorString in
-                    errorMessage = errorString ?? ""
-                    showAlert = !success
-                }
-                    .padding()
-            }
             .alert("Cannot add a photo", isPresented: $failed, presenting: details) { details in
                 Button("Dismiss") {
                     
+                }
+            }
+            .onChange(of: selectedPhoto) { newValue in
+                Task {
+                    if let data = try? await newValue?.loadTransferable(type: Data.self) {
+                        selectedImage = data
+                    }
                 }
             }
         }
@@ -110,10 +111,7 @@ struct AddPhotoView: View, DropDelegate {
             
             Spacer()
             
-            Button {
-                progress = nil
-                showPHPickerView = true
-            } label: {
+            PhotosPicker(selection: $selectedPhoto, matching: .any(of: [.images])) {
                 Label("Photos", systemImage: "photo.on.rectangle")
             }
             

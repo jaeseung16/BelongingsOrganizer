@@ -8,16 +8,17 @@
 import SwiftUI
 import UniformTypeIdentifiers
 import SDWebImageWebPCoder
+import PhotosUI
 
 struct EditPhotoView: View, DropDelegate {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var viewModel: BelongingsViewModel
 
     @State var originalImage: Data?
+    @State private var selectedPhoto: PhotosPickerItem?
     @Binding var image: Data?
 
     @State private var showImagePickerView = false
-    @State private var showPHPickerView = false
     @State private var progress: Progress?
     @State private var showAlert = false
     @State private var errorMessage = ""
@@ -59,16 +60,16 @@ struct EditPhotoView: View, DropDelegate {
                 ImagePickerView(selectedImage: $image, sourceType: .camera)
                     .padding()
             }
-            .sheet(isPresented: $showPHPickerView) {
-                PHPickerView(selectedImage: $image, progress: $progress) { success, errorString in
-                    errorMessage = errorString ?? ""
-                    showAlert = !success
-                }
-                    .padding()
-            }
             .alert("Cannot replace a photo", isPresented: $failed, presenting: details) { details in
                 Button("Dismiss") {
                     
+                }
+            }
+            .onChange(of: selectedPhoto) { newValue in
+                Task {
+                    if let data = try? await newValue?.loadTransferable(type: Data.self) {
+                        image = data
+                    }
                 }
             }
         }
@@ -114,11 +115,7 @@ struct EditPhotoView: View, DropDelegate {
             
             Spacer()
             
-            Button {
-                image = nil
-                progress = nil
-                showPHPickerView = true
-            } label: {
+            PhotosPicker(selection: $selectedPhoto, matching: .any(of: [.images])) {
                 Label("Photos", systemImage: "photo.on.rectangle")
             }
             
