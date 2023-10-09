@@ -24,8 +24,7 @@ struct KindListView: View {
                 .sheet(isPresented: $presentAddKindView) {
                     AddKindView()
                         .environmentObject(viewModel)
-                        .frame(minWidth: 350, minHeight: 450)
-                        .padding()
+                        .modifier(SheetModifier())
                 }
         }
         .alert("Unable to Delete Data", isPresented: $showAlertForDeletion) {

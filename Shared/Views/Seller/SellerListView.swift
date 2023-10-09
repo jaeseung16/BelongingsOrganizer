@@ -25,8 +25,7 @@ struct SellerListView: View {
                 .sheet(isPresented: $presentAddSelleriew) {
                     AddSellerView()
                         .environmentObject(viewModel)
-                        .frame(minWidth: 350, minHeight: 450)
-                        .padding()
+                        .modifier(SheetModifier())
             }
         }
         .alert("Failed to delete", isPresented: $showAlertForDeletion) {
