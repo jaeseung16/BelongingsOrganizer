@@ -17,7 +17,8 @@ struct NameView<Background: View>: View {
     var body: some View {
         VStack {
             HStack {
-                SectionTitleView(title: .name, color: color == .primary ? .secondary : .primary)
+                SectionTitleView(title: .name)
+                    .foregroundColor(color == .primary ? .secondary : .primary)
                 
                 Spacer()
             }
@@ -25,11 +26,7 @@ struct NameView<Background: View>: View {
             TextField(text: $name) {
                 Text("name")
             }
-            .foregroundColor(color)
-            .frame(maxWidth: .infinity, idealHeight: 50)
-            .background(alignment: .center) {
-                background
-            }
+            .modifier(NameURLModifier(color: color) { background })
             .onSubmit {
                 isEdited = true
             }

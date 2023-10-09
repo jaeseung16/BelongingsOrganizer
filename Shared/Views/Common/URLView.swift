@@ -22,7 +22,8 @@ struct URLView<Background: View>: View {
     var body: some View {
         VStack {
             HStack {
-                SectionTitleView(title: .url, color: color == .primary ? .secondary : .primary)
+                SectionTitleView(title: .url)
+                    .foregroundColor(color == .primary ? .secondary : .primary)
                 
                 Spacer()
                 
@@ -51,11 +52,7 @@ struct URLView<Background: View>: View {
                 #if os(iOS)
                 .textInputAutocapitalization(.never)
                 #endif
-                .foregroundColor(color)
-                .frame(maxWidth: .infinity, idealHeight: 50)
-                .background(alignment: .center) {
-                    background
-                }
+                .modifier(NameURLModifier(color: color) { background } )
         }
         .alert("Invalid URL", isPresented: $showAlert) {
             Button("Dismiss")  {
