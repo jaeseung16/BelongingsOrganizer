@@ -17,8 +17,7 @@ struct NameView<Background: View>: View {
     var body: some View {
         VStack {
             HStack {
-                SectionTitleView(title: .name)
-                    .foregroundColor(color == .primary ? .secondary : .primary)
+                SectionTitleView(title: .name, color: color == .primary ? .secondary : .primary)
                 
                 Spacer()
             }

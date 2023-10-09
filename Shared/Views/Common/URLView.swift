@@ -22,8 +22,7 @@ struct URLView<Background: View>: View {
     var body: some View {
         VStack {
             HStack {
-                SectionTitleView(title: .url)
-                    .foregroundColor(color == .primary ? .secondary : .primary)
+                SectionTitleView(title: .url, color: color == .primary ? .secondary : .primary)
                 
                 Spacer()
                 
