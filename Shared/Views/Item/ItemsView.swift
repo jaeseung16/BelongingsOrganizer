@@ -20,15 +20,15 @@ struct ItemsView: View {
             
             #if os(macOS)
             NavigationView {
-                itemList()
+                itemList
             }
             #else
-            itemList()
+            itemList
             #endif
         }
     }
     
-    private func itemList() -> some View {
+    private var itemList: some View {
         NavigationStack {
             List {
                 ForEach(items) { item in
