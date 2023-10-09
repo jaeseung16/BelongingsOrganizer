@@ -7,6 +7,8 @@
 
 import Foundation
 
-enum SortType {
-    case lastupd, obtained, name
+enum SortType: String {
+    case lastupd = "Updated"
+    case obtained = "Obtained"
+    case name = "Name"
 }

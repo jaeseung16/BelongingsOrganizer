@@ -16,45 +16,18 @@ struct SortItemsView: View {
     var body: some View {
         GeometryReader { geometry in
             VStack {
-                header()
+                header
                 
                 Divider()
                 
-                HStack {
-                    VStack {
-                        Text("Sort By")
-                        
-                        Picker("Sort by", selection: $sortType) {
-                            Text("Name").tag(SortType.name)
-                            Text("Obtained").tag(SortType.obtained)
-                            Text("Updated").tag(SortType.lastupd)
-                        }
-                        .pickerStyle(SegmentedPickerStyle())
-                        .frame(width: 0.6 * geometry.size.width)
-                    }
-                    
-                    
-                    Spacer()
-                    
-                    VStack {
-                        Text("Direction")
-                        
-                        Picker("Sort direction", selection: $sortDirection) {
-                            Image(systemName: "arrow.up.forward").tag(SortDirection.ascending)
-                            Image(systemName: "arrow.down.forward").tag(SortDirection.descending)
-                        }
-                        .pickerStyle(SegmentedPickerStyle())
-                        .frame(width: 0.3 * geometry.size.width)
-                    }
-                    
-                }
+                pickers(in: geometry)
                 
             }
             .padding()
         }
     }
     
-    func header() -> some View {
+    private var header: some View {
         HStack {
             Button {
                 dismiss.callAsFunction()
@@ -70,6 +43,37 @@ struct SortItemsView: View {
             } label: {
                 Text("Reset")
             }
+        }
+    }
+    
+    private func pickers(in geometry: GeometryProxy) -> some View {
+        HStack {
+            VStack {
+                Text("Sort By")
+                
+                Picker("Sort by", selection: $sortType) {
+                    Text(SortType.name.rawValue).tag(SortType.name)
+                    Text(SortType.obtained.rawValue).tag(SortType.obtained)
+                    Text(SortType.lastupd.rawValue).tag(SortType.lastupd)
+                }
+                .pickerStyle(SegmentedPickerStyle())
+                .frame(width: 0.6 * geometry.size.width)
+            }
+            
+            
+            Spacer()
+            
+            VStack {
+                Text("Direction")
+                
+                Picker("Sort direction", selection: $sortDirection) {
+                    Image(systemName: SortDirection.ascending.rawValue).tag(SortDirection.ascending)
+                    Image(systemName: SortDirection.descending.rawValue).tag(SortDirection.descending)
+                }
+                .pickerStyle(SegmentedPickerStyle())
+                .frame(width: 0.3 * geometry.size.width)
+            }
+            
         }
     }
 }
