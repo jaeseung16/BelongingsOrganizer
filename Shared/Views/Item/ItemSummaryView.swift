@@ -50,28 +50,22 @@ struct ItemSummaryView: View {
     
     private func itemInfo() -> some View {
         VStack {
-            nameView()
+            name
             
-            photoView()
+            photo
             
             Divider()
             
-            categoryBrandSellerView()
-            
-            quantityView()
-            
-            obtainedView()
-            
-            disposedView()
-            
-            noteView()
+            detail
 
-            miscView()
+            Divider()
+            
+            misc
         }
         .padding()
     }
     
-    private func nameView() -> some View {
+    private var name: some View {
         HStack {
             Spacer()
             Text(item.name ?? "")
@@ -80,7 +74,7 @@ struct ItemSummaryView: View {
         }
     }
     
-    private func photoView() -> some View {
+    private var photo: some View {
         HStack {
             Spacer()
             
@@ -112,52 +106,66 @@ struct ItemSummaryView: View {
         }
     }
     
-    private func categoryBrandSellerView() -> some View {
-        HStack {
-            Spacer()
+    private var detail: some View {
+        Grid(verticalSpacing: 10) {
+            GridRow {
+                categoryBrandSeller
+            }
             
+            GridRow {
+                obtained
+            }
+            
+            GridRow {
+                disposed
+            }
+            
+            GridRow {
+                quantity
+            }
+            
+            GridRow {
+                noteView
+            }
+        }
+            
+    }
+    
+    private var categoryBrandSeller: some View {
+        Group {
             VStack {
                 SectionTitleView(title: .category)
 
                 Text(self.kind?.name ?? notApplicable)
             }
             
-            Spacer()
-            
             VStack {
                 SectionTitleView(title: .brand)
 
                 Text(self.brand?.name ?? notApplicable)
             }
-            
-            Spacer()
-            
+
             VStack {
                 SectionTitleView(title: .seller)
 
                 Text(self.seller?.name ?? notApplicable)
             }
-            
-            Spacer()
         }
     }
     
-    private func quantityView() -> some View {
-        HStack {
-            Spacer()
-            
-            SectionTitleView(title: .quantity)
-
-            Text(quantityFormatter.string(from: NSNumber(value: item.quantity)) ?? notApplicable)
-                .multilineTextAlignment(.trailing)
-            Spacer()
+    private var quantity: some View {
+        Group {
+            VStack {
+                SectionTitleView(title: .quantity)
+                
+                Text(quantityFormatter.string(from: NSNumber(value: item.quantity)) ?? notApplicable)
+                    .multilineTextAlignment(.trailing)
+            }
         }
     }
     
-    private func obtainedView() -> some View {
-        HStack {
-            Spacer()
-            
+    private var obtained: some View {
+        Group {
             VStack {
                 SectionTitleView(title: .obtained)
                 
@@ -168,31 +176,23 @@ struct ItemSummaryView: View {
                 }
             }
             
-            Spacer()
-            
             VStack {
                 SectionTitleView(title: .buyPrice)
 
                 Text(priceFormatter.string(from: NSNumber(value: item.buyPrice)) ?? notApplicable)
                     .multilineTextAlignment(.trailing)
             }
-            
-            Spacer()
-            
+
             VStack {
                 SectionTitleView(title: .currency)
 
                 Text(item.buyCurrency ?? notApplicable)
             }
-
-            Spacer()
         }
     }
     
-    private func disposedView() -> some View {
-        HStack {
-            Spacer()
-       
+    private var disposed: some View {
+        Group {
             VStack {
                 SectionTitleView(title: .disposed)
   
@@ -202,9 +202,7 @@ struct ItemSummaryView: View {
                     Text("N/A")
                 }
             }
-            
-            Spacer()
-            
+
             VStack {
                 SectionTitleView(title: .sellPrice)
 
@@ -212,42 +210,38 @@ struct ItemSummaryView: View {
                     .multilineTextAlignment(.trailing)
             }
             
-            Spacer()
-            
             VStack {
                 SectionTitleView(title: .currency)
 
                 Text(item.sellCurrency ?? notApplicable)
             }
-            
-            Spacer()
         }
     }
     
-    private func noteView() -> some View {
-        VStack {
-            SectionTitleView(title: .note)
-            
-            if let note = item.note, !note.isEmpty {
-                Text(note)
-            } else {
-                Text("N/A")
+    private var noteView: some View {
+        Group {
+            VStack {
+                SectionTitleView(title: .note)
+                
+                if let note = item.note, !note.isEmpty {
+                    Text(note)
+                } else {
+                    Text("N/A")
+                }
             }
         }
     }
     
-    private func miscView() -> some View {
-        VStack {
-            Divider()
-            
-            HStack {
+    private var misc: some View {
+        Grid {
+            GridRow {
                 SectionTitleView(title: .created)
 
                 Text("\(item.created ?? Date(), formatter: BelongingsViewModel.dateFormatter)")
                     .font(.callout)
             }
 
-            HStack {
+            GridRow {
                 SectionTitleView(title: .updated)
 
                 Text("\(item.lastupd ?? Date(), formatter: BelongingsViewModel.dateFormatter)")
