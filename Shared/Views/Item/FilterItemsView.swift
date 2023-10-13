@@ -41,14 +41,9 @@ struct FilterItemsView: View {
                 
                 Divider()
                 
-                Picker("Filter Type", selection: $selectedFilter) {
-                    Text(Filter.kind.rawValue).tag(Filter.kind)
-                    Text(Filter.brand.rawValue).tag(Filter.brand)
-                    Text(Filter.seller.rawValue).tag(Filter.seller)
-                }
-                .pickerStyle(SegmentedPickerStyle())
+                filterType
                 
-                filterList
+                filterList()
             }
             .padding()
         }
@@ -93,7 +88,16 @@ struct FilterItemsView: View {
         }
     }
     
-    private var filterList: some View {
+    private var filterType: some View {
+        Picker("Filter Type", selection: $selectedFilter) {
+            Text(Filter.kind.rawValue).tag(Filter.kind)
+            Text(Filter.brand.rawValue).tag(Filter.brand)
+            Text(Filter.seller.rawValue).tag(Filter.seller)
+        }
+        .pickerStyle(SegmentedPickerStyle())
+    }
+    
+    private func filterList() -> some View {
         List {
             switch (selectedFilter) {
             case .kind:
