@@ -185,6 +185,47 @@ class BelongingsViewModel: NSObject, ObservableObject {
         }
     }
     
+    func update(_ item: Item, kind: [Kind], brand: Brand?, seller: Seller?, completionHandler: @escaping (Item) -> Void) -> Void {
+        if !kind.isEmpty {
+            item.kind?.forEach {
+                if let kind = $0 as? Kind {
+                    kind.removeFromItems(item)
+                }
+            }
+            kind.forEach { $0.addToItems(item) }
+        }
+        
+        if brand != nil {
+            item.brand?.forEach {
+                if let brand = $0 as? Brand {
+                    brand.removeFromItems(item)
+                }
+            }
+            brand?.addToItems(item)
+        }
+        
+        if seller != nil {
+            item.seller?.forEach {
+                if let seller = $0 as? Seller {
+                    seller.removeFromItems(item)
+                }
+            }
+            seller?.addToItems(item)
+        }
+        
+        persistenceHelper.save { result in
+            switch result {
+            case .success(_):
+                completionHandler(item)
+            case .failure(let error):
+                self.logger.log("Error while updating an item: \(error.localizedDescription, privacy: .public)")
+                self.message = "Cannot update item = \(String(describing: item.name))"
+                self.handle(error: error, completionHandler: nil)
+            }
+        }
+        
+    }
+    
     var kindDTO = KindDTO() {
         didSet {
             if kindDTO.id != nil, let existingEntity = persistenceHelper.get(entity: .kind, id: kindDTO.id!) as? Kind {
