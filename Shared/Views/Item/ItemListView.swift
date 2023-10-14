@@ -23,7 +23,7 @@ struct ItemListView: View {
     @State private var sortType = SortType.lastupd
     @State private var sortDirection = SortDirection.descending
     
-    @State private var selectedItem: Item?
+    @State private var selected: Item?
     
     var filteredItems: [Item] {
         viewModel.items.filter {
@@ -76,33 +76,63 @@ struct ItemListView: View {
     
     var body: some View {
         GeometryReader { geometry in
-            VStack {
-                itemListView()
-                    .sheet(isPresented: $presentAddItemView) {
-                        AddItemView()
-                            .environmentObject(viewModel)
-                            .frame(minWidth: 350, minHeight: 550)
-                            .padding()
+            NavigationSplitView {
+                VStack {
+                    List(selection: $selected) {
+                        ForEach(filteredItems) { item in
+                            NavigationLink(value: item) {
+                                ItemRowView(item: item)
+                            }
+                        }
+                        .onDelete(perform: deleteItems)
                     }
+                    .navigationTitle("Items")
+                    .toolbar {
+                        header
+                    }
+                    
+                    #if os(iOS)
+                    Spacer()
+                    BannerAd()
+                        .frame(height: 50)
+                    #endif
+                }
+                .refreshable {
+                    viewModel.fetchEntities()
+                }
+            } detail: {
+                if let item = selected {
+                    ItemDetailView(item: item,
+                                   imageData: item.image,
+                                   name: item.name ?? "",
+                                   quantity: Int(item.quantity),
+                                   buyPrice: item.buyPrice,
+                                   sellPrice: item.sellPrice,
+                                   buyCurrency: item.buyCurrency ?? "USD",
+                                   sellCurrency: item.sellCurrency ?? "USD",
+                                   note: item.note ?? "",
+                                   obtained: item.obtained ?? Date(),
+                                   disposed: item.disposed ?? Date())
+                    .environmentObject(viewModel)
+                    .id(UUID())
+                    .navigationBarTitleDisplayMode(.inline)
+                }
             }
         }
         .sheet(isPresented: $presentAddItemView) {
             AddItemView()
                 .environmentObject(viewModel)
-                .frame(minWidth: 350, minHeight: 550)
-                .padding()
+                .modifier(SheetModifier())
         }
         .sheet(isPresented: $presentFilterItemsView) {
             FilterItemsView(selectedKinds: $selectedKinds, selectedBrands: $selectedBrands, selectedSellers: $selectedSellers)
                 .environmentObject(viewModel)
-                .frame(minWidth: 350, minHeight: 450)
-                .padding()
+                .modifier(SheetModifier())
         }
         .sheet(isPresented: $presentSortItemView) {
             SortItemsView(sortType: $sortType, sortDirection: $sortDirection)
                 .environmentObject(viewModel)
-                .frame(minWidth: 350, minHeight: 100)
-                .padding()
+                .modifier(SheetModifier())
         }
         .alert("Unable to Delete Data", isPresented: $showAlertForDeletion) {
             Button("Dismiss") {
@@ -112,7 +142,7 @@ struct ItemListView: View {
         }
     }
     
-    private func header() -> ToolbarItemGroup<some View> {
+    private var header: ToolbarItemGroup<some View> {
         ToolbarItemGroup(placement: .topBarLeading) {
             Button  {
                 presentFilterItemsView = true
@@ -131,51 +161,6 @@ struct ItemListView: View {
                 presentAddItemView = true
             } label: {
                 Label("Add", systemImage: "plus")
-            }
-        }
-    }
-    
-    private func itemListView() -> some View {
-        NavigationSplitView {
-            VStack {
-                List(selection: $selectedItem) {
-                    ForEach(filteredItems) { item in
-                        NavigationLink(value: item) {
-                            ItemRowView(item: item)
-                        }
-                    }
-                    .onDelete(perform: deleteItems)
-                }
-                .navigationTitle("Items")
-                .toolbar {
-                    header()
-                }
-                
-                #if os(iOS)
-                Spacer()
-                BannerAd()
-                    .frame(height: 50)
-                #endif
-            }
-            .refreshable {
-                viewModel.fetchEntities()
-            }
-        } detail: {
-            if let item = selectedItem {
-                ItemDetailView(item: item,
-                               imageData: item.image,
-                               name: item.name ?? "",
-                               quantity: Int(item.quantity),
-                               buyPrice: item.buyPrice,
-                               sellPrice: item.sellPrice,
-                               buyCurrency: item.buyCurrency ?? "USD",
-                               sellCurrency: item.sellCurrency ?? "USD",
-                               note: item.note ?? "",
-                               obtained: item.obtained ?? Date(),
-                               disposed: item.disposed ?? Date())
-                .environmentObject(viewModel)
-                .id(UUID())
-                .navigationBarTitleDisplayMode(.inline)
             }
         }
     }
