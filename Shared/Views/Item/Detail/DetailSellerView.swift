@@ -10,15 +10,12 @@ import SwiftUI
 struct DetailSellerView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
     
-    var item: Item
+    let originalSeller: Seller?
     @Binding var seller: Seller?
     @Binding var isEdited: Bool
     var geometry: GeometryProxy
     
     @State private var presentChooseSellerView = false
-    private var itemSeller: Seller? {
-        item.seller?.compactMap { $0 as? Seller }.first
-    }
     
     var body: some View {
         HStack {
@@ -27,13 +24,13 @@ struct DetailSellerView: View {
             Spacer()
             
             if seller == nil {
-                Text(itemSeller?.name ?? "")
+                Text(originalSeller?.name ?? "")
             } else {
                 Text(seller!.name ?? "")
             }
             
             Button {
-                seller = itemSeller
+                seller = originalSeller
                 presentChooseSellerView = true
             } label: {
                 Text("edit")

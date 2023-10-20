@@ -10,21 +10,13 @@ import SwiftUI
 struct DetailKindView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
     
-    var item: Item
+    let originalKind: [Kind]
     @Binding var kind: [Kind]
     @Binding var isEdited: Bool
     var geometry: GeometryProxy
     
     @State private var presentChooseKindView = false
-    
-    private var itemKind: Kind? {
-        return item.kind?.compactMap { $0 as? Kind }.first
-    }
-    
-    private var itemKinds: [Kind] {
-        item.kind?.compactMap { $0 as? Kind } ?? [Kind]()
-    }
-    
+
     var body: some View {
         HStack {
             SectionTitleView(title: .category)
@@ -33,7 +25,7 @@ struct DetailKindView: View {
             
             if kind.isEmpty {
                 VStack {
-                    ForEach(itemKinds) {
+                    ForEach(originalKind) {
                         Text($0.name ?? "")
                     }
                 }
@@ -46,7 +38,7 @@ struct DetailKindView: View {
             }
             
             Button {
-                kind = itemKinds
+                kind = originalKind
                 presentChooseKindView = true
             } label: {
                 Text("edit")

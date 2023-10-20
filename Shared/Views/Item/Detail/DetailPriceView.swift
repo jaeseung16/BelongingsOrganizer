@@ -1,13 +1,13 @@
 //
-//  DetailBuyPriceView.swift
+//  DetailPriceView.swift
 //  Belongings Organizer (iOS)
 //
-//  Created by Jae Seung Lee on 10/15/23.
+//  Created by Jae Seung Lee on 10/20/23.
 //
 
 import SwiftUI
 
-struct DetailBuyPriceView: View {
+struct DetailPriceView: View {
     private var priceFormatter: NumberFormatter {
         let formatter = NumberFormatter()
         formatter.minimumIntegerDigits = 1
@@ -21,13 +21,28 @@ struct DetailBuyPriceView: View {
         return NSLocale.autoupdatingCurrent.localizedString(forCurrencyCode: currencyCode) ?? ""
     }
     
-    var item: Item
-    @Binding var buyPrice: Double
-    @Binding var buyCurrency: String
+    let originalPrice: Double
+    let originalCurrency: String?
+    @Binding var price: Double
+    @Binding var currency: String
     @Binding var isEdited: Bool
     var geometry: GeometryProxy
     
     var body: some View {
+        let priceBinding = Binding {
+            price
+        } set: {
+            price = $0
+            isEdited = $0 != originalPrice
+        }
+        
+        let currencyBinding = Binding {
+            currency
+        } set: {
+            currency = $0
+            isEdited = $0 != originalCurrency
+        }
+
         VStack {
             HStack {
                 Spacer()
@@ -35,19 +50,12 @@ struct DetailBuyPriceView: View {
                 SectionTitleView(title: .price)
                 
                 #if os(macOS)
-                TextField("sell price", value: $buyPrice, formatter: priceFormatter, prompt: Text("0.00"))
-                    .onSubmit({
-                        isEdited = true
-                    })
+                TextField("sell price", value: priceBinding, formatter: priceFormatter, prompt: Text("0.00"))
                     .multilineTextAlignment(.trailing)
                     .frame(maxWidth: 120)
                     .background { CommonRoundedRectangle() }
                 #else
-                TextField("sell price", value: $buyPrice, formatter: priceFormatter, prompt: Text("0.00"))
-                    .onChange(of: buyPrice) { newValue in
-                        // TODO:
-                        isEdited = newValue != item.buyPrice
-                    }
+                TextField("sell price", value: priceBinding, formatter: priceFormatter, prompt: Text("0.00"))
                     .multilineTextAlignment(.trailing)
                     .frame(maxWidth: 120)
                     .background { CommonRoundedRectangle() }
@@ -58,16 +66,12 @@ struct DetailBuyPriceView: View {
             HStack {
                 Spacer()
                 
-                Picker("", selection: $buyCurrency) {
+                Picker("", selection: currencyBinding) {
                     ForEach(currencyCodes, id: \.self) { currencyCode in
                         Text("\(currencyCode)")
                     }
                 }
                 .background { CommonRoundedRectangle() }
-                .onChange(of: buyCurrency) { newValue in
-                    // TODO:
-                    isEdited = newValue != item.buyCurrency
-                }
             }
         }
     }

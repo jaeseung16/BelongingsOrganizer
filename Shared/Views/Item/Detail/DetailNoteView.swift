@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct DetailNoteView: View {
-    var item: Item
+    let originalNote: String?
     @Binding var note: String
     @Binding var isEdited: Bool
     
@@ -16,7 +16,7 @@ struct DetailNoteView: View {
         VStack(alignment: .leading) {
             SectionTitleView(title: .note)
             
-            TextField(item.note ?? "", text: $note)
+            TextField(originalNote ?? "", text: $note)
                 .onSubmit {
                     isEdited = true
                 }

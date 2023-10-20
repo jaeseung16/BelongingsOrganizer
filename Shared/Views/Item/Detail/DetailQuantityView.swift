@@ -14,7 +14,7 @@ struct DetailQuantityView: View {
         return formatter
     }
     
-    var item: Item
+    let originalQuantity: Int
     @Binding var quantity: Int
     @Binding var isEdited: Bool
     
@@ -27,7 +27,7 @@ struct DetailQuantityView: View {
             #if os(macOS)
             TextField("quantity", value: $quantity, formatter: quantityFormatter, prompt: Text("0"))
                 .onSubmit({
-                    isEdited = true
+                    isEdited = quantity != Int(item.quantity)
                 })
                 .multilineTextAlignment(.trailing)
                 .frame(maxWidth: 80)
@@ -35,7 +35,7 @@ struct DetailQuantityView: View {
             #else
             TextField("quantity", value: $quantity, formatter: quantityFormatter, prompt: Text("0"))
                 .onSubmit {
-                    isEdited = quantity != Int(item.quantity)
+                    isEdited = quantity != originalQuantity
                 }
                 .multilineTextAlignment(.trailing)
                 .frame(maxWidth: 80)

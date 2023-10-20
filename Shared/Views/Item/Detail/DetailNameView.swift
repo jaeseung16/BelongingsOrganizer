@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct DetailNameView: View {
-    var item: Item
+    let originalName: String?
     @Binding var name: String
     @Binding var isEdited: Bool
     
@@ -18,7 +18,7 @@ struct DetailNameView: View {
             
             Spacer()
             
-            TextField(item.name ?? "", text: $name, prompt: nil)
+            TextField(originalName ?? "", text: $name, prompt: nil)
                 .onSubmit {
                     isEdited = true
                 }

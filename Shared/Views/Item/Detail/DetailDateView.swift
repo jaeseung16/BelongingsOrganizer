@@ -1,17 +1,17 @@
 //
-//  DetailObtainedView.swift
+//  DetailDateView.swift
 //  Belongings Organizer (iOS)
 //
-//  Created by Jae Seung Lee on 10/15/23.
+//  Created by Jae Seung Lee on 10/20/23.
 //
 
 import SwiftUI
 
-struct DetailObtainedView: View {
-    @EnvironmentObject var viewModel: BelongingsViewModel
+struct DetailDateView: View {
     
-    var item: Item
-    @Binding var obtained: Date
+    let title: SectionTitle
+    let originalDate: Date?
+    @Binding var date: Date
     @Binding var isEdited: Bool
     var geometry: GeometryProxy
     
@@ -20,19 +20,19 @@ struct DetailObtainedView: View {
     var body: some View {
         VStack {
             HStack {
-                SectionTitleView(title: .obtained)
+                SectionTitleView(title: title)
                 
                 Spacer()
                 if isEdited {
-                    Text("\(obtained, formatter: BelongingsViewModel.dateFormatterWithDateOnly)")
-                } else if let obtained = item.obtained {
-                    Text("\(obtained, formatter: BelongingsViewModel.dateFormatterWithDateOnly)")
+                    Text("\(date, formatter: BelongingsViewModel.dateFormatterWithDateOnly)")
+                } else if let originalDate {
+                    Text("\(originalDate, formatter: BelongingsViewModel.dateFormatterWithDateOnly)")
                 } else {
                     Text("N/A")
                 }
                 
                 Button(action: {
-                    obtained = item.obtained ?? Date()
+                    date = originalDate ?? Date()
                     presentObtainedDatePickerView = true
                 }, label: {
                     Text("edit")
@@ -40,8 +40,8 @@ struct DetailObtainedView: View {
             }
         }
         .sheet(isPresented: $presentObtainedDatePickerView) {
-            EditDateView(date: $obtained, originalDate: item.obtained, isEdited: $isEdited)
-                .onChange(of: obtained) { _ in
+            EditDateView(date: $date, originalDate: originalDate, isEdited: $isEdited)
+                .onChange(of: date) { _ in
                     isEdited = true
                 }
         }

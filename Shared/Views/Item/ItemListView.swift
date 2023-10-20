@@ -103,16 +103,21 @@ struct ItemListView: View {
             } detail: {
                 if let item = selected {
                     ItemDetailView(item: item,
-                                   imageData: item.image,
-                                   name: item.name ?? "",
-                                   quantity: Int(item.quantity),
-                                   buyPrice: item.buyPrice,
-                                   sellPrice: item.sellPrice,
-                                   buyCurrency: item.buyCurrency ?? "USD",
-                                   sellCurrency: item.sellCurrency ?? "USD",
-                                   note: item.note ?? "",
-                                   obtained: item.obtained ?? Date(),
-                                   disposed: item.disposed ?? Date())
+                                   dto: ItemDTO2(id: item.uuid ?? UUID(),
+                                                 name: item.name ?? "",
+                                                 note: item.note ?? "",
+                                                 quantity: Int(item.quantity),
+                                                 buyPrice: item.buyPrice,
+                                                 sellPrice: item.sellPrice,
+                                                 buyCurrency: item.buyCurrency ?? "",
+                                                 sellCurrency: item.sellCurrency ?? "",
+                                                 obtained: item.obtained ?? Date(),
+                                                 disposed: item.disposed ?? Date(),
+                                                 image: item.image,
+                                                 kind: item.kind?.compactMap { $0 as? Kind } ?? [Kind](),
+                                                 brand: item.brand?.compactMap { $0 as? Brand }.first,
+                                                 seller: item.seller?.compactMap { $0 as? Seller }.first)
+                    )
                     .environmentObject(viewModel)
                     .id(UUID())
                     .navigationBarTitleDisplayMode(.inline)

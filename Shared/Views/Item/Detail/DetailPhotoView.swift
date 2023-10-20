@@ -10,7 +10,7 @@ import SwiftUI
 struct DetailPhotoView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
     
-    var item: Item
+    let originalImage: Data?
     @Binding var imageData: Data?
     @Binding var isEdited: Bool
     var geometry: GeometryProxy
@@ -21,7 +21,7 @@ struct DetailPhotoView: View {
     private var image: NSImage? {
         if let data = imageData {
             return NSImage(data: data)
-        } else if let data = item.image {
+        } else if let data = originalImage {
             return NSImage(data: data)
         } else {
             return nil
@@ -31,7 +31,7 @@ struct DetailPhotoView: View {
     private var image: UIImage? {
         if let data = imageData {
             return UIImage(data: data)
-        } else if let data = item.image {
+        } else if let data = originalImage {
             return UIImage(data: data)
         } else {
             return nil
@@ -73,14 +73,14 @@ struct DetailPhotoView: View {
         }
         .sheet(isPresented: $presentPhotoView) {
             #if os(macOS)
-            EditPhotoView(originalImage: item.image, image: $imageData)
+            EditPhotoView(originalImage: originalImage, image: $imageData)
                 .environmentObject(viewModel)
                 .frame(minWidth: 0.5 * geometry.size.width, minHeight: 0.5 * geometry.size.height)
                 .onChange(of: imageData) { _ in
                     isEdited = true
                 }
             #else
-            EditPhotoView(originalImage: item.image, image: $imageData)
+            EditPhotoView(originalImage: originalImage, image: $imageData)
                 .environmentObject(viewModel)
                 .onChange(of: imageData) { _ in
                     isEdited = true

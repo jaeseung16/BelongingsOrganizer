@@ -10,16 +10,12 @@ import SwiftUI
 struct DetailBrandView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
     
-    var item: Item
+    let originalBrand: Brand?
     @Binding var brand: Brand?
     @Binding var isEdited: Bool
     var geometry: GeometryProxy
     
     @State private var presentChooseBrandView = false
-    
-    private var itemBrand: Brand? {
-        return item.brand?.compactMap { $0 as? Brand }.first
-    }
     
     var body: some View {
         HStack {
@@ -28,13 +24,13 @@ struct DetailBrandView: View {
             Spacer()
             
             if brand == nil {
-                Text(itemBrand?.name ?? "")
+                Text(originalBrand?.name ?? "")
             } else {
                 Text(brand!.name ?? "")
             }
             
             Button {
-                brand = itemBrand
+                brand = originalBrand
                 presentChooseBrandView = true
             } label: {
                 Text("edit")
