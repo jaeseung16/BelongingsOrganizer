@@ -104,8 +104,8 @@ struct AddItemView: View {
                                 seller: seller,
                                 note: note,
                                 obtained: obtained,
-                                buyPrice: Double(buyPrice),
-                                quantity: Int64(quantity),
+                                buyPrice: Double(buyPrice) ?? 0,
+                                quantity: Int64(quantity) ?? 0,
                                 buyCurrency: currency,
                                 image: image)
         

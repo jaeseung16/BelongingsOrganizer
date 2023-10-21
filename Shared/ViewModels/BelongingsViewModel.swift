@@ -168,61 +168,22 @@ class BelongingsViewModel: NSObject, ObservableObject {
         allSellers = persistenceHelper.perform(fetchRequest)
     }
     
-    var itemDTO = ItemDTO() {
-        didSet {
-            if itemDTO.id != nil, let existingEntity = persistenceHelper.get(entity: .item, id: itemDTO.id!) as? Item {
-                persistenceHelper.update(existingEntity, to: itemDTO) { result in
-                    switch result {
-                    case .success(_):
-                        self.handleSuccess()
-                    case .failure(let error):
-                        self.logger.log("Error while deleting data: \(error.localizedDescription, privacy: .public)")
-                        self.message = "Cannot update name = \(String(describing: self.itemDTO.name))"
-                        self.handle(error: error, completionHandler: nil)
-                    }
-                }
-            }
-        }
-    }
-    
-    func update(_ item: Item, kind: [Kind], brand: Brand?, seller: Seller?, completionHandler: @escaping (Item) -> Void) -> Void {
-        if !kind.isEmpty {
-            item.kind?.forEach {
-                if let kind = $0 as? Kind {
-                    kind.removeFromItems(item)
-                }
-            }
-            kind.forEach { $0.addToItems(item) }
+    func update(_ dto: ItemDTO, kind: [Kind], brand: Brand?, seller: Seller?, _ isObtainedDateEdited: Bool, _ isDisposedDateEdited: Bool) -> Void {
+        guard let existingEntity = persistenceHelper.get(entity: .item, id: dto.id) as? Item else {
+            logger.error("Can't find the existing item with id=\(String(describing: dto.id), privacy: .public)")
+            return
         }
         
-        if brand != nil {
-            item.brand?.forEach {
-                if let brand = $0 as? Brand {
-                    brand.removeFromItems(item)
-                }
-            }
-            brand?.addToItems(item)
-        }
-        
-        if seller != nil {
-            item.seller?.forEach {
-                if let seller = $0 as? Seller {
-                    seller.removeFromItems(item)
-                }
-            }
-            seller?.addToItems(item)
-        }
-        
-        persistenceHelper.save { result in
+        persistenceHelper.update(existingEntity, to: dto, kind: kind, brand: brand, seller: seller, isObtainedDateEdited, isDisposedDateEdited) { result in
             switch result {
             case .success(_):
-                completionHandler(item)
+                self.handleSuccess()
             case .failure(let error):
-                self.logger.log("Error while updating an item: \(error.localizedDescription, privacy: .public)")
-                self.message = "Cannot update item = \(String(describing: item.name))"
+                self.logger.log("Error while deleting data: \(error.localizedDescription, privacy: .public)")
+                self.message = "Cannot update name = \(String(describing: dto.name))"
                 self.handle(error: error, completionHandler: nil)
             }
-        }
+        }  
         
     }
     
@@ -519,9 +480,8 @@ class BelongingsViewModel: NSObject, ObservableObject {
         persistenceHelper.imageData = imageData
     }
     
-    public func saveBelonging(name: String, kind: [Kind], brand: Brand?, seller: Seller?, note: String, obtained: Date, buyPrice: Double?, quantity: Int64?, buyCurrency: String, image: Data?) -> Void {
-        let item = ItemDTO(id: UUID(), name: name, note: note, quantity: quantity, buyPrice: buyPrice, buyCurrency: buyCurrency, obtained: obtained, image: image)
-        persistenceHelper.save(item, kind: kind, brand: brand, seller: seller) { result in
+    public func saveBelonging(name: String, kind: [Kind], brand: Brand?, seller: Seller?, note: String, obtained: Date, buyPrice: Double, quantity: Int64, buyCurrency: String, image: Data?) -> Void {
+        persistenceHelper.save(name: name, kind: kind, brand: brand, seller: seller, note: note, obtained: obtained, buyPrice: buyPrice, quantity: quantity, buyCurrency: buyCurrency, image: image) { result in
             switch result {
             case .success(()):
                 self.handleSuccess()

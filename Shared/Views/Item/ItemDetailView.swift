@@ -11,7 +11,7 @@ struct ItemDetailView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
     
     @State var item: Item
-    @State var dto: ItemDTO2
+    @State var dto: ItemDTO
     
     @State private var isEdited = false
     @State private var isObtainedDateEdited = false
@@ -39,21 +39,7 @@ struct ItemDetailView: View {
             reset()
         } update: {
             isEdited = false
-            
-            viewModel.update(item, kind: dto.kind, brand: dto.brand, seller: dto.seller) { item in
-                viewModel.itemDTO = ItemDTO(id: item.uuid,
-                                            name: dto.name,
-                                            note: dto.note,
-                                            quantity: Int64(dto.quantity),
-                                            buyPrice: dto.buyPrice,
-                                            sellPrice: dto.sellPrice,
-                                            buyCurrency: dto.buyCurrency,
-                                            sellCurrency: dto.sellCurrency,
-                                            obtained: isObtainedDateEdited ? dto.obtained : item.obtained,
-                                            disposed: isDisposedDateEdited ? dto.disposed : item.disposed,
-                                            image: dto.image ?? item.image)
-            }
-            
+            viewModel.update(dto, kind: dto.kind, brand: dto.brand, seller: dto.seller, isObtainedDateEdited, isDisposedDateEdited)
         }
     }
     

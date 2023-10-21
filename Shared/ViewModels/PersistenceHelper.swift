@@ -62,20 +62,20 @@ class PersistenceHelper {
     }
     
     // MARK: - Create
-    public func save(_ dto: ItemDTO, kind: [Kind], brand: Brand?, seller: Seller?, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
+    public func save(name: String, kind: [Kind], brand: Brand?, seller: Seller?, note: String, obtained: Date, buyPrice: Double, quantity: Int64, buyCurrency: String, image: Data?, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
         let created = Date()
         
         let newItem = Item(context: viewContext)
         newItem.created = created
         newItem.lastupd = created
-        newItem.name = dto.name
-        newItem.note = dto.note
-        newItem.quantity = dto.quantity ?? 0
-        newItem.obtained = dto.obtained
-        newItem.buyPrice = dto.buyPrice ?? 0.0
-        newItem.buyCurrency = dto.buyCurrency
-        newItem.uuid = dto.id
-        newItem.image = dto.image
+        newItem.name = name
+        newItem.note = note
+        newItem.quantity = quantity
+        newItem.obtained = obtained
+        newItem.buyPrice = buyPrice
+        newItem.buyCurrency = buyCurrency
+        newItem.uuid = UUID()
+        newItem.image = image
        
         if !kind.isEmpty {
             kind.forEach { $0.addToItems(newItem) }
@@ -131,16 +131,48 @@ class PersistenceHelper {
     }
     
     // MARK: - Update
-    public func update(_ item: Item, to dto: ItemDTO, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
+    public func update(_ item: Item, to dto: ItemDTO, kind: [Kind], brand: Brand?, seller: Seller?, _ isObtainedDateEdited: Bool, _ isDisposedDateEdited: Bool, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
+        
+        if !kind.isEmpty {
+            item.kind?.forEach {
+                if let kind = $0 as? Kind {
+                    kind.removeFromItems(item)
+                }
+            }
+            kind.forEach { $0.addToItems(item) }
+        }
+        
+        if brand != nil {
+            item.brand?.forEach {
+                if let brand = $0 as? Brand {
+                    brand.removeFromItems(item)
+                }
+            }
+            brand?.addToItems(item)
+        }
+        
+        if seller != nil {
+            item.seller?.forEach {
+                if let seller = $0 as? Seller {
+                    seller.removeFromItems(item)
+                }
+            }
+            seller?.addToItems(item)
+        }
+                
         item.name = dto.name
         item.note = dto.note
-        item.quantity = dto.quantity ?? 0
-        item.buyPrice = dto.buyPrice ?? 0.0
-        item.sellPrice = dto.sellPrice ?? 0.0
+        item.quantity = Int64(dto.quantity)
+        item.buyPrice = dto.buyPrice
+        item.sellPrice = dto.sellPrice
         item.buyCurrency = dto.buyCurrency
         item.sellCurrency = dto.sellCurrency
-        item.obtained = dto.obtained
-        item.disposed = dto.disposed
+        if isObtainedDateEdited {
+            item.obtained = dto.obtained
+        }
+        if isDisposedDateEdited {
+            item.disposed = dto.disposed
+        }
         item.image = dto.image
         item.lastupd = Date()
         
