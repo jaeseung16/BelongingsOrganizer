@@ -44,7 +44,7 @@ struct KindDetailView: View {
         DetailHeaderView(isEdited: $isEdited) {
             reset()
         } update: {
-            viewModel.kindDTO = KindDTO(id: kind.uuid, name: name)
+            viewModel.update(KindDTO(id: kind.uuid, name: name))
             isEdited = false
         }
     }

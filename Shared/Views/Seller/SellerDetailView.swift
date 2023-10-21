@@ -59,7 +59,7 @@ struct SellerDetailView: View {
     }
     
     private func update() {
-        viewModel.sellerDTO = SellerDTO(id: seller.uuid, name: name, url: URL(string: urlString))
+        viewModel.update(SellerDTO(id: seller.uuid, name: name, url: URL(string: urlString)))
         isEdited = false
     }
     

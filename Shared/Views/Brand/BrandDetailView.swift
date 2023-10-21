@@ -53,7 +53,7 @@ struct BrandDetailView: View {
         DetailHeaderView(isEdited: $isEdited) {
             reset()
         } update: {
-            viewModel.brandDTO = BrandDTO(id: brand.uuid, name: name, url: URL(string: urlString))
+            viewModel.update(BrandDTO(id: brand.uuid, name: name, url: URL(string: urlString)))
             isEdited = false
         }
     }

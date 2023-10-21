@@ -62,7 +62,7 @@ class PersistenceHelper {
     }
     
     // MARK: - Create
-    public func save(name: String, kind: [Kind], brand: Brand?, seller: Seller?, note: String, obtained: Date, buyPrice: Double, quantity: Int64, buyCurrency: String, image: Data?, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
+    public func saveBelonging(name: String, kind: [Kind], brand: Brand?, seller: Seller?, note: String, obtained: Date, buyPrice: Double, quantity: Int64, buyCurrency: String, image: Data?, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
         let created = Date()
         
         let newItem = Item(context: viewContext)
@@ -92,40 +92,40 @@ class PersistenceHelper {
         saveContext(completionHandler: completionHandler)
     }
     
-    public func save(_ dto: KindDTO, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
+    public func saveKind(_ name: String, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
         let created = Date()
         
         let newKind = Kind(context: viewContext)
         newKind.created = created
         newKind.lastupd = created
-        newKind.name = dto.name
-        newKind.uuid = dto.id
+        newKind.name = name.trimmingCharacters(in: .whitespaces)
+        newKind.uuid = UUID()
         
         saveContext(completionHandler: completionHandler)
     }
     
-    public func save(_ dto: BrandDTO, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
+    public func saveBrand(_ name: String, url: URL?, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
         let created = Date()
         
         let newBrand = Brand(context: viewContext)
         newBrand.created = created
         newBrand.lastupd = created
-        newBrand.name = dto.name
-        newBrand.url = dto.url
-        newBrand.uuid = dto.id
+        newBrand.name = name
+        newBrand.url = url
+        newBrand.uuid = UUID()
 
         saveContext(completionHandler: completionHandler)
     }
     
-    public func save(_ dto: SellerDTO, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
+    public func saveSeller(_ name: String, url: URL?, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
         let created = Date()
         
         let newSeller = Seller(context: viewContext)
         newSeller.created = created
         newSeller.lastupd = created
-        newSeller.name = dto.name
-        newSeller.url = dto.url
-        newSeller.uuid = dto.id
+        newSeller.name = name
+        newSeller.url = url
+        newSeller.uuid = UUID()
 
         saveContext(completionHandler: completionHandler)
     }

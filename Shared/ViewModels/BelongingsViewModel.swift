@@ -187,52 +187,46 @@ class BelongingsViewModel: NSObject, ObservableObject {
         
     }
     
-    var kindDTO = KindDTO() {
-        didSet {
-            if kindDTO.id != nil, let existingEntity = persistenceHelper.get(entity: .kind, id: kindDTO.id!) as? Kind {
-                persistenceHelper.update(existingEntity, to: kindDTO) { result in
-                    switch result {
-                    case .success(_):
-                        self.handleSuccess()
-                    case .failure(let error):
-                        self.logger.log("Error while deleting data: \(error.localizedDescription, privacy: .public)")
-                        self.message = "Cannot update name = \(String(describing: self.kindDTO.name))"
-                        self.handle(error: error, completionHandler: nil)
-                    }
+    func update(_ dto: KindDTO) -> Void {
+        if let id = dto.id, let existingEntity = persistenceHelper.get(entity: .kind, id: id) as? Kind {
+            persistenceHelper.update(existingEntity, to: dto) { result in
+                switch result {
+                case .success(_):
+                    self.handleSuccess()
+                case .failure(let error):
+                    self.logger.log("Error while deleting data: \(error.localizedDescription, privacy: .public)")
+                    self.message = "Cannot update name = \(String(describing: dto.name))"
+                    self.handle(error: error, completionHandler: nil)
                 }
             }
         }
     }
     
-    var brandDTO = BrandDTO() {
-        didSet {
-            if brandDTO.id != nil, let existingEntity = persistenceHelper.get(entity: .brand, id: brandDTO.id!) as? Brand {
-                persistenceHelper.update(existingEntity, to: brandDTO) { result in
-                    switch result {
-                    case .success(_):
-                        self.handleSuccess()
-                    case .failure(let error):
-                        self.logger.log("Error while deleting data: \(error.localizedDescription, privacy: .public)")
-                        self.message = "Cannot update name = \(String(describing: self.brandDTO.name)) and url = \(String(describing: self.brandDTO.url))"
-                        self.handle(error: error, completionHandler: nil)
-                    }
+    func update(_ dto: BrandDTO) -> Void {
+        if let id = dto.id, let existingEntity = persistenceHelper.get(entity: .brand, id: id) as? Brand {
+            persistenceHelper.update(existingEntity, to: dto) { result in
+                switch result {
+                case .success(_):
+                    self.handleSuccess()
+                case .failure(let error):
+                    self.logger.log("Error while deleting data: \(error.localizedDescription, privacy: .public)")
+                    self.message = "Cannot update name = \(String(describing: dto.name)) and url = \(String(describing: dto.url))"
+                    self.handle(error: error, completionHandler: nil)
                 }
             }
         }
     }
     
-    var sellerDTO = SellerDTO() {
-        didSet {
-            if sellerDTO.id != nil, let existingEntity = persistenceHelper.get(entity: .seller, id: sellerDTO.id!) as? Seller {
-                persistenceHelper.update(existingEntity, to: sellerDTO) { result in
-                    switch result {
-                    case .success(_):
-                        self.handleSuccess()
-                    case .failure(let error):
-                        self.logger.log("Error while deleting data: \(error.localizedDescription, privacy: .public)")
-                        self.message = "Cannot update name = \(String(describing: self.sellerDTO.name)) and url = \(String(describing: self.sellerDTO.url))"
-                        self.handle(error: error, completionHandler: nil)
-                    }
+    func update(_ dto: SellerDTO) -> Void {
+        if let id = dto.id, let existingEntity = persistenceHelper.get(entity: .seller, id: id) as? Seller {
+            persistenceHelper.update(existingEntity, to: dto) { result in
+                switch result {
+                case .success(_):
+                    self.handleSuccess()
+                case .failure(let error):
+                    self.logger.log("Error while deleting data: \(error.localizedDescription, privacy: .public)")
+                    self.message = "Cannot update name = \(String(describing: dto.name)) and url = \(String(describing: dto.url))"
+                    self.handle(error: error, completionHandler: nil)
                 }
             }
         }
@@ -481,7 +475,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     }
     
     public func saveBelonging(name: String, kind: [Kind], brand: Brand?, seller: Seller?, note: String, obtained: Date, buyPrice: Double, quantity: Int64, buyCurrency: String, image: Data?) -> Void {
-        persistenceHelper.save(name: name, kind: kind, brand: brand, seller: seller, note: note, obtained: obtained, buyPrice: buyPrice, quantity: quantity, buyCurrency: buyCurrency, image: image) { result in
+        persistenceHelper.saveBelonging(name: name, kind: kind, brand: brand, seller: seller, note: note, obtained: obtained, buyPrice: buyPrice, quantity: quantity, buyCurrency: buyCurrency, image: image) { result in
             switch result {
             case .success(()):
                 self.handleSuccess()
@@ -494,8 +488,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     }
     
     public func saveKind(name: String) -> Void {
-        let kind = KindDTO(id: UUID(), name: name.trimmingCharacters(in: .whitespaces))
-        persistenceHelper.save(kind) { result in
+        persistenceHelper.saveKind(name.trimmingCharacters(in: .whitespaces)) { result in
             switch result {
             case .success(()):
                 self.handleSuccess()
@@ -508,8 +501,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     }
     
     public func saveBrand(name: String, urlString: String) -> Void {
-        let brand = BrandDTO(id: UUID(), name: name.trimmingCharacters(in: .whitespaces), url: URL(string: urlString))
-        persistenceHelper.save(brand) { result in
+        persistenceHelper.saveBrand(name.trimmingCharacters(in: .whitespaces), url: URL(string: urlString)) { result in
             switch result {
             case .success(()):
                 self.handleSuccess()
@@ -522,8 +514,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     }
     
     public func saveSeller(name: String, urlString: String) -> Void {
-        let seller = SellerDTO(id: UUID(), name: name.trimmingCharacters(in: .whitespaces), url: URL(string: urlString))
-        persistenceHelper.save(seller) { result in
+        persistenceHelper.saveSeller(name.trimmingCharacters(in: .whitespaces), url: URL(string: urlString)) { result in
             switch result {
             case .success(()):
                 self.handleSuccess()
