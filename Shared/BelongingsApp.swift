@@ -21,11 +21,9 @@ struct BelongingsApp: App {
             #if os(macOS)
             ContentView()
                 .frame(minWidth: 900, minHeight: 600)
-                .environment(\.managedObjectContext, appDelegate.persistence.container.viewContext)
                 .environmentObject(appDelegate.viewModel)
             #else
             ContentView()
-                .environment(\.managedObjectContext, appDelegate.persistence.container.viewContext)
                 .environmentObject(appDelegate.viewModel)
             #endif
         }
