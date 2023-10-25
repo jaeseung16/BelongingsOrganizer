@@ -174,7 +174,14 @@ class BelongingsViewModel: NSObject, ObservableObject {
             return
         }
         
-        persistenceHelper.update(existingEntity, to: dto, kind: kind, brand: brand, seller: seller, isObtainedDateEdited, isDisposedDateEdited) { result in
+        
+        var dtoWithResizedImage: ItemDTO?
+        if let data = dto.image, let uiImage = UIImage(data: data) {
+            let resizedData = resize(uiImage: uiImage, within: CGSize(width: 512.0, height: 512.0))?.pngData()
+            dtoWithResizedImage = ItemDTO(id: dto.id, name: dto.name, note: dto.note, quantity: dto.quantity, buyPrice: dto.buyPrice, sellPrice: dto.sellPrice, buyCurrency: dto.buyCurrency, sellCurrency: dto.sellCurrency, obtained: dto.obtained, disposed: dto.disposed, image: resizedData, kind: dto.kind, brand: dto.brand, seller: dto.seller)
+        }
+        
+        persistenceHelper.update(existingEntity, to: dtoWithResizedImage ?? dto , kind: kind, brand: brand, seller: seller, isObtainedDateEdited, isDisposedDateEdited) { result in
             switch result {
             case .success(_):
                 self.handleSuccess()
@@ -185,6 +192,25 @@ class BelongingsViewModel: NSObject, ObservableObject {
             }
         }  
         
+    }
+    
+    func resize(uiImage: UIImage, within size: CGSize) -> UIImage? {
+        let widthScale = size.width / uiImage.size.width
+        let heightScale = size.height / uiImage.size.height
+        
+        guard widthScale < 1.0 && heightScale < 1.0 else {
+            return uiImage
+        }
+        
+        let scale = widthScale > heightScale ? widthScale : heightScale
+        
+        let scaledSize = CGSize(width: uiImage.size.width * scale, height: uiImage.size.height * scale)
+        
+        let renderer = UIGraphicsImageRenderer(size: scaledSize)
+        
+        return renderer.image { _ in
+            uiImage.draw(in: CGRect(origin: .zero, size: scaledSize))
+        }
     }
     
     func update(_ dto: KindDTO) -> Void {

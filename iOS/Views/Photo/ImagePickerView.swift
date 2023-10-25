@@ -44,7 +44,7 @@ struct ImagePickerView: UIViewControllerRepresentable {
             }
             
             // No need to orient since the correct orientation is used with UIImage.draw(in:)
-            self.picker.selectedImage = resize(uiImage: selected, within: CGSize(width: 1024.0, height: 1024.0))?.pngData()
+            self.picker.selectedImage = resize(uiImage: selected, within: CGSize(width: 512.0, height: 512.0))?.pngData()
             self.picker.dismiss.callAsFunction()
         }
         
