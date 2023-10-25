@@ -58,6 +58,7 @@ struct EditPhotoView: View, DropDelegate {
             }
             .sheet(isPresented: $showImagePickerView) {
                 ImagePickerView(selectedImage: $image, sourceType: .camera)
+                    .environmentObject(viewModel)
                     .padding()
             }
             .alert("Cannot replace a photo", isPresented: $failed, presenting: details) { details in
@@ -68,7 +69,7 @@ struct EditPhotoView: View, DropDelegate {
             .onChange(of: selectedPhoto) { newValue in
                 Task {
                     if let data = try? await newValue?.loadTransferable(type: Data.self) {
-                        image = data
+                        image = viewModel.tryResize(image: data)
                     }
                 }
             }

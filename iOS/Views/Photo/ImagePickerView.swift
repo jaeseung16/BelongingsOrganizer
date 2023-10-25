@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 
 struct ImagePickerView: UIViewControllerRepresentable {
+    @EnvironmentObject var viewModel: BelongingsViewModel
     @Environment(\.dismiss) var dismiss
     
     @Binding var selectedImage: Data?
@@ -44,7 +45,7 @@ struct ImagePickerView: UIViewControllerRepresentable {
             }
             
             // No need to orient since the correct orientation is used with UIImage.draw(in:)
-            self.picker.selectedImage = resize(uiImage: selected, within: CGSize(width: 512.0, height: 512.0))?.pngData()
+            self.picker.selectedImage = self.picker.viewModel.tryResize(uiImage: selected, within: CGSize(width: 512.0, height: 512.0))?.pngData()
             self.picker.dismiss.callAsFunction()
         }
         
@@ -59,23 +60,5 @@ struct ImagePickerView: UIViewControllerRepresentable {
             return UIImage(ciImage: ciImage, scale: uiImage.scale, orientation: uiImage.imageOrientation)
         }
         
-        private func resize(uiImage: UIImage, within size: CGSize) -> UIImage? {
-            let widthScale = size.width / uiImage.size.width
-            let heightScale = size.height / uiImage.size.height
-            
-            guard widthScale < 1.0 && heightScale < 1.0 else {
-                return uiImage
-            }
-            
-            let scale = widthScale > heightScale ? widthScale : heightScale
-            
-            let scaledSize = CGSize(width: uiImage.size.width * scale, height: uiImage.size.height * scale)
-            
-            let renderer = UIGraphicsImageRenderer(size: scaledSize)
-            
-            return renderer.image { _ in
-                uiImage.draw(in: CGRect(origin: .zero, size: scaledSize))
-            }
-        }
     }
 }

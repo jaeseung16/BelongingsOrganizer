@@ -56,6 +56,7 @@ struct AddPhotoView: View, DropDelegate {
             }
             .sheet(isPresented: $showImagePickerView) {
                 ImagePickerView(selectedImage: $photo, sourceType: .camera)
+                    .environmentObject(viewModel)
                     .padding()
             }
             .alert("Cannot add a photo", isPresented: $failed, presenting: details) { details in
@@ -66,7 +67,7 @@ struct AddPhotoView: View, DropDelegate {
             .onChange(of: selectedPhoto) { newValue in
                 Task {
                     if let data = try? await newValue?.loadTransferable(type: Data.self) {
-                        photo = data
+                        photo = viewModel.tryResize(image: data)
                     }
                 }
             }
