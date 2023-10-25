@@ -41,14 +41,13 @@ struct ItemListView: View {
                 filter = false
             }
             
-            return filter
-        }
-        .filter {
             if let name = $0.name {
-                return viewModel.checkIfStringToSearchContainedIn(name)
+                filter = viewModel.checkIfStringToSearchContainedIn(name)
             } else {
-                return false
+                filter = false
             }
+            
+            return filter
         }
         .sorted {
             switch sortType {
@@ -83,6 +82,7 @@ struct ItemListView: View {
                             NavigationLink(value: item) {
                                 ItemRowView(item: item)
                             }
+                            .id(item)
                         }
                         .onDelete(perform: deleteItems)
                     }
