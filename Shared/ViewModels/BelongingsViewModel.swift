@@ -43,11 +43,8 @@ class BelongingsViewModel: NSObject, ObservableObject {
 
     var message = ""
     
-    private let maxDataSize = 1_000_000
-    private let maxImageSize = CGSize(width: 256, height: 256)
-    
     let persistenceHelper: PersistenceHelper
-    let imagePaster = ImagePaster.shared
+    let imageProcessor = ImageProcesser.shared
     
     init(persistence: Persistence) {
         self.persistence = persistence
@@ -197,7 +194,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     }
     
     func tryResize(image: Data) -> Data? {
-        return imagePaster.tryResize(image: image)
+        return imageProcessor.tryResize(image: image)
     }
     
     func update(_ dto: KindDTO) -> Void {
@@ -541,15 +538,15 @@ class BelongingsViewModel: NSObject, ObservableObject {
     
     // MARK: - ImagePaster
     func hasImage() -> Bool {
-        return imagePaster.hasImage()
+        return imageProcessor.hasImage()
     }
     
     func paste(completionHandler: @escaping (Data?, Error?) -> Void) ->Void {
-        imagePaster.paste(completionHandler: completionHandler)
+        imageProcessor.paste(completionHandler: completionHandler)
     }
     
     func getData(from info: DropInfo, completionHandler: @escaping (Data?, Error?) -> Void) ->Void {
-        imagePaster.getData(from: info, completionHandler: completionHandler)
+        imageProcessor.getData(from: info, completionHandler: completionHandler)
     }
     
     // MARK: - URL Vaildation

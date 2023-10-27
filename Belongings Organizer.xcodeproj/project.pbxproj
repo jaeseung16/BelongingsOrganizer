@@ -135,7 +135,7 @@
 		90CB66232AEC6CBE003A06BF /* ImageResizing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CB66212AEC6CBE003A06BF /* ImageResizing.swift */; };
 		90CD27ED270908A1001A89B5 /* ImageType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CD27EC270908A1001A89B5 /* ImageType.swift */; };
 		90CD27EE270908A1001A89B5 /* ImageType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CD27EC270908A1001A89B5 /* ImageType.swift */; };
-		90CD27F1270908D3001A89B5 /* ImagePaster.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CD27EF270908D3001A89B5 /* ImagePaster.swift */; };
+		90CD27F1270908D3001A89B5 /* ImageProcesser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CD27EF270908D3001A89B5 /* ImageProcesser.swift */; };
 		90CF0CF62730A1C300E93917 /* SectionTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CF0CF52730A1C300E93917 /* SectionTitleView.swift */; };
 		90CF0CF72730A1C300E93917 /* SectionTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CF0CF52730A1C300E93917 /* SectionTitleView.swift */; };
 		90D3F23226EA594E00955316 /* BelongingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D3F23126EA594E00955316 /* BelongingsViewModel.swift */; };
@@ -153,7 +153,7 @@
 		90DD8C2926F936E60079424A /* MobileNet.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 90DD8C2826F936E60079424A /* MobileNet.mlmodel */; };
 		90DD8C2A26F936E60079424A /* MobileNet.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 90DD8C2826F936E60079424A /* MobileNet.mlmodel */; };
 		90DD8C2C26F95A1B0079424A /* EditPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90DD8C2B26F95A1B0079424A /* EditPhotoView.swift */; };
-		90DE25542707AD4C0030AEFF /* ImagePaster.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90DE25532707AD4C0030AEFF /* ImagePaster.swift */; };
+		90DE25542707AD4C0030AEFF /* ImageProcesser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90DE25532707AD4C0030AEFF /* ImageProcesser.swift */; };
 		90E238DD270659C600E03624 /* SelectImageButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E238DC270659C600E03624 /* SelectImageButton.swift */; };
 		90E238E027065D5300E03624 /* PhotoAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E238DE27065CCC00E03624 /* PhotoAlertView.swift */; };
 		90E238E22706794200E03624 /* ItemsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E238E12706794200E03624 /* ItemsView.swift */; };
@@ -272,7 +272,7 @@
 		90CB46B626ED6A1900A9468B /* FilterItemsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterItemsView.swift; sourceTree = "<group>"; };
 		90CB66212AEC6CBE003A06BF /* ImageResizing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageResizing.swift; sourceTree = "<group>"; };
 		90CD27EC270908A1001A89B5 /* ImageType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageType.swift; sourceTree = "<group>"; };
-		90CD27EF270908D3001A89B5 /* ImagePaster.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePaster.swift; sourceTree = "<group>"; };
+		90CD27EF270908D3001A89B5 /* ImageProcesser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageProcesser.swift; sourceTree = "<group>"; };
 		90CF0CF52730A1C300E93917 /* SectionTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionTitleView.swift; sourceTree = "<group>"; };
 		90D3F23126EA594E00955316 /* BelongingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BelongingsViewModel.swift; sourceTree = "<group>"; };
 		90D3F23426EA5B3400955316 /* Entities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Entities.swift; sourceTree = "<group>"; };
@@ -283,7 +283,7 @@
 		90D798192AE31AD9002379E5 /* DetailDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailDateView.swift; sourceTree = "<group>"; };
 		90DD8C2826F936E60079424A /* MobileNet.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = MobileNet.mlmodel; sourceTree = "<group>"; };
 		90DD8C2B26F95A1B0079424A /* EditPhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPhotoView.swift; sourceTree = "<group>"; };
-		90DE25532707AD4C0030AEFF /* ImagePaster.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePaster.swift; sourceTree = "<group>"; };
+		90DE25532707AD4C0030AEFF /* ImageProcesser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageProcesser.swift; sourceTree = "<group>"; };
 		90E238DC270659C600E03624 /* SelectImageButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectImageButton.swift; sourceTree = "<group>"; };
 		90E238DE27065CCC00E03624 /* PhotoAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoAlertView.swift; sourceTree = "<group>"; };
 		90E238E12706794200E03624 /* ItemsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsView.swift; sourceTree = "<group>"; };
@@ -603,7 +603,7 @@
 			children = (
 				90E2EA9826F402940014A8C6 /* AddPhotoView.swift */,
 				90DD8C2B26F95A1B0079424A /* EditPhotoView.swift */,
-				90DE25532707AD4C0030AEFF /* ImagePaster.swift */,
+				90DE25532707AD4C0030AEFF /* ImageProcesser.swift */,
 				90E2EA9526F402150014A8C6 /* ImagePickerView.swift */,
 				90E238DE27065CCC00E03624 /* PhotoAlertView.swift */,
 			);
@@ -623,7 +623,7 @@
 			children = (
 				906CE2E726FA871900DC12C3 /* AddPhotoView.swift */,
 				90B46BC62700F53E00BEED75 /* EditPhotoView.swift */,
-				90CD27EF270908D3001A89B5 /* ImagePaster.swift */,
+				90CD27EF270908D3001A89B5 /* ImageProcesser.swift */,
 				90E238DC270659C600E03624 /* SelectImageButton.swift */,
 			);
 			path = Photo;
@@ -824,7 +824,7 @@
 				90CF0CF62730A1C300E93917 /* SectionTitleView.swift in Sources */,
 				90CB46B726ED6A1900A9468B /* FilterItemsView.swift in Sources */,
 				9075183629D8C5CD00E34A84 /* BelongingsStats.swift in Sources */,
-				90DE25542707AD4C0030AEFF /* ImagePaster.swift in Sources */,
+				90DE25542707AD4C0030AEFF /* ImageProcesser.swift in Sources */,
 				907C26DD29C754C200116BC1 /* StatsView.swift in Sources */,
 				908D1E3F2ADB420B0018FE52 /* InputKindView.swift in Sources */,
 				90C0D98B26E7DEF600158C85 /* AddItemView.swift in Sources */,
@@ -916,7 +916,7 @@
 				90CB46B826ED6A1900A9468B /* FilterItemsView.swift in Sources */,
 				907C26E229C7A6B500116BC1 /* StatsView.swift in Sources */,
 				9075183729D8C5CD00E34A84 /* BelongingsStats.swift in Sources */,
-				90CD27F1270908D3001A89B5 /* ImagePaster.swift in Sources */,
+				90CD27F1270908D3001A89B5 /* ImageProcesser.swift in Sources */,
 				90E238DD270659C600E03624 /* SelectImageButton.swift in Sources */,
 				90C0D98C26E7DEF600158C85 /* AddItemView.swift in Sources */,
 				9072233126E93A0500965653 /* AddBrandView.swift in Sources */,

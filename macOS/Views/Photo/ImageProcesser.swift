@@ -9,8 +9,8 @@ import SwiftUI
 import UniformTypeIdentifiers
 import OSLog
 
-class ImagePaster: ImagePasting, ImageResizing {
-    static let shared = ImagePaster()
+class ImageProcesser: ImagePasting, ImageResizing {
+    static let shared = ImageProcesser()
     
     private static let logger = Logger()
     
@@ -22,43 +22,43 @@ class ImagePaster: ImagePasting, ImageResizing {
     private static let maxResizeSize = CGSize(width: 128, height: 128)
     
     func getData(from info: DropInfo, completionHandler: @escaping (Data?, Error?) -> Void) ->Void {
-        ImagePaster.logger.log("loadData")
+        ImageProcesser.logger.log("loadData")
         loadData(from: info) { data, error in
             var image: Data?
             
             if let imageData = data, let nsImage = NSImage(data: imageData) {
-                if let resized = self.resize(nsImage: nsImage, within: ImagePaster.maxResizeSize).tiffRepresentation,
+                if let resized = self.resize(nsImage: nsImage, within: ImageProcesser.maxResizeSize).tiffRepresentation,
                    let imageRep = NSBitmapImageRep(data: resized) {
                     image = imageRep.representation(using: NSBitmapImageRep.FileType.png, properties: [:])
                 } else {
                     image = imageData
                 }
             }
-            ImagePaster.logger.log("loadData: imageData=\(String(describing: image), privacy: .public)")
+            ImageProcesser.logger.log("loadData: imageData=\(String(describing: image), privacy: .public)")
             
             if image != nil || error != nil {
                 completionHandler(image, error)
             } else {
-                ImagePaster.logger.log("loadFile")
+                ImageProcesser.logger.log("loadFile")
                 self.loadFile(from: info) { item, error in
                     var imageData: Data?
                     if let item = item, let url = URL(dataRepresentation: item as! Data, relativeTo: nil) {
                         imageData = try? Data(contentsOf: url)
                     }
                     
-                    ImagePaster.logger.log("loadFile: imageData=\(String(describing: imageData), privacy: .public)")
+                    ImageProcesser.logger.log("loadFile: imageData=\(String(describing: imageData), privacy: .public)")
                     if (imageData != nil && NSImage(data: imageData!) != nil) || error != nil {
                         completionHandler(imageData, error)
                     } else if imageData != nil && NSImage(data: imageData!) == nil {
                         completionHandler(nil, BelongingsError.noImage)
                     } else {
-                        ImagePaster.logger.log("download")
+                        ImageProcesser.logger.log("download")
                         self.download(from: info) { data, error in
                             var imageData: Data?
                             if let data = data, let _ = NSImage(data: data) {
                                 imageData = data
                             }
-                            ImagePaster.logger.log("download: imageData=\(String(describing: imageData), privacy: .public)")
+                            ImageProcesser.logger.log("download: imageData=\(String(describing: imageData), privacy: .public)")
                             completionHandler(imageData, error)
                         }
                     }
@@ -68,42 +68,42 @@ class ImagePaster: ImagePasting, ImageResizing {
     }
     
     func loadData(from info: DropInfo, completionHandler: @escaping (Data?, Error?) -> Void) ->Void {
-        if info.hasItemsConforming(to: ImagePaster.imageTypes) {
-            let itemProviders = info.itemProviders(for: ImagePaster.imageTypes)
+        if info.hasItemsConforming(to: ImageProcesser.imageTypes) {
+            let itemProviders = info.itemProviders(for: ImageProcesser.imageTypes)
             if !itemProviders.isEmpty {
                 itemProviders.forEach { itemProvider in
-                    ImagePaster.logger.log("loadData: itemProvider=\(itemProvider, privacy: .public)")
-                    for type in ImagePaster.imageTypes {
-                        ImagePaster.logger.log("loadData: type=\(type, privacy: .public)")
+                    ImageProcesser.logger.log("loadData: itemProvider=\(itemProvider, privacy: .public)")
+                    for type in ImageProcesser.imageTypes {
+                        ImageProcesser.logger.log("loadData: type=\(type, privacy: .public)")
                         if info.hasItemsConforming(to: [type]) {
                             itemProvider.loadDataRepresentation(forTypeIdentifier: type.identifier, completionHandler: completionHandler)
                         }
                     }
                 }
             } else {
-                ImagePaster.logger.log("loadData: no itemProviders")
+                ImageProcesser.logger.log("loadData: no itemProviders")
                 completionHandler(nil, nil)
             }
         } else {
-            ImagePaster.logger.log("loadData: completionHandler(nil, nil)")
+            ImageProcesser.logger.log("loadData: completionHandler(nil, nil)")
             completionHandler(nil, nil)
         }
     }
     
     func loadFile(from info: DropInfo, completionHandler: @escaping NSItemProvider.CompletionHandler) -> Void {
-        if info.hasItemsConforming(to: ImagePaster.fileTypes) {
-            let itemProviders = info.itemProviders(for: ImagePaster.fileTypes)
+        if info.hasItemsConforming(to: ImageProcesser.fileTypes) {
+            let itemProviders = info.itemProviders(for: ImageProcesser.fileTypes)
             if !itemProviders.isEmpty {
                 itemProviders.forEach { itemProvider in
-                    for type in ImagePaster.fileTypes {
-                        ImagePaster.logger.log("loadFile: type=\(type, privacy: .public)")
+                    for type in ImageProcesser.fileTypes {
+                        ImageProcesser.logger.log("loadFile: type=\(type, privacy: .public)")
                         if info.hasItemsConforming(to: [type]) {
                             itemProvider.loadItem(forTypeIdentifier: UTType.fileURL.identifier, completionHandler: completionHandler)
                         }
                     }
                 }
             } else {
-                ImagePaster.logger.log("loadFile: no itemProviders")
+                ImageProcesser.logger.log("loadFile: no itemProviders")
                 completionHandler(nil, nil)
             }
         } else {
@@ -112,19 +112,19 @@ class ImagePaster: ImagePasting, ImageResizing {
     }
     
     func download(from info: DropInfo, completionHandler: @escaping (Data?, Error?) -> Void) -> Void {
-        ImagePaster.logger.log("info.hasItemsConforming(to: ImagePaster.urlTypes)=\(info.hasItemsConforming(to: ImagePaster.urlTypes), privacy: .public)")
-        if info.hasItemsConforming(to: ImagePaster.urlTypes) {
+        ImageProcesser.logger.log("info.hasItemsConforming(to: ImagePaster.urlTypes)=\(info.hasItemsConforming(to: ImageProcesser.urlTypes), privacy: .public)")
+        if info.hasItemsConforming(to: ImageProcesser.urlTypes) {
             getData(from: .drag, forType: .URL, completionHandler: completionHandler)
         }
     }
     
     func tryResize(image: Data) -> Data? {
         guard let nsImage = NSImage(data: image) else {
-            ImagePaster.logger.error("Can't convert to NSImage to try resizing")
+            ImageProcesser.logger.error("Can't convert to NSImage to try resizing")
             return nil
         }
         
-        if let resized = self.resize(nsImage: nsImage, within: ImagePaster.maxResizeSize).tiffRepresentation,
+        if let resized = self.resize(nsImage: nsImage, within: ImageProcesser.maxResizeSize).tiffRepresentation,
            let imageRep = NSBitmapImageRep(data: resized) {
             return imageRep.representation(using: NSBitmapImageRep.FileType.png, properties: [:])
         } else {
@@ -135,7 +135,7 @@ class ImagePaster: ImagePasting, ImageResizing {
     private func resize(nsImage: NSImage, within size: CGSize) -> NSImage {
         let widthScale = size.width / nsImage.size.width
         let heightScale = size.height / nsImage.size.height
-        ImagePaster.logger.log("widthScale = \(widthScale, privacy: .public), heightScale = \(heightScale, privacy: .public)")
+        ImageProcesser.logger.log("widthScale = \(widthScale, privacy: .public), heightScale = \(heightScale, privacy: .public)")
         guard widthScale < 1.0 && heightScale < 1.0 else {
             return nsImage
         }
@@ -154,7 +154,7 @@ class ImagePaster: ImagePasting, ImageResizing {
     }
     
     func paste(completionHandler: @escaping (Data?, Error?) -> Void) ->Void {
-        ImagePaster.urlTypes
+        ImageProcesser.urlTypes
             .map { NSPasteboard.PasteboardType($0.identifier) }
             .forEach { getData(from: .general, forType: $0, completionHandler: completionHandler) }
     }
@@ -164,14 +164,14 @@ class ImagePaster: ImagePasting, ImageResizing {
         
         if let data = pasteboard.data(forType: dataType) {
             if let url = URL(string: String(decoding: data, as: UTF8.self)) {
-                ImagePaster.logger.log("url=\(url, privacy: .public)")
+                ImageProcesser.logger.log("url=\(url, privacy: .public)")
                 let request = URLRequest(url: url as URL, timeoutInterval: 15)
                 let task = URLSession.shared.downloadTask(with: request) { url, response, error in
                     if let url = url, let data = try? Data(contentsOf: url), NSImage(data: data) != nil {
-                        ImagePaster.logger.log("data=\(data, privacy: .public)")
+                        ImageProcesser.logger.log("data=\(data, privacy: .public)")
                         completionHandler(data, nil)
                     } else {
-                        ImagePaster.logger.log("noimage data=\(data, privacy: .public)")
+                        ImageProcesser.logger.log("noimage data=\(data, privacy: .public)")
                         completionHandler(nil, BelongingsError.noImage)
                     }
                 }
@@ -182,7 +182,7 @@ class ImagePaster: ImagePasting, ImageResizing {
     
     func hasImage() -> Bool {
         var result = false
-        for urlType in ImagePaster.urlTypes {
+        for urlType in ImageProcesser.urlTypes {
             if NSPasteboard.general.data(forType: NSPasteboard.PasteboardType(urlType.identifier)) != nil {
                 result = true
                 break
