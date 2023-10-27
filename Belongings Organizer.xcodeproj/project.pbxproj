@@ -131,6 +131,8 @@
 		90CB46AB26ED3F0F00A9468B /* SellerListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CB46A926ED3F0F00A9468B /* SellerListView.swift */; };
 		90CB46B726ED6A1900A9468B /* FilterItemsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CB46B626ED6A1900A9468B /* FilterItemsView.swift */; };
 		90CB46B826ED6A1900A9468B /* FilterItemsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CB46B626ED6A1900A9468B /* FilterItemsView.swift */; };
+		90CB66222AEC6CBE003A06BF /* ImageResizing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CB66212AEC6CBE003A06BF /* ImageResizing.swift */; };
+		90CB66232AEC6CBE003A06BF /* ImageResizing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CB66212AEC6CBE003A06BF /* ImageResizing.swift */; };
 		90CD27ED270908A1001A89B5 /* ImageType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CD27EC270908A1001A89B5 /* ImageType.swift */; };
 		90CD27EE270908A1001A89B5 /* ImageType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CD27EC270908A1001A89B5 /* ImageType.swift */; };
 		90CD27F1270908D3001A89B5 /* ImagePaster.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CD27EF270908D3001A89B5 /* ImagePaster.swift */; };
@@ -268,6 +270,7 @@
 		90CB46A626ED3CB600A9468B /* BrandListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrandListView.swift; sourceTree = "<group>"; };
 		90CB46A926ED3F0F00A9468B /* SellerListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SellerListView.swift; sourceTree = "<group>"; };
 		90CB46B626ED6A1900A9468B /* FilterItemsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterItemsView.swift; sourceTree = "<group>"; };
+		90CB66212AEC6CBE003A06BF /* ImageResizing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageResizing.swift; sourceTree = "<group>"; };
 		90CD27EC270908A1001A89B5 /* ImageType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageType.swift; sourceTree = "<group>"; };
 		90CD27EF270908D3001A89B5 /* ImagePaster.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePaster.swift; sourceTree = "<group>"; };
 		90CF0CF52730A1C300E93917 /* SectionTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionTitleView.swift; sourceTree = "<group>"; };
@@ -581,6 +584,7 @@
 				90785B9B29BFDC1F00BFE933 /* SortDirection.swift */,
 				90704CF529CFA65300F66908 /* BelongingsError.swift */,
 				90735E8A29DA141200159CBA /* ImagePasting.swift */,
+				90CB66212AEC6CBE003A06BF /* ImageResizing.swift */,
 				908EC8462AC9F138004647A5 /* SectionTitle.swift */,
 			);
 			path = ViewModels;
@@ -882,6 +886,7 @@
 				90596B8626E6ACD20001CCA5 /* AddKindView.swift in Sources */,
 				908D1E412ADB43610018FE52 /* InputBrandView.swift in Sources */,
 				90742B292ADC37AC007B4E76 /* DetailNoteView.swift in Sources */,
+				90CB66222AEC6CBE003A06BF /* ImageResizing.swift in Sources */,
 				90742B2B2ADC389A007B4E76 /* DetailQuantityView.swift in Sources */,
 				908D1E452ADB45D00018FE52 /* InputBuyPriceView.swift in Sources */,
 				90E238E027065D5300E03624 /* PhotoAlertView.swift in Sources */,
@@ -939,6 +944,7 @@
 				900F8D7B2735C5210069CE07 /* DetailHeaderView.swift in Sources */,
 				904498E826EBDEDB00002A6F /* ItemListView.swift in Sources */,
 				908EC8482AC9F138004647A5 /* SectionTitle.swift in Sources */,
+				90CB66232AEC6CBE003A06BF /* ImageResizing.swift in Sources */,
 				908D1E4E2ADB4D130018FE52 /* ChooseCurrencyView.swift in Sources */,
 				9086B53C29D247C800DB4568 /* StatsType.swift in Sources */,
 				9072233726E93CE800965653 /* AddSellerView.swift in Sources */,

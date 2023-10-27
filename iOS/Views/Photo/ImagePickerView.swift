@@ -39,13 +39,13 @@ struct ImagePickerView: UIViewControllerRepresentable {
         }
         
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-            guard let selected = info[.originalImage] as? UIImage else {
+            guard let selected = info[.originalImage] as? UIImage, let imageData = selected.pngData() else {
                 self.picker.dismiss.callAsFunction()
                 return
             }
             
             // No need to orient since the correct orientation is used with UIImage.draw(in:)
-            self.picker.selectedImage = self.picker.viewModel.tryResize(uiImage: selected, within: CGSize(width: 512.0, height: 512.0))?.pngData()
+            self.picker.selectedImage = self.picker.viewModel.tryResize(image: imageData)
             self.picker.dismiss.callAsFunction()
         }
         

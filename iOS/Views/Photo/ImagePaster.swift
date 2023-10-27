@@ -9,7 +9,7 @@ import SwiftUI
 import UniformTypeIdentifiers
 import OSLog
 
-class ImagePaster: ImagePasting {
+class ImagePaster: ImagePasting, ImageResizing {
     static let shared = ImagePaster()
     private static let logger = Logger()
     
@@ -18,7 +18,7 @@ class ImagePaster: ImagePasting {
     private static let urlTypes: [UTType] = [.url]
     
     private static let maxDataSize = 1_000_000
-    private static let maxResizeSize = CGSize(width: 128, height: 128)
+    private static let maxResizeSize = CGSize(width: 256, height: 256)
     
     func getData(from info: DropInfo, completionHandler: @escaping (Data?, Error?) -> Void) ->Void {
         ImagePaster.logger.log("loadData")
@@ -26,13 +26,9 @@ class ImagePaster: ImagePasting {
             var image: Data?
             
             if let imageData = data, let uiImage = UIImage(data: imageData) {
-                if imageData.count > ImagePaster.maxDataSize {
-                    if let resized = self.resize(uiImage: uiImage, within: ImagePaster.maxResizeSize),
-                       let data = resized.pngData() {
-                        image = data
-                    } else {
-                        image = imageData
-                    }
+                if let resized = self.resize(uiImage: uiImage, within: ImagePaster.maxResizeSize),
+                   let data = resized.pngData() {
+                    image = data
                 } else {
                     image = imageData
                 }
@@ -123,7 +119,15 @@ class ImagePaster: ImagePasting {
         }
     }
     
-    func resize(uiImage: UIImage, within size: CGSize) -> UIImage? {
+    func tryResize(image: Data) -> Data? {
+        guard let uiImage = UIImage(data: image) else {
+            ImagePaster.logger.error("Can't convert to UIImage to try resizing")
+            return nil
+        }
+        return resize(uiImage: uiImage, within: ImagePaster.maxResizeSize)?.pngData()
+    }
+    
+    private func resize(uiImage: UIImage, within size: CGSize) -> UIImage? {
         let widthScale = size.width / uiImage.size.width
         let heightScale = size.height / uiImage.size.height
         

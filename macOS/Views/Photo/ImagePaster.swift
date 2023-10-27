@@ -9,7 +9,7 @@ import SwiftUI
 import UniformTypeIdentifiers
 import OSLog
 
-class ImagePaster: ImagePasting {
+class ImagePaster: ImagePasting, ImageResizing {
     static let shared = ImagePaster()
     
     private static let logger = Logger()
@@ -27,13 +27,9 @@ class ImagePaster: ImagePasting {
             var image: Data?
             
             if let imageData = data, let nsImage = NSImage(data: imageData) {
-                if imageData.count > ImagePaster.maxDataSize {
-                    if let resized = self.resize(nsImage: nsImage, within: ImagePaster.maxResizeSize).tiffRepresentation,
-                       let imageRep = NSBitmapImageRep(data: resized) {
-                        image = imageRep.representation(using: NSBitmapImageRep.FileType.png, properties: [:])
-                    } else {
-                        image = imageData
-                    }
+                if let resized = self.resize(nsImage: nsImage, within: ImagePaster.maxResizeSize).tiffRepresentation,
+                   let imageRep = NSBitmapImageRep(data: resized) {
+                    image = imageRep.representation(using: NSBitmapImageRep.FileType.png, properties: [:])
                 } else {
                     image = imageData
                 }
@@ -122,7 +118,21 @@ class ImagePaster: ImagePasting {
         }
     }
     
-    func resize(nsImage: NSImage, within size: CGSize) -> NSImage {
+    func tryResize(image: Data) -> Data? {
+        guard let nsImage = NSImage(data: image) else {
+            ImagePaster.logger.error("Can't convert to NSImage to try resizing")
+            return nil
+        }
+        
+        if let resized = self.resize(nsImage: nsImage, within: ImagePaster.maxResizeSize).tiffRepresentation,
+           let imageRep = NSBitmapImageRep(data: resized) {
+            return imageRep.representation(using: NSBitmapImageRep.FileType.png, properties: [:])
+        } else {
+            return image
+        }
+    }
+    
+    private func resize(nsImage: NSImage, within size: CGSize) -> NSImage {
         let widthScale = size.width / nsImage.size.width
         let heightScale = size.height / nsImage.size.height
         ImagePaster.logger.log("widthScale = \(widthScale, privacy: .public), heightScale = \(heightScale, privacy: .public)")

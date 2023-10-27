@@ -42,7 +42,9 @@ class BelongingsViewModel: NSObject, ObservableObject {
     @Published var stringToSearch = ""
 
     var message = ""
-    let maxImageSize = CGSize(width: 512, height: 512)
+    
+    private let maxDataSize = 1_000_000
+    private let maxImageSize = CGSize(width: 256, height: 256)
     
     let persistenceHelper: PersistenceHelper
     let imagePaster = ImagePaster.shared
@@ -176,8 +178,8 @@ class BelongingsViewModel: NSObject, ObservableObject {
         }
         
         var dtoWithResizedImage: ItemDTO?
-        if let data = dto.image, let uiImage = UIImage(data: data) {
-            let resizedData = tryResize(uiImage: uiImage, within: CGSize(width: 512.0, height: 512.0))?.pngData() ?? data
+        if let data = dto.image {
+            let resizedData = tryResize(image: data) ?? data
             dtoWithResizedImage = ItemDTO(id: dto.id, name: dto.name, note: dto.note, quantity: dto.quantity, buyPrice: dto.buyPrice, sellPrice: dto.sellPrice, buyCurrency: dto.buyCurrency, sellCurrency: dto.sellCurrency, obtained: dto.obtained, disposed: dto.disposed, image: resizedData, kind: dto.kind, brand: dto.brand, seller: dto.seller)
         }
         
@@ -194,31 +196,8 @@ class BelongingsViewModel: NSObject, ObservableObject {
         
     }
     
-    func tryResize(uiImage: UIImage, within size: CGSize) -> UIImage? {
-        let widthScale = size.width / uiImage.size.width
-        let heightScale = size.height / uiImage.size.height
-        
-        guard widthScale < 1.0 && heightScale < 1.0 else {
-            return uiImage
-        }
-        
-        let scale = widthScale > heightScale ? widthScale : heightScale
-        
-        let scaledSize = CGSize(width: uiImage.size.width * scale, height: uiImage.size.height * scale)
-        
-        let renderer = UIGraphicsImageRenderer(size: scaledSize)
-        
-        return renderer.image { _ in
-            uiImage.draw(in: CGRect(origin: .zero, size: scaledSize))
-        }
-    }
-    
     func tryResize(image: Data) -> Data? {
-        guard let uiImage = UIImage(data: image) else {
-            logger.error("Can't convert to UIImage to try resizing")
-            return nil
-        }
-        return tryResize(uiImage: uiImage, within: maxImageSize)?.pngData()
+        return imagePaster.tryResize(image: image)
     }
     
     func update(_ dto: KindDTO) -> Void {
