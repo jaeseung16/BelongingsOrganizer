@@ -35,6 +35,7 @@ struct DetailBrandView: View {
             } label: {
                 Text("edit")
             }
+            .buttonStyle(.borderless)
         }
         .sheet(isPresented: $presentChooseBrandView) {
             #if os(macOS)

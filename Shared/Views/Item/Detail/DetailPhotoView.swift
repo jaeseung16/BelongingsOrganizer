@@ -52,6 +52,7 @@ struct DetailPhotoView: View {
                 } label: {
                     Text("edit")
                 }
+                .buttonStyle(.borderless)
             }
             
             if imageData == nil {

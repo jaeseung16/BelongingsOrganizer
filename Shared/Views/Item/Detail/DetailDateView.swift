@@ -31,12 +31,13 @@ struct DetailDateView: View {
                     Text("N/A")
                 }
                 
-                Button(action: {
+                Button {
                     date = originalDate ?? Date()
                     presentObtainedDatePickerView = true
-                }, label: {
+                } label: {
                     Text("edit")
-                })
+                }
+                .buttonStyle(.borderless)
             }
         }
         .sheet(isPresented: $presentObtainedDatePickerView) {

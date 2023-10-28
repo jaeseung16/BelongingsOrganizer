@@ -43,6 +43,7 @@ struct DetailKindView: View {
             } label: {
                 Text("edit")
             }
+            .buttonStyle(.borderless)
         }
         .sheet(isPresented: $presentChooseKindView) {
             #if os(macOS)

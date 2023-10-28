@@ -35,6 +35,7 @@ struct DetailSellerView: View {
             } label: {
                 Text("edit")
             }
+            .buttonStyle(.borderless)
         }
         .sheet(isPresented: $presentChooseSellerView) {
             #if os(macOS)
