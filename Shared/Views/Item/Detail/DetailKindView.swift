@@ -47,12 +47,14 @@ struct DetailKindView: View {
         .sheet(isPresented: $presentChooseKindView) {
             #if os(macOS)
             ChooseKindView(selectedKinds: $kind)
+                .environmentObject(viewModel)
                 .frame(minWidth: 0.5 * geometry.size.width, minHeight: geometry.size.height)
                 .onChange(of: kind) { _ in
                     isEdited = true
                 }
             #else
             ChooseKindView(kinds: $kind)
+                .environmentObject(viewModel)
                 .onChange(of: kind) { _ in
                     isEdited = true
                 }

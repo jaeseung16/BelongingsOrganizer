@@ -21,7 +21,6 @@ struct InputBrandView: View {
                     .font(.caption)
                 Spacer()
                 Button {
-                    viewModel.fetchAllBrands()
                     presentBrandView = true
                 } label: {
                     Label("add", systemImage: "plus")
@@ -39,10 +38,10 @@ struct InputBrandView: View {
                     .background { CommonRoundedRectangle() }
             }
         }
-        .sheet(isPresented: $presentBrandView, content: {
+        .sheet(isPresented: $presentBrandView) {
             ChooseBrandView(brand: $brand)
                 .environmentObject(viewModel)
                 .frame(width: geometry.size.width, height: geometry.size.height)
-        })
+        }
     }
 }

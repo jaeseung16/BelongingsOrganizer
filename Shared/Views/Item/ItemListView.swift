@@ -104,7 +104,7 @@ struct ItemListView: View {
                 if let item = selected {
                     ItemDetailView(item: item, dto: ItemDTO.create(from: item))
                     .environmentObject(viewModel)
-                    .id(UUID())
+                    .id(item)
                     .navigationBarTitleDisplayMode(.inline)
                 }
             }

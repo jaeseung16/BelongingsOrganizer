@@ -39,15 +39,11 @@ struct DetailBrandView: View {
         .sheet(isPresented: $presentChooseBrandView) {
             #if os(macOS)
             ChooseBrandView(brand: $brand)
+                .environmentObject(viewModel)
                 .frame(minWidth: 0.5 * geometry.size.width, minHeight: geometry.size.height)
-                .onChange(of: brand) { _ in
-                    isEdited = true
-                }
             #else
             ChooseBrandView(brand: $brand)
-                .onChange(of: brand) { _ in
-                    isEdited = true
-                }
+                .environmentObject(viewModel)
             #endif
         }
     }
