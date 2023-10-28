@@ -76,16 +76,13 @@ struct DetailPhotoView: View {
             EditPhotoView(originalImage: originalImage, image: $imageData)
                 .environmentObject(viewModel)
                 .frame(minWidth: 0.5 * geometry.size.width, minHeight: 0.5 * geometry.size.height)
-                .onChange(of: imageData) { _ in
-                    isEdited = true
-                }
             #else
             EditPhotoView(originalImage: originalImage, image: $imageData)
                 .environmentObject(viewModel)
-                .onChange(of: imageData) { _ in
-                    isEdited = true
-                }
             #endif
+        }
+        .onChange(of: imageData) { _ in
+            isEdited = true
         }
     }
 }

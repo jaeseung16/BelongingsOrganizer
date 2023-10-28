@@ -41,16 +41,14 @@ struct DetailSellerView: View {
             ChooseSellerView(seller: $seller)
                 .environmentObject(viewModel)
                 .frame(minWidth: 0.5 * geometry.size.width, minHeight: geometry.size.height)
-                .onChange(of: seller) { _ in
-                    isEdited = true
-                }
             #else
             ChooseSellerView(seller: $seller)
                 .environmentObject(viewModel)
-                .onChange(of: seller) { _ in
-                    isEdited = true
-                }
+                
             #endif
+        }
+        .onChange(of: seller) { _ in
+            isEdited = true
         }
     }
 }
