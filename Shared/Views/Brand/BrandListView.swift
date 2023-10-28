@@ -59,7 +59,7 @@ struct BrandListView: View {
             if let brand = selectedBrand {
                 BrandDetailView(brand: brand, name: brand.name ?? "", urlString: brand.url?.absoluteString ?? "", items: viewModel.getItems(brand))
                     .environmentObject(viewModel)
-                    .id(UUID())
+                    .id(brand)
                     .navigationBarTitleDisplayMode(.inline)
             }
         }

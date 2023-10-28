@@ -82,7 +82,6 @@ struct ItemListView: View {
                             NavigationLink(value: item) {
                                 ItemRowView(item: item)
                             }
-                            .id(item)
                         }
                         .onDelete(perform: deleteItems)
                     }

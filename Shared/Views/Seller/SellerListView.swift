@@ -59,7 +59,7 @@ struct SellerListView: View {
             if let seller = selected {
                 SellerDetailView(seller: seller, name: seller.name ?? "", urlString: seller.url?.absoluteString ?? "", items: viewModel.getItems(seller))
                     .environmentObject(viewModel)
-                    .id(UUID())
+                    .id(seller)
                     .navigationBarTitleDisplayMode(.inline)
             }
         }

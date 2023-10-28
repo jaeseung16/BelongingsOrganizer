@@ -58,7 +58,7 @@ struct KindListView: View {
             if let kind = selected {
                 KindDetailView(kind: kind, name: kind.name ?? "", items: viewModel.getItems(kind))
                     .environmentObject(viewModel)
-                    .id(UUID())
+                    .id(kind)
                     .navigationBarTitleDisplayMode(.inline)
             }
         }
