@@ -42,13 +42,14 @@ struct ItemListView: View {
                 filter = false
             }
             
-            if let name = $0.name {
-                filter = viewModel.checkIfStringToSearchContainedIn(name)
-            } else {
-                filter = false
-            }
-            
             return filter
+        }
+        .filter {
+            if let name = $0.name {
+                return viewModel.checkIfStringToSearchContainedIn(name)
+            } else {
+                return false
+            }
         }
         .sorted {
             switch sortType {
