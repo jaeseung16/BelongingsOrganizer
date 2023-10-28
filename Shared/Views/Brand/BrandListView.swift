@@ -13,6 +13,7 @@ struct BrandListView: View {
     @State var presentAddBrandView = false
     @State private var showAlertForDeletion = false
     @State private var selectedBrand: Brand?
+    @State private var theId = 0
     
     var brands: [Brand] {
         return viewModel.filteredBrands
@@ -47,6 +48,7 @@ struct BrandListView: View {
                     }
                     .onDelete(perform: deleteBrands)
                 }
+                .id(theId)
                 .navigationTitle("Brands")
                 .toolbar {
                     header
