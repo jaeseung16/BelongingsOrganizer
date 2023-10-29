@@ -14,7 +14,6 @@ struct SellerListView: View {
 
     @State private var showAlertForDeletion = false
     @State var selected: Seller?
-    @State private var theId = 0
     
     private var sellers: [Seller] {
         return viewModel.filteredSellers
@@ -48,7 +47,6 @@ struct SellerListView: View {
                     }
                     .onDelete(perform: deleteSellers)
                 }
-                .id(theId)
                 .navigationTitle("Sellers")
                 .toolbar {
                     header

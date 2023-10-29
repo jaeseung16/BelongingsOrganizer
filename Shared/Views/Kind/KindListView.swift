@@ -13,7 +13,6 @@ struct KindListView: View {
     @State var presentAddKindView = false
     @State private var showAlertForDeletion = false
     @State private var selected: Kind?
-    @State private var theId = 0
     
     var kinds: [Kind] {
         return viewModel.filteredKinds
@@ -47,7 +46,6 @@ struct KindListView: View {
                     }
                     .onDelete(perform: deleteKinds)
                 }
-                .id(theId)
                 .navigationTitle("Categories")
                 .toolbar {
                     header

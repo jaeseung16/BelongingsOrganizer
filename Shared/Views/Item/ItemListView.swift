@@ -24,7 +24,6 @@ struct ItemListView: View {
     @State private var sortDirection = SortDirection.descending
     
     @State private var selected: Item?
-    @State private var theId = 0
     
     var filteredItems: [Item] {
         viewModel.items.filter {
@@ -87,7 +86,6 @@ struct ItemListView: View {
                         }
                         .onDelete(perform: deleteItems)
                     }
-                    .id(theId)
                     .navigationTitle("Items")
                     .toolbar {
                         header
