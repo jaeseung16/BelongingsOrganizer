@@ -26,7 +26,6 @@ struct DetailPriceView: View {
     @Binding var price: Double
     @Binding var currency: String
     @Binding var isEdited: Bool
-    var geometry: GeometryProxy
     
     var body: some View {
         let priceBinding = Binding {

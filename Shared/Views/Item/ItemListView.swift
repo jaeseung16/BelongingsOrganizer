@@ -103,9 +103,9 @@ struct ItemListView: View {
             } detail: {
                 if let item = selected {
                     ItemDetailView(item: item, dto: ItemDTO.create(from: item))
-                    .environmentObject(viewModel)
-                    .id(item)
-                    .navigationBarTitleDisplayMode(.inline)
+                        .environmentObject(viewModel)
+                        .id(item)
+                        .navigationBarTitleDisplayMode(.inline)
                 }
             }
         }

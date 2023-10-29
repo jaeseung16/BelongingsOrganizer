@@ -75,13 +75,13 @@ struct ItemDetailView: View {
             
             DetailQuantityView(originalQuantity: Int(item.quantity), quantity: $dto.quantity, isEdited: $isEdited)
   
-            DetailDateView(title: .obtained, originalDate: item.obtained, date: $dto.obtained, isEdited: $isObtainedDateEdited, geometry: geometry)
+            DetailDateView(title: .obtained, originalDate: item.obtained, date: $dto.obtained, isEdited: $isObtainedDateEdited)
    
-            DetailPriceView(originalPrice: item.buyPrice, originalCurrency: item.buyCurrency, price: $dto.buyPrice, currency: $dto.buyCurrency, isEdited: $isEdited, geometry: geometry)
+            DetailPriceView(originalPrice: item.buyPrice, originalCurrency: item.buyCurrency, price: $dto.buyPrice, currency: $dto.buyCurrency, isEdited: $isEdited)
         
-            DetailDateView(title: .disposed, originalDate: item.disposed, date: $dto.disposed, isEdited: $isDisposedDateEdited, geometry: geometry)
+            DetailDateView(title: .disposed, originalDate: item.disposed, date: $dto.disposed, isEdited: $isDisposedDateEdited)
       
-            DetailPriceView(originalPrice: item.sellPrice, originalCurrency: item.sellCurrency, price: $dto.sellPrice, currency: $dto.sellCurrency, isEdited: $isEdited, geometry: geometry)
+            DetailPriceView(originalPrice: item.sellPrice, originalCurrency: item.sellCurrency, price: $dto.sellPrice, currency: $dto.sellCurrency, isEdited: $isEdited)
             
             DetailNoteView(originalNote: item.note, note: $dto.note, isEdited: $isEdited)
         }

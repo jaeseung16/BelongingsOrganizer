@@ -13,7 +13,6 @@ struct DetailDateView: View {
     let originalDate: Date?
     @Binding var date: Date
     @Binding var isEdited: Bool
-    var geometry: GeometryProxy
     
     @State private var presentObtainedDatePickerView = false
     
