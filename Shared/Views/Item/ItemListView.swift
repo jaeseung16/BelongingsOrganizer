@@ -86,6 +86,7 @@ struct ItemListView: View {
                         }
                         .onDelete(perform: deleteItems)
                     }
+                    .accessibilityIdentifier("ItemList")
                     .navigationTitle("Items")
                     .toolbar {
                         header
