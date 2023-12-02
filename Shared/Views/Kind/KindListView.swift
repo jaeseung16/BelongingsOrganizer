@@ -72,9 +72,6 @@ struct KindListView: View {
                 Label("Add a category", systemImage: "plus")
             }
         }
-        #if os(iOS)
-        .id(UUID())
-        #endif
     }
 
     private func deleteKinds(offsets: IndexSet) {

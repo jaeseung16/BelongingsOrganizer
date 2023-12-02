@@ -91,12 +91,6 @@ struct ItemListView: View {
                     .toolbar {
                         header
                     }
-                    
-                    #if os(iOS)
-                    Spacer()
-                    BannerAd()
-                        .frame(height: 50)
-                    #endif
                 }
                 .refreshable {
                     viewModel.fetchEntities()

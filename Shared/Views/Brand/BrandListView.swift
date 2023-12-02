@@ -73,9 +73,6 @@ struct BrandListView: View {
                 Label("Add a brand", systemImage: "plus")
             }
         }
-        #if os(iOS)
-        .id(UUID())
-        #endif
     }
     
     private func deleteBrands(offsets: IndexSet) {

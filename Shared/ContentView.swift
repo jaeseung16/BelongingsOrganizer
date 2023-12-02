@@ -7,10 +7,6 @@
 
 import SwiftUI
 import CoreData
-#if os(iOS)
-import AppTrackingTransparency
-import GoogleMobileAds
-#endif
 
 struct ContentView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
@@ -55,13 +51,5 @@ struct ContentView: View {
         } message: {
             Text(viewModel.message)
         }
-        #if os(iOS)
-        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
-            ATTrackingManager.requestTrackingAuthorization { status in
-                GADMobileAds.sharedInstance().start(completionHandler: nil)
-                
-            }
-        }
-        #endif
     }
 }
