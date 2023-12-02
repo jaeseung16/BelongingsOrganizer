@@ -16,19 +16,14 @@ struct KindDetailView: View {
     
     @State private var isEdited = false
     
-    
     var body: some View {
         GeometryReader { geometry in
             VStack {
-                header()
+                header
                 
                 Divider()
                 
-                nameView()
-                
-                addedView()
-                
-                lastUpdatedView()
+                detail
                 
                 Divider()
                 
@@ -45,48 +40,24 @@ struct KindDetailView: View {
         isEdited = false
     }
     
-    private func header() -> some View {
+    private var header: some View {
         DetailHeaderView(isEdited: $isEdited) {
             reset()
         } update: {
-            viewModel.kindDTO = KindDTO(id: kind.uuid, name: name)
+            viewModel.update(KindDTO(id: kind.uuid, name: name))
             isEdited = false
         }
     }
     
-    private func nameView() -> some View {
+    private var detail: some View {
         VStack {
-            HStack {
-                SectionTitleView(title: "NAME")
-                
-                Spacer()
+            NameView(name: $name, isEdited: $isEdited) {
+                EmptyView()
             }
-            
-            TextField(kind.name ?? "", text: $name, prompt: nil)
-                .onSubmit {
-                    isEdited = true
-                }
-        }
-    }
-
-    private func addedView() -> some View {
-        HStack {
-            SectionTitleView(title: "ADDED")
-            
-            Spacer()
-            
-            Text("\(kind.created ?? Date(), formatter: BelongingsViewModel.dateFormatter)")
+            DateSectionView(sectionTitle: .added, date: kind.created ?? Date())
+            DateSectionView(sectionTitle: .updated, date: kind.lastupd ?? Date())
         }
     }
     
-    private func lastUpdatedView() -> some View {
-        HStack {
-            Spacer()
-            
-            SectionTitleView(title: "UPDATED")
-            
-            Text("\(kind.lastupd ?? Date(), formatter: BelongingsViewModel.dateFormatter)")
-        }
-    }
 }
 

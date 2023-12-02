@@ -12,89 +12,68 @@ struct SellerListView: View {
 
     @State var presentAddSelleriew = false
 
-    @State private var showAlert = false
     @State private var showAlertForDeletion = false
+    @State var selected: Seller?
     
-    @State var sellers = [Seller]()
-    @State var selectedSeller: Seller?
+    private var sellers: [Seller] {
+        return viewModel.filteredSellers
+    }
     
     var body: some View {
-        NavigationView {
-            VStack {
-                header()
-                
-                sellerListView()
-                .sheet(isPresented: $presentAddSelleriew, content: {
+        VStack {
+            sellerList
+                .sheet(isPresented: $presentAddSelleriew) {
                     AddSellerView()
                         .environmentObject(viewModel)
-                        .frame(minWidth: 350, minHeight: 450)
-                        .padding()
-                })
+                        .modifier(SheetModifier())
             }
-            .navigationTitle("Seller")
         }
-        .onChange(of: viewModel.sellers) { _ in
-            sellers = viewModel.filteredSellers
-        }
-        .onChange(of: viewModel.showAlert) { _ in
-            showAlert = viewModel.showAlert
-        }
-        .onChange(of: viewModel.stringToSearch) { _ in
-            sellers = viewModel.filteredSellers
-        }
-        .alert("Unable to Save Data", isPresented: $showAlert) {
+        .alert("Failed to delete", isPresented: $showAlertForDeletion) {
             Button("Dismiss") {
-                showAlert.toggle()
             }
         } message: {
-            Text(viewModel.message)
-        }
-        .alert("Unable to Delete Data", isPresented: $showAlertForDeletion) {
-            Button("Dismiss") {
-                showAlert.toggle()
-            }
-        } message: {
-            Text("Failed to delete the selected seller")
+            Text("Unable to delete the selected seller")
         }
     }
     
-    private func header() -> some View {
-        HStack {
-            Button(action: {
-                viewModel.persistenceHelper.reset()
-                presentAddSelleriew = true
-            }) {
-                Label("Add a seller", systemImage: "plus")
-            }
-        }
-    }
-    
-    private func sellerListView() -> some View {
-        List {
-            ForEach(sellers) { seller in
-                NavigationLink {
-                    SellerDetailView(seller: seller, name: seller.name ?? "", urlString: seller.url?.absoluteString ?? "", items: viewModel.getItems(seller))
-                } label: {
-                    SellerRowView(name: seller.name ?? "", itemCount: viewModel.getItemCount(seller))
+    private var sellerList: some View {
+        NavigationSplitView {
+            VStack {
+                List(selection: $selected) {
+                    ForEach(sellers) { seller in
+                        NavigationLink(value: seller) {
+                            BrandKindSellerRowView(name: seller.name ?? "", itemCount: viewModel.getItemCount(seller))
+                        }
+                    }
+                    .onDelete(perform: deleteSellers)
+                }
+                .navigationTitle("Sellers")
+                .toolbar {
+                    header
                 }
             }
-            .onDelete(perform: deleteSellers)
+            .refreshable {
+                viewModel.fetchEntities()
+            }
+        } detail: {
+            if let seller = selected {
+                SellerDetailView(seller: seller, name: seller.name ?? "", urlString: seller.url?.absoluteString ?? "", items: viewModel.getItems(seller))
+                    .environmentObject(viewModel)
+                    .id(seller)
+                    .navigationBarTitleDisplayMode(.inline)
+            }
         }
         #if os(iOS)
         .id(UUID())
         #endif
     }
     
-    private func sellerRowView(_ seller: Seller, name: String) -> some View {
-        HStack {
-            Text(name)
-            
-            Spacer()
-            
-            if let items = seller.items {
-                Text("\(items.count) items")
-                    .font(.callout)
-                    .foregroundColor(.secondary)
+    private var header: ToolbarItemGroup<some View> {
+        ToolbarItemGroup(placement: .topBarLeading) {
+            Button {
+                presentAddSelleriew = true
+            } label: {
+                Label("Add a seller", systemImage: "plus")
             }
         }
     }

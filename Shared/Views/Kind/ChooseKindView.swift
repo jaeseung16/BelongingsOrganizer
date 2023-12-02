@@ -11,11 +11,9 @@ struct ChooseKindView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var viewModel: BelongingsViewModel
     
-    @State var presentAddItem = false
-    
-    @Binding var selectedKinds: [Kind]
-    
+    @State private var presentAddItem = false
     @State private var showAlertForDeletion = false
+    @Binding var kinds: [Kind]
     
     var body: some View {
         GeometryReader { geometry in
@@ -25,14 +23,14 @@ struct ChooseKindView: View {
                 
                 Divider()
                 
-                selectedView()
+                selectedKinds
                     .frame(minHeight: 50)
                     .background(RoundedRectangle(cornerRadius: 10.0)
                                     .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
                 
                 Divider()
                 
-                kindList()
+                kindList
                 
                 Divider()
                 
@@ -62,7 +60,7 @@ struct ChooseKindView: View {
         
     }
     
-    private func selectedView() -> some View {
+    private var selectedKinds: some View {
         VStack {
             HStack {
                 Text("SELECTED")
@@ -73,10 +71,10 @@ struct ChooseKindView: View {
             }
            
             List {
-                ForEach(selectedKinds) { kind in
+                ForEach(kinds) { kind in
                     Button {
-                        if let index = selectedKinds.firstIndex(of: kind) {
-                            selectedKinds.remove(at: index)
+                        if let index = kinds.firstIndex(of: kind) {
+                            kinds.remove(at: index)
                         }
                     } label: {
                         Text(kind.name ?? "")
@@ -87,16 +85,16 @@ struct ChooseKindView: View {
         }
     }
     
-    private func kindList() -> some View {
+    private var kindList: some View {
         List {
-            ForEach(viewModel.kinds) { kind in
+            ForEach(viewModel.allKinds) { kind in
                 Button {
-                    if selectedKinds.contains(kind) {
-                        if let index = selectedKinds.firstIndex(of: kind) {
-                            selectedKinds.remove(at: index)
+                    if kinds.contains(kind) {
+                        if let index = kinds.firstIndex(of: kind) {
+                            kinds.remove(at: index)
                         }
                     } else {
-                        selectedKinds.append(kind)
+                        kinds.append(kind)
                     }
                 } label: {
                     Text(kind.name ?? "")
@@ -108,7 +106,7 @@ struct ChooseKindView: View {
     
     private func deleteItems(offsets: IndexSet) {
         withAnimation {
-            viewModel.delete(offsets.map { viewModel.kinds[$0] }) { error in
+            viewModel.delete(offsets.map { viewModel.allKinds[$0] }) { error in
                 let nsError = error as NSError
                 print("While deleting a category, occured an unresolved error \(nsError), \(nsError.userInfo)")
                 showAlertForDeletion.toggle()

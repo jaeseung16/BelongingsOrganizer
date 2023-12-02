@@ -7,31 +7,35 @@
 
 import SwiftUI
 import CoreData
+#if os(iOS)
+import AppTrackingTransparency
+import GoogleMobileAds
+#endif
 
 struct ContentView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
 
     var body: some View {
         TabView {
-            ItemListView(items: viewModel.items)
+            ItemListView()
                 .tabItem {
                     Image(systemName: "gift.fill")
                     Text("Items")
                 }
             
-            KindListView(kinds: viewModel.filteredKinds)
+            KindListView()
                 .tabItem {
                     Image(systemName: "list.dash")
                     Text("Categories")
                 }
             
-            BrandListView(brands: viewModel.filteredBrands)
+            BrandListView()
                 .tabItem {
                     Image(systemName: "r.circle")
                     Text("Brands")
                 }
             
-            SellerListView(sellers: viewModel.filteredSellers)
+            SellerListView()
                 .tabItem {
                     Image(systemName: "shippingbox.fill")
                     Text("Sellers")
@@ -49,7 +53,15 @@ struct ContentView: View {
             Button("Dismiss") {
             }
         } message: {
-            Text("viewModel.message")
+            Text(viewModel.message)
         }
+        #if os(iOS)
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+            ATTrackingManager.requestTrackingAuthorization { status in
+                GADMobileAds.sharedInstance().start(completionHandler: nil)
+                
+            }
+        }
+        #endif
     }
 }

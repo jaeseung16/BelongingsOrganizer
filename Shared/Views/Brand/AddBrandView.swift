@@ -14,8 +14,7 @@ struct AddBrandView: View {
     @State private var name = ""
     @State private var urlString = ""
     @State private var isEditing = false
-    @State private var showAlert = false
-    
+    @State private var isEdited = false    
     @State private var showProgress = false
     
     var body: some View {
@@ -27,38 +26,17 @@ struct AddBrandView: View {
             
             Divider()
             
-            Text("NAME")
-                .font(.caption)
+            NameView(name: $name, isEdited: $isEdited, color: .secondary) {
+                RoundedRectangle(cornerRadius: 5.0)
+                                .fill(Color(.sRGB, white: 0.5, opacity: 0.1))
+            }
             
-            TextField("name", text: $name)
-                .foregroundColor(.secondary)
-                .frame(maxWidth: .infinity, idealHeight: 50)
-                .background(RoundedRectangle(cornerRadius: 5.0)
-                                .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+            URLView(title: .url, urlString: $urlString, isEdited: $isEdited, showProgress: $showProgress, color: .secondary) {
+                RoundedRectangle(cornerRadius: 5.0)
+                                .fill(Color(.sRGB, white: 0.5, opacity: 0.1))
+            }
+            .environmentObject(viewModel)
             
-            Text("URL")
-                .font(.caption)
-            
-            TextField("url", text: $urlString, prompt: nil)
-                .onSubmit {
-                    showProgress = true
-                    viewModel.validatedURL(from: urlString) { url in
-                        self.showProgress = false
-                        if let url = url {
-                            self.urlString = url.absoluteString
-                        } else {
-                            self.showAlert = true
-                        }
-                    }
-                }
-            #if os(iOS)
-            .textInputAutocapitalization(.never)
-            #endif
-            .foregroundColor(.secondary)
-            .frame(maxWidth: .infinity, idealHeight: 50)
-            .background(RoundedRectangle(cornerRadius: 5.0)
-                            .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
-
             Divider()
             
             AddBottomView {
@@ -77,12 +55,5 @@ struct AddBrandView: View {
                 .opacity(showProgress ? 1 : 0)
         }
         .frame(minHeight: 200.0)
-        .alert("Invalid URL", isPresented: $showAlert, actions: {
-            Button("Dismiss")  {
-                urlString = ""
-            }
-        }, message: {
-            Text("Cannot access the URL. Try a different one or leave it empty.")
-        })
     }
 }

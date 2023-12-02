@@ -11,73 +11,67 @@ struct BrandListView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
     
     @State var presentAddBrandView = false
-
-    @State private var showAlert = false
     @State private var showAlertForDeletion = false
+    @State private var selectedBrand: Brand?
     
-    @State var brands = [Brand]()
+    var brands: [Brand] {
+        return viewModel.filteredBrands
+    }
     
     var body: some View {
-        NavigationView {
-            VStack {
-                header()
-                
-                brandListView()
-                .sheet(isPresented: $presentAddBrandView, content: {
+        VStack {
+            brandList
+                .sheet(isPresented: $presentAddBrandView) {
                     AddBrandView()
                         .environmentObject(viewModel)
-                        .frame(minWidth: 350, minHeight: 450)
-                        .padding()
-                })
-            }
-            .navigationTitle("Brands")
-        }
-        .onChange(of: viewModel.brands) { _ in
-            brands = viewModel.filteredBrands
-        }
-        .onChange(of: viewModel.showAlert) { _ in
-            showAlert = viewModel.showAlert
-        }
-        .onChange(of: viewModel.stringToSearch) { _ in
-            brands = viewModel.filteredBrands
-        }
-        .alert("Unable to Save Data", isPresented: $showAlert) {
-            Button("Dismiss") {
-                showAlert.toggle()
-            }
-        } message: {
-            Text(viewModel.message)
+                        .modifier(SheetModifier())
+                }
         }
         .alert("Unable to Delete Data", isPresented: $showAlertForDeletion) {
             Button("Dismiss") {
-                showAlert.toggle()
+                showAlertForDeletion.toggle()
             }
         } message: {
             Text("Failed to delete the selected brand")
         }
     }
     
-    private func header() -> some View {
-        HStack {
-            Button(action: {
-                viewModel.persistenceHelper.reset()
-                presentAddBrandView = true
-            }) {
-                Label("Add a brand", systemImage: "plus")
+    private var brandList: some View {
+        NavigationSplitView {
+            VStack {
+                List(selection: $selectedBrand) {
+                    ForEach(brands) { brand in
+                        NavigationLink(value: brand) {
+                            BrandKindSellerRowView(name: brand.name ?? "", itemCount: viewModel.getItemCount(brand))
+                        }
+                    }
+                    .onDelete(perform: deleteBrands)
+                }
+                .navigationTitle("Brands")
+                .toolbar {
+                    header
+                }
+            }
+            .refreshable {
+                viewModel.fetchEntities()
+            }
+        } detail: {
+            if let brand = selectedBrand {
+                BrandDetailView(brand: brand, name: brand.name ?? "", urlString: brand.url?.absoluteString ?? "", items: viewModel.getItems(brand))
+                    .environmentObject(viewModel)
+                    .id(brand)
+                    .navigationBarTitleDisplayMode(.inline)
             }
         }
     }
     
-    private func brandListView() -> some View {
-        List {
-            ForEach(brands) { brand in
-                NavigationLink {
-                    BrandDetailView(brand: brand, name: brand.name ?? "", urlString: brand.url?.absoluteString ?? "", items: viewModel.getItems(brand))
-                } label: {
-                    BrandRowView(name: brand.name ?? "", itemCount: viewModel.getItemCount(brand))
-                }
+    private var header: ToolbarItemGroup<some View> {
+        ToolbarItemGroup(placement: .topBarLeading) {
+            Button{
+                presentAddBrandView = true
+            } label: {
+                Label("Add a brand", systemImage: "plus")
             }
-            .onDelete(perform: deleteBrands)
         }
         #if os(iOS)
         .id(UUID())

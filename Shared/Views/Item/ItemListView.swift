@@ -18,16 +18,15 @@ struct ItemListView: View {
     @State var selectedBrands = Set<Brand>()
     @State var selectedSellers = Set<Seller>()
     
-    @State private var showAlert = false
     @State private var showAlertForDeletion = false
     
     @State private var sortType = SortType.lastupd
     @State private var sortDirection = SortDirection.descending
     
-    @State var items: [Item]
+    @State private var selected: Item?
     
     var filteredItems: [Item] {
-        items.filter {
+        viewModel.items.filter {
             var filter = true
             
             if let kind = $0.kind as? Set<Kind>, !selectedKinds.isEmpty && selectedKinds.intersection(kind).isEmpty {
@@ -76,49 +75,55 @@ struct ItemListView: View {
     }
     
     var body: some View {
-        NavigationView {
-            GeometryReader { geometry in
+        GeometryReader { geometry in
+            NavigationSplitView {
                 VStack {
-                    header()
-                        .frame(width: geometry.size.width)
+                    List(selection: $selected) {
+                        ForEach(filteredItems, id: \.self) { item in
+                            NavigationLink(value: item) {
+                                ItemRowView(item: item)
+                            }
+                        }
+                        .onDelete(perform: deleteItems)
+                    }
+                    .accessibilityIdentifier("ItemList")
+                    .navigationTitle("Items")
+                    .toolbar {
+                        header
+                    }
                     
-                    Divider()
-                    
-                    itemListView()
-                    
+                    #if os(iOS)
+                    Spacer()
+                    BannerAd()
+                        .frame(height: 50)
+                    #endif
                 }
-                .navigationTitle("Items")
+                .refreshable {
+                    viewModel.fetchEntities()
+                }
+            } detail: {
+                if let item = selected {
+                    ItemDetailView(item: item, dto: ItemDTO.create(from: item))
+                        .environmentObject(viewModel)
+                        .id(item)
+                        .navigationBarTitleDisplayMode(.inline)
+                }
             }
         }
         .sheet(isPresented: $presentAddItemView) {
             AddItemView()
                 .environmentObject(viewModel)
-                .frame(minWidth: 350, minHeight: 550)
-                .padding()
+                .modifier(SheetModifier())
         }
         .sheet(isPresented: $presentFilterItemsView) {
             FilterItemsView(selectedKinds: $selectedKinds, selectedBrands: $selectedBrands, selectedSellers: $selectedSellers)
                 .environmentObject(viewModel)
-                .frame(minWidth: 350, minHeight: 450)
-                .padding()
+                .modifier(SheetModifier())
         }
         .sheet(isPresented: $presentSortItemView) {
             SortItemsView(sortType: $sortType, sortDirection: $sortDirection)
                 .environmentObject(viewModel)
-                .frame(minWidth: 350, minHeight: 100)
-                .padding()
-        }
-        .onChange(of: viewModel.items) { _ in
-            items = viewModel.items
-        }
-        .onChange(of: viewModel.showAlert) { _ in
-            showAlert = viewModel.showAlert
-        }
-        .alert("Unable to Save Data", isPresented: $showAlert) {
-            Button("Dismiss") {
-            }
-        } message: {
-            Text(viewModel.message)
+                .modifier(SheetModifier())
         }
         .alert("Unable to Delete Data", isPresented: $showAlertForDeletion) {
             Button("Dismiss") {
@@ -128,17 +133,13 @@ struct ItemListView: View {
         }
     }
     
-    private func header() -> some View {
-        HStack {
-            Spacer()
-            
-            Button(action: {
+    private var header: ToolbarItemGroup<some View> {
+        ToolbarItemGroup(placement: .topBarLeading) {
+            Button  {
                 presentFilterItemsView = true
-            }) {
+            } label: {
                 Label("Filter", systemImage: "line.horizontal.3.decrease.circle")
             }
-            
-            Spacer()
             
             Button {
                 presentSortItemView = true
@@ -146,45 +147,19 @@ struct ItemListView: View {
                 Label("Sort", systemImage: "list.number")
             }
             
-            Spacer()
-            
             Button {
                 viewModel.persistenceHelper.reset()
                 presentAddItemView = true
             } label: {
                 Label("Add", systemImage: "plus")
             }
-            
-            Spacer()
-        }
-        .scaledToFit()
-    }
-    
-    private func itemListView() -> some View {
-        List {
-            ForEach(filteredItems) { item in
-                NavigationLink(destination: ItemDetailView(item: item,
-                                                           imageData: item.image,
-                                                           name: item.name ?? "",
-                                                           quantity: Int(item.quantity),
-                                                           buyPrice: item.buyPrice,
-                                                           sellPrice: item.sellPrice,
-                                                           buyCurrency: item.buyCurrency ?? "USD",
-                                                           sellCurrency: item.sellCurrency ?? "USD",
-                                                           note: item.note ?? "",
-                                                           obtained: item.obtained ?? Date(),
-                                                           disposed: item.disposed ?? Date())) {
-                    ItemRowView(item: item)
-                }
-            }
-            .onDelete(perform: deleteItems)
         }
     }
     
     private func deleteItems(offsets: IndexSet) {
         withAnimation {
             viewModel.delete(offsets.map { filteredItems[$0] }) { _ in
-                showAlert.toggle()
+                showAlertForDeletion.toggle()
             }
         }
     }

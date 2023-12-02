@@ -8,28 +8,15 @@
 import SwiftUI
 
 enum Filter: String, CaseIterable {
-    case kind, brand, seller
+    case kind = "Category"
+    case brand = "Brand"
+    case seller = "Seller"
 }
 
 struct FilterItemsView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var viewModel: BelongingsViewModel
 
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Kind.name, ascending: true)],
-        animation: .default)
-    private var kinds: FetchedResults<Kind>
-    
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Brand.name, ascending: true)],
-        animation: .default)
-    private var brands: FetchedResults<Brand>
-    
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Seller.name, ascending: true)],
-        animation: .default)
-    private var sellers: FetchedResults<Seller>
-    
     @Binding var selectedKinds: Set<Kind>
     @Binding var selectedBrands: Set<Brand>
     @Binding var selectedSellers: Set<Seller>
@@ -39,123 +26,82 @@ struct FilterItemsView: View {
     var body: some View {
         GeometryReader { geometry in
             VStack {
-                header()
+                header
                 
                 Divider()
                 
                 Text("Filter")
                     .font(.title3)
                 
-                selectedKindsSection()
+                selectedKindsSection
                 
-                selectedBrandsSection()
+                selectedBrandsSection
                
-                selectedSellersSection()
+                selectedSellersSection
                 
                 Divider()
                 
-                Picker("Filter Type", selection: $selectedFilter) {
-                    Text("Category").tag(Filter.kind)
-                    Text("Brand").tag(Filter.brand)
-                    Text("Seller").tag(Filter.seller)
-                }
-                .pickerStyle(SegmentedPickerStyle())
+                filterType
                 
-                filterListView()
+                filterList()
             }
             .padding()
         }
     }
     
-    func selectedKindsSection() -> some View {
-        VStack(alignment: .leading) {
-            Text("CATEGORY")
-                .font(.caption)
-                .foregroundColor(.secondary)
-            
-            ScrollView(.horizontal) {
-                LazyHStack {
-                    ForEach(selectedKinds.sorted(by: { $0.name ?? "" > $1.name ?? ""
-                    }), id: \.self) { kind in
-                        Button {
-                            selectedKinds.remove(kind)
-                        } label: {
-                            Text(kind.name ?? "")
-                                .foregroundColor(.white)
-                        }
-                    }
-                    .background(RoundedRectangle(cornerRadius: 5.0)
-                                    .fill(Color(.sRGB, white: 0.5, opacity: 1.0)))
+    private var selectedKindsSection: some View {
+        SelectionSectionView(title: .category) {
+            ForEach(selectedKinds.sorted(by: { $0.name ?? "" > $1.name ?? ""} ), id: \.self) { kind in
+                Button {
+                    selectedKinds.remove(kind)
+                } label: {
+                    Text(kind.name ?? "")
+                        .foregroundColor(.white)
                 }
-                .padding()
             }
-            .background(RoundedRectangle(cornerRadius: 10.0)
-                            .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
-            .frame(maxHeight: 40.0)
         }
     }
     
-    func selectedBrandsSection() -> some View {
-        VStack(alignment: .leading) {
-            Text("BRAND")
-                .font(.caption)
-                .foregroundColor(.secondary)
-            
-            ScrollView(.horizontal) {
-                LazyHStack {
-                    ForEach(selectedBrands.sorted(by: { $0.name ?? "" > $1.name ?? ""
-                    }), id: \.self) { kind in
-                        Button {
-                            selectedBrands.remove(kind)
-                        } label: {
-                            Text(kind.name ?? "")
-                                .foregroundColor(.white)
-                        }
-                    }
-                    .background(RoundedRectangle(cornerRadius: 5.0)
-                                    .fill(Color(.sRGB, white: 0.5, opacity: 1.0)))
+    private var selectedBrandsSection: some View {
+        SelectionSectionView(title: .brand) {
+            ForEach(selectedBrands.sorted(by: { $0.name ?? "" > $1.name ?? ""} ), id: \.self) { brand in
+                Button {
+                    selectedBrands.remove(brand)
+                } label: {
+                    Text(brand.name ?? "")
+                        .foregroundColor(.white)
                 }
-                .padding()
             }
-            .background(RoundedRectangle(cornerRadius: 10.0)
-                            .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
-            .frame(maxHeight: 40.0)
         }
     }
     
-    func selectedSellersSection() -> some View {
-        VStack(alignment: .leading) {
-            Text("SELLER")
-                .font(.caption)
-                .foregroundColor(.secondary)
-            
-            ScrollView(.horizontal) {
-                LazyHStack {
-                    ForEach(selectedSellers.sorted(by: { $0.name ?? "" > $1.name ?? ""
-                    }), id: \.self) { seller in
-                        Button {
-                            selectedSellers.remove(seller)
-                        } label: {
-                            Text(seller.name ?? "")
-                                .foregroundColor(.white)
-                        }
-                    }
-                    .background(RoundedRectangle(cornerRadius: 5.0)
-                                    .fill(Color(.sRGB, white: 0.5, opacity: 1.0)))
+    private var selectedSellersSection: some View {
+        SelectionSectionView(title: .seller) {
+            ForEach(selectedSellers.sorted(by: { $0.name ?? "" > $1.name ?? "" }), id: \.self) { seller in
+                Button {
+                    selectedSellers.remove(seller)
+                } label: {
+                    Text(seller.name ?? "")
+                        .foregroundColor(.white)
                 }
-                .padding()
             }
-            .background(RoundedRectangle(cornerRadius: 10.0)
-                            .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
-            .frame(maxHeight: 40.0)
         }
     }
     
-    func filterListView() -> some View {
+    private var filterType: some View {
+        Picker("Filter Type", selection: $selectedFilter) {
+            Text(Filter.kind.rawValue).tag(Filter.kind)
+            Text(Filter.brand.rawValue).tag(Filter.brand)
+            Text(Filter.seller.rawValue).tag(Filter.seller)
+        }
+        .pickerStyle(SegmentedPickerStyle())
+    }
+    
+    private func filterList() -> some View {
         List {
             switch (selectedFilter) {
             case .kind:
-                ForEach(kinds, id: \.id) { kind in
+                ForEach(viewModel.allKinds, id: \.id) { kind in
                     if let kindName = kind.name {
                         Button {
                             if selectedKinds.contains(kind) {
@@ -164,12 +110,12 @@ struct FilterItemsView: View {
                                 selectedKinds.insert(kind)
                             }
                         } label: {
-                            KindRowView(name: kindName, itemCount: viewModel.getItemCount(kind))
+                            BrandKindSellerRowView(name: kindName, itemCount: viewModel.getItemCount(kind))
                         }
                     }
                 }
             case .brand:
-                ForEach(brands, id: \.id) { brand in
+                ForEach(viewModel.allBrands, id: \.id) { brand in
                     if let brandName = brand.name {
                         Button {
                             if selectedBrands.contains(brand) {
@@ -178,12 +124,12 @@ struct FilterItemsView: View {
                                 selectedBrands.insert(brand)
                             }
                         } label: {
-                            BrandRowView(name: brandName, itemCount: viewModel.getItemCount(brand))
+                            BrandKindSellerRowView(name: brandName, itemCount: viewModel.getItemCount(brand))
                         }
                     }
                 }
             case .seller:
-                ForEach(sellers, id: \.id) { seller in
+                ForEach(viewModel.allSellers, id: \.id) { seller in
                     if let sellerName = seller.name {
                         Button {
                             if selectedSellers.contains(seller) {
@@ -192,25 +138,15 @@ struct FilterItemsView: View {
                                 selectedSellers.insert(seller)
                             }
                         } label: {
-                            SellerRowView(name: sellerName, itemCount: getItems(seller).count)
+                            BrandKindSellerRowView(name: sellerName, itemCount: viewModel.getItemCount(seller))
                         }
                     }
                 }
             }
         }
     }
-    
-    private func getItems(_ seller: Seller) -> [Item] {
-        guard let items = seller.items else {
-            return [Item]()
-        }
-        
-        return items.compactMap { $0 as? Item }
-            .sorted { ($0.obtained ?? Date()) > ($1.obtained ?? Date()) }
-    }
-    
-    
-    func header() -> some View {
+
+    private var header: some View {
         HStack {
             Button {
                 dismiss.callAsFunction()

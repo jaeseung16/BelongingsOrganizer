@@ -23,17 +23,11 @@ struct SellerDetailView: View {
     var body: some View {
         GeometryReader { geometry in
             VStack {
-                header()
+                header
                 
                 Divider()
                 
-                nameView()
-                
-                urlView()
-                
-                addedView()
-                
-                lastUpdatedView()
+                detail
                 
                 Divider()
                 
@@ -46,100 +40,41 @@ struct SellerDetailView: View {
                     .progressViewStyle(.circular)
                     .opacity(showProgress ? 1 : 0)
             }
-            .alert("Invalid URL", isPresented: $showAlert, actions: {
-                Button("Dismiss")  {
-                    urlString = seller.url?.absoluteString ?? ""
-                }
-            }, message: {
-                Text("Cannot access the URL. Try a different one or leave it empty.")
-            })
         }
         
+    }
+    
+    private var header: some View {
+        DetailHeaderView(isEdited: $isEdited) {
+            reset()
+        } update: {
+            update()
+        }
     }
     
     private func reset() {
         name = seller.name ?? ""
         urlString = seller.url?.absoluteString ?? ""
-        
         isEdited = false
     }
     
-    private func header() -> some View {
-        DetailHeaderView(isEdited: $isEdited) {
-            reset()
-        } update: {
-            viewModel.sellerDTO = SellerDTO(id: seller.uuid, name: name, url: URL(string: urlString))
-            isEdited = false
-        }
+    private func update() {
+        viewModel.update(SellerDTO(id: seller.uuid, name: name, url: URL(string: urlString)))
+        isEdited = false
     }
     
-    private func nameView() -> some View {
+    private var detail: some View {
         VStack {
-            HStack {
-                SectionTitleView(title: "NAME")
-                
-                Spacer()
+            NameView(name: $name, isEdited: $isEdited) {
+                EmptyView()
             }
-            
-            TextField(seller.name ?? "", text: $name, prompt: nil)
-                .onSubmit {
-                    isEdited = true
-                }
-        }
-    }
-    
-    private func urlView() -> some View {
-        VStack {
-            HStack {
-                SectionTitleView(title: "URL")
-                
-                Spacer()
-                
-                if let url = seller.url {
-                    Link(destination: url) {
-                        Label("Open in Browser", systemImage: "link")
-                            .font(.caption)
-                    }
-                }
+            URLView(title: .url, url: seller.url, urlString: $urlString, isEdited: $isEdited, showProgress: $showProgress) {
+                EmptyView()
             }
-            
-            TextField(seller.url?.absoluteString ?? "N/A", text: $urlString, prompt: nil)
-                .onSubmit {
-                    isEdited = true
-                    
-                    showProgress = true
-                    viewModel.validatedURL(from: urlString) { url in
-                        self.showProgress = false
-                        if let url = url {
-                            self.urlString = url.absoluteString
-                        } else {
-                            self.showAlert = true
-                        }
-                    }
-                }
-                #if os(iOS)
-                .textInputAutocapitalization(.never)
-                #endif
+            .environmentObject(viewModel)
+            DateSectionView(sectionTitle: .added, date: seller.created ?? Date())
+            DateSectionView(sectionTitle: .updated, date: seller.lastupd ?? Date())
         }
     }
     
-    private func addedView() -> some View {
-        HStack {
-            Spacer()
-            
-            SectionTitleView(title: "ADDED")
-            
-            Text("\(seller.created ?? Date(), formatter: BelongingsViewModel.dateFormatter)")
-        }
-    }
-    
-    private func lastUpdatedView() -> some View {
-        HStack {
-            Spacer()
-            
-            SectionTitleView(title: "UPDATED")
-            
-            Text("\(seller.lastupd ?? Date(), formatter: BelongingsViewModel.dateFormatter)")
-        }
-    }
 }

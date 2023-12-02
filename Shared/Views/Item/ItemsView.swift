@@ -13,31 +13,36 @@ struct ItemsView: View {
     var body: some View {
         VStack {
             HStack {
-                Text("ITEMS")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                SectionTitleView(title: .items)
                 
                 Spacer()
             }
             
             #if os(macOS)
             NavigationView {
-                itemList()
+                itemList
             }
             #else
-            itemList()
+            itemList
             #endif
         }
     }
     
-    private func itemList() -> some View {
-        List {
-            ForEach(items) { item in
-                NavigationLink(destination: ItemSummaryView(item: item)) {
-                    ItemRowView(item: item, imageWidth: 40.0)
+    private var itemList: some View {
+        NavigationStack {
+            List {
+                ForEach(items) { item in
+                    NavigationLink(value: item) {
+                        ItemRowView(item: item, imageWidth: 40.0)
+                    }
                 }
             }
+            .navigationDestination(for: Item.self) { item in
+                ItemSummaryView(item: item)
+                    .id(UUID())
+            }
         }
+        
     }
 }
 

@@ -11,74 +11,66 @@ struct KindListView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
     
     @State var presentAddKindView = false
-
-    @State private var showAlert = false
     @State private var showAlertForDeletion = false
-
-    @State var kinds = [Kind]()
+    @State private var selected: Kind?
+    
+    var kinds: [Kind] {
+        return viewModel.filteredKinds
+    }
     
     var body: some View {
-        NavigationView {
-            VStack {
-                header()
-                
-                kindListView()
-                    .sheet(isPresented: $presentAddKindView) {
-                        AddKindView()
-                            .environmentObject(viewModel)
-                            .frame(minWidth: 350, minHeight: 450)
-                            .padding()
-                        
-                    }
-            }
-            .navigationTitle("Categories")
-        }
-        .onChange(of: viewModel.kinds) { _ in
-            kinds = viewModel.filteredKinds
-        }
-        .onChange(of: viewModel.showAlert) { _ in
-            showAlert = viewModel.showAlert
-        }
-        .onChange(of: viewModel.stringToSearch) { _ in
-            kinds = viewModel.filteredKinds
-        }
-        .alert("Unable to Save Data", isPresented: $showAlert) {
-            Button("Dismiss") {
-                showAlert.toggle()
-            }
-        } message: {
-            Text(viewModel.message)
+        VStack {
+            kindList
+                .sheet(isPresented: $presentAddKindView) {
+                    AddKindView()
+                        .environmentObject(viewModel)
+                        .modifier(SheetModifier())
+                }
         }
         .alert("Unable to Delete Data", isPresented: $showAlertForDeletion) {
             Button("Dismiss") {
-                showAlert.toggle()
             }
         } message: {
             Text("Failed to delete the selected category")
         }
     }
     
-    private func header() -> some View {
-        HStack {
-            Button(action: {
-                viewModel.persistenceHelper.reset()
-                presentAddKindView = true
-            }) {
-                Label("Add a category", systemImage: "plus")
+    private var kindList: some View {
+        NavigationSplitView {
+            VStack {
+                List(selection: $selected) {
+                    ForEach(kinds) { kind in
+                        NavigationLink(value: kind) {
+                            BrandKindSellerRowView(name: kind.name ?? "", itemCount: viewModel.getItemCount(kind))
+                        }
+                    }
+                    .onDelete(perform: deleteKinds)
+                }
+                .navigationTitle("Categories")
+                .toolbar {
+                    header
+                }
+            }
+            .refreshable {
+                viewModel.fetchEntities()
+            }
+        } detail: {
+            if let kind = selected {
+                KindDetailView(kind: kind, name: kind.name ?? "", items: viewModel.getItems(kind))
+                    .environmentObject(viewModel)
+                    .id(kind)
+                    .navigationBarTitleDisplayMode(.inline)
             }
         }
     }
     
-    private func kindListView() -> some View {
-        List {
-            ForEach(kinds) { kind in
-                NavigationLink {
-                    KindDetailView(kind: kind, name: kind.name ?? "", items: viewModel.getItems(kind))
-                } label: {
-                    KindRowView(name: kind.name ?? "", itemCount: viewModel.getItemCount(kind))
-                }
+    private var header: ToolbarItemGroup<some View> {
+        ToolbarItemGroup(placement: .topBarLeading) {
+            Button {
+                presentAddKindView = true
+            } label: {
+                Label("Add a category", systemImage: "plus")
             }
-            .onDelete(perform: deleteKinds)
         }
         #if os(iOS)
         .id(UUID())

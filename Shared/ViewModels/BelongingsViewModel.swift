@@ -40,17 +40,11 @@ class BelongingsViewModel: NSObject, ObservableObject {
     @Published var changedPeristentContext = NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave)
     @Published var showAlert = false
     @Published var stringToSearch = ""
-    @Published var updated = false {
-        didSet {
-            fetchEntities()
-        }
-    }
-    var cloudUpdated = false
-    
+
     var message = ""
     
     let persistenceHelper: PersistenceHelper
-    let imagePaster = ImagePaster.shared
+    let imageProcessor = ImageProcesser.shared
     
     init(persistence: Persistence) {
         self.persistence = persistence
@@ -68,37 +62,32 @@ class BelongingsViewModel: NSObject, ObservableObject {
         self.persistence.container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         
         fetchEntities()
-        
-        /*
-        $cloudUpdated
-            .throttle(for: .seconds(60), scheduler: DispatchQueue.main, latest: true)
-            .sink { _ in
-                self.logger.info("cloudUpdated=\(self.cloudUpdated)")
-                self.fetchEntities()
-            }
-            .store(in: &subscriptions)
-        */
-        /*
-        $stringToSearch
-            .throttle(for: .seconds(2), scheduler: DispatchQueue.main, latest: true)
-            .sink { _ in
-                self.logger.info("\(self.stringToSearch)")
-            }
-            .store(in: &subscriptions)
-        */
+        fetchEntitiesToFilterItems()
     }
     
-    private func fetchEntities() -> Void {
+    func fetchEntities() -> Void {
         fetchItems()
         fetchKinds()
         fetchBrands()
         fetchSellers()
     }
     
-    @Published var items = [Item]()
+    func fetchEntitiesToFilterItems() -> Void {
+        fetchAllKinds()
+        fetchAllBrands()
+        fetchAllSellers()
+    }
     
+    @Published var items = [Item]()
     func fetchItems() -> Void {
-        items = fetch(NSFetchRequest<Item>(entityName: "Item"))
+        let fetchRequest = persistenceHelper.getFetchRequest(for: Item.self, entityName: "Item", sortDescriptors: [])
+        items = persistenceHelper.perform(fetchRequest)
+    }
+    
+    @Published var allItems = [Item]()
+    func fetchAllItems() -> Void {
+        let fetchRequest = persistenceHelper.getFetchRequest(for: Item.self, entityName: "Item", sortDescriptors: [])
+        allItems = persistenceHelper.perform(fetchRequest)
     }
     
     @Published var kinds = [Kind]()
@@ -115,10 +104,16 @@ class BelongingsViewModel: NSObject, ObservableObject {
     func fetchKinds() -> Void {
         let sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
                                NSSortDescriptor(key: "created", ascending: false)]
-        
-        let fetchRequest = NSFetchRequest<Kind>(entityName: "Kind")
-        fetchRequest.sortDescriptors = sortDescriptors
-        kinds = fetch(fetchRequest)
+        let fetchRequest = persistenceHelper.getFetchRequest(for: Kind.self, entityName: "Kind", sortDescriptors: sortDescriptors)
+        kinds = persistenceHelper.perform(fetchRequest)
+    }
+    
+    @Published var allKinds = [Kind]()
+    func fetchAllKinds() -> Void {
+        let sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
+                               NSSortDescriptor(key: "created", ascending: false)]
+        let fetchRequest = persistenceHelper.getFetchRequest(for: Kind.self, entityName: "Kind", sortDescriptors: sortDescriptors)
+        allKinds = persistenceHelper.perform(fetchRequest)
     }
     
     @Published var brands = [Brand]()
@@ -135,10 +130,16 @@ class BelongingsViewModel: NSObject, ObservableObject {
     func fetchBrands() -> Void {
         let sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
                                NSSortDescriptor(key: "created", ascending: false)]
-        
-        let fetchRequest = NSFetchRequest<Brand>(entityName: "Brand")
-        fetchRequest.sortDescriptors = sortDescriptors
-        brands = fetch(fetchRequest)
+        let fetchRequest = persistenceHelper.getFetchRequest(for: Brand.self, entityName: "Brand", sortDescriptors: sortDescriptors)
+        brands = persistenceHelper.perform(fetchRequest)
+    }
+    
+    @Published var allBrands = [Brand]()
+    func fetchAllBrands() -> Void {
+        let sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
+                               NSSortDescriptor(key: "created", ascending: false)]
+        let fetchRequest = persistenceHelper.getFetchRequest(for: Brand.self, entityName: "Brand", sortDescriptors: sortDescriptors)
+        allBrands = persistenceHelper.perform(fetchRequest)
     }
     
     @Published var sellers = [Seller]()
@@ -155,130 +156,90 @@ class BelongingsViewModel: NSObject, ObservableObject {
     func fetchSellers() -> Void {
         let sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
                                NSSortDescriptor(key: "created", ascending: false)]
-        
-        let fetchRequest = NSFetchRequest<Seller>(entityName: "Seller")
-        fetchRequest.sortDescriptors = sortDescriptors
-        sellers = fetch(fetchRequest)
+        let fetchRequest = persistenceHelper.getFetchRequest(for: Seller.self, entityName: "Seller", sortDescriptors: sortDescriptors)
+        sellers = persistenceHelper.perform(fetchRequest)
     }
     
-    private func fetch<Element>(_ fetchRequest: NSFetchRequest<Element>) -> [Element] {
-        var fetchedEntities = [Element]()
-        do {
-            fetchedEntities = try persistenceContainer.viewContext.fetch(fetchRequest)
-        } catch {
-            self.logger.error("Failed to fetch: \(error.localizedDescription)")
+    @Published var allSellers = [Seller]()
+    func fetchAllSellers() -> Void {
+        let sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
+                               NSSortDescriptor(key: "created", ascending: false)]
+        let fetchRequest = persistenceHelper.getFetchRequest(for: Seller.self, entityName: "Seller", sortDescriptors: sortDescriptors)
+        allSellers = persistenceHelper.perform(fetchRequest)
+    }
+    
+    func update(_ dto: ItemDTO, kind: [Kind], brand: Brand?, seller: Seller?, _ isObtainedDateEdited: Bool, _ isDisposedDateEdited: Bool) -> Void {
+        guard let existingEntity = persistenceHelper.get(entity: .item, id: dto.id) as? Item else {
+            logger.error("Can't find the existing item with id=\(String(describing: dto.id), privacy: .public)")
+            return
         }
-        return fetchedEntities
+        
+        var dtoWithResizedImage: ItemDTO?
+        if let data = dto.image {
+            let resizedData = tryResize(image: data) ?? data
+            dtoWithResizedImage = ItemDTO(id: dto.id, name: dto.name, note: dto.note, quantity: dto.quantity, buyPrice: dto.buyPrice, sellPrice: dto.sellPrice, buyCurrency: dto.buyCurrency, sellCurrency: dto.sellCurrency, obtained: dto.obtained, disposed: dto.disposed, image: resizedData, kind: dto.kind, brand: dto.brand, seller: dto.seller)
+        }
+        
+        persistenceHelper.update(existingEntity, to: dtoWithResizedImage ?? dto , kind: kind, brand: brand, seller: seller, isObtainedDateEdited, isDisposedDateEdited) { result in
+            switch result {
+            case .success(_):
+                self.handleSuccess()
+            case .failure(let error):
+                self.logger.log("Error while deleting data: \(error.localizedDescription, privacy: .public)")
+                self.message = "Cannot update name = \(String(describing: dto.name))"
+                self.handle(error: error, completionHandler: nil)
+            }
+        }  
+        
     }
     
-    var itemDTO = ItemDTO() {
-        didSet {
-            if itemDTO.id != nil, let existingEntity: Item = get(entity: .Item, id: itemDTO.id!) {
-                existingEntity.name = itemDTO.name
-                existingEntity.note = itemDTO.note
-                existingEntity.quantity = itemDTO.quantity ?? 0
-                existingEntity.buyPrice = itemDTO.buyPrice ?? 0.0
-                existingEntity.sellPrice = itemDTO.sellPrice ?? 0.0
-                existingEntity.buyCurrency = itemDTO.buyCurrency
-                existingEntity.sellCurrency = itemDTO.sellCurrency
-                existingEntity.obtained = itemDTO.obtained
-                existingEntity.disposed = itemDTO.disposed
-                existingEntity.image = itemDTO.image
-                existingEntity.lastupd = Date()
-                
-                persistenceHelper.save { result in
-                    switch result {
-                    case .success(_):
-                        self.handleSuccess()
-                    case .failure(let error):
-                        self.logger.log("Error while deleting data: \(error.localizedDescription, privacy: .public)")
-                        self.message = "Cannot update name = \(String(describing: self.itemDTO.name))"
-                        self.handle(error: error, completionHandler: nil)
-                    }
+    func tryResize(image: Data) -> Data? {
+        return imageProcessor.tryResize(image: image)
+    }
+    
+    func update(_ dto: KindDTO) -> Void {
+        if let id = dto.id, let existingEntity = persistenceHelper.get(entity: .kind, id: id) as? Kind {
+            persistenceHelper.update(existingEntity, to: dto) { result in
+                switch result {
+                case .success(_):
+                    self.handleSuccess()
+                case .failure(let error):
+                    self.logger.log("Error while deleting data: \(error.localizedDescription, privacy: .public)")
+                    self.message = "Cannot update name = \(String(describing: dto.name))"
+                    self.handle(error: error, completionHandler: nil)
                 }
             }
         }
     }
     
-    var kindDTO = KindDTO() {
-        didSet {
-            if kindDTO.id != nil, let existingEntity: Kind = get(entity: .Kind, id: kindDTO.id!) {
-                existingEntity.name = kindDTO.name?.trimmingCharacters(in: .whitespaces)
-                existingEntity.lastupd = Date()
-                
-                persistenceHelper.save { result in
-                    switch result {
-                    case .success(_):
-                        self.handleSuccess()
-                    case .failure(let error):
-                        self.logger.log("Error while deleting data: \(error.localizedDescription, privacy: .public)")
-                        self.message = "Cannot update name = \(String(describing: self.kindDTO.name))"
-                        self.handle(error: error, completionHandler: nil)
-                    }
+    func update(_ dto: BrandDTO) -> Void {
+        if let id = dto.id, let existingEntity = persistenceHelper.get(entity: .brand, id: id) as? Brand {
+            persistenceHelper.update(existingEntity, to: dto) { result in
+                switch result {
+                case .success(_):
+                    self.handleSuccess()
+                case .failure(let error):
+                    self.logger.log("Error while deleting data: \(error.localizedDescription, privacy: .public)")
+                    self.message = "Cannot update name = \(String(describing: dto.name)) and url = \(String(describing: dto.url))"
+                    self.handle(error: error, completionHandler: nil)
                 }
             }
         }
     }
     
-    var brandDTO = BrandDTO() {
-        didSet {
-            if brandDTO.id != nil, let existingEntity: Brand = get(entity: .Brand, id: brandDTO.id!) {
-                existingEntity.name = brandDTO.name?.trimmingCharacters(in: .whitespaces)
-                existingEntity.url = brandDTO.url
-                existingEntity.lastupd = Date()
-                
-                persistenceHelper.save { result in
-                    switch result {
-                    case .success(_):
-                        self.handleSuccess()
-                    case .failure(let error):
-                        self.logger.log("Error while deleting data: \(error.localizedDescription, privacy: .public)")
-                        self.message = "Cannot update name = \(String(describing: self.brandDTO.name)) and url = \(String(describing: self.brandDTO.url))"
-                        self.handle(error: error, completionHandler: nil)
-                    }
+    func update(_ dto: SellerDTO) -> Void {
+        if let id = dto.id, let existingEntity = persistenceHelper.get(entity: .seller, id: id) as? Seller {
+            persistenceHelper.update(existingEntity, to: dto) { result in
+                switch result {
+                case .success(_):
+                    self.handleSuccess()
+                case .failure(let error):
+                    self.logger.log("Error while deleting data: \(error.localizedDescription, privacy: .public)")
+                    self.message = "Cannot update name = \(String(describing: dto.name)) and url = \(String(describing: dto.url))"
+                    self.handle(error: error, completionHandler: nil)
                 }
             }
         }
-    }
-    
-    var sellerDTO = SellerDTO() {
-        didSet {
-            if sellerDTO.id != nil, let existingEntity: Seller = get(entity: .Seller, id: sellerDTO.id!) {
-                existingEntity.name = sellerDTO.name?.trimmingCharacters(in: .whitespaces)
-                existingEntity.url = sellerDTO.url
-                existingEntity.lastupd = Date()
-                
-                persistenceHelper.save { result in
-                    switch result {
-                    case .success(_):
-                        self.handleSuccess()
-                    case .failure(let error):
-                        self.logger.log("Error while deleting data: \(error.localizedDescription, privacy: .public)")
-                        self.message = "Cannot update name = \(String(describing: self.sellerDTO.name)) and url = \(String(describing: self.sellerDTO.url))"
-                        self.handle(error: error, completionHandler: nil)
-                    }
-                }
-            }
-        }
-    }
-    
-    func get<Entity: NSFetchRequestResult>(entity: Entities, id: UUID) -> Entity? {
-        let predicate = NSPredicate(format: "uuid == %@", argumentArray: [id])
-        
-        let fetchRequest = NSFetchRequest<Entity>(entityName: entity.rawValue)
-        fetchRequest.predicate = predicate
-        
-        var fetchedLinks = [Entity]()
-        do {
-            fetchedLinks = try persistenceContainer.viewContext.fetch(fetchRequest)
-        } catch {
-            logger.error("Failed to fetch \(entity.rawValue) with uuid = \(id): \(error.localizedDescription)")
-            DispatchQueue.main.async {
-                self.showAlert.toggle()
-            }
-        }
-        
-        return fetchedLinks.isEmpty ? nil : fetchedLinks[0]
     }
     
     func delete(_ objects: [NSManagedObject], completionHandler: @escaping (Error) -> Void) -> Void {
@@ -288,14 +249,17 @@ class BelongingsViewModel: NSObject, ObservableObject {
                 self.handleSuccess()
             case .failure(let error):
                 self.logger.log("Error while deleting data: \(error.localizedDescription, privacy: .public)")
-                self.handle(error: error, completionHandler: completionHandler)
+                DispatchQueue.main.async {
+                    completionHandler(error)
+                }
             }
         }
     }
     
     private func handleSuccess() -> Void {
         DispatchQueue.main.async {
-            self.updated.toggle()
+            self.fetchEntities()
+            self.fetchEntitiesToFilterItems()
         }
     }
     
@@ -309,14 +273,11 @@ class BelongingsViewModel: NSObject, ObservableObject {
     }
     
     // MARK: - Persistence History Request
-    private lazy var historyRequestQueue = DispatchQueue(label: "history")
     private func fetchUpdates(_ notification: Notification) -> Void {
         persistence.fetchUpdates(notification) { result in
             switch result {
             case .success(()):
-                DispatchQueue.main.async {
-                    self.cloudUpdated.toggle()
-                }
+                return
             case .failure(let error):
                 self.logger.log("Error while updating history: \(error.localizedDescription, privacy: .public) \(Thread.callStackSymbols, privacy: .public)")
             }
@@ -523,22 +484,8 @@ class BelongingsViewModel: NSObject, ObservableObject {
         persistenceHelper.imageData = imageData
     }
     
-    public func saveBelonging(name: String, kind: [Kind], brand: Brand?, seller: Seller?, note: String, obtained: Date, buyPrice: Double?, quantity: Int64?, buyCurrency: String) -> Void {
-        let created = Date()
-        
-        let newItem = Item(context: persistenceHelper.viewContext)
-        newItem.created = created
-        newItem.lastupd = created
-        newItem.name = name
-        newItem.note = note
-        newItem.quantity = quantity ?? 0
-        newItem.obtained = obtained
-        newItem.buyPrice = buyPrice ?? 0.0
-        newItem.buyCurrency = buyCurrency
-        newItem.uuid = UUID()
-        newItem.image = imageData
-       
-        persistenceHelper.save(item: newItem, kind: kind, brand: brand, seller: seller) { result in
+    public func saveBelonging(name: String, kind: [Kind], brand: Brand?, seller: Seller?, note: String, obtained: Date, buyPrice: Double, quantity: Int64, buyCurrency: String, image: Data?) -> Void {
+        persistenceHelper.saveBelonging(name: name, kind: kind, brand: brand, seller: seller, note: note, obtained: obtained, buyPrice: buyPrice, quantity: quantity, buyCurrency: buyCurrency, image: image) { result in
             switch result {
             case .success(()):
                 self.handleSuccess()
@@ -551,15 +498,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     }
     
     public func saveKind(name: String) -> Void {
-        let created = Date()
-        
-        let newKind = Kind(context: persistenceHelper.viewContext)
-        newKind.created = created
-        newKind.lastupd = created
-        newKind.name = name.trimmingCharacters(in: .whitespaces)
-        newKind.uuid = UUID()
-        
-        persistenceHelper.save() { result in
+        persistenceHelper.saveKind(name.trimmingCharacters(in: .whitespaces)) { result in
             switch result {
             case .success(()):
                 self.handleSuccess()
@@ -572,16 +511,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     }
     
     public func saveBrand(name: String, urlString: String) -> Void {
-        let created = Date()
-        
-        let newBrand = Brand(context: persistenceHelper.viewContext)
-        newBrand.created = created
-        newBrand.lastupd = created
-        newBrand.name = name.trimmingCharacters(in: .whitespaces)
-        newBrand.url = URL(string: urlString)
-        newBrand.uuid = UUID()
-
-        persistenceHelper.save() { result in
+        persistenceHelper.saveBrand(name.trimmingCharacters(in: .whitespaces), url: URL(string: urlString)) { result in
             switch result {
             case .success(()):
                 self.handleSuccess()
@@ -594,16 +524,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     }
     
     public func saveSeller(name: String, urlString: String) -> Void {
-        let created = Date()
-        
-        let newSeller = Seller(context: persistenceHelper.viewContext)
-        newSeller.created = created
-        newSeller.lastupd = created
-        newSeller.name = name.trimmingCharacters(in: .whitespaces)
-        newSeller.url = URL(string: urlString)
-        newSeller.uuid = UUID()
-
-        persistenceHelper.save() { result in
+        persistenceHelper.saveSeller(name.trimmingCharacters(in: .whitespaces), url: URL(string: urlString)) { result in
             switch result {
             case .success(()):
                 self.handleSuccess()
@@ -617,20 +538,29 @@ class BelongingsViewModel: NSObject, ObservableObject {
     
     // MARK: - ImagePaster
     func hasImage() -> Bool {
-        return imagePaster.hasImage()
+        return imageProcessor.hasImage()
     }
     
     func paste(completionHandler: @escaping (Data?, Error?) -> Void) ->Void {
-        imagePaster.paste(completionHandler: completionHandler)
+        imageProcessor.paste(completionHandler: completionHandler)
     }
     
     func getData(from info: DropInfo, completionHandler: @escaping (Data?, Error?) -> Void) ->Void {
-        imagePaster.getData(from: info, completionHandler: completionHandler)
+        imageProcessor.getData(from: info, completionHandler: completionHandler)
     }
     
     // MARK: - URL Vaildation
     func validatedURL(from urlString: String, completionHandler: @escaping (URL?) -> Void) -> Void {
         URLValidator.validatedURL(from: urlString) { completionHandler($0) }
+    }
+    
+    func validatedURL(from urlString: String) async -> URL? {
+        do {
+            return try await URLValidator.validatedURL(from: urlString)
+        } catch {
+            logger.error("Failed to validate url=\(urlString): \(error, privacy: .public)")
+            return nil
+        }
     }
 }
 

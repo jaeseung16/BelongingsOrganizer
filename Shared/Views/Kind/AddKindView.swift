@@ -12,6 +12,7 @@ struct AddKindView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
     
     @State private var name = ""
+    @State private var isEdited = false
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -22,14 +23,10 @@ struct AddKindView: View {
             
             Divider()
             
-            Text("NAME")
-                .font(.caption)
-            
-            TextField("name", text: $name)
-                .foregroundColor(.secondary)
-                .frame(maxWidth: .infinity, idealHeight: 50)
-                .background(RoundedRectangle(cornerRadius: 5.0)
-                                .fill(Color(.sRGB, white: 0.5, opacity: 0.1)))
+            NameView(name: $name, isEdited: $isEdited, color: .secondary) {
+                RoundedRectangle(cornerRadius: 5.0)
+                                .fill(Color(.sRGB, white: 0.5, opacity: 0.1))
+            }
             
             Divider()
             
