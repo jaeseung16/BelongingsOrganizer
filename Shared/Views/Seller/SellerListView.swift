@@ -60,7 +60,9 @@ struct SellerListView: View {
                 SellerDetailView(seller: seller, name: seller.name ?? "", urlString: seller.url?.absoluteString ?? "", items: viewModel.getItems(seller))
                     .environmentObject(viewModel)
                     .id(seller)
+                #if os(iOS)
                     .navigationBarTitleDisplayMode(.inline)
+                #endif
             }
         }
         #if os(iOS)
@@ -69,6 +71,15 @@ struct SellerListView: View {
     }
     
     private var header: ToolbarItemGroup<some View> {
+        #if os(macOS)
+        ToolbarItemGroup() {
+            Button {
+                presentAddSelleriew = true
+            } label: {
+                Label("Add a seller", systemImage: "plus")
+            }
+        }
+        #else
         ToolbarItemGroup(placement: .topBarLeading) {
             Button {
                 presentAddSelleriew = true
@@ -76,6 +87,7 @@ struct SellerListView: View {
                 Label("Add a seller", systemImage: "plus")
             }
         }
+        #endif
     }
     
     private func deleteSellers(offsets: IndexSet) {

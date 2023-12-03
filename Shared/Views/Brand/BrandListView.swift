@@ -60,12 +60,23 @@ struct BrandListView: View {
                 BrandDetailView(brand: brand, name: brand.name ?? "", urlString: brand.url?.absoluteString ?? "", items: viewModel.getItems(brand))
                     .environmentObject(viewModel)
                     .id(brand)
+                #if os(iOS)
                     .navigationBarTitleDisplayMode(.inline)
+                #endif
             }
         }
     }
     
     private var header: ToolbarItemGroup<some View> {
+        #if os(macOS)
+        ToolbarItemGroup() {
+            Button{
+                presentAddBrandView = true
+            } label: {
+                Label("Add a brand", systemImage: "plus")
+            }
+        }
+        #else
         ToolbarItemGroup(placement: .topBarLeading) {
             Button{
                 presentAddBrandView = true
@@ -73,6 +84,7 @@ struct BrandListView: View {
                 Label("Add a brand", systemImage: "plus")
             }
         }
+        #endif
     }
     
     private func deleteBrands(offsets: IndexSet) {

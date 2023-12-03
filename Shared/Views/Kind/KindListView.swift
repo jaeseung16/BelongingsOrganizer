@@ -59,12 +59,23 @@ struct KindListView: View {
                 KindDetailView(kind: kind, name: kind.name ?? "", items: viewModel.getItems(kind))
                     .environmentObject(viewModel)
                     .id(kind)
+                #if os(iOS)
                     .navigationBarTitleDisplayMode(.inline)
+                #endif
             }
         }
     }
     
     private var header: ToolbarItemGroup<some View> {
+        #if os(macOS)
+        ToolbarItemGroup() {
+            Button {
+                presentAddKindView = true
+            } label: {
+                Label("Add a category", systemImage: "plus")
+            }
+        }
+        #else
         ToolbarItemGroup(placement: .topBarLeading) {
             Button {
                 presentAddKindView = true
@@ -72,6 +83,7 @@ struct KindListView: View {
                 Label("Add a category", systemImage: "plus")
             }
         }
+        #endif
     }
 
     private func deleteKinds(offsets: IndexSet) {

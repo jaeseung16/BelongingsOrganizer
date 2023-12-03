@@ -100,7 +100,9 @@ struct ItemListView: View {
                     ItemDetailView(item: item, dto: ItemDTO.create(from: item))
                         .environmentObject(viewModel)
                         .id(item)
+                    #if os(iOS)
                         .navigationBarTitleDisplayMode(.inline)
+                    #endif
                 }
             }
         }
@@ -128,6 +130,28 @@ struct ItemListView: View {
     }
     
     private var header: ToolbarItemGroup<some View> {
+        #if os(macOS)
+        ToolbarItemGroup() {
+            Button  {
+                presentFilterItemsView = true
+            } label: {
+                Label("Filter", systemImage: "line.horizontal.3.decrease.circle")
+            }
+            
+            Button {
+                presentSortItemView = true
+            } label: {
+                Label("Sort", systemImage: "list.number")
+            }
+            
+            Button {
+                viewModel.persistenceHelper.reset()
+                presentAddItemView = true
+            } label: {
+                Label("Add", systemImage: "plus")
+            }
+        }
+        #else
         ToolbarItemGroup(placement: .topBarLeading) {
             Button  {
                 presentFilterItemsView = true
@@ -148,6 +172,7 @@ struct ItemListView: View {
                 Label("Add", systemImage: "plus")
             }
         }
+        #endif
     }
     
     private func deleteItems(offsets: IndexSet) {
