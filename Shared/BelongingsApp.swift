@@ -27,5 +27,11 @@ struct BelongingsApp: App {
                 .environmentObject(appDelegate.viewModel)
             #endif
         }
+        
+        #if os(macOS)
+        Settings {
+            SettingsView()
+        }
+        #endif
     }
 }
