@@ -23,7 +23,7 @@ struct ItemListView: View {
     @State private var sortType = SortType.lastupd
     @State private var sortDirection = SortDirection.descending
     
-    @State private var selected: Item?
+    @Binding var selected: Item?
     
     var filteredItems: [Item] {
         viewModel.items.filter {
@@ -75,36 +75,23 @@ struct ItemListView: View {
     }
     
     var body: some View {
-        GeometryReader { geometry in
-            NavigationSplitView {
-                VStack {
-                    List(selection: $selected) {
-                        ForEach(filteredItems, id: \.self) { item in
-                            NavigationLink(value: item) {
-                                ItemRowView(item: item)
-                            }
-                        }
-                        .onDelete(perform: deleteItems)
-                    }
-                    .accessibilityIdentifier("ItemList")
-                    .navigationTitle("Items")
-                    .toolbar {
-                        header
+        VStack {
+            List(selection: $selected) {
+                ForEach(filteredItems, id: \.self) { item in
+                    NavigationLink(value: item) {
+                        ItemRowView(item: item)
                     }
                 }
-                .refreshable {
-                    viewModel.fetchEntities()
-                }
-            } detail: {
-                if let item = selected {
-                    ItemDetailView(item: item, dto: ItemDTO.create(from: item))
-                        .environmentObject(viewModel)
-                        .id(item)
-                    #if os(iOS)
-                        .navigationBarTitleDisplayMode(.inline)
-                    #endif
-                }
+                .onDelete(perform: deleteItems)
             }
+        }
+        .accessibilityIdentifier("ItemList")
+        .navigationTitle("Items")
+        .toolbar {
+            header
+        }
+        .refreshable {            
+            viewModel.fetchEntities()
         }
         .sheet(isPresented: $presentAddItemView) {
             AddItemView()

@@ -12,7 +12,7 @@ struct BrandListView: View {
     
     @State var presentAddBrandView = false
     @State private var showAlertForDeletion = false
-    @State private var selectedBrand: Brand?
+    @Binding var selected: Brand?
     
     var brands: [Brand] {
         return viewModel.filteredBrands
@@ -37,33 +37,22 @@ struct BrandListView: View {
     }
     
     private var brandList: some View {
-        NavigationSplitView {
-            VStack {
-                List(selection: $selectedBrand) {
-                    ForEach(brands) { brand in
-                        NavigationLink(value: brand) {
-                            BrandKindSellerRowView(name: brand.name ?? "", itemCount: viewModel.getItemCount(brand))
-                        }
+        VStack {
+            List(selection: $selected) {
+                ForEach(brands) { brand in
+                    NavigationLink(value: brand) {
+                        BrandKindSellerRowView(name: brand.name ?? "", itemCount: viewModel.getItemCount(brand))
                     }
-                    .onDelete(perform: deleteBrands)
                 }
-                .navigationTitle("Brands")
-                .toolbar {
-                    header
-                }
+                .onDelete(perform: deleteBrands)
             }
-            .refreshable {
-                viewModel.fetchEntities()
+            .navigationTitle("Brands")
+            .toolbar {
+                header
             }
-        } detail: {
-            if let brand = selectedBrand {
-                BrandDetailView(brand: brand, name: brand.name ?? "", urlString: brand.url?.absoluteString ?? "", items: viewModel.getItems(brand))
-                    .environmentObject(viewModel)
-                    .id(brand)
-                #if os(iOS)
-                    .navigationBarTitleDisplayMode(.inline)
-                #endif
-            }
+        }
+        .refreshable {
+            viewModel.fetchEntities()
         }
     }
     

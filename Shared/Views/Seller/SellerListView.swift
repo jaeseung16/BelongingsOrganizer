@@ -13,7 +13,7 @@ struct SellerListView: View {
     @State var presentAddSelleriew = false
 
     @State private var showAlertForDeletion = false
-    @State var selected: Seller?
+    @Binding var selected: Seller?
     
     private var sellers: [Seller] {
         return viewModel.filteredSellers
@@ -37,37 +37,23 @@ struct SellerListView: View {
     }
     
     private var sellerList: some View {
-        NavigationSplitView {
-            VStack {
-                List(selection: $selected) {
-                    ForEach(sellers) { seller in
-                        NavigationLink(value: seller) {
-                            BrandKindSellerRowView(name: seller.name ?? "", itemCount: viewModel.getItemCount(seller))
-                        }
+        VStack {
+            List(selection: $selected) {
+                ForEach(sellers) { seller in
+                    NavigationLink(value: seller) {
+                        BrandKindSellerRowView(name: seller.name ?? "", itemCount: viewModel.getItemCount(seller))
                     }
-                    .onDelete(perform: deleteSellers)
                 }
-                .navigationTitle("Sellers")
-                .toolbar {
-                    header
-                }
+                .onDelete(perform: deleteSellers)
             }
-            .refreshable {
-                viewModel.fetchEntities()
-            }
-        } detail: {
-            if let seller = selected {
-                SellerDetailView(seller: seller, name: seller.name ?? "", urlString: seller.url?.absoluteString ?? "", items: viewModel.getItems(seller))
-                    .environmentObject(viewModel)
-                    .id(seller)
-                #if os(iOS)
-                    .navigationBarTitleDisplayMode(.inline)
-                #endif
+            .navigationTitle("Sellers")
+            .toolbar {
+                header
             }
         }
-        #if os(iOS)
-        .id(UUID())
-        #endif
+        .refreshable {
+            viewModel.fetchEntities()
+        }
     }
     
     private var header: ToolbarItemGroup<some View> {
