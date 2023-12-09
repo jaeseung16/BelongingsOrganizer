@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Belongings Organizer with Ads</string>
+	<string>Belongings Organizer</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -240,8 +240,6 @@
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
-		<key>UISceneConfigurations</key>
-		<dict/>
 		<key>UIApplicationSupportsMultipleScenes</key>
 		<true/>
 		<key>UISceneConfigurations</key>
