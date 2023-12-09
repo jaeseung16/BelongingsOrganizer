@@ -26,6 +26,10 @@ struct ContentView: View {
     @State private var selectedBrand: Brand?
     @State private var selectedSeller: Seller?
     
+    @State private var statsType = StatsType.obtained
+    @State private var start = Calendar.current.date(byAdding: DateComponents(day: -7), to: Date())!
+    @State private var end = Date()
+    
     var body: some View {
         NavigationSplitView {
             List(selection: $selectedMenu) {
@@ -70,7 +74,7 @@ struct ContentView: View {
             case .some(.sellers):
                 SellerListView(selected: $selectedSeller)
             case .some(.stats):
-                StatsView()
+                StatsView(statsType: $statsType, start: $start, end: $end)
             }
         } detail: {
             switch selectedMenu {
@@ -121,7 +125,8 @@ struct ContentView: View {
                     EmptyView()
                 }
             case .some(.stats):
-                EmptyView()
+                StatsDetailView(statsType: $statsType, start: $start, end: $end)
+                    .environmentObject(viewModel)
             }
             
         }
