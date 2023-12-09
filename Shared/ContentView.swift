@@ -10,16 +10,8 @@ import CoreData
 
 struct ContentView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
-
-    private enum MenuItem: String, CaseIterable, Identifiable {
-        var id: Self {
-            return self
-        }
-        
-        case items, categories, brands, sellers, stats
-    }
     
-    @State private var selectedMenu: MenuItem?
+    @State private var selectedMenu: SidebarItem? = .items
     
     @State private var selectedItem: Item?
     @State private var selectedKind: Kind?
@@ -33,7 +25,7 @@ struct ContentView: View {
     var body: some View {
         NavigationSplitView {
             List(selection: $selectedMenu) {
-                ForEach(MenuItem.allCases) { menuItem in
+                ForEach(SidebarItem.allCases) { menuItem in
                     switch menuItem {
                     case .items:
                         Label(
