@@ -15,6 +15,7 @@ struct StatsDetailView: View {
     @Binding var start: Date
     @Binding var end: Date
     
+    @State private var itemOverTime = [ItemOverTime]()
     @State private var itemCountByKind = [KindStats]()
     @State private var itemCountByBrand = [BrandStats]()
     @State private var itemCountBySeller = [SellerStats]()
@@ -23,25 +24,32 @@ struct StatsDetailView: View {
         GeometryReader { geometry in
             VStack {
                 HStack {
-                    Text("CATEGORY")
+                    Text("Items")
                     Spacer()
                 }
                 
-                chart(for: itemCountByKind, color: .green)
+                chart(for: itemOverTime)
             
                 HStack {
-                    Text("BRAND")
+                    Text("Categories")
                     Spacer()
                 }
                 
-                chart(for: itemCountByBrand, color: .blue)
+                chart(for: itemCountByKind)
+            
+                HStack {
+                    Text("Brands")
+                    Spacer()
+                }
+                
+                chart(for: itemCountByBrand)
            
                 HStack {
-                    Text("SELLER")
+                    Text("Sellers")
                     Spacer()
                 }
 
-                chart(for: itemCountBySeller, color: .red)
+                chart(for: itemCountBySeller)
             }
             .padding()
         }
@@ -59,20 +67,25 @@ struct StatsDetailView: View {
         }
     }
     
-    private func chart(for stats: [BelongsStats], color: Color) -> some View {
-        Chart(stats, id: \.name) { item in
-            BarMark(
-                x: .value("# of items", item.itemCount)
-            )
-            .foregroundStyle(by: .value("Category", item.name))
+    private func chart(for stats: [ItemOverTime]) -> some View {
+        Chart(stats, id: \.date) { stat in
+            BarMark(x: .value("Date", stat.date), y: .value("Count", stat.itemCount))
+        }
+    }
+    
+    private func chart(for stats: [BelongsStats]) -> some View {
+        Chart(stats, id: \.name) { stat in
+            BarMark(x: .value("# of items", stat.itemCount))
+            .foregroundStyle(by: .value("Category", stat.name))
             .annotation(position: .overlay) {
-                Text("\(item.itemCount)")
+                Text("\(stat.itemCount)")
                     .foregroundColor(.secondary)
             }
         }
     }
     
     private func refresh() -> Void {
+        itemOverTime = viewModel.itemOverTime(type: statsType, from: start, to: end)
         itemCountByKind = viewModel.itemCountsByKind(type: statsType, from: start, to: end)
         itemCountByBrand = viewModel.itemCountByBrand(type: statsType, from: start, to: end)
         itemCountBySeller = viewModel.itemCountBySeller(type: statsType, from: start, to: end)
