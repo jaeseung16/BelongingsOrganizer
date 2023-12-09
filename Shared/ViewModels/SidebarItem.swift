@@ -12,5 +12,27 @@ enum SidebarItem: String, CaseIterable, Identifiable  {
         return self
     }
     
-    case items, categories, brands, sellers, stats
+    case items = "Items"
+    case categories = "Categories"
+    case brands = "Brands"
+    case sellers = "Sellers"
+    case stats = "Stats"
+    
+    var imageName: String {
+        var imageName = ""
+        switch self {
+        case .items:
+            imageName = "gift.fill"
+        case .categories:
+            imageName = "list.dash"
+        case .brands:
+            imageName = "r.circle"
+        case .sellers:
+            imageName = "shippingbox.fill"
+        case .stats:
+            imageName = "chart.xyaxis.line"
+        }
+        return imageName
+    }
+    
 }

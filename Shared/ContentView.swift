@@ -11,7 +11,7 @@ import CoreData
 struct ContentView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
     
-    @State private var selectedMenu: SidebarItem? = .items
+    @State private var selectedSidebarItem: SidebarItem? = .items
     
     @State private var selectedItem: Item?
     @State private var selectedKind: Kind?
@@ -24,103 +24,19 @@ struct ContentView: View {
     
     var body: some View {
         NavigationSplitView {
-            List(selection: $selectedMenu) {
-                ForEach(SidebarItem.allCases) { menuItem in
-                    switch menuItem {
-                    case .items:
-                        Label(
-                            title: { Text("Items") },
-                            icon: { Image(systemName: "gift.fill") }
-                        )
-                    case .categories:
-                        Label(
-                            title: { Text("Categories") },
-                            icon: { Image(systemName: "list.dash") }
-                        )
-                    case .brands:
-                        Label(
-                            title: { Text("Brands") },
-                            icon: { Image(systemName: "r.circle") }
-                        )
-                    case .sellers:
-                        Label(
-                            title: { Text("Sellers") },
-                            icon: { Image(systemName: "shippingbox.fill") }
-                        )
-                    case .stats:
-                        Label(
-                            title: { Text("Stats") },
-                            icon: { Image(systemName: "chart.xyaxis.line") }
-                        )
+            List(selection: $selectedSidebarItem) {
+                ForEach(SidebarItem.allCases) { sidebarItem in
+                    Label {
+                        Text(sidebarItem.rawValue)
+                    } icon: {
+                        Image(systemName: sidebarItem.imageName)
                     }
                 }
             }
         } content: {
-            switch selectedMenu {
-            case .none, .some(.items):
-                ItemListView(selected: $selectedItem)
-            case .some(.categories):
-                KindListView(selected: $selectedKind)
-            case .some(.brands):
-                BrandListView(selected: $selectedBrand)
-            case .some(.sellers):
-                SellerListView(selected: $selectedSeller)
-            case .some(.stats):
-                StatsView(statsType: $statsType, start: $start, end: $end)
-            }
+            contentColumn
         } detail: {
-            switch selectedMenu {
-            case .none:
-                EmptyView()
-            case .some(.items):
-                if let item = selectedItem {
-                    ItemDetailView(item: item, dto: ItemDTO.create(from: item))
-                        .environmentObject(viewModel)
-                        .id(item)
-                        #if os(iOS)
-                        .navigationBarTitleDisplayMode(.inline)
-                        #endif
-                } else {
-                    EmptyView()
-                }
-            case .some(.categories):
-                if let kind = selectedKind {
-                    KindDetailView(kind: kind, name: kind.name ?? "", items: viewModel.getItems(kind))
-                        .environmentObject(viewModel)
-                        .id(kind)
-                        #if os(iOS)
-                        .navigationBarTitleDisplayMode(.inline)
-                        #endif
-                } else {
-                    EmptyView()
-                }
-            case .some(.brands):
-                if let brand = selectedBrand {
-                    BrandDetailView(brand: brand, name: brand.name ?? "", urlString: brand.url?.absoluteString ?? "", items: viewModel.getItems(brand))
-                        .environmentObject(viewModel)
-                        .id(brand)
-                    #if os(iOS)
-                        .navigationBarTitleDisplayMode(.inline)
-                    #endif
-                } else {
-                    EmptyView()
-                }
-            case .some(.sellers):
-                if let seller = selectedSeller {
-                    SellerDetailView(seller: seller, name: seller.name ?? "", urlString: seller.url?.absoluteString ?? "", items: viewModel.getItems(seller))
-                        .environmentObject(viewModel)
-                        .id(seller)
-                    #if os(iOS)
-                        .navigationBarTitleDisplayMode(.inline)
-                    #endif
-                } else {
-                    EmptyView()
-                }
-            case .some(.stats):
-                StatsDetailView(statsType: $statsType, start: $start, end: $end)
-                    .environmentObject(viewModel)
-            }
-            
+            detailColumn
         }
         .searchable(text: $viewModel.stringToSearch)
         .alert("Unable to save data", isPresented: $viewModel.showAlert) {
@@ -128,6 +44,79 @@ struct ContentView: View {
             }
         } message: {
             Text(viewModel.message)
+        }
+    }
+
+    @ViewBuilder
+    private var contentColumn: some View {
+        switch selectedSidebarItem {
+        case nil:
+            EmptyView()
+        case .items:
+            ItemListView(selected: $selectedItem)
+        case .categories:
+            KindListView(selected: $selectedKind)
+        case .brands:
+            BrandListView(selected: $selectedBrand)
+        case .sellers:
+            SellerListView(selected: $selectedSeller)
+        case .stats:
+            StatsView(statsType: $statsType, start: $start, end: $end)
+        }
+    }
+    
+    @ViewBuilder
+    private var detailColumn: some View {
+        switch selectedSidebarItem {
+        case nil:
+            EmptyView()
+        case .items:
+            if let item = selectedItem {
+                ItemDetailView(item: item, dto: ItemDTO.create(from: item))
+                    .environmentObject(viewModel)
+                    .id(item)
+                    #if os(iOS)
+                    .navigationBarTitleDisplayMode(.inline)
+                    #endif
+            } else {
+                EmptyView()
+            }
+        case .categories:
+            if let kind = selectedKind {
+                KindDetailView(kind: kind, name: kind.name ?? "", items: viewModel.getItems(kind))
+                    .environmentObject(viewModel)
+                    .id(kind)
+                    #if os(iOS)
+                    .navigationBarTitleDisplayMode(.inline)
+                    #endif
+            } else {
+                EmptyView()
+            }
+        case .brands:
+            if let brand = selectedBrand {
+                BrandDetailView(brand: brand, name: brand.name ?? "", urlString: brand.url?.absoluteString ?? "", items: viewModel.getItems(brand))
+                    .environmentObject(viewModel)
+                    .id(brand)
+                #if os(iOS)
+                    .navigationBarTitleDisplayMode(.inline)
+                #endif
+            } else {
+                EmptyView()
+            }
+        case .sellers:
+            if let seller = selectedSeller {
+                SellerDetailView(seller: seller, name: seller.name ?? "", urlString: seller.url?.absoluteString ?? "", items: viewModel.getItems(seller))
+                    .environmentObject(viewModel)
+                    .id(seller)
+                #if os(iOS)
+                    .navigationBarTitleDisplayMode(.inline)
+                #endif
+            } else {
+                EmptyView()
+            }
+        case .stats:
+            StatsDetailView(statsType: $statsType, start: $start, end: $end)
+                .environmentObject(viewModel)
         }
     }
 }
