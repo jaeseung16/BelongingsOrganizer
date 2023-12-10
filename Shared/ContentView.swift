@@ -35,6 +35,7 @@ struct ContentView: View {
             }
         } content: {
             contentColumn
+                .navigationTitle(selectedSidebarItem?.rawValue ?? "")
         } detail: {
             detailColumn
         }

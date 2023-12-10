@@ -46,7 +46,6 @@ struct SellerListView: View {
                 }
                 .onDelete(perform: deleteSellers)
             }
-            .navigationTitle("Sellers")
             .toolbar {
                 header
             }

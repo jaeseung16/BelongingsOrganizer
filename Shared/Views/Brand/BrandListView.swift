@@ -46,7 +46,6 @@ struct BrandListView: View {
                 }
                 .onDelete(perform: deleteBrands)
             }
-            .navigationTitle("Brands")
             .toolbar {
                 header
             }

@@ -86,7 +86,6 @@ struct ItemListView: View {
             }
         }
         .accessibilityIdentifier("ItemList")
-        .navigationTitle("Items")
         .toolbar {
             header
         }

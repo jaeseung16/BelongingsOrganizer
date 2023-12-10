@@ -45,7 +45,6 @@ struct KindListView: View {
                 }
                 .onDelete(perform: deleteKinds)
             }
-            .navigationTitle("Categories")
             .toolbar {
                 header
             }
