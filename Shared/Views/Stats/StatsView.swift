@@ -17,7 +17,7 @@ struct StatsView: View {
     
     var body: some View {
         VStack {
-            Picker("Obtained/Disposed", selection: $statsType) {
+            Picker("", selection: $statsType) {
                 Text("Obtained").tag(StatsType.obtained)
                 Text("Disposed").tag(StatsType.disposed)
             }
