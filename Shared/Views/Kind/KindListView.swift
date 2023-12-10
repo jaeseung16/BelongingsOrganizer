@@ -11,6 +11,7 @@ struct KindListView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
     
     @State var presentAddKindView = false
+    @State private var readyToRefresh = false
     @State private var showAlertForDeletion = false
     @Binding var selected: Kind?
     
@@ -52,11 +53,22 @@ struct KindListView: View {
         .refreshable {
             viewModel.fetchEntities()
         }
+        .onChange(of: viewModel.canRefresh) { _ in
+            readyToRefresh = viewModel.canRefresh
+        }
     }
     
     private var header: ToolbarItemGroup<some View> {
         #if os(macOS)
         ToolbarItemGroup() {
+            Button {
+                viewModel.fetchEntities()
+                viewModel.canRefresh = false
+            } label: {
+                Label("Refresh", systemImage: "arrow.clockwise")
+            }
+            .disabled(!readyToRefresh)
+            
             Button {
                 presentAddKindView = true
             } label: {

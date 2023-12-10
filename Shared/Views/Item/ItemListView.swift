@@ -25,6 +25,8 @@ struct ItemListView: View {
     
     @Binding var selected: Item?
     
+    @State private var readyToRefresh = false
+    
     var filteredItems: [Item] {
         viewModel.items.filter {
             var filter = true
@@ -113,11 +115,22 @@ struct ItemListView: View {
         } message: {
             Text("Failed to delete the selected item")
         }
+        .onChange(of: viewModel.canRefresh) { _ in
+            readyToRefresh = viewModel.canRefresh
+        }
     }
     
     private var header: ToolbarItemGroup<some View> {
         #if os(macOS)
         ToolbarItemGroup() {
+            Button {
+                viewModel.fetchEntities()
+                viewModel.canRefresh = false
+            } label: {
+                Label("Refresh", systemImage: "arrow.clockwise")
+            }
+            .disabled(!readyToRefresh)
+            
             Button  {
                 presentFilterItemsView = true
             } label: {
@@ -139,6 +152,14 @@ struct ItemListView: View {
         }
         #else
         ToolbarItemGroup(placement: .topBarLeading) {
+            Button {
+                viewModel.fetchEntities()
+                viewModel.canRefresh.toggle()
+            } label: {
+                Label("Refresh", systemImage: "arrow.clockwise")
+            }
+            .disabled(!readyToRefresh)
+            
             Button  {
                 presentFilterItemsView = true
             } label: {

@@ -11,6 +11,7 @@ struct BrandListView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
     
     @State var presentAddBrandView = false
+    @State private var readyToRefresh = false
     @State private var showAlertForDeletion = false
     @Binding var selected: Brand?
     
@@ -53,11 +54,22 @@ struct BrandListView: View {
         .refreshable {
             viewModel.fetchEntities()
         }
+        .onChange(of: viewModel.canRefresh) { _ in
+            readyToRefresh = viewModel.canRefresh
+        }
     }
     
     private var header: ToolbarItemGroup<some View> {
         #if os(macOS)
         ToolbarItemGroup() {
+            Button {
+                viewModel.fetchEntities()
+                viewModel.canRefresh = false
+            } label: {
+                Label("Refresh", systemImage: "arrow.clockwise")
+            }
+            .disabled(!readyToRefresh)
+            
             Button{
                 presentAddBrandView = true
             } label: {

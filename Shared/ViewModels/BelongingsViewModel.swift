@@ -41,6 +41,8 @@ class BelongingsViewModel: NSObject, ObservableObject {
     @Published var showAlert = false
     @Published var stringToSearch = ""
 
+    var canRefresh = false
+    
     var message = ""
     
     let persistenceHelper: PersistenceHelper
@@ -277,6 +279,9 @@ class BelongingsViewModel: NSObject, ObservableObject {
         persistence.fetchUpdates(notification) { result in
             switch result {
             case .success(()):
+                if !self.canRefresh {
+                    self.canRefresh = true
+                }
                 return
             case .failure(let error):
                 self.logger.log("Error while updating history: \(error.localizedDescription, privacy: .public) \(Thread.callStackSymbols, privacy: .public)")
