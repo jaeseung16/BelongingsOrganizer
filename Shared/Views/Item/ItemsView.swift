@@ -18,13 +18,7 @@ struct ItemsView: View {
                 Spacer()
             }
             
-            #if os(macOS)
-            NavigationView {
-                itemList
-            }
-            #else
             itemList
-            #endif
         }
     }
     
@@ -39,7 +33,7 @@ struct ItemsView: View {
             }
             .navigationDestination(for: Item.self) { item in
                 ItemSummaryView(item: item)
-                    .id(UUID())
+                    .id(item)
             }
         }
         
