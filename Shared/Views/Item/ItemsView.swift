@@ -23,20 +23,13 @@ struct ItemsView: View {
     }
     
     private var itemList: some View {
-        NavigationStack {
-            List {
-                ForEach(items) { item in
-                    NavigationLink(value: item) {
-                        ItemRowView(item: item, imageWidth: 40.0)
-                    }
-                }
-            }
-            .navigationDestination(for: Item.self) { item in
-                ItemSummaryView(item: item)
+        List {
+            ForEach(items) { item in
+                AnotherItemSummaryView(item: item)
                     .id(item)
+                    .frame(height: 60)
             }
         }
-        
     }
 }
 
