@@ -21,21 +21,21 @@ struct ItemRowView: View {
                     Image(nsImage: nsImage)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(width: imageWidth)
+                        .frame(width: imageWidth, height: imageWidth)
                 }
             #else
                 if let uiImage = UIImage(data: imageData) {
                     Image(uiImage: uiImage)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(width: imageWidth)
+                        .frame(width: imageWidth, height: imageWidth)
                 }
             #endif
             } else {
                 Image(systemName: "photo")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: imageWidth)
+                    .frame(width: imageWidth, height: imageWidth)
             }
             
             Spacer()

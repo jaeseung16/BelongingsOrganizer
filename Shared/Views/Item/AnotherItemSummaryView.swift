@@ -16,9 +16,7 @@ struct AnotherItemSummaryView: View {
         GeometryReader { geometry in
             HStack {
                 itemInfo()
-                    .padding()
             }
-            
         }
     }
     
@@ -67,7 +65,7 @@ struct AnotherItemSummaryView: View {
                 Image(nsImage: nsImage)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(height: 50)
+                    .frame(width: 50, height: 50)
             } else {
                 Text("No Photo")
                     .font(.body.italic())
@@ -78,7 +76,7 @@ struct AnotherItemSummaryView: View {
                 Image(uiImage: uiImage)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(height: 50)
+                    .frame(width: 50, height: 50)
             } else {
                 Text("No Photo")
                     .font(.body.italic())
