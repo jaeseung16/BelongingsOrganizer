@@ -8,13 +8,17 @@
 import SwiftUI
 import SDWebImageWebPCoder
 import UniformTypeIdentifiers
+import PhotosUI
 
 struct AddPhotoView: View, DropDelegate {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var viewModel: BelongingsViewModel
     
-    @State private var selectedImage: Data?
-    @State private var isTargeted = false
+    @Binding var photo: Data?
+    @State private var selectedPhoto: PhotosPickerItem?
+
+    @State private var progress: Progress?
+    
     @State private var failed = false
     @State private var details = ""
     
@@ -24,6 +28,10 @@ struct AddPhotoView: View, DropDelegate {
                 header()
                 
                 Divider()
+                
+                if progress != nil && !(progress!.isFinished) {
+                    ProgressView(progress!)
+                }
                 
                 photoView()
                     .resizable()
@@ -51,15 +59,15 @@ struct AddPhotoView: View, DropDelegate {
                 if let localizedDescription = error?.localizedDescription {
                     details = localizedDescription
                 }
-                self.selectedImage = nil
+                self.photo = nil
                 failed.toggle()
                 return
             }
             
-            self.selectedImage = data
+            self.photo = data
         }
         
-        return selectedImage != nil
+        return photo != nil
     }
     
     private func header() -> some View {
@@ -76,17 +84,17 @@ struct AddPhotoView: View, DropDelegate {
                 if url.absoluteString.contains(".webp") {
                     if let data: Data = try? Data(contentsOf: url) {
                         let image = SDImageWebPCoder.shared.decodedImage(with: data, options: nil)
-                        self.selectedImage = image?.tiffRepresentation
+                        self.photo = image?.tiffRepresentation
                     }
                 } else {
-                    self.selectedImage = try? Data(contentsOf: url)
+                    self.photo = try? Data(contentsOf: url)
                 }
             }
             
             Spacer()
             
             Button(action: {
-                viewModel.updateImage(selectedImage)
+                viewModel.updateImage(photo)
                 dismiss.callAsFunction()
             }, label: {
                 Text("Done")
@@ -95,8 +103,8 @@ struct AddPhotoView: View, DropDelegate {
     }
     
     private func photoView() -> Image {
-        if selectedImage != nil {
-            return Image(nsImage: NSImage(data: selectedImage!)!)
+        if photo != nil {
+            return Image(nsImage: NSImage(data: photo!)!)
         } else {
             return Image(systemName: "photo.on.rectangle")
         }
@@ -105,6 +113,10 @@ struct AddPhotoView: View, DropDelegate {
     private func footer() -> some View {
         HStack {
             Spacer()
+            
+            PhotosPicker(selection: $selectedPhoto, matching: .any(of: [.images])) {
+                Label("Photos", systemImage: "photo.on.rectangle")
+            }
             
             if viewModel.hasImage() {
                 Spacer()
@@ -121,7 +133,7 @@ struct AddPhotoView: View, DropDelegate {
     private func pasteImage() -> Void {
         viewModel.paste { data, error in
             if let data = data {
-                selectedImage = data
+                photo = data
             } else {
                 if let localizedDescription = error?.localizedDescription {
                     details = localizedDescription
