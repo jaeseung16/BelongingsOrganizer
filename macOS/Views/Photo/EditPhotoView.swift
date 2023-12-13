@@ -7,12 +7,14 @@
 
 import SwiftUI
 import SDWebImageWebPCoder
+import PhotosUI
 
 struct EditPhotoView: View, DropDelegate {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var viewModel: BelongingsViewModel
     
     @State var originalImage: Data?
+    @State private var selectedPhoto: PhotosPickerItem?
     @Binding var image: Data?
     @State private var failed = false
     @State private var details = ""
@@ -40,6 +42,13 @@ struct EditPhotoView: View, DropDelegate {
         .alert("Cannot replace a photo", isPresented: $failed, presenting: details) { details in
             Button("Dismiss") {
                 
+            }
+        }
+        .onChange(of: selectedPhoto) { newValue in
+            Task {
+                if let data = try? await newValue?.loadTransferable(type: Data.self) {
+                    image = viewModel.tryResize(image: data)
+                }
             }
         }
     }
@@ -105,11 +114,13 @@ struct EditPhotoView: View, DropDelegate {
     
     private func footer() -> some View {
         HStack {
+            PhotosPicker(selection: $selectedPhoto, matching: .any(of: [.images])) {
+                Label("Photos", systemImage: "photo.on.rectangle")
+            }
+            
             Spacer()
             
             if viewModel.hasImage() {
-                Spacer()
-                
                 Button {
                     pasteImage()
                 } label: {
