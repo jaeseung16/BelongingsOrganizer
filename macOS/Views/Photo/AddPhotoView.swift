@@ -51,6 +51,13 @@ struct AddPhotoView: View, DropDelegate {
                 
             }
         }
+        .onChange(of: selectedPhoto) { newValue in
+            Task {
+                if let data = try? await newValue?.loadTransferable(type: Data.self) {
+                    photo = viewModel.tryResize(image: data)
+                }
+            }
+        }
     }
     
     func performDrop(info: DropInfo) -> Bool {
@@ -112,15 +119,13 @@ struct AddPhotoView: View, DropDelegate {
     
     private func footer() -> some View {
         HStack {
-            Spacer()
-            
             PhotosPicker(selection: $selectedPhoto, matching: .any(of: [.images])) {
                 Label("Photos", systemImage: "photo.on.rectangle")
             }
             
+            Spacer()
+            
             if viewModel.hasImage() {
-                Spacer()
-                
                 Button {
                     pasteImage()
                 } label: {
