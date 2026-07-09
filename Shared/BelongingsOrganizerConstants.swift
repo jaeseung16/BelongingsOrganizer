@@ -10,4 +10,5 @@ import Foundation
 enum BelongsOrganizerConstants: String {
     case appName = "Belongings"
     case iCloudIdentifier = "iCloud.com.resonance.jlee.Belongings"
+    case requireAuthentication = "requireAuthentication"
 }

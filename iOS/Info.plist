@@ -37,6 +37,8 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>This app uses the camera to take pictures of items.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Belongings Organizer uses Face ID to unlock the app.</string>
 	<key>NSUserTrackingUsageDescription</key>
 	<string>Your data will be used to deliver personalized ads to you.</string>
 	<key>SKAdNetworkItems</key>
