@@ -16,7 +16,7 @@
       "location" : "https://github.com/jaeseung16/PersistenceSwift",
       "state" : {
         "branch" : "main",
-        "revision" : "eed8add6ab861d857dd5b64f6bfa30828c07c3db"
+        "revision" : "76586d03288b421ed4ee6ee3d51d0104b8d878e7"
       }
     },
     {
@@ -24,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SDWebImage/SDWebImage.git",
       "state" : {
-        "revision" : "936f1c7067728d16c362ba4fb93c17df78b5fd79",
-        "version" : "5.18.2"
+        "revision" : "1b9a2e902cbde5fdf362faa0f4fd76ea74d74305",
+        "version" : "5.18.5"
       }
     },
     {
@@ -33,8 +33,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SDWebImage/SDWebImageWebPCoder",
       "state" : {
-        "revision" : "3819cb70faa2454b54d8364779bfacd8c216a6e2",
-        "version" : "0.13.0"
+        "revision" : "db4603921b31a6ce0f8c26d36d6a3fffc2dba481",
+        "version" : "0.14.2"
       }
     },
     {
@@ -51,8 +51,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/googleads/swift-package-manager-google-user-messaging-platform.git",
       "state" : {
-        "revision" : "129fa838520cd02174f890ae0cfe0242e60714ae",
-        "version" : "2.1.0"
+        "revision" : "708a282840c2171ee63bd93b87afa49fe507d70e",
+        "version" : "2.7.0"
       }
     }
   ],

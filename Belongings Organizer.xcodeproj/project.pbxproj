@@ -1337,7 +1337,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = "Belongings (iOS)";
+				TEST_TARGET_NAME = "Belongings Organizer (iOS)";
 			};
 			name = Debug;
 		};
@@ -1359,7 +1359,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = "Belongings (iOS)";
+				TEST_TARGET_NAME = "Belongings Organizer (iOS)";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
