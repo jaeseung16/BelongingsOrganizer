@@ -179,6 +179,13 @@ class PersistenceHelper {
         saveContext(completionHandler: completionHandler)
     }
     
+    public func updateDisposed(_ item: Item, to date: Date?, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
+        item.disposed = date
+        item.lastupd = Date()
+
+        saveContext(completionHandler: completionHandler)
+    }
+
     public func update(_ kind: Kind, to dto: KindDTO, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
         kind.name = dto.name?.trimmingCharacters(in: .whitespaces)
         kind.lastupd = Date()

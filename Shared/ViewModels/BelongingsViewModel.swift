@@ -83,6 +83,14 @@ class BelongingsViewModel: NSObject, ObservableObject {
         let fetchRequest = persistenceHelper.getFetchRequest(for: Item.self, entityName: "Item", sortDescriptors: [])
         items = persistenceHelper.perform(fetchRequest)
     }
+
+    var activeItems: [Item] {
+        items.filter { $0.disposed == nil }
+    }
+
+    var disposedItems: [Item] {
+        items.filter { $0.disposed != nil }
+    }
     
     @Published var allItems = [Item]()
     func fetchAllItems() -> Void {
@@ -195,6 +203,19 @@ class BelongingsViewModel: NSObject, ObservableObject {
     
     func tryResize(image: Data) -> Data? {
         return imageProcessor.tryResize(image: image)
+    }
+
+    func updateDisposed(_ item: Item, to date: Date?) -> Void {
+        persistenceHelper.updateDisposed(item, to: date) { result in
+            switch result {
+            case .success(_):
+                self.handleSuccess()
+            case .failure(let error):
+                self.logger.log("Error while updating disposed date: \(error.localizedDescription, privacy: .public)")
+                self.message = "Cannot update name = \(String(describing: item.name))"
+                self.handle(error: error, completionHandler: nil)
+            }
+        }
     }
     
     func update(_ dto: KindDTO) -> Void {

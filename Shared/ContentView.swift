@@ -22,7 +22,13 @@ struct ContentView: View {
                     Image(systemName: "gift.fill")
                     Text("Items")
                 }
-            
+
+            ItemListView(disposition: .disposed)
+                .tabItem {
+                    Image(systemName: "archivebox.fill")
+                    Text("Disposed")
+                }
+
             KindListView()
                 .tabItem {
                     Image(systemName: "list.dash")

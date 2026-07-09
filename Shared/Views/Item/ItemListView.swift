@@ -7,9 +7,16 @@
 
 import SwiftUI
 
+enum ItemDisposition {
+    case active
+    case disposed
+}
+
 struct ItemListView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
-    
+
+    var disposition = ItemDisposition.active
+
     @State var presentAddItemView = false
     @State var presentFilterItemsView = false
     @State var presentSortItemView = false
@@ -26,7 +33,7 @@ struct ItemListView: View {
     @State private var selected: Item?
     
     var filteredItems: [Item] {
-        viewModel.items.filter {
+        (disposition == .active ? viewModel.activeItems : viewModel.disposedItems).filter {
             var filter = true
             
             if let kind = $0.kind as? Set<Kind>, !selectedKinds.isEmpty && selectedKinds.intersection(kind).isEmpty {
@@ -83,11 +90,33 @@ struct ItemListView: View {
                             NavigationLink(value: item) {
                                 ItemRowView(item: item)
                             }
+                            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                                Button(role: .destructive) {
+                                    delete(item)
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+
+                                if disposition == .active {
+                                    Button {
+                                        viewModel.updateDisposed(item, to: Date())
+                                    } label: {
+                                        Label("Dispose", systemImage: "archivebox")
+                                    }
+                                    .tint(.orange)
+                                } else {
+                                    Button {
+                                        viewModel.updateDisposed(item, to: nil)
+                                    } label: {
+                                        Label("Restore", systemImage: "arrow.uturn.backward")
+                                    }
+                                    .tint(.blue)
+                                }
+                            }
                         }
-                        .onDelete(perform: deleteItems)
                     }
-                    .accessibilityIdentifier("ItemList")
-                    .navigationTitle("Items")
+                    .accessibilityIdentifier(disposition == .active ? "ItemList" : "DisposedItemList")
+                    .navigationTitle(disposition == .active ? "Items" : "Disposed")
                     .toolbar {
                         header
                     }
@@ -156,9 +185,9 @@ struct ItemListView: View {
         }
     }
     
-    private func deleteItems(offsets: IndexSet) {
+    private func delete(_ item: Item) {
         withAnimation {
-            viewModel.delete(offsets.map { filteredItems[$0] }) { _ in
+            viewModel.delete([item]) { _ in
                 showAlertForDeletion.toggle()
             }
         }
