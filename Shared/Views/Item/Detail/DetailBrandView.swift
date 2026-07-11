@@ -47,7 +47,7 @@ struct DetailBrandView: View {
                 .environmentObject(viewModel)
             #endif
         }
-        .onChange(of: brand) { _ in
+        .onChange(of: brand) {
             isEdited = true
         }
     }

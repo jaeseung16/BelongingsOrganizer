@@ -85,12 +85,12 @@ struct ItemDetailView: View {
             
             DetailNoteView(originalNote: item.note, note: $dto.note, isEdited: $isEdited)
         }
-        .onChange(of: isObtainedDateEdited) { _ in
+        .onChange(of: isObtainedDateEdited) {
             if !isEdited && isObtainedDateEdited {
                 isEdited = true
             }
         }
-        .onChange(of: isDisposedDateEdited) { _ in
+        .onChange(of: isDisposedDateEdited) {
             if !isEdited && isDisposedDateEdited {
                 isEdited = true
             }

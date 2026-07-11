@@ -41,7 +41,7 @@ struct AddPhotoView: View, DropDelegate {
                     .onLongPressGesture {
                         pasteImage()
                     }
-                    .onDrop(of: ["public.image", "public.file-url"], delegate: self)
+                    .onDrop(of: [.image, .fileURL], delegate: self)
                 
                 Divider()
                 
@@ -64,7 +64,7 @@ struct AddPhotoView: View, DropDelegate {
                     
                 }
             }
-            .onChange(of: selectedPhoto) { newValue in
+            .onChange(of: selectedPhoto) { _, newValue in
                 Task {
                     if let data = try? await newValue?.loadTransferable(type: Data.self) {
                         photo = viewModel.tryResize(image: data)

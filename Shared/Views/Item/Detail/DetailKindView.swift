@@ -56,7 +56,7 @@ struct DetailKindView: View {
                 
             #endif
         }
-        .onChange(of: kind) { _ in
+        .onChange(of: kind) {
             isEdited = true
         }
     }

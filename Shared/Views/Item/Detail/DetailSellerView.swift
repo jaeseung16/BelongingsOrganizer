@@ -48,7 +48,7 @@ struct DetailSellerView: View {
                 
             #endif
         }
-        .onChange(of: seller) { _ in
+        .onChange(of: seller) {
             isEdited = true
         }
     }

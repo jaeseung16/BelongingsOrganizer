@@ -18,13 +18,7 @@ struct ItemsView: View {
                 Spacer()
             }
             
-            #if os(macOS)
-            NavigationView {
-                itemList
-            }
-            #else
             itemList
-            #endif
         }
     }
     

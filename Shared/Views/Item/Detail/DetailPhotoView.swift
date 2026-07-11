@@ -82,7 +82,7 @@ struct DetailPhotoView: View {
                 .environmentObject(viewModel)
             #endif
         }
-        .onChange(of: imageData) { _ in
+        .onChange(of: imageData) {
             isEdited = true
         }
     }

@@ -38,10 +38,8 @@ struct SelectImageButton: View {
     }
 }
 
-struct SelectImageButton_Previews: PreviewProvider {
-    static var previews: some View {
-        SelectImageButton { url in
-            print("\(url)")
-        }
+#Preview {
+    SelectImageButton { url in
+        print("\(url)")
     }
 }

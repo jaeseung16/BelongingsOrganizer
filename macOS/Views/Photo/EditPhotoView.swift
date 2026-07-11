@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SDWebImageWebPCoder
+import UniformTypeIdentifiers
 
 struct EditPhotoView: View, DropDelegate {
     @Environment(\.dismiss) private var dismiss
@@ -28,7 +29,7 @@ struct EditPhotoView: View, DropDelegate {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(height: 100)
-                    .onDrop(of: ["public.image", "public.file-url"], delegate: self)
+                    .onDrop(of: [.image, .fileURL], delegate: self)
                 
                 Divider()
                 

@@ -42,7 +42,7 @@ struct DetailDateView: View {
         .sheet(isPresented: $presentObtainedDatePickerView) {
             EditDateView(date: $date, originalDate: originalDate, isEdited: $isEdited)
         }
-        .onChange(of: date) { _ in
+        .onChange(of: date) {
             isEdited = true
         }
     }

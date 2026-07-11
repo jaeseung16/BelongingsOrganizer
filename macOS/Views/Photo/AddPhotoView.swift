@@ -36,7 +36,7 @@ struct AddPhotoView: View, DropDelegate {
             }
             .padding()
             .frame(width: geometry.size.width, height: geometry.size.height)
-            .onDrop(of: ["public.image", "public.file-url", "public.url"], delegate: self)
+            .onDrop(of: [.image, .fileURL, .url], delegate: self)
         }
         .alert("Cannot add a photo", isPresented: $failed, presenting: details) { details in
             Button("Dismiss") {
