@@ -7,7 +7,7 @@
 
 import XCTest
 
-final class BelogingsOrganizerUIPerformanceTestsLaunchTests: XCTestCase {
+nonisolated final class BelogingsOrganizerUIPerformanceTestsLaunchTests: XCTestCase {
 
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
         true
