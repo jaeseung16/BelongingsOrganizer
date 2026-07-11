@@ -10,12 +10,10 @@ import SwiftUI
 
 struct StatsView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
-    @EnvironmentObject var authService: AuthenticationService
 
     @State private var statsType = StatsType.obtained
     @State private var start = Calendar.current.date(byAdding: DateComponents(day: -7), to: Date())!
     @State private var end = Date()
-    @State private var presentSettingsView = false
     
     private var itemCountByKind: [KindStats] {
         viewModel.itemCountsByKind(type: statsType, from: start, to: end)
@@ -60,27 +58,10 @@ struct StatsView: View {
             }
             .padding()
         }
-        .sheet(isPresented: $presentSettingsView) {
-            SettingsView()
-                .environmentObject(authService)
-                .modifier(SheetModifier())
-        }
     }
-    
+
     private func header(_ geometry: GeometryProxy) -> some View {
         HStack {
-            VStack {
-                Button {
-                    presentSettingsView = true
-                } label: {
-                    Label("Settings", systemImage: "gearshape")
-                        .labelStyle(.iconOnly)
-                }
-                .accessibilityIdentifier("SettingsButton")
-
-                Spacer()
-            }
-
             Spacer()
             VStack {
                 Picker("Obtained/Disposed", selection: $statsType) {

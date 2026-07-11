@@ -30,6 +30,7 @@ enum SidebarSection: String, CaseIterable, Identifiable {
     case brands = "Brands"
     case sellers = "Sellers"
     case stats = "Stats"
+    case settings = "Settings"
 
     var id: Self { self }
 
@@ -47,6 +48,8 @@ enum SidebarSection: String, CaseIterable, Identifiable {
             return "shippingbox.fill"
         case .stats:
             return "chart.xyaxis.line"
+        case .settings:
+            return "gearshape"
         }
     }
 }
@@ -105,6 +108,8 @@ struct ContentView: View {
         switch section {
         case .stats:
             StatsView()
+        case .settings:
+            SettingsView()
         case nil:
             EmptyView()
         default:
@@ -156,7 +161,7 @@ struct ContentView: View {
                     .id(seller)
                     .toolbarTitleDisplayMode(.inline)
             }
-        case .stats, nil:
+        case .stats, .settings, nil:
             EmptyView()
         }
     }

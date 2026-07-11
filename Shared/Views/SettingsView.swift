@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var authService: AuthenticationService
 
     @AppStorage(BelongsOrganizerConstants.requireAuthentication.rawValue)
@@ -17,52 +16,29 @@ struct SettingsView: View {
     @State private var lockToggle = false
 
     var body: some View {
-        VStack {
-            header
-
-            Divider()
-
-            Text("Settings")
-                .font(.title3)
-
-            Form {
-                Section {
-                    Toggle("Require \(authService.biometryDescription)", isOn: $lockToggle)
-                        .onChange(of: lockToggle) { _, newValue in
-                            guard newValue != requireAuthentication else {
-                                return
-                            }
-                            Task {
-                                await authService.authenticate()
-                                if authService.isUnlocked {
-                                    requireAuthentication = newValue
-                                } else {
-                                    lockToggle = requireAuthentication
-                                }
+        Form {
+            Section {
+                Toggle("Require \(authService.biometryDescription)", isOn: $lockToggle)
+                    .onChange(of: lockToggle) { _, newValue in
+                        guard newValue != requireAuthentication else {
+                            return
+                        }
+                        Task {
+                            await authService.authenticate()
+                            if authService.isUnlocked {
+                                requireAuthentication = newValue
+                            } else {
+                                lockToggle = requireAuthentication
                             }
                         }
-                } footer: {
-                    Text("When enabled, \(authService.biometryDescription) is required each time the app launches or returns from the background.")
-                }
+                    }
+            } footer: {
+                Text("When enabled, \(authService.biometryDescription) is required each time the app launches or returns from the background.")
             }
-
-            Spacer()
         }
-        .padding()
+        .navigationTitle("Settings")
         .onAppear {
             lockToggle = requireAuthentication
-        }
-    }
-
-    private var header: some View {
-        HStack {
-            Button {
-                dismiss.callAsFunction()
-            } label: {
-                Text("Dismiss")
-            }
-
-            Spacer()
         }
     }
 }
