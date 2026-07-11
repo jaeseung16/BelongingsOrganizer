@@ -57,7 +57,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
         let webPCoder = SDImageWebPCoder.shared
         SDImageCodersManager.shared.addCoder(webPCoder)
         
-        self.persistence.container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        self.persistence.container.viewContext.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
         
         fetchEntities()
         fetchEntitiesToFilterItems()
@@ -568,10 +568,6 @@ class BelongingsViewModel: NSObject, ObservableObject {
     }
     
     // MARK: - URL Vaildation
-    func validatedURL(from urlString: String, completionHandler: @escaping (URL?) -> Void) -> Void {
-        URLValidator.validatedURL(from: urlString) { completionHandler($0) }
-    }
-    
     func validatedURL(from urlString: String) async -> URL? {
         do {
             return try await URLValidator.validatedURL(from: urlString)
