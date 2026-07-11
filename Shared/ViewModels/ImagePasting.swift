@@ -9,6 +9,6 @@ import SwiftUI
 
 protocol ImagePasting {
     func hasImage() -> Bool
-    func paste(completionHandler: @escaping (Data?, Error?) -> Void) ->Void 
-    func getData(from info: DropInfo, completionHandler: @escaping (Data?, Error?) -> Void) ->Void
+    func paste(completionHandler: @escaping @MainActor (Data?, Error?) -> Void) ->Void
+    func getData(from info: DropInfo, completionHandler: @escaping @MainActor (Data?, Error?) -> Void) ->Void
 }

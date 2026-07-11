@@ -559,11 +559,11 @@ class BelongingsViewModel: NSObject, ObservableObject {
         return imageProcessor.hasImage()
     }
     
-    func paste(completionHandler: @escaping (Data?, Error?) -> Void) ->Void {
+    func paste(completionHandler: @escaping @MainActor (Data?, Error?) -> Void) ->Void {
         imageProcessor.paste(completionHandler: completionHandler)
     }
-    
-    func getData(from info: DropInfo, completionHandler: @escaping (Data?, Error?) -> Void) ->Void {
+
+    func getData(from info: DropInfo, completionHandler: @escaping @MainActor (Data?, Error?) -> Void) ->Void {
         imageProcessor.getData(from: info, completionHandler: completionHandler)
     }
     

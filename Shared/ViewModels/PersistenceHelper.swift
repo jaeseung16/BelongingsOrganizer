@@ -224,9 +224,10 @@ class PersistenceHelper {
             
             let request = VNCoreMLRequest(model: model, completionHandler: { [weak self] request, error in
                 let classifications = request.results as! [VNClassificationObservation]
-                
+
+                let result: String
                 if classifications.isEmpty {
-                    self?.classificationResult = "Nothing recognized."
+                    result = "Nothing recognized."
                 } else {
                     // Display top classifications ranked by confidence in the UI.
                     let topClassifications = classifications.prefix(2)
@@ -234,11 +235,11 @@ class PersistenceHelper {
                         // Formats the classification for display; e.g. "(0.37) cliff, drop, drop-off".
                         return String(format: "  (%.2f) %@", classification.confidence, classification.identifier)
                     }
-                    
-                    DispatchQueue.main.async {
-                        self?.classificationResult = descriptions.joined(separator: " ")
-                        print("classificationResult = \(String(describing: self?.classificationResult))")
-                    }
+                    result = descriptions.joined(separator: " ")
+                }
+
+                Task { @MainActor in
+                    self?.classificationResult = result
                 }
             })
             request.imageCropAndScaleOption = .centerCrop
@@ -248,24 +249,28 @@ class PersistenceHelper {
             fatalError("Failed to load Vision ML model: \(error)")
         }
     }()
-    
-    func updateClassifications() {
-        DispatchQueue.global(qos: .userInitiated).async {
-            guard let data = self.imageData, let ciImage = CIImage(data: data) else {
-                return
-            }
-            
-            let handler = VNImageRequestHandler(ciImage: ciImage)
-            do {
-                try handler.perform([self.classificationRequest])
-            } catch {
-                /*
-                 This handler catches general image processing errors. The `classificationRequest`'s
-                 completion handler `processClassifications(_:error:)` catches errors specific
-                 to processing that request.
-                 */
-                print("Failed to perform classification.\n\(error.localizedDescription)")
-            }
+
+    func updateClassifications() async {
+        guard let data = imageData, let ciImage = CIImage(data: data) else {
+            return
+        }
+
+        nonisolated(unsafe) let request = classificationRequest
+        await Self.classify(ciImage: ciImage, request: request)
+    }
+
+    @concurrent
+    private static func classify(ciImage: CIImage, request: VNCoreMLRequest) async {
+        let handler = VNImageRequestHandler(ciImage: ciImage)
+        do {
+            try handler.perform([request])
+        } catch {
+            /*
+             This handler catches general image processing errors. The `classificationRequest`'s
+             completion handler `processClassifications(_:error:)` catches errors specific
+             to processing that request.
+             */
+            print("Failed to perform classification.\n\(error.localizedDescription)")
         }
     }
     

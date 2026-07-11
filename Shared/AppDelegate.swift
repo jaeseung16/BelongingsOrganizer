@@ -47,7 +47,9 @@ class AppDelegate: NSObject {
                 guard granted else {
                     return
                 }
-                self?.getNotificationSettings()
+                Task { @MainActor in
+                    self?.getNotificationSettings()
+                }
             }
     }
 
