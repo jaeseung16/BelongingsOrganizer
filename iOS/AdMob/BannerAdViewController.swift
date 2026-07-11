@@ -69,7 +69,7 @@ class BannerAdViewController: UIViewController {
     }
 }
 
-extension BannerAdViewController: GADBannerViewDelegate {
+extension BannerAdViewController: @MainActor GADBannerViewDelegate {
     func bannerViewDidReceiveAd(_ bannerView: GADBannerView) {
         logger.info("bannerViewDidReceiveAd")
     }
