@@ -137,6 +137,10 @@ struct AddPhotoView: View, DropDelegate {
     }
     
     func performDrop(info: DropInfo) -> Bool {
+        guard info.hasItemsConforming(to: [.image, .fileURL]) else {
+            return false
+        }
+
         viewModel.getData(from: info) { data, error in
             guard let data = data else {
                 if let localizedDescription = error?.localizedDescription {
@@ -146,10 +150,10 @@ struct AddPhotoView: View, DropDelegate {
                 failed.toggle()
                 return
             }
-            
+
             self.photo = data
         }
-        
-        return photo != nil
+
+        return true
     }
 }

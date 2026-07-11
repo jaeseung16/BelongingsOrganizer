@@ -49,18 +49,9 @@ struct InputPhotoView: View {
             }
         }
         .sheet(isPresented: $presentPhotoView, content: {
-            #if os(macOS)
-            AddPhotoView()
-                .environmentObject(viewModel)
-                .frame(width: geometry.size.width, height: geometry.size.height)
-                .onDisappear {
-                    image = viewModel.imageData
-                }
-            #else
             AddPhotoView(photo: $image)
                 .environmentObject(viewModel)
                 .frame(width: geometry.size.width, height: geometry.size.height)
-            #endif
         })
         
     }

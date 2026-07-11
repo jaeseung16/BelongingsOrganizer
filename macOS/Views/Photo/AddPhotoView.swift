@@ -8,30 +8,31 @@
 import SwiftUI
 import SDWebImageWebPCoder
 import UniformTypeIdentifiers
+import PhotosUI
 
 struct AddPhotoView: View, DropDelegate {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var viewModel: BelongingsViewModel
-    
-    @State private var selectedImage: Data?
-    @State private var isTargeted = false
+
+    @Binding var photo: Data?
+    @State private var selectedPhoto: PhotosPickerItem?
     @State private var failed = false
     @State private var details = ""
-    
+
     var body: some View {
         GeometryReader { geometry in
             VStack {
                 header()
-                
+
                 Divider()
-                
+
                 photoView()
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(height: 100)
-                
+
                 Divider()
-                
+
                 footer()
             }
             .padding()
@@ -40,28 +41,39 @@ struct AddPhotoView: View, DropDelegate {
         }
         .alert("Cannot add a photo", isPresented: $failed, presenting: details) { details in
             Button("Dismiss") {
-                
+
+            }
+        }
+        .onChange(of: selectedPhoto) { _, newValue in
+            Task {
+                if let data = try? await newValue?.loadTransferable(type: Data.self) {
+                    photo = viewModel.tryResize(image: data)
+                }
             }
         }
     }
-    
+
     func performDrop(info: DropInfo) -> Bool {
+        guard info.hasItemsConforming(to: [.image, .fileURL, .url]) else {
+            return false
+        }
+
         viewModel.getData(from: info) { data, error in
             guard let data = data else {
                 if let localizedDescription = error?.localizedDescription {
                     details = localizedDescription
                 }
-                self.selectedImage = nil
+                self.photo = nil
                 failed.toggle()
                 return
             }
-            
-            self.selectedImage = data
+
+            self.photo = data
         }
-        
-        return selectedImage != nil
+
+        return true
     }
-    
+
     private func header() -> some View {
         HStack {
             Button(action: {
@@ -69,46 +81,41 @@ struct AddPhotoView: View, DropDelegate {
             }, label: {
                 Label("Cancel", systemImage: "chevron.backward")
             })
-            
+
             Spacer()
-            
-            SelectImageButton { url in
-                if url.absoluteString.contains(".webp") {
-                    if let data: Data = try? Data(contentsOf: url) {
-                        let image = SDImageWebPCoder.shared.decodedImage(with: data, options: nil)
-                        self.selectedImage = image?.tiffRepresentation
-                    }
-                } else {
-                    self.selectedImage = try? Data(contentsOf: url)
-                }
-            }
-            
-            Spacer()
-            
+
             Button(action: {
-                viewModel.updateImage(selectedImage)
+                viewModel.updateImage(photo)
                 dismiss.callAsFunction()
             }, label: {
                 Text("Done")
             })
         }
     }
-    
+
     private func photoView() -> Image {
-        if selectedImage != nil {
-            return Image(nsImage: NSImage(data: selectedImage!)!)
+        if let photo, let nsImage = NSImage(data: photo) {
+            return Image(nsImage: nsImage)
         } else {
             return Image(systemName: "photo.on.rectangle")
         }
     }
-    
+
     private func footer() -> some View {
         HStack {
+            SelectImageButton { url in
+                selectImage(from: url)
+            }
+
             Spacer()
-            
+
+            PhotosPicker(selection: $selectedPhoto, matching: .any(of: [.images])) {
+                Label("Photos", systemImage: "photo.on.rectangle")
+            }
+
             if viewModel.hasImage() {
                 Spacer()
-                
+
                 Button {
                     pasteImage()
                 } label: {
@@ -117,11 +124,23 @@ struct AddPhotoView: View, DropDelegate {
             }
         }
     }
-    
+
+    private func selectImage(from url: URL) -> Void {
+        guard let data = try? Data(contentsOf: url) else {
+            return
+        }
+
+        if let resized = viewModel.tryResize(image: data) {
+            photo = resized
+        } else if let decoded = SDImageWebPCoder.shared.decodedImage(with: data, options: nil)?.tiffRepresentation {
+            photo = viewModel.tryResize(image: decoded) ?? decoded
+        }
+    }
+
     private func pasteImage() -> Void {
         viewModel.paste { data, error in
             if let data = data {
-                selectedImage = data
+                photo = data
             } else {
                 if let localizedDescription = error?.localizedDescription {
                     details = localizedDescription
@@ -130,5 +149,5 @@ struct AddPhotoView: View, DropDelegate {
             }
         }
     }
-    
+
 }

@@ -43,7 +43,7 @@ struct EditPhotoView: View, DropDelegate {
                     .onLongPressGesture {
                         pasteImage()
                     }
-                    .onDrop(of: ["public.image", "public.file-url"], delegate: self)
+                    .onDrop(of: [.image, .fileURL], delegate: self)
                 
                 Divider()
                 
@@ -141,6 +141,10 @@ struct EditPhotoView: View, DropDelegate {
     }
     
     func performDrop(info: DropInfo) -> Bool {
+        guard info.hasItemsConforming(to: [.image, .fileURL]) else {
+            return false
+        }
+
         viewModel.getData(from: info) { data, error in
             guard let data = data else {
                 if let localizedDescription = error?.localizedDescription {
@@ -150,10 +154,10 @@ struct EditPhotoView: View, DropDelegate {
                 failed.toggle()
                 return
             }
-            
+
             self.image = data
         }
-        
-        return image != nil
+
+        return true
     }
 }

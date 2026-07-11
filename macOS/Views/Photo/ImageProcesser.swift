@@ -19,7 +19,7 @@ class ImageProcesser: ImagePasting, ImageResizing {
     private static let urlTypes: [UTType] = [.url]
     
     private static let maxDataSize = 1_000_000
-    private static let maxResizeSize = CGSize(width: 128, height: 128)
+    private static let maxResizeSize = CGSize(width: 256, height: 256)
     
     func getData(from info: DropInfo, completionHandler: @escaping (Data?, Error?) -> Void) ->Void {
         ImageProcesser.logger.log("loadData")
@@ -154,6 +154,11 @@ class ImageProcesser: ImagePasting, ImageResizing {
     }
     
     func paste(completionHandler: @escaping (Data?, Error?) -> Void) ->Void {
+        if let nsImage = NSImage(pasteboard: NSPasteboard.general), let tiffData = nsImage.tiffRepresentation {
+            completionHandler(tryResize(image: tiffData) ?? tiffData, nil)
+            return
+        }
+
         ImageProcesser.urlTypes
             .map { NSPasteboard.PasteboardType($0.identifier) }
             .forEach { getData(from: .general, forType: $0, completionHandler: completionHandler) }
@@ -181,6 +186,10 @@ class ImageProcesser: ImagePasting, ImageResizing {
     }
     
     func hasImage() -> Bool {
+        if NSPasteboard.general.canReadObject(forClasses: [NSImage.self], options: nil) {
+            return true
+        }
+
         var result = false
         for urlType in ImageProcesser.urlTypes {
             if NSPasteboard.general.data(forType: NSPasteboard.PasteboardType(urlType.identifier)) != nil {
