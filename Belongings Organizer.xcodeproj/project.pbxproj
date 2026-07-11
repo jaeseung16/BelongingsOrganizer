@@ -7,6 +7,28 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A421423454FE4693BEB5C8A9 /* CommonRoundedRectangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908DC2462AD75FD800B858F3 /* CommonRoundedRectangle.swift */; };
+		2418F14D3F6E403F852937AD /* DetailBrandView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90742B322ADC9654007B4E76 /* DetailBrandView.swift */; };
+		6BFCE1503BA54E09A5FC4E14 /* DetailDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D798192AE31AD9002379E5 /* DetailDateView.swift */; };
+		2971725C82754992984E6CD5 /* DetailKindView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90742B342ADC98DC007B4E76 /* DetailKindView.swift */; };
+		5BDA559C16A148C8B1011002 /* DetailNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90742B222ADC3107007B4E76 /* DetailNameView.swift */; };
+		AF71714075074CE089ACFD97 /* DetailNoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90742B282ADC37AC007B4E76 /* DetailNoteView.swift */; };
+		BEB225E66B274C528B3862D6 /* DetailPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90742B302ADC943C007B4E76 /* DetailPhotoView.swift */; };
+		12D0707B3C5741DCA7BB8947 /* DetailPriceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D798172AE316E6002379E5 /* DetailPriceView.swift */; };
+		E3115422D8A64EC9A2EC6141 /* DetailQuantityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90742B2A2ADC389A007B4E76 /* DetailQuantityView.swift */; };
+		12105478CF174DA8989B4EC3 /* DetailSellerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90742B2C2ADC8A09007B4E76 /* DetailSellerView.swift */; };
+		F3B65CD93B3A41898E9080C5 /* InputBrandView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908D1E402ADB43610018FE52 /* InputBrandView.swift */; };
+		F8759821DF3A430293029429 /* InputBuyCurrencyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908D1E462ADB49EB0018FE52 /* InputBuyCurrencyView.swift */; };
+		317F0E7700A34C62B1E274DD /* InputBuyPriceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908D1E442ADB45D00018FE52 /* InputBuyPriceView.swift */; };
+		5C38B08323E843D2B832CBB5 /* InputKindView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908D1E3E2ADB420B0018FE52 /* InputKindView.swift */; };
+		1D4972E7B6D740EC95C58410 /* InputNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908DC2442AD75E6B00B858F3 /* InputNameView.swift */; };
+		D98559A043A34BFC9C118614 /* InputObtainedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908D1E4A2ADB4B600018FE52 /* InputObtainedView.swift */; };
+		5EEC5EAD33044336AEBE4E29 /* InputPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908D1E3C2ADB40730018FE52 /* InputPhotoView.swift */; };
+		CE640848E41947E3A942B748 /* InputQuantityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908D1E482ADB4AE50018FE52 /* InputQuantityView.swift */; };
+		1C52EE48ECF94B96B0F1A501 /* InputSellerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908D1E422ADB43B50018FE52 /* InputSellerView.swift */; };
+		94B2C670B3654BADB6B409C6 /* NameURLModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908527812AD4A256004185C9 /* NameURLModifier.swift */; };
+		9D70FBAB92BF44A1A8458A8E /* SelectionSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908527832AD4A6B1004185C9 /* SelectionSectionView.swift */; };
+		F2D1E9537B9C4AEB81852CFB /* SheetModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908527852AD4B4D3004185C9 /* SheetModifier.swift */; };
 		9000E36B2771229700A224E0 /* BelongingsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9000E36A2771229700A224E0 /* BelongingsApp.swift */; };
 		9000E36C2771229700A224E0 /* BelongingsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9000E36A2771229700A224E0 /* BelongingsApp.swift */; };
 		900DDBDD26E036CB0034A155 /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900DDBDC26E036CB0034A155 /* Tests_iOS.swift */; };
@@ -980,6 +1002,28 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A421423454FE4693BEB5C8A9 /* CommonRoundedRectangle.swift in Sources */,
+				2418F14D3F6E403F852937AD /* DetailBrandView.swift in Sources */,
+				6BFCE1503BA54E09A5FC4E14 /* DetailDateView.swift in Sources */,
+				2971725C82754992984E6CD5 /* DetailKindView.swift in Sources */,
+				5BDA559C16A148C8B1011002 /* DetailNameView.swift in Sources */,
+				AF71714075074CE089ACFD97 /* DetailNoteView.swift in Sources */,
+				BEB225E66B274C528B3862D6 /* DetailPhotoView.swift in Sources */,
+				12D0707B3C5741DCA7BB8947 /* DetailPriceView.swift in Sources */,
+				E3115422D8A64EC9A2EC6141 /* DetailQuantityView.swift in Sources */,
+				12105478CF174DA8989B4EC3 /* DetailSellerView.swift in Sources */,
+				F3B65CD93B3A41898E9080C5 /* InputBrandView.swift in Sources */,
+				F8759821DF3A430293029429 /* InputBuyCurrencyView.swift in Sources */,
+				317F0E7700A34C62B1E274DD /* InputBuyPriceView.swift in Sources */,
+				5C38B08323E843D2B832CBB5 /* InputKindView.swift in Sources */,
+				1D4972E7B6D740EC95C58410 /* InputNameView.swift in Sources */,
+				D98559A043A34BFC9C118614 /* InputObtainedView.swift in Sources */,
+				5EEC5EAD33044336AEBE4E29 /* InputPhotoView.swift in Sources */,
+				CE640848E41947E3A942B748 /* InputQuantityView.swift in Sources */,
+				1C52EE48ECF94B96B0F1A501 /* InputSellerView.swift in Sources */,
+				94B2C670B3654BADB6B409C6 /* NameURLModifier.swift in Sources */,
+				9D70FBAB92BF44A1A8458A8E /* SelectionSectionView.swift in Sources */,
+				F2D1E9537B9C4AEB81852CFB /* SheetModifier.swift in Sources */,
 				904498E226EBD30500002A6F /* NothingSelectedText.swift in Sources */,
 				908EC8452AC9EF19004647A5 /* DateSectionView.swift in Sources */,
 				90735E8C29DA141200159CBA /* ImagePasting.swift in Sources */,

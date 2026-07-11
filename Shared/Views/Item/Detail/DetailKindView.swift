@@ -47,7 +47,7 @@ struct DetailKindView: View {
         }
         .sheet(isPresented: $presentChooseKindView) {
             #if os(macOS)
-            ChooseKindView(selectedKinds: $kind)
+            ChooseKindView(kinds: $kind)
                 .environmentObject(viewModel)
                 .frame(minWidth: 0.5 * geometry.size.width, minHeight: geometry.size.height)
             #else

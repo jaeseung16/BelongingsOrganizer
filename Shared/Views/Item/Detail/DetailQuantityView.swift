@@ -27,7 +27,7 @@ struct DetailQuantityView: View {
             #if os(macOS)
             TextField("quantity", value: $quantity, formatter: quantityFormatter, prompt: Text("0"))
                 .onSubmit({
-                    isEdited = quantity != Int(item.quantity)
+                    isEdited = quantity != originalQuantity
                 })
                 .multilineTextAlignment(.trailing)
                 .frame(maxWidth: 80)

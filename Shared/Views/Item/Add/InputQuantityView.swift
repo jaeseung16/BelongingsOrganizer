@@ -22,7 +22,7 @@ struct InputQuantityView: View {
             TextField("0", text: $quantity)
                 .multilineTextAlignment(.trailing)
                 .frame(maxWidth: 80)
-                .background(CommonRoundedRectangle)
+                .background { CommonRoundedRectangle() }
             #else
             TextField("0", text: $quantity)
                 .multilineTextAlignment(.trailing)
