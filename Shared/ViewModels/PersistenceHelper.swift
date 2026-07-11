@@ -270,12 +270,28 @@ class PersistenceHelper {
     }
     
     private func saveContext(completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
+        let viewContext = self.viewContext
         viewContext.transactionAuthor = "App"
         let originalMergePolicy = viewContext.mergePolicy
         viewContext.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
-        persistence.save(completionHandler: completionHandler)
-        viewContext.mergePolicy = originalMergePolicy
-        viewContext.transactionAuthor = nil
+        Task {
+            var result: Result<Void, Error>
+            do {
+                try await persistence.save()
+                result = .success(())
+            } catch {
+                result = .failure(error)
+            }
+            // Restore the context only after the actor has performed the save
+            await MainActor.run { [result] in
+                if case .failure = result {
+                    viewContext.rollback()
+                }
+                viewContext.mergePolicy = originalMergePolicy
+                viewContext.transactionAuthor = nil
+                completionHandler(result)
+            }
+        }
     }
     
     func delete(_ objects: [NSManagedObject], completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {

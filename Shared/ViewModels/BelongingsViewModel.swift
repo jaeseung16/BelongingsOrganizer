@@ -31,10 +31,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     }()
     
     private var persistence: Persistence
-    private var persistenceContainer: NSPersistentCloudKitContainer {
-        persistence.cloudContainer!
-    }
-    
+
     private var subscriptions: Set<AnyCancellable> = []
     
     @Published var changedPeristentContext = NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave)
@@ -296,11 +293,10 @@ class BelongingsViewModel: NSObject, ObservableObject {
     
     // MARK: - Persistence History Request
     private func fetchUpdates(_ notification: Notification) -> Void {
-        persistence.fetchUpdates(notification) { result in
-            switch result {
-            case .success(()):
-                return
-            case .failure(let error):
+        Task {
+            do {
+                _ = try await persistence.fetchUpdates()
+            } catch {
                 self.logger.log("Error while updating history: \(error.localizedDescription, privacy: .public) \(Thread.callStackSymbols, privacy: .public)")
             }
         }
