@@ -57,5 +57,14 @@ struct BelongingsApp: App {
                 }
             }
         }
+
+        #if os(macOS)
+        Settings {
+            SettingsView()
+                .environmentObject(authService)
+                .formStyle(.grouped)
+                .frame(width: 480)
+        }
+        #endif
     }
 }

@@ -34,6 +34,15 @@ enum SidebarSection: String, CaseIterable, Identifiable {
 
     var id: Self { self }
 
+    // On macOS, Settings lives in the Settings scene (⌘,) instead of the sidebar
+    static var sidebarCases: [SidebarSection] {
+        #if os(macOS)
+        allCases.filter { $0 != .settings }
+        #else
+        allCases
+        #endif
+    }
+
     var systemImage: String {
         switch self {
         case .items:
@@ -68,7 +77,7 @@ struct ContentView: View {
 
     var body: some View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
-            List(SidebarSection.allCases, selection: $section) { section in
+            List(SidebarSection.sidebarCases, selection: $section) { section in
                 Label(section.rawValue, systemImage: section.systemImage)
             }
             .navigationTitle("Belongings")
