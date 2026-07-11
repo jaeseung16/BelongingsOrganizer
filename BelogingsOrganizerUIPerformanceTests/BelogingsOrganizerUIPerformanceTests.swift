@@ -29,8 +29,12 @@ final class BelogingsOrganizerUIPerformanceTests: XCTestCase {
 
         // Use XCTAssert and related functions to verify your tests produce the correct results.
         
-        app.buttons["Items"].tap()
         let itemList = app.descendants(matching: .any)["ItemList"]
+        if !itemList.waitForExistence(timeout: 2) {
+            // The NavigationSplitView sidebar is showing; select the Items section.
+            app.staticTexts["Items"].firstMatch.tap()
+            XCTAssertTrue(itemList.waitForExistence(timeout: 5))
+        }
             
         let measureOptions = XCTMeasureOptions()
         measureOptions.invocationOptions = [.manuallyStop]

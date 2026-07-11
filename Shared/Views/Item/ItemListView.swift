@@ -24,30 +24,30 @@ struct ItemListView: View {
     @State var selectedKinds = Set<Kind>()
     @State var selectedBrands = Set<Brand>()
     @State var selectedSellers = Set<Seller>()
-    
+
     @State private var showAlertForDeletion = false
-    
+
     @State private var sortType = SortType.lastupd
     @State private var sortDirection = SortDirection.descending
-    
-    @State private var selected: Item?
-    
+
+    @Binding var selected: Item?
+
     var filteredItems: [Item] {
         (disposition == .active ? viewModel.activeItems : viewModel.disposedItems).filter {
             var filter = true
-            
+
             if let kind = $0.kind as? Set<Kind>, !selectedKinds.isEmpty && selectedKinds.intersection(kind).isEmpty {
                 filter = false
             }
-            
+
             if let brand = $0.brand as? Set<Brand>, !selectedBrands.isEmpty && selectedBrands.intersection(brand).isEmpty {
                 filter = false
             }
-            
+
             if let seller = $0.seller as? Set<Seller>, !selectedSellers.isEmpty && selectedSellers.intersection(seller).isEmpty {
                 filter = false
             }
-            
+
             return filter
         }
         .filter {
@@ -80,64 +80,45 @@ struct ItemListView: View {
             }
         }
     }
-    
-    var body: some View {
-        GeometryReader { geometry in
-            NavigationSplitView {
-                VStack {
-                    List(selection: $selected) {
-                        ForEach(filteredItems, id: \.self) { item in
-                            NavigationLink(value: item) {
-                                ItemRowView(item: item)
-                            }
-                            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                                Button(role: .destructive) {
-                                    delete(item)
-                                } label: {
-                                    Label("Delete", systemImage: "trash")
-                                }
 
-                                if disposition == .active {
-                                    Button {
-                                        viewModel.updateDisposed(item, to: Date())
-                                    } label: {
-                                        Label("Dispose", systemImage: "archivebox")
-                                    }
-                                    .tint(.orange)
-                                } else {
-                                    Button {
-                                        viewModel.updateDisposed(item, to: nil)
-                                    } label: {
-                                        Label("Restore", systemImage: "arrow.uturn.backward")
-                                    }
-                                    .tint(.blue)
-                                }
-                            }
+    var body: some View {
+        List(selection: $selected) {
+            ForEach(filteredItems, id: \.self) { item in
+                NavigationLink(value: item) {
+                    ItemRowView(item: item)
+                }
+                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                    Button(role: .destructive) {
+                        delete(item)
+                    } label: {
+                        Label("Delete", systemImage: "trash")
+                    }
+
+                    if disposition == .active {
+                        Button {
+                            viewModel.updateDisposed(item, to: Date())
+                        } label: {
+                            Label("Dispose", systemImage: "archivebox")
                         }
+                        .tint(.orange)
+                    } else {
+                        Button {
+                            viewModel.updateDisposed(item, to: nil)
+                        } label: {
+                            Label("Restore", systemImage: "arrow.uturn.backward")
+                        }
+                        .tint(.blue)
                     }
-                    .accessibilityIdentifier(disposition == .active ? "ItemList" : "DisposedItemList")
-                    .navigationTitle(disposition == .active ? "Items" : "Disposed")
-                    .toolbar {
-                        header
-                    }
-                    
-                    #if os(iOS)
-                    Spacer()
-                    BannerAd()
-                        .frame(height: 50)
-                    #endif
-                }
-                .refreshable {
-                    viewModel.fetchEntities()
-                }
-            } detail: {
-                if let item = selected {
-                    ItemDetailView(item: item, dto: ItemDTO.create(from: item))
-                        .environmentObject(viewModel)
-                        .id(item)
-                        .navigationBarTitleDisplayMode(.inline)
                 }
             }
+        }
+        .accessibilityIdentifier(disposition == .active ? "ItemList" : "DisposedItemList")
+        .navigationTitle(disposition == .active ? "Items" : "Disposed")
+        .toolbar {
+            header
+        }
+        .refreshable {
+            viewModel.fetchEntities()
         }
         .sheet(isPresented: $presentAddItemView) {
             AddItemView()
@@ -161,21 +142,21 @@ struct ItemListView: View {
             Text("Failed to delete the selected item")
         }
     }
-    
+
     private var header: ToolbarItemGroup<some View> {
-        ToolbarItemGroup(placement: .topBarLeading) {
+        ToolbarItemGroup(placement: .leadingButtons) {
             Button  {
                 presentFilterItemsView = true
             } label: {
                 Label("Filter", systemImage: "line.horizontal.3.decrease.circle")
             }
-            
+
             Button {
                 presentSortItemView = true
             } label: {
                 Label("Sort", systemImage: "list.number")
             }
-            
+
             Button {
                 viewModel.persistenceHelper.reset()
                 presentAddItemView = true
@@ -184,9 +165,12 @@ struct ItemListView: View {
             }
         }
     }
-    
+
     private func delete(_ item: Item) {
         withAnimation {
+            if selected == item {
+                selected = nil
+            }
             viewModel.delete([item]) { _ in
                 showAlertForDeletion.toggle()
             }

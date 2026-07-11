@@ -9,23 +9,35 @@ import SwiftUI
 
 struct KindListView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
-    
+
     @State var presentAddKindView = false
     @State private var showAlertForDeletion = false
-    @State private var selected: Kind?
-    
+    @Binding var selected: Kind?
+
     var kinds: [Kind] {
         return viewModel.filteredKinds
     }
-    
+
     var body: some View {
-        VStack {
-            kindList
-                .sheet(isPresented: $presentAddKindView) {
-                    AddKindView()
-                        .environmentObject(viewModel)
-                        .modifier(SheetModifier())
+        List(selection: $selected) {
+            ForEach(kinds) { kind in
+                NavigationLink(value: kind) {
+                    BrandKindSellerRowView(name: kind.name ?? "", itemCount: viewModel.getItemCount(kind))
                 }
+            }
+            .onDelete(perform: deleteKinds)
+        }
+        .navigationTitle("Categories")
+        .toolbar {
+            header
+        }
+        .refreshable {
+            viewModel.fetchEntities()
+        }
+        .sheet(isPresented: $presentAddKindView) {
+            AddKindView()
+                .environmentObject(viewModel)
+                .modifier(SheetModifier())
         }
         .alert("Unable to Delete Data", isPresented: $showAlertForDeletion) {
             Button("Dismiss") {
@@ -34,38 +46,9 @@ struct KindListView: View {
             Text("Failed to delete the selected category")
         }
     }
-    
-    private var kindList: some View {
-        NavigationSplitView {
-            VStack {
-                List(selection: $selected) {
-                    ForEach(kinds) { kind in
-                        NavigationLink(value: kind) {
-                            BrandKindSellerRowView(name: kind.name ?? "", itemCount: viewModel.getItemCount(kind))
-                        }
-                    }
-                    .onDelete(perform: deleteKinds)
-                }
-                .navigationTitle("Categories")
-                .toolbar {
-                    header
-                }
-            }
-            .refreshable {
-                viewModel.fetchEntities()
-            }
-        } detail: {
-            if let kind = selected {
-                KindDetailView(kind: kind, name: kind.name ?? "", items: viewModel.getItems(kind))
-                    .environmentObject(viewModel)
-                    .id(kind)
-                    .navigationBarTitleDisplayMode(.inline)
-            }
-        }
-    }
-    
+
     private var header: ToolbarItemGroup<some View> {
-        ToolbarItemGroup(placement: .topBarLeading) {
+        ToolbarItemGroup(placement: .leadingButtons) {
             Button {
                 presentAddKindView = true
             } label: {
@@ -76,7 +59,11 @@ struct KindListView: View {
 
     private func deleteKinds(offsets: IndexSet) {
         withAnimation {
-            viewModel.delete(offsets.map { kinds[$0] }) { _ in
+            let kindsToDelete = offsets.map { kinds[$0] }
+            if let selected, kindsToDelete.contains(selected) {
+                self.selected = nil
+            }
+            viewModel.delete(kindsToDelete) { _ in
                 showAlertForDeletion.toggle()
             }
         }

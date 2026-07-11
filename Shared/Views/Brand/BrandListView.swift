@@ -9,23 +9,35 @@ import SwiftUI
 
 struct BrandListView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
-    
+
     @State var presentAddBrandView = false
     @State private var showAlertForDeletion = false
-    @State private var selectedBrand: Brand?
-    
+    @Binding var selected: Brand?
+
     var brands: [Brand] {
         return viewModel.filteredBrands
     }
-    
+
     var body: some View {
-        VStack {
-            brandList
-                .sheet(isPresented: $presentAddBrandView) {
-                    AddBrandView()
-                        .environmentObject(viewModel)
-                        .modifier(SheetModifier())
+        List(selection: $selected) {
+            ForEach(brands) { brand in
+                NavigationLink(value: brand) {
+                    BrandKindSellerRowView(name: brand.name ?? "", itemCount: viewModel.getItemCount(brand))
                 }
+            }
+            .onDelete(perform: deleteBrands)
+        }
+        .navigationTitle("Brands")
+        .toolbar {
+            header
+        }
+        .refreshable {
+            viewModel.fetchEntities()
+        }
+        .sheet(isPresented: $presentAddBrandView) {
+            AddBrandView()
+                .environmentObject(viewModel)
+                .modifier(SheetModifier())
         }
         .alert("Unable to Delete Data", isPresented: $showAlertForDeletion) {
             Button("Dismiss") {
@@ -35,38 +47,9 @@ struct BrandListView: View {
             Text("Failed to delete the selected brand")
         }
     }
-    
-    private var brandList: some View {
-        NavigationSplitView {
-            VStack {
-                List(selection: $selectedBrand) {
-                    ForEach(brands) { brand in
-                        NavigationLink(value: brand) {
-                            BrandKindSellerRowView(name: brand.name ?? "", itemCount: viewModel.getItemCount(brand))
-                        }
-                    }
-                    .onDelete(perform: deleteBrands)
-                }
-                .navigationTitle("Brands")
-                .toolbar {
-                    header
-                }
-            }
-            .refreshable {
-                viewModel.fetchEntities()
-            }
-        } detail: {
-            if let brand = selectedBrand {
-                BrandDetailView(brand: brand, name: brand.name ?? "", urlString: brand.url?.absoluteString ?? "", items: viewModel.getItems(brand))
-                    .environmentObject(viewModel)
-                    .id(brand)
-                    .navigationBarTitleDisplayMode(.inline)
-            }
-        }
-    }
-    
+
     private var header: ToolbarItemGroup<some View> {
-        ToolbarItemGroup(placement: .topBarLeading) {
+        ToolbarItemGroup(placement: .leadingButtons) {
             Button{
                 presentAddBrandView = true
             } label: {
@@ -74,13 +57,16 @@ struct BrandListView: View {
             }
         }
     }
-    
+
     private func deleteBrands(offsets: IndexSet) {
         withAnimation {
-            viewModel.delete(offsets.map { brands[$0] }) { _ in
+            let brandsToDelete = offsets.map { brands[$0] }
+            if let selected, brandsToDelete.contains(selected) {
+                self.selected = nil
+            }
+            viewModel.delete(brandsToDelete) { _ in
                 showAlertForDeletion.toggle()
             }
         }
     }
 }
-
