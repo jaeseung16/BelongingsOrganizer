@@ -51,6 +51,13 @@ struct SellerListView: View {
     private var header: ToolbarItemGroup<some View> {
         ToolbarItemGroup(placement: .leadingButtons) {
             Button {
+                viewModel.refresh()
+            } label: {
+                Label("Refresh", systemImage: "arrow.clockwise")
+            }
+            .disabled(!viewModel.canRefresh)
+
+            Button {
                 presentAddSelleriew = true
             } label: {
                 Label("Add a seller", systemImage: "plus")

@@ -145,6 +145,13 @@ struct ItemListView: View {
 
     private var header: ToolbarItemGroup<some View> {
         ToolbarItemGroup(placement: .leadingButtons) {
+            Button {
+                viewModel.refresh()
+            } label: {
+                Label("Refresh", systemImage: "arrow.clockwise")
+            }
+            .disabled(!viewModel.canRefresh)
+
             Button  {
                 presentFilterItemsView = true
             } label: {

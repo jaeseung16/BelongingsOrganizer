@@ -38,6 +38,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     @Published var showAlert = false
     @Published var stringToSearch = ""
     @Published var navigateToItems = false
+    @Published var canRefresh = false
 
     var message = ""
     
@@ -71,6 +72,13 @@ class BelongingsViewModel: NSObject, ObservableObject {
         fetchSellers()
     }
     
+    // Picks up changes merged from CloudKit since the last fetch
+    func refresh() -> Void {
+        fetchEntities()
+        fetchEntitiesToFilterItems()
+        canRefresh = false
+    }
+
     func fetchEntitiesToFilterItems() -> Void {
         fetchAllKinds()
         fetchAllBrands()
@@ -297,6 +305,9 @@ class BelongingsViewModel: NSObject, ObservableObject {
         Task {
             do {
                 _ = try await persistence.fetchUpdates()
+                if !canRefresh {
+                    canRefresh = true
+                }
             } catch {
                 self.logger.log("Error while updating history: \(error.localizedDescription, privacy: .public) \(Thread.callStackSymbols, privacy: .public)")
             }
@@ -316,6 +327,21 @@ class BelongingsViewModel: NSObject, ObservableObject {
     private let maxCountForStats = 10
     private let others = "others"
     
+    public func itemOverTime(type: StatsType, from start: Date, to end: Date) -> [ItemOverTime] {
+        let itemsBetweenStartAndEnd = type == .obtained ? itemsObtainedBetween(from: start, to: end) : itemsDisposedBetween(from: start, to: end)
+
+        // Bucket by day; the stored dates carry a time component
+        var itemsByDate = [Date: Int]()
+        for item in itemsBetweenStartAndEnd {
+            if let date = type == .obtained ? item.obtained : item.disposed {
+                itemsByDate[Calendar.current.startOfDay(for: date), default: 0] += 1
+            }
+        }
+
+        return itemsByDate.map { ItemOverTime(date: $0, itemCount: $1) }
+            .sorted(by: { $0.date > $1.date })
+    }
+
     public func itemCountsByKind(type: StatsType, from start: Date, to end: Date) -> [KindStats] {
         var result = [KindStats]()
         let itemsBetweenStartAndEnd = type == .obtained ? itemsObtainedBetween(from: start, to: end) : itemsDisposedBetween(from: start, to: end)

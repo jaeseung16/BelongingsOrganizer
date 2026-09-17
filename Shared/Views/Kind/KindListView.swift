@@ -50,6 +50,13 @@ struct KindListView: View {
     private var header: ToolbarItemGroup<some View> {
         ToolbarItemGroup(placement: .leadingButtons) {
             Button {
+                viewModel.refresh()
+            } label: {
+                Label("Refresh", systemImage: "arrow.clockwise")
+            }
+            .disabled(!viewModel.canRefresh)
+
+            Button {
                 presentAddKindView = true
             } label: {
                 Label("Add a category", systemImage: "plus")

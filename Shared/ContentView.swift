@@ -75,6 +75,10 @@ struct ContentView: View {
     @State private var selectedBrand: Brand?
     @State private var selectedSeller: Seller?
 
+    @State private var statsType = StatsType.obtained
+    @State private var statsStart = Calendar.current.date(byAdding: DateComponents(day: -7), to: Date())!
+    @State private var statsEnd = Date()
+
     var body: some View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
             List(SidebarSection.sidebarCases, selection: $section) { section in
@@ -116,7 +120,7 @@ struct ContentView: View {
     private var contentColumn: some View {
         switch section {
         case .stats:
-            StatsView()
+            StatsView(statsType: $statsType, start: $statsStart, end: $statsEnd)
         case .settings:
             SettingsView()
         case nil:
@@ -170,7 +174,9 @@ struct ContentView: View {
                     .id(seller)
                     .toolbarTitleDisplayMode(.inline)
             }
-        case .stats, .settings, nil:
+        case .stats:
+            StatsDetailView(statsType: statsType, start: statsStart, end: statsEnd)
+        case .settings, nil:
             EmptyView()
         }
     }
