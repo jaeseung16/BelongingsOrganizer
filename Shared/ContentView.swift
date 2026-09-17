@@ -7,10 +7,6 @@
 
 import SwiftUI
 import CoreData
-#if os(iOS)
-import AppTrackingTransparency
-import GoogleMobileAds
-#endif
 
 extension ToolbarItemPlacement {
     // .topBarLeading is unavailable on macOS
@@ -102,17 +98,8 @@ struct ContentView: View {
                 viewModel.navigateToItems = false
             }
         }
-        #if os(iOS)
-        .safeAreaInset(edge: .bottom) {
-            BannerAd()
-                .frame(height: 50)
-        }
-        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
-            ATTrackingManager.requestTrackingAuthorization { status in
-                GADMobileAds.sharedInstance().start(completionHandler: nil)
-
-            }
-        }
+        #if ADS
+        .adSupport()
         #endif
     }
 
