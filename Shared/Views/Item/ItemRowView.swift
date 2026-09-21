@@ -10,7 +10,7 @@ import SwiftUI
 struct ItemRowView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
     
-    @State var item: Item
+    @ObservedObject var item: Item
     var imageWidth: CGFloat = 50
     
     var body: some View {

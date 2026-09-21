@@ -59,7 +59,30 @@ class BelongingsViewModel: NSObject, ObservableObject {
         let webPCoder = SDImageWebPCoder.shared
         SDImageCodersManager.shared.addCoder(webPCoder)
         
-        self.persistence.container.viewContext.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+        let viewContext = self.persistence.container.viewContext
+        viewContext.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+        // Set once rather than per save: overlapping saves used to clear each other's author
+        viewContext.transactionAuthor = PersistenceHelper.transactionAuthor
+        
+        // Remote deletions are merged into the view context automatically; drop them from the lists
+        // right away instead of keeping deleted objects around until the next refresh
+        NotificationCenter.default
+            .publisher(for: .NSManagedObjectContextObjectsDidChange, object: viewContext)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.removeDeletedObjects($0) }
+            .store(in: &subscriptions)
+        
+        if self.persistence.container.persistentStoreCoordinator.persistentStores.isEmpty {
+            logger.error("No persistent store is loaded")
+            message = "Unable to open the data store. Items can't be loaded or saved. Please restart the app."
+            showAlert = true
+        }
+        
+        persistenceHelper.assignMissingUUIDs { result in
+            if case .failure(let error) = result {
+                self.logger.error("Failed to assign missing uuids: \(error.localizedDescription, privacy: .public)")
+            }
+        }
         
         fetchEntities()
         fetchEntitiesToFilterItems()
@@ -187,9 +210,9 @@ class BelongingsViewModel: NSObject, ObservableObject {
         allSellers = persistenceHelper.perform(fetchRequest)
     }
     
-    func update(_ dto: ItemDTO, kind: [Kind], brand: Brand?, seller: Seller?, _ isObtainedDateEdited: Bool, _ isDisposedDateEdited: Bool) -> Void {
-        guard let existingEntity = persistenceHelper.get(entity: .item, id: dto.id) as? Item else {
-            logger.error("Can't find the existing item with id=\(String(describing: dto.id), privacy: .public)")
+    func update(_ existingEntity: Item, to dto: ItemDTO, kind: [Kind], brand: Brand?, seller: Seller?, _ isObtainedDateEdited: Bool, _ isDisposedDateEdited: Bool) -> Void {
+        guard isAvailable(existingEntity) else {
+            handleMissing(existingEntity, name: dto.name)
             return
         }
         
@@ -229,47 +252,53 @@ class BelongingsViewModel: NSObject, ObservableObject {
         }
     }
     
-    func update(_ dto: KindDTO) -> Void {
-        if let id = dto.id, let existingEntity = persistenceHelper.get(entity: .kind, id: id) as? Kind {
-            persistenceHelper.update(existingEntity, to: dto) { result in
-                switch result {
-                case .success(_):
-                    self.handleSuccess()
-                case .failure(let error):
-                    self.logger.log("Error while deleting data: \(error.localizedDescription, privacy: .public)")
-                    self.message = "Cannot update name = \(String(describing: dto.name))"
-                    self.handle(error: error, completionHandler: nil)
-                }
+    func update(_ existingEntity: Kind, to dto: KindDTO) -> Void {
+        guard isAvailable(existingEntity) else {
+            handleMissing(existingEntity, name: dto.name)
+            return
+        }
+        persistenceHelper.update(existingEntity, to: dto) { result in
+            switch result {
+            case .success(_):
+                self.handleSuccess()
+            case .failure(let error):
+                self.logger.log("Error while deleting data: \(error.localizedDescription, privacy: .public)")
+                self.message = "Cannot update name = \(String(describing: dto.name))"
+                self.handle(error: error, completionHandler: nil)
             }
         }
     }
     
-    func update(_ dto: BrandDTO) -> Void {
-        if let id = dto.id, let existingEntity = persistenceHelper.get(entity: .brand, id: id) as? Brand {
-            persistenceHelper.update(existingEntity, to: dto) { result in
-                switch result {
-                case .success(_):
-                    self.handleSuccess()
-                case .failure(let error):
-                    self.logger.log("Error while deleting data: \(error.localizedDescription, privacy: .public)")
-                    self.message = "Cannot update name = \(String(describing: dto.name)) and url = \(String(describing: dto.url))"
-                    self.handle(error: error, completionHandler: nil)
-                }
+    func update(_ existingEntity: Brand, to dto: BrandDTO) -> Void {
+        guard isAvailable(existingEntity) else {
+            handleMissing(existingEntity, name: dto.name)
+            return
+        }
+        persistenceHelper.update(existingEntity, to: dto) { result in
+            switch result {
+            case .success(_):
+                self.handleSuccess()
+            case .failure(let error):
+                self.logger.log("Error while deleting data: \(error.localizedDescription, privacy: .public)")
+                self.message = "Cannot update name = \(String(describing: dto.name)) and url = \(String(describing: dto.url))"
+                self.handle(error: error, completionHandler: nil)
             }
         }
     }
     
-    func update(_ dto: SellerDTO) -> Void {
-        if let id = dto.id, let existingEntity = persistenceHelper.get(entity: .seller, id: id) as? Seller {
-            persistenceHelper.update(existingEntity, to: dto) { result in
-                switch result {
-                case .success(_):
-                    self.handleSuccess()
-                case .failure(let error):
-                    self.logger.log("Error while deleting data: \(error.localizedDescription, privacy: .public)")
-                    self.message = "Cannot update name = \(String(describing: dto.name)) and url = \(String(describing: dto.url))"
-                    self.handle(error: error, completionHandler: nil)
-                }
+    func update(_ existingEntity: Seller, to dto: SellerDTO) -> Void {
+        guard isAvailable(existingEntity) else {
+            handleMissing(existingEntity, name: dto.name)
+            return
+        }
+        persistenceHelper.update(existingEntity, to: dto) { result in
+            switch result {
+            case .success(_):
+                self.handleSuccess()
+            case .failure(let error):
+                self.logger.log("Error while deleting data: \(error.localizedDescription, privacy: .public)")
+                self.message = "Cannot update name = \(String(describing: dto.name)) and url = \(String(describing: dto.url))"
+                self.handle(error: error, completionHandler: nil)
             }
         }
     }
@@ -282,6 +311,9 @@ class BelongingsViewModel: NSObject, ObservableObject {
             case .failure(let error):
                 self.logger.log("Error while deleting data: \(error.localizedDescription, privacy: .public)")
                 DispatchQueue.main.async {
+                    // The rollback restored the objects that were already pruned from the lists
+                    self.fetchEntities()
+                    self.fetchEntitiesToFilterItems()
                     completionHandler(error)
                 }
             }
@@ -304,12 +336,51 @@ class BelongingsViewModel: NSObject, ObservableObject {
         }
     }
     
+    // MARK: - Deleted objects
+    // An object deleted here or merged in as deleted from CloudKit either reports isDeleted
+    // (pending save) or has lost its context (saved)
+    private func isAvailable(_ object: NSManagedObject) -> Bool {
+        !object.isDeleted && object.managedObjectContext != nil
+    }
+    
+    private func handleMissing(_ object: NSManagedObject, name: String?) -> Void {
+        logger.error("Can't update a deleted object: \(object.objectID, privacy: .public)")
+        message = "Cannot update \(name ?? "this record"): it has been deleted, possibly on another device"
+        showAlert = true
+        removeDeletedObjects()
+    }
+    
+    private func removeDeletedObjects(_ notification: Notification) -> Void {
+        let keys = [NSDeletedObjectsKey, NSInvalidatedObjectsKey, NSInvalidatedAllObjectsKey]
+        guard let userInfo = notification.userInfo, keys.contains(where: { userInfo[$0] != nil }) else {
+            return
+        }
+        removeDeletedObjects()
+    }
+    
+    private func removeDeletedObjects() -> Void {
+        // Assign only when something changed, so SwiftUI isn't invalidated for nothing
+        func prune<T: NSManagedObject>(_ objects: inout [T]) {
+            if objects.contains(where: { !isAvailable($0) }) {
+                objects.removeAll { !isAvailable($0) }
+            }
+        }
+        prune(&items)
+        prune(&allItems)
+        prune(&kinds)
+        prune(&allKinds)
+        prune(&brands)
+        prune(&allBrands)
+        prune(&sellers)
+        prune(&allSellers)
+    }
+    
     // MARK: - Persistence History Request
     private func fetchUpdates(_ notification: Notification) -> Void {
         Task {
             do {
-                _ = try await persistence.fetchUpdates()
-                if !canRefresh {
+                let changedObjectIDs = try await persistence.fetchUpdates()
+                if !changedObjectIDs.isEmpty && !canRefresh {
                     canRefresh = true
                 }
             } catch {

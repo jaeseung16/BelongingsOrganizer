@@ -16,6 +16,7 @@ import Persistence
 
 class PersistenceHelper {
     private static let logger = Logger()
+    static let transactionAuthor = "App"
     
     private let persistence: Persistence
     var viewContext: NSManagedObjectContext {
@@ -54,11 +55,23 @@ class PersistenceHelper {
         return fetchRequest
     }
     
-    func get(entity: Entities, id: UUID) -> NSManagedObject? {
-        let predicate = NSPredicate(format: "uuid == %@", argumentArray: [id])
-        let fetchRequest = getFetchRequest(for: entity.type, entityName: entity.rawValue, sortDescriptors: [], predicate: predicate)
-        let fetchedEntities = perform(fetchRequest)
-        return fetchedEntities.isEmpty ? nil : fetchedEntities[0]
+    // Every entity is created with a uuid, but the attribute is optional and nothing enforces it
+    func assignMissingUUIDs(completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
+        let predicate = NSPredicate(format: "uuid == nil")
+        var assigned = 0
+        for entity in Entities.allCases {
+            let fetchRequest = getFetchRequest(for: entity.type, entityName: entity.rawValue, predicate: predicate)
+            for object in perform(fetchRequest) {
+                object.setValue(UUID(), forKey: "uuid")
+                assigned += 1
+            }
+        }
+        guard assigned > 0 else {
+            completionHandler(.success(()))
+            return
+        }
+        PersistenceHelper.logger.log("Assigning uuids to \(assigned) objects")
+        saveContext(completionHandler: completionHandler)
     }
     
     // MARK: - Create
@@ -277,9 +290,6 @@ class PersistenceHelper {
     private func saveContext(completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
         let signpostState = PerformanceSignposts.signposter.beginInterval("save")
         let viewContext = self.viewContext
-        viewContext.transactionAuthor = "App"
-        let originalMergePolicy = viewContext.mergePolicy
-        viewContext.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
         Task {
             var result: Result<Void, Error>
             do {
@@ -288,13 +298,10 @@ class PersistenceHelper {
             } catch {
                 result = .failure(error)
             }
-            // Restore the context only after the actor has performed the save
             await MainActor.run { [result] in
                 if case .failure = result {
                     viewContext.rollback()
                 }
-                viewContext.mergePolicy = originalMergePolicy
-                viewContext.transactionAuthor = nil
                 PerformanceSignposts.signposter.endInterval("save", signpostState)
                 completionHandler(result)
             }

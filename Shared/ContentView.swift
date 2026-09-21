@@ -92,6 +92,30 @@ struct ContentView: View {
         } message: {
             Text(viewModel.message)
         }
+        // Clear selections whose object was deleted, here or on another device
+        .onChange(of: viewModel.items) { _, items in
+            if let item = selectedItem, !items.contains(item) {
+                selectedItem = nil
+            }
+            if let item = selectedDisposedItem, !items.contains(item) {
+                selectedDisposedItem = nil
+            }
+        }
+        .onChange(of: viewModel.kinds) { _, kinds in
+            if let kind = selectedKind, !kinds.contains(kind) {
+                selectedKind = nil
+            }
+        }
+        .onChange(of: viewModel.brands) { _, brands in
+            if let brand = selectedBrand, !brands.contains(brand) {
+                selectedBrand = nil
+            }
+        }
+        .onChange(of: viewModel.sellers) { _, sellers in
+            if let seller = selectedSeller, !sellers.contains(seller) {
+                selectedSeller = nil
+            }
+        }
         .onChange(of: viewModel.navigateToItems) { _, navigate in
             if navigate {
                 section = .items

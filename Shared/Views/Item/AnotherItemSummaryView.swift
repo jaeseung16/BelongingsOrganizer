@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AnotherItemSummaryView: View {
-    @State var item: Item
+    @ObservedObject var item: Item
     
     private let notApplicable = "N/A"
     

@@ -10,7 +10,7 @@ import SwiftUI
 struct SellerDetailView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
     
-    @State var seller: Seller
+    @ObservedObject var seller: Seller
     @State var name = ""
     @State var urlString = ""
     var items: [Item]
@@ -59,7 +59,7 @@ struct SellerDetailView: View {
     }
     
     private func update() {
-        viewModel.update(SellerDTO(id: seller.uuid, name: name, url: URL(string: urlString)))
+        viewModel.update(seller, to: SellerDTO(id: seller.uuid, name: name, url: URL(string: urlString)))
         isEdited = false
     }
     

@@ -10,7 +10,7 @@ import SwiftUI
 struct ItemDetailView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
     
-    @State var item: Item
+    @ObservedObject var item: Item
     @State var dto: ItemDTO
     
     @State private var isEdited = false
@@ -39,7 +39,7 @@ struct ItemDetailView: View {
             reset()
         } update: {
             isEdited = false
-            viewModel.update(dto, kind: dto.kind, brand: dto.brand, seller: dto.seller, isObtainedDateEdited, isDisposedDateEdited)
+            viewModel.update(item, to: dto, kind: dto.kind, brand: dto.brand, seller: dto.seller, isObtainedDateEdited, isDisposedDateEdited)
         }
     }
     

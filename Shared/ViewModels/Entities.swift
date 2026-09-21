@@ -8,7 +8,7 @@
 import Foundation
 import CoreData
 
-enum Entities: String {
+enum Entities: String, CaseIterable {
     case item = "Item"
     case kind = "Kind"
     case brand = "Brand"

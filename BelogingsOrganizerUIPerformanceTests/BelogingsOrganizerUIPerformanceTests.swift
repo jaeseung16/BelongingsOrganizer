@@ -24,7 +24,9 @@ nonisolated final class BelogingsOrganizerUIPerformanceTests: XCTestCase {
 
     func testSelectItem() throws {
         // UI tests must launch the application that they test.
+        // Seeded data: the real store is empty on a fresh simulator, leaving no cells to tap
         let app = XCUIApplication()
+        app.launchArguments += ["-StressTestItemCount", "50"]
         app.launch()
 
         // Use XCTAssert and related functions to verify your tests produce the correct results.
@@ -39,10 +41,21 @@ nonisolated final class BelogingsOrganizerUIPerformanceTests: XCTestCase {
         let measureOptions = XCTMeasureOptions()
         measureOptions.invocationOptions = [.manuallyStop]
         
+        // On a compact width (iPhone) selecting an item pushes its detail over the list
+        func returnToList() {
+            let backButton = app.navigationBars.buttons["BackButton"]
+            if backButton.waitForExistence(timeout: 2) {
+                backButton.tap()
+                XCTAssertTrue(itemList.waitForExistence(timeout: 5))
+            }
+        }
+
         measure(metrics: [XCTCPUMetric(), XCTClockMetric()], options: measureOptions) {
             itemList.cells.element(boundBy: 0).tap()
+            returnToList()
             itemList.cells.element(boundBy: 1).tap()
             stopMeasuring()
+            returnToList()
         }
     }
 
@@ -50,16 +63,19 @@ nonisolated final class BelogingsOrganizerUIPerformanceTests: XCTestCase {
     private static let stressItemCount = "2000"
     private static let subsystem = "com.resonance.jlee.Belongings"
 
+    @MainActor
     private func signpostMetric(_ name: String) -> XCTOSSignpostMetric {
         XCTOSSignpostMetric(subsystem: Self.subsystem, category: "PointsOfInterest", name: name)
     }
 
+    @MainActor
     private func stressApp() -> XCUIApplication {
         let app = XCUIApplication()
         app.launchArguments += ["-StressTestItemCount", Self.stressItemCount]
         return app
     }
 
+    @MainActor
     private func showItemList(in app: XCUIApplication) -> XCUIElement {
         let itemList = app.descendants(matching: .any)["ItemList"]
         if !itemList.waitForExistence(timeout: 10) {
@@ -70,6 +86,7 @@ nonisolated final class BelogingsOrganizerUIPerformanceTests: XCTestCase {
     }
 
     // Launch with seeded data: time spent fetching and filtering, and resident memory
+    @MainActor
     func testStressLaunchAndShowItems() throws {
         let app = stressApp()
         let metrics: [XCTMetric] = [signpostMetric("fetchEntities"),
@@ -84,6 +101,7 @@ nonisolated final class BelogingsOrganizerUIPerformanceTests: XCTestCase {
     }
 
     // Scrolling the seeded item list: hitches, list filtering, and memory growth
+    @MainActor
     func testStressScrollItemList() throws {
         let app = stressApp()
         app.launch()
