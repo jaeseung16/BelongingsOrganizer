@@ -33,6 +33,12 @@ struct ItemListView: View {
     @Binding var selected: Item?
 
     var filteredItems: [Item] {
+        PerformanceSignposts.measure("filterItems") {
+            filterAndSortItems()
+        }
+    }
+
+    private func filterAndSortItems() -> [Item] {
         (disposition == .active ? viewModel.activeItems : viewModel.disposedItems).filter {
             var filter = true
 

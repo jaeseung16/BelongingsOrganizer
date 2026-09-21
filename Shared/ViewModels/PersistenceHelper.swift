@@ -275,6 +275,7 @@ class PersistenceHelper {
     }
     
     private func saveContext(completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
+        let signpostState = PerformanceSignposts.signposter.beginInterval("save")
         let viewContext = self.viewContext
         viewContext.transactionAuthor = "App"
         let originalMergePolicy = viewContext.mergePolicy
@@ -294,6 +295,7 @@ class PersistenceHelper {
                 }
                 viewContext.mergePolicy = originalMergePolicy
                 viewContext.transactionAuthor = nil
+                PerformanceSignposts.signposter.endInterval("save", signpostState)
                 completionHandler(result)
             }
         }

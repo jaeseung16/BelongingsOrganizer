@@ -35,10 +35,32 @@ class AppDelegate: NSObject {
     let viewModel: BelongingsViewModel
     
     override init() {
+        #if DEBUG
+        if let itemCount = StressTestData.itemCount,
+           let modelURL = Bundle.main.url(forResource: BelongsOrganizerConstants.appName.rawValue, withExtension: "momd"),
+           let model = NSManagedObjectModel(contentsOf: modelURL) {
+            // A separate name keeps the stress store and its history token away from the real store's
+            StressTestData.destroyStore()
+            self.persistence = Persistence(name: StressTestData.storeName, identifier: BelongsOrganizerConstants.iCloudIdentifier.rawValue, model: model, isCloud: false)
+            StressTestData.seed(persistence.container.viewContext, itemCount: itemCount)
+            self.viewModel = BelongingsViewModel(persistence: persistence)
+            super.init()
+            return
+        }
+        #endif
         self.persistence = Persistence(name: BelongsOrganizerConstants.appName.rawValue, identifier: BelongsOrganizerConstants.iCloudIdentifier.rawValue)
         self.viewModel = BelongingsViewModel(persistence: persistence)
         
         super.init()
+    }
+    
+    // Stress test runs use a local in-memory store: no pushes, no CloudKit subscription
+    private var usesCloudKit: Bool {
+        #if DEBUG
+        return StressTestData.itemCount == nil
+        #else
+        return true
+        #endif
     }
     
     private func registerForPushNotifications() {
@@ -129,6 +151,10 @@ extension AppDelegate: NSApplicationDelegate {
         logger.log("didFinishLaunchingWithOptions")
         UNUserNotificationCenter.current().delegate = self
         
+        guard usesCloudKit else {
+            return
+        }
+        
         registerForPushNotifications()
         
         // TODO: - Remove or comment out after testing
@@ -168,6 +194,10 @@ extension AppDelegate: UIApplicationDelegate {
        
         logger.log("didFinishLaunchingWithOptions")
         UNUserNotificationCenter.current().delegate = self
+        
+        guard usesCloudKit else {
+            return true
+        }
         
         registerForPushNotifications()
         

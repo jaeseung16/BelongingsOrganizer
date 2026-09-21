@@ -46,6 +46,65 @@ nonisolated final class BelogingsOrganizerUIPerformanceTests: XCTestCase {
         }
     }
 
+    // MARK: - Stress data (DEBUG builds seed an in-memory store; see StressTestData)
+    private static let stressItemCount = "2000"
+    private static let subsystem = "com.resonance.jlee.Belongings"
+
+    private func signpostMetric(_ name: String) -> XCTOSSignpostMetric {
+        XCTOSSignpostMetric(subsystem: Self.subsystem, category: "PointsOfInterest", name: name)
+    }
+
+    private func stressApp() -> XCUIApplication {
+        let app = XCUIApplication()
+        app.launchArguments += ["-StressTestItemCount", Self.stressItemCount]
+        return app
+    }
+
+    private func showItemList(in app: XCUIApplication) -> XCUIElement {
+        let itemList = app.descendants(matching: .any)["ItemList"]
+        if !itemList.waitForExistence(timeout: 10) {
+            app.staticTexts["Items"].firstMatch.tap()
+            XCTAssertTrue(itemList.waitForExistence(timeout: 10))
+        }
+        return itemList
+    }
+
+    // Launch with seeded data: time spent fetching and filtering, and resident memory
+    func testStressLaunchAndShowItems() throws {
+        let app = stressApp()
+        let metrics: [XCTMetric] = [signpostMetric("fetchEntities"),
+                                    signpostMetric("fetchEntitiesToFilterItems"),
+                                    signpostMetric("filterItems"),
+                                    XCTMemoryMetric(application: app)]
+        measure(metrics: metrics) {
+            // launch() relaunches the app, so every iteration starts cold
+            app.launch()
+            _ = showItemList(in: app)
+        }
+    }
+
+    // Scrolling the seeded item list: hitches, list filtering, and memory growth
+    func testStressScrollItemList() throws {
+        let app = stressApp()
+        app.launch()
+        let itemList = showItemList(in: app)
+
+        let measureOptions = XCTMeasureOptions()
+        measureOptions.invocationOptions = [.manuallyStop]
+        let metrics: [XCTMetric] = [XCTOSSignpostMetric.scrollingAndDecelerationMetric,
+                                    signpostMetric("filterItems"),
+                                    XCTMemoryMetric(application: app)]
+        measure(metrics: metrics, options: measureOptions) {
+            for _ in 0..<5 {
+                itemList.swipeUp(velocity: .fast)
+            }
+            stopMeasuring()
+            for _ in 0..<5 {
+                itemList.swipeDown(velocity: .fast)
+            }
+        }
+    }
+
     func testLaunchPerformance() throws {
         if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
             // This measures how long it takes to launch your application.

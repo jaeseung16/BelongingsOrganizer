@@ -66,10 +66,12 @@ class BelongingsViewModel: NSObject, ObservableObject {
     }
     
     func fetchEntities() -> Void {
-        fetchItems()
-        fetchKinds()
-        fetchBrands()
-        fetchSellers()
+        PerformanceSignposts.measure("fetchEntities") {
+            fetchItems()
+            fetchKinds()
+            fetchBrands()
+            fetchSellers()
+        }
     }
     
     // Picks up changes merged from CloudKit since the last fetch
@@ -80,9 +82,11 @@ class BelongingsViewModel: NSObject, ObservableObject {
     }
 
     func fetchEntitiesToFilterItems() -> Void {
-        fetchAllKinds()
-        fetchAllBrands()
-        fetchAllSellers()
+        PerformanceSignposts.measure("fetchEntitiesToFilterItems") {
+            fetchAllKinds()
+            fetchAllBrands()
+            fetchAllSellers()
+        }
     }
     
     @Published var items = [Item]()
