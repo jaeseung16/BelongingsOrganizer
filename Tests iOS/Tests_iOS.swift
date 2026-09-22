@@ -61,6 +61,8 @@ nonisolated class Tests_iOS: XCTestCase {
         app.navigationBars.buttons.element(boundBy: 0).tap()
         XCTAssertTrue(itemList.staticTexts["Renamed Item"].waitForExistence(timeout: 5))
         XCTAssertFalse(itemList.staticTexts[originalName].exists)
+        // A local save is not a remote change
+        XCTAssertFalse(app.buttons["Refresh"].isEnabled)
 
         // Delete it with the swipe action
         let renamedCell = itemList.cells.containing(.staticText, identifier: "Renamed Item").firstMatch

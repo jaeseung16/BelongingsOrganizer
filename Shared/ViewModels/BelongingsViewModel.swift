@@ -379,7 +379,8 @@ class BelongingsViewModel: NSObject, ObservableObject {
     private func fetchUpdates(_ notification: Notification) -> Void {
         Task {
             do {
-                let changedObjectIDs = try await persistence.fetchUpdates()
+                // The app's own saves are already in the view context; only other authors (CloudKit) matter
+                let changedObjectIDs = try await persistence.fetchUpdates(excludingAuthors: [PersistenceHelper.transactionAuthor])
                 if !changedObjectIDs.isEmpty && !canRefresh {
                     canRefresh = true
                 }

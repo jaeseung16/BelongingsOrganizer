@@ -97,6 +97,8 @@ enum StressTestData {
         }
 
         do {
+            // Seeded data is local, so the history pass must not report it as a remote change
+            context.transactionAuthor = PersistenceHelper.transactionAuthor
             try context.save()
             // Start from faults, like a real launch, instead of the fully populated seed objects
             context.reset()
