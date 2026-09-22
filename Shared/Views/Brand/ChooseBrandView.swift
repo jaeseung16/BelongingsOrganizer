@@ -83,7 +83,7 @@ struct ChooseBrandView: View {
     
     private var brandList: some View {
         List {
-            ForEach(viewModel.allBrands) { brand in
+            ForEach(viewModel.brands) { brand in
                 Button {
                     self.brand = brand
                 } label: {
@@ -96,7 +96,7 @@ struct ChooseBrandView: View {
     
     private func deleteBrands(offsets: IndexSet) {
         withAnimation {
-            viewModel.delete(offsets.map { viewModel.allBrands[$0] }) { error in
+            viewModel.delete(offsets.map { viewModel.brands[$0] }) { error in
                 showAlertForDeletion.toggle()
             }
         }

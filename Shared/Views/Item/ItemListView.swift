@@ -32,58 +32,28 @@ struct ItemListView: View {
 
     @Binding var selected: Item?
 
-    var filteredItems: [Item] {
-        PerformanceSignposts.measure("filterItems") {
-            filterAndSortItems()
-        }
+    // Recomputed only when one of these changes, or when the items do
+    private struct Query: Equatable {
+        var disposition: ItemDisposition
+        var search: String
+        var kinds: Set<Kind>
+        var brands: Set<Brand>
+        var sellers: Set<Seller>
+        var sortType: SortType
+        var sortDirection: SortDirection
     }
 
-    private func filterAndSortItems() -> [Item] {
-        (disposition == .active ? viewModel.activeItems : viewModel.disposedItems).filter {
-            var filter = true
+    private var query: Query {
+        Query(disposition: disposition, search: viewModel.stringToSearch, kinds: selectedKinds, brands: selectedBrands,
+              sellers: selectedSellers, sortType: sortType, sortDirection: sortDirection)
+    }
 
-            if let kind = $0.kind as? Set<Kind>, !selectedKinds.isEmpty && selectedKinds.intersection(kind).isEmpty {
-                filter = false
-            }
+    @State private var filteredItems = [Item]()
 
-            if let brand = $0.brand as? Set<Brand>, !selectedBrands.isEmpty && selectedBrands.intersection(brand).isEmpty {
-                filter = false
-            }
-
-            if let seller = $0.seller as? Set<Seller>, !selectedSellers.isEmpty && selectedSellers.intersection(seller).isEmpty {
-                filter = false
-            }
-
-            return filter
-        }
-        .filter {
-            if let name = $0.name {
-                return viewModel.checkIfStringToSearchContainedIn(name)
-            } else {
-                return false
-            }
-        }
-        .sorted {
-            switch sortType {
-            case .lastupd:
-                if let lastupd1 = $0.lastupd, let lastupd2 = $1.lastupd {
-                    return sortDirection == .ascending ? lastupd1 < lastupd2 : lastupd2 < lastupd1
-                } else {
-                    return false
-                }
-            case .obtained:
-                if let obtained1 = $0.obtained, let obtained2 = $1.obtained {
-                    return sortDirection == .ascending ? obtained1 < obtained2 : obtained2 < obtained1
-                } else {
-                    return false
-                }
-            case .name:
-                if let name1 = $0.name, let name2 = $1.name {
-                    return sortDirection == .ascending ? name1 < name2 : name2 < name1
-                } else {
-                    return false
-                }
-            }
+    private func updateFilteredItems() {
+        filteredItems = PerformanceSignposts.measure("filterItems") {
+            viewModel.fetchItems(disposition, kinds: selectedKinds, brands: selectedBrands, sellers: selectedSellers,
+                                 sortType: sortType, sortDirection: sortDirection)
         }
     }
 
@@ -117,6 +87,16 @@ struct ItemListView: View {
                     }
                 }
             }
+        }
+        .onChange(of: query, initial: true) {
+            updateFilteredItems()
+        }
+        .onChange(of: viewModel.itemsGeneration) {
+            updateFilteredItems()
+        }
+        // Deletions are pruned from items without a refetch
+        .onChange(of: viewModel.items) {
+            updateFilteredItems()
         }
         .accessibilityIdentifier(disposition == .active ? "ItemList" : "DisposedItemList")
         .navigationTitle(disposition == .active ? "Items" : "Disposed")

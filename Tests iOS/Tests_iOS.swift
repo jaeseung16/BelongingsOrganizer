@@ -45,11 +45,11 @@ nonisolated class Tests_iOS: XCTestCase {
             XCTAssertTrue(itemList.waitForExistence(timeout: 10))
         }
 
-        // Rename the first item through the detail view
-        let firstCell = itemList.cells.element(boundBy: 0)
-        XCTAssertTrue(firstCell.waitForExistence(timeout: 5))
-        let originalName = firstCell.staticTexts.element(boundBy: 0).label
-        firstCell.tap()
+        // Rename the second item through the detail view; the save should move it to the top
+        let editedCell = itemList.cells.element(boundBy: 1)
+        XCTAssertTrue(editedCell.waitForExistence(timeout: 5))
+        let originalName = editedCell.staticTexts.element(boundBy: 0).label
+        editedCell.tap()
 
         let nameField = app.textFields.element(boundBy: 0)
         XCTAssertTrue(nameField.waitForExistence(timeout: 5))
@@ -63,6 +63,16 @@ nonisolated class Tests_iOS: XCTestCase {
         XCTAssertFalse(itemList.staticTexts[originalName].exists)
         // A local save is not a remote change
         XCTAssertFalse(app.buttons["Refresh"].isEnabled)
+        // The list is sorted by last update, newest first
+        XCTAssertEqual(itemList.cells.element(boundBy: 0).staticTexts.element(boundBy: 0).label, "Renamed Item")
+
+        // Disposing moves an item out of the active list
+        let disposedCell = itemList.cells.element(boundBy: 1)
+        let disposedName = disposedCell.staticTexts.element(boundBy: 0).label
+        disposedCell.swipeLeft()
+        app.buttons["Dispose"].tap()
+        let disposed = expectation(for: NSPredicate(format: "exists == false"), evaluatedWith: itemList.staticTexts[disposedName])
+        wait(for: [disposed], timeout: 5)
 
         // Delete it with the swipe action
         let renamedCell = itemList.cells.containing(.staticText, identifier: "Renamed Item").firstMatch
@@ -72,6 +82,34 @@ nonisolated class Tests_iOS: XCTestCase {
         let gone = expectation(for: NSPredicate(format: "exists == false"), evaluatedWith: itemList.staticTexts["Renamed Item"])
         wait(for: [gone], timeout: 5)
         XCTAssertTrue(itemList.cells.element(boundBy: 0).exists)
+    }
+
+    // The item list filters in the fetch request; searching must still match names case-insensitively
+    @MainActor
+    func testStressDataSearchItems() throws {
+        let app = XCUIApplication()
+        app.launchArguments += ["-StressTestItemCount", "300"]
+        app.launch()
+
+        let itemList = app.descendants(matching: .any)["ItemList"]
+        if !itemList.waitForExistence(timeout: 10) {
+            app.staticTexts["Items"].firstMatch.tap()
+            XCTAssertTrue(itemList.waitForExistence(timeout: 10))
+        }
+
+        let searchField = app.searchFields.firstMatch
+        XCTAssertTrue(searchField.waitForExistence(timeout: 5))
+        searchField.tap()
+        searchField.typeText("item 29")
+
+        // Items 29 and 290-299, minus any the seed disposed
+        let firstCell = itemList.cells.element(boundBy: 0)
+        XCTAssertTrue(firstCell.waitForExistence(timeout: 5))
+        XCTAssertLessThanOrEqual(itemList.cells.count, 11)
+        for index in 0..<itemList.cells.count {
+            let name = itemList.cells.element(boundBy: index).staticTexts.element(boundBy: 0).label
+            XCTAssertTrue(name.hasPrefix("Item 29"), "Unexpected match: \(name)")
+        }
     }
 
     func testLaunchPerformance() throws {

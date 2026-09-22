@@ -34,7 +34,6 @@ class BelongingsViewModel: NSObject, ObservableObject {
 
     private var subscriptions: Set<AnyCancellable> = []
     
-    @Published var changedPeristentContext = NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave)
     @Published var showAlert = false
     @Published var stringToSearch = ""
     @Published var navigateToItems = false
@@ -85,7 +84,6 @@ class BelongingsViewModel: NSObject, ObservableObject {
         }
         
         fetchEntities()
-        fetchEntitiesToFilterItems()
     }
     
     func fetchEntities() -> Void {
@@ -100,36 +98,59 @@ class BelongingsViewModel: NSObject, ObservableObject {
     // Picks up changes merged from CloudKit since the last fetch
     func refresh() -> Void {
         fetchEntities()
-        fetchEntitiesToFilterItems()
         canRefresh = false
-    }
-
-    func fetchEntitiesToFilterItems() -> Void {
-        PerformanceSignposts.measure("fetchEntitiesToFilterItems") {
-            fetchAllKinds()
-            fetchAllBrands()
-            fetchAllSellers()
-        }
     }
     
     @Published var items = [Item]()
+    // Bumped on every item fetch: after an edit or a dispose the refetched array can compare
+    // equal to the old one, but the list's filtering and sorting still need to rerun
+    @Published private(set) var itemsGeneration = 0
     func fetchItems() -> Void {
         let fetchRequest = persistenceHelper.getFetchRequest(for: Item.self, entityName: "Item", sortDescriptors: [])
+        // Faults only: an item's row carries its photo inline (blobs under ~100 KB aren't stored
+        // externally), so loading every row here would load every photo
+        fetchRequest.includesPropertyValues = false
         items = persistenceHelper.perform(fetchRequest)
+        itemsGeneration += 1
     }
 
-    var activeItems: [Item] {
-        items.filter { $0.disposed == nil }
-    }
-
-    var disposedItems: [Item] {
-        items.filter { $0.disposed != nil }
-    }
-    
-    @Published var allItems = [Item]()
-    func fetchAllItems() -> Void {
-        let fetchRequest = persistenceHelper.getFetchRequest(for: Item.self, entityName: "Item", sortDescriptors: [])
-        allItems = persistenceHelper.perform(fetchRequest)
+    // The item list's query: SQLite filters and sorts, and batching faults in only the rows
+    // the list actually shows. `items` stays unfiltered for the stats.
+    func fetchItems(_ disposition: ItemDisposition, kinds: Set<Kind>, brands: Set<Brand>, sellers: Set<Seller>, sortType: SortType, sortDirection: SortDirection) -> [Item] {
+        var predicates = [NSPredicate(format: disposition == .active ? "disposed == nil" : "disposed != nil")]
+        if stringToSearch.isEmpty {
+            predicates.append(NSPredicate(format: "name != nil"))
+        } else {
+            predicates.append(NSPredicate(format: "name CONTAINS[c] %@", stringToSearch))
+        }
+        // A selected category, brand, or seller may have been deleted since it was selected
+        let kinds = kinds.filter(isAvailable)
+        if !kinds.isEmpty {
+            predicates.append(NSPredicate(format: "ANY kind IN %@", kinds))
+        }
+        let brands = brands.filter(isAvailable)
+        if !brands.isEmpty {
+            predicates.append(NSPredicate(format: "ANY brand IN %@", brands))
+        }
+        let sellers = sellers.filter(isAvailable)
+        if !sellers.isEmpty {
+            predicates.append(NSPredicate(format: "ANY seller IN %@", sellers))
+        }
+        
+        let key: String
+        switch sortType {
+        case .lastupd:
+            key = "lastupd"
+        case .obtained:
+            key = "obtained"
+        case .name:
+            key = "name"
+        }
+        let sortDescriptors = [NSSortDescriptor(key: key, ascending: sortDirection == .ascending)]
+        
+        let fetchRequest = persistenceHelper.getFetchRequest(for: Item.self, entityName: "Item", sortDescriptors: sortDescriptors, predicate: NSCompoundPredicate(andPredicateWithSubpredicates: predicates))
+        fetchRequest.fetchBatchSize = 50
+        return persistenceHelper.perform(fetchRequest)
     }
     
     @Published var kinds = [Kind]()
@@ -150,14 +171,6 @@ class BelongingsViewModel: NSObject, ObservableObject {
         kinds = persistenceHelper.perform(fetchRequest)
     }
     
-    @Published var allKinds = [Kind]()
-    func fetchAllKinds() -> Void {
-        let sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
-                               NSSortDescriptor(key: "created", ascending: false)]
-        let fetchRequest = persistenceHelper.getFetchRequest(for: Kind.self, entityName: "Kind", sortDescriptors: sortDescriptors)
-        allKinds = persistenceHelper.perform(fetchRequest)
-    }
-    
     @Published var brands = [Brand]()
     var filteredBrands: [Brand] {
         brands.filter {
@@ -174,14 +187,6 @@ class BelongingsViewModel: NSObject, ObservableObject {
                                NSSortDescriptor(key: "created", ascending: false)]
         let fetchRequest = persistenceHelper.getFetchRequest(for: Brand.self, entityName: "Brand", sortDescriptors: sortDescriptors)
         brands = persistenceHelper.perform(fetchRequest)
-    }
-    
-    @Published var allBrands = [Brand]()
-    func fetchAllBrands() -> Void {
-        let sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
-                               NSSortDescriptor(key: "created", ascending: false)]
-        let fetchRequest = persistenceHelper.getFetchRequest(for: Brand.self, entityName: "Brand", sortDescriptors: sortDescriptors)
-        allBrands = persistenceHelper.perform(fetchRequest)
     }
     
     @Published var sellers = [Seller]()
@@ -202,14 +207,6 @@ class BelongingsViewModel: NSObject, ObservableObject {
         sellers = persistenceHelper.perform(fetchRequest)
     }
     
-    @Published var allSellers = [Seller]()
-    func fetchAllSellers() -> Void {
-        let sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare)),
-                               NSSortDescriptor(key: "created", ascending: false)]
-        let fetchRequest = persistenceHelper.getFetchRequest(for: Seller.self, entityName: "Seller", sortDescriptors: sortDescriptors)
-        allSellers = persistenceHelper.perform(fetchRequest)
-    }
-    
     func update(_ existingEntity: Item, to dto: ItemDTO, kind: [Kind], brand: Brand?, seller: Seller?, _ isObtainedDateEdited: Bool, _ isDisposedDateEdited: Bool) -> Void {
         guard isAvailable(existingEntity) else {
             handleMissing(existingEntity, name: dto.name)
@@ -225,7 +222,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
         persistenceHelper.update(existingEntity, to: dtoWithResizedImage ?? dto , kind: kind, brand: brand, seller: seller, isObtainedDateEdited, isDisposedDateEdited) { result in
             switch result {
             case .success(_):
-                self.handleSuccess()
+                self.handleSuccess(refetching: [.item])
             case .failure(let error):
                 self.logger.log("Error while deleting data: \(error.localizedDescription, privacy: .public)")
                 self.message = "Cannot update name = \(String(describing: dto.name))"
@@ -243,7 +240,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
         persistenceHelper.updateDisposed(item, to: date) { result in
             switch result {
             case .success(_):
-                self.handleSuccess()
+                self.handleSuccess(refetching: [.item])
             case .failure(let error):
                 self.logger.log("Error while updating disposed date: \(error.localizedDescription, privacy: .public)")
                 self.message = "Cannot update name = \(String(describing: item.name))"
@@ -260,7 +257,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
         persistenceHelper.update(existingEntity, to: dto) { result in
             switch result {
             case .success(_):
-                self.handleSuccess()
+                self.handleSuccess(refetching: [.kind])
             case .failure(let error):
                 self.logger.log("Error while deleting data: \(error.localizedDescription, privacy: .public)")
                 self.message = "Cannot update name = \(String(describing: dto.name))"
@@ -277,7 +274,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
         persistenceHelper.update(existingEntity, to: dto) { result in
             switch result {
             case .success(_):
-                self.handleSuccess()
+                self.handleSuccess(refetching: [.brand])
             case .failure(let error):
                 self.logger.log("Error while deleting data: \(error.localizedDescription, privacy: .public)")
                 self.message = "Cannot update name = \(String(describing: dto.name)) and url = \(String(describing: dto.url))"
@@ -294,7 +291,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
         persistenceHelper.update(existingEntity, to: dto) { result in
             switch result {
             case .success(_):
-                self.handleSuccess()
+                self.handleSuccess(refetching: [.seller])
             case .failure(let error):
                 self.logger.log("Error while deleting data: \(error.localizedDescription, privacy: .public)")
                 self.message = "Cannot update name = \(String(describing: dto.name)) and url = \(String(describing: dto.url))"
@@ -304,26 +301,41 @@ class BelongingsViewModel: NSObject, ObservableObject {
     }
     
     func delete(_ objects: [NSManagedObject], completionHandler: @escaping (Error) -> Void) -> Void {
+        let entities = Set(objects.compactMap { Entities(rawValue: $0.entity.name ?? "") })
         persistenceHelper.delete(objects) { result in
             switch result {
             case .success(_):
-                self.handleSuccess()
+                self.handleSuccess(refetching: entities)
             case .failure(let error):
                 self.logger.log("Error while deleting data: \(error.localizedDescription, privacy: .public)")
                 DispatchQueue.main.async {
                     // The rollback restored the objects that were already pruned from the lists
                     self.fetchEntities()
-                    self.fetchEntitiesToFilterItems()
                     completionHandler(error)
                 }
             }
         }
     }
     
-    private func handleSuccess() -> Void {
+    // A save only changes the entities it touched; edits to existing objects are already live
+    private func handleSuccess(refetching entities: Set<Entities>) -> Void {
         DispatchQueue.main.async {
-            self.fetchEntities()
-            self.fetchEntitiesToFilterItems()
+            self.fetch(entities)
+        }
+    }
+    
+    private func fetch(_ entities: Set<Entities>) -> Void {
+        for entity in entities {
+            switch entity {
+            case .item:
+                fetchItems()
+            case .kind:
+                fetchKinds()
+            case .brand:
+                fetchBrands()
+            case .seller:
+                fetchSellers()
+            }
         }
     }
     
@@ -366,13 +378,9 @@ class BelongingsViewModel: NSObject, ObservableObject {
             }
         }
         prune(&items)
-        prune(&allItems)
         prune(&kinds)
-        prune(&allKinds)
         prune(&brands)
-        prune(&allBrands)
         prune(&sellers)
-        prune(&allSellers)
     }
     
     // MARK: - Persistence History Request
@@ -424,15 +432,9 @@ class BelongingsViewModel: NSObject, ObservableObject {
         
         var itemsByKind = [String: Int]()
         for item in itemsBetweenStartAndEnd {
-            if let kindSet = item.kind {
-                for kind in kindSet {
-                    if let kind = kind as? Kind, let name = kind.name {
-                        if let itemcount = itemsByKind[name] {
-                            itemsByKind[name] = itemcount + 1
-                        } else {
-                            itemsByKind[name] = 1
-                        }
-                    }
+            for kind in item.kinds {
+                if let name = kind.name {
+                    itemsByKind[name, default: 0] += 1
                 }
             }
         }
@@ -453,28 +455,24 @@ class BelongingsViewModel: NSObject, ObservableObject {
     
     private func itemsObtainedBetween(from start: Date, to end: Date) -> [Item] {
         let calendar = Calendar.current
-        let startDate = calendar.startOfDay(for: start)
         let endDate = calendar.date(byAdding: DateComponents(day: 1), to: calendar.startOfDay(for: end))!
-        return items.filter { item in
-            if let obtained = item.obtained {
-                return calendar.compare(startDate, to: obtained, toGranularity: .hour) != .orderedDescending && calendar.compare(obtained, to: endDate, toGranularity: .hour) != .orderedDescending
-            } else {
-                return false
-            }
-        }
+        return fetchItems("obtained", from: calendar.startOfDay(for: start), through: endDate)
     }
     
     private func itemsDisposedBetween(from start: Date, to end: Date) -> [Item] {
         let calendar = Calendar.current
-        let startDate = calendar.startOfDay(for: start)
-        let endDate = calendar.startOfDay(for: end)
-        return items.filter { item in
-            if let obtained = item.disposed {
-                return calendar.compare(startDate, to: obtained, toGranularity: .hour) != .orderedDescending && calendar.compare(obtained, to: endDate, toGranularity: .hour) != .orderedDescending
-            } else {
-                return false
-            }
-        }
+        return fetchItems("disposed", from: calendar.startOfDay(for: start), through: calendar.startOfDay(for: end))
+    }
+    
+    // Items whose date falls from `startDate` through the hour starting at `endDate`, the range the
+    // stats used to select with hour-granularity comparisons. Fetched rather than filtered from
+    // `items`, which holds faults, with the relationships the stats count prefetched.
+    private func fetchItems(_ dateKey: String, from startDate: Date, through endDate: Date) -> [Item] {
+        let endOfRange = Calendar.current.date(byAdding: DateComponents(hour: 1), to: endDate)!
+        let predicate = NSPredicate(format: "%K >= %@ AND %K < %@", dateKey, startDate as NSDate, dateKey, endOfRange as NSDate)
+        let fetchRequest = persistenceHelper.getFetchRequest(for: Item.self, entityName: "Item", predicate: predicate)
+        fetchRequest.relationshipKeyPathsForPrefetching = ["kind", "brand", "seller"]
+        return persistenceHelper.perform(fetchRequest)
     }
     
     public func itemCountByBrand(type: StatsType, from start: Date, to end: Date) -> [BrandStats] {
@@ -483,16 +481,8 @@ class BelongingsViewModel: NSObject, ObservableObject {
         
         var itemsByBrand = [String: Int]()
         for item in itemsBetweenStartAndEnd {
-            if let brandSet = item.brand {
-                for brand in brandSet {
-                    if let brand = brand as? Brand, let name = brand.name {
-                        if let itemcount = itemsByBrand[name] {
-                            itemsByBrand[name] = itemcount + 1
-                        } else {
-                            itemsByBrand[name] = 1
-                        }
-                    }
-                }
+            if let name = item.firstBrand?.name {
+                itemsByBrand[name, default: 0] += 1
             }
         }
         
@@ -517,16 +507,8 @@ class BelongingsViewModel: NSObject, ObservableObject {
         
         var itemsBySeller = [String: Int]()
         for item in itemsBetweenStartAndEnd {
-            if let sellerSet = item.seller {
-                for seller in sellerSet {
-                    if let seller = seller as? Seller, let name = seller.name {
-                        if let itemcount = itemsBySeller[name] {
-                            itemsBySeller[name] = itemcount + 1
-                        } else {
-                            itemsBySeller[name] = 1
-                        }
-                    }
-                }
+            if let name = item.firstSeller?.name {
+                itemsBySeller[name, default: 0] += 1
             }
         }
         
@@ -593,7 +575,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     }
 
     private func getItemCount(_ items: NSSet) -> Int {
-        return items.compactMap { $0 as? Item }.count
+        return items.count
     }
 
     // MARK: - PersistenceHelper
@@ -609,7 +591,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
         persistenceHelper.saveBelonging(name: name, kind: kind, brand: brand, seller: seller, note: note, obtained: obtained, buyPrice: buyPrice, quantity: quantity, buyCurrency: buyCurrency, image: image) { result in
             switch result {
             case .success(()):
-                self.handleSuccess()
+                self.handleSuccess(refetching: [.item])
             case .failure(let error):
                 self.logger.error("While saving a new item, occured an unresolved error \(error, privacy: .public)")
                 self.message = "Cannot save a new item with name = \(String(describing: name))"
@@ -622,7 +604,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
         persistenceHelper.saveKind(name.trimmingCharacters(in: .whitespaces)) { result in
             switch result {
             case .success(()):
-                self.handleSuccess()
+                self.handleSuccess(refetching: [.kind])
             case .failure(let error):
                 self.logger.error("While saving a new category, occured an unresolved error \(error, privacy: .public)")
                 self.message = "Cannot save a new category with name = \(String(describing: name))"
@@ -635,7 +617,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
         persistenceHelper.saveBrand(name.trimmingCharacters(in: .whitespaces), url: URL(string: urlString)) { result in
             switch result {
             case .success(()):
-                self.handleSuccess()
+                self.handleSuccess(refetching: [.brand])
             case .failure(let error):
                 self.logger.error("While saving a new brand, occured an unresolved error \(error, privacy: .public)")
                 self.message = "Cannot save a new brand with name = \(String(describing: name))"
@@ -648,7 +630,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
         persistenceHelper.saveSeller(name.trimmingCharacters(in: .whitespaces), url: URL(string: urlString)) { result in
             switch result {
             case .success(()):
-                self.handleSuccess()
+                self.handleSuccess(refetching: [.seller])
             case .failure(let error):
                 self.logger.error("While saving a new seller, occured an unresolved error \(error, privacy: .public)")
                 self.message = "Cannot save a new seller with name = \(String(describing: name))"

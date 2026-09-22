@@ -21,7 +21,7 @@ struct InputSellerView: View {
                     .font(.caption)
                 Spacer()
                 Button {
-                    viewModel.fetchAllSellers()
+                    viewModel.fetchSellers()
                     presentSellerView = true
                 } label: {
                     Label("add", systemImage: "plus")

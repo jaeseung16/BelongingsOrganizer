@@ -90,7 +90,6 @@ nonisolated final class BelogingsOrganizerUIPerformanceTests: XCTestCase {
     func testStressLaunchAndShowItems() throws {
         let app = stressApp()
         let metrics: [XCTMetric] = [signpostMetric("fetchEntities"),
-                                    signpostMetric("fetchEntitiesToFilterItems"),
                                     signpostMetric("filterItems"),
                                     XCTMemoryMetric(application: app)]
         measure(metrics: metrics) {

@@ -39,9 +39,9 @@ struct ItemDTO: Identifiable, CustomStringConvertible {
                        obtained: item.obtained ?? Date(),
                        disposed: item.disposed ?? Date(),
                        image: item.image,
-                       kind: item.kind?.compactMap { $0 as? Kind } ?? [Kind](),
-                       brand: item.brand?.compactMap { $0 as? Brand }.first,
-                       seller: item.seller?.compactMap { $0 as? Seller }.first)
+                       kind: item.kinds,
+                       brand: item.firstBrand,
+                       seller: item.firstSeller)
     }
     
 }

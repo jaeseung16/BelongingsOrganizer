@@ -21,7 +21,7 @@ struct InputKindView: View {
                     .font(.caption)
                 Spacer()
                 Button {
-                    viewModel.fetchAllKinds()
+                    viewModel.fetchKinds()
                     presentChooseKindView = true
                 } label: {
                     Label("add", systemImage: "plus")

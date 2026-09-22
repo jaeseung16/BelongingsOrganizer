@@ -87,7 +87,7 @@ struct ChooseKindView: View {
     
     private var kindList: some View {
         List {
-            ForEach(viewModel.allKinds) { kind in
+            ForEach(viewModel.kinds) { kind in
                 Button {
                     if kinds.contains(kind) {
                         if let index = kinds.firstIndex(of: kind) {
@@ -106,7 +106,7 @@ struct ChooseKindView: View {
     
     private func deleteItems(offsets: IndexSet) {
         withAnimation {
-            viewModel.delete(offsets.map { viewModel.allKinds[$0] }) { error in
+            viewModel.delete(offsets.map { viewModel.kinds[$0] }) { error in
                 let nsError = error as NSError
                 print("While deleting a category, occured an unresolved error \(nsError), \(nsError.userInfo)")
                 showAlertForDeletion.toggle()

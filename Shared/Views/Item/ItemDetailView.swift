@@ -49,29 +49,17 @@ struct ItemDetailView: View {
         isObtainedDateEdited = false
     }
     
-    private var itemKinds: [Kind] {
-        item.kind?.compactMap { $0 as? Kind } ?? [Kind]()
-    }
-    
-    private var itemBrand: Brand? {
-        return item.brand?.compactMap { $0 as? Brand }.first
-    }
-    
-    private var itemSeller: Seller? {
-        item.seller?.compactMap { $0 as? Seller }.first
-    }
-
     private func itemInfo(in geometry: GeometryProxy) -> some View {
         List {
             DetailNameView(originalName: item.name, name: $dto.name, isEdited: $isEdited)
 
             DetailPhotoView(originalImage: item.image, imageData: $dto.image, isEdited: $isEdited, geometry: geometry)
             
-            DetailKindView(originalKind: itemKinds, kind: $dto.kind, isEdited: $isEdited, geometry: geometry)
+            DetailKindView(originalKind: item.kinds, kind: $dto.kind, isEdited: $isEdited, geometry: geometry)
 
-            DetailBrandView(originalBrand: itemBrand, brand: $dto.brand, isEdited: $isEdited, geometry: geometry)
+            DetailBrandView(originalBrand: item.firstBrand, brand: $dto.brand, isEdited: $isEdited, geometry: geometry)
 
-            DetailSellerView(originalSeller: itemSeller, seller: $dto.seller, isEdited: $isEdited, geometry: geometry)
+            DetailSellerView(originalSeller: item.firstSeller, seller: $dto.seller, isEdited: $isEdited, geometry: geometry)
             
             DetailQuantityView(originalQuantity: Int(item.quantity), quantity: $dto.quantity, isEdited: $isEdited)
   

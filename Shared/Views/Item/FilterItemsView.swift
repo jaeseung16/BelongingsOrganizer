@@ -101,7 +101,7 @@ struct FilterItemsView: View {
         List {
             switch (selectedFilter) {
             case .kind:
-                ForEach(viewModel.allKinds, id: \.id) { kind in
+                ForEach(viewModel.kinds, id: \.id) { kind in
                     if let kindName = kind.name {
                         Button {
                             if selectedKinds.contains(kind) {
@@ -115,7 +115,7 @@ struct FilterItemsView: View {
                     }
                 }
             case .brand:
-                ForEach(viewModel.allBrands, id: \.id) { brand in
+                ForEach(viewModel.brands, id: \.id) { brand in
                     if let brandName = brand.name {
                         Button {
                             if selectedBrands.contains(brand) {
@@ -129,7 +129,7 @@ struct FilterItemsView: View {
                     }
                 }
             case .seller:
-                ForEach(viewModel.allSellers, id: \.id) { seller in
+                ForEach(viewModel.sellers, id: \.id) { seller in
                     if let sellerName = seller.name {
                         Button {
                             if selectedSellers.contains(seller) {

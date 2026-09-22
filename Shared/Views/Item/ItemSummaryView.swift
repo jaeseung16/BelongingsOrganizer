@@ -13,18 +13,15 @@ struct ItemSummaryView: View {
     private let notApplicable = "N/A"
     
     private var kind: Kind? {
-        let kinds = item.kind?.filter { $0 is Kind }.map { $0 as! Kind }
-        return kinds?.first
+        item.kinds.first
     }
     
     private var brand: Brand? {
-        let brands = item.brand?.filter { $0 is Brand }.map { $0 as! Brand }
-        return brands?.first
+        item.firstBrand
     }
     
     private var seller: Seller? {
-        let sellers = item.seller?.filter { $0 is Seller }.map { $0 as! Seller }
-        return sellers?.first
+        item.firstSeller
     }
     
     var body: some View {
