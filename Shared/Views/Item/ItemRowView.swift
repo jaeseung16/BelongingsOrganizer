@@ -15,23 +15,7 @@ struct ItemRowView: View {
     
     var body: some View {
         HStack {
-            if let imageData = item.image {
-            #if os(macOS)
-                if let nsImage = NSImage(data: imageData) {
-                    Image(nsImage: nsImage)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: imageWidth, height: imageWidth)
-                }
-            #else
-                if let uiImage = UIImage(data: imageData) {
-                    Image(uiImage: uiImage)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: imageWidth, height: imageWidth)
-                }
-            #endif
-            } else {
+            ItemThumbnailView(item: item, size: CGSize(width: imageWidth, height: imageWidth)) {
                 Image(systemName: "photo")
                     .resizable()
                     .aspectRatio(contentMode: .fit)

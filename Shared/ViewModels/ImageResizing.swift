@@ -7,6 +7,6 @@
 
 import Foundation
 
-protocol ImageResizing {
+nonisolated protocol ImageResizing {
     func tryResize(image: Data) -> Data?
 }

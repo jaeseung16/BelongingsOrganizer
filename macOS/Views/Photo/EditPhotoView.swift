@@ -48,7 +48,7 @@ struct EditPhotoView: View, DropDelegate {
         .onChange(of: selectedPhoto) { _, newValue in
             Task {
                 if let data = try? await newValue?.loadTransferable(type: Data.self) {
-                    image = viewModel.tryResize(image: data)
+                    image = await viewModel.resized(data)
                 }
             }
         }

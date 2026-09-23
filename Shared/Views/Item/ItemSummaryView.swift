@@ -75,29 +75,11 @@ struct ItemSummaryView: View {
         HStack {
             Spacer()
             
-            #if os(macOS)
-            if let image = item.image, let nsImage = NSImage(data: image) {
-                Image(nsImage: nsImage)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(height: 100)
-            } else {
+            ItemThumbnailView(item: item, size: CGSize(width: CGFloat.infinity, height: 100)) {
                 Text("No Photo")
                     .font(.body.italic())
                     .foregroundColor(.secondary)
             }
-            #else
-            if let image = item.image, let uiImage = UIImage(data: image) {
-                Image(uiImage: uiImage)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(height: 100)
-            } else {
-                Text("No Photo")
-                    .font(.body.italic())
-                    .foregroundColor(.secondary)
-            }
-            #endif
             
             Spacer()
         }

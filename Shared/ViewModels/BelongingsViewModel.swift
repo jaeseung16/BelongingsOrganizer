@@ -213,27 +213,45 @@ class BelongingsViewModel: NSObject, ObservableObject {
             return
         }
         
-        var dtoWithResizedImage: ItemDTO?
-        if let data = dto.image {
-            let resizedData = tryResize(image: data) ?? data
-            dtoWithResizedImage = ItemDTO(id: dto.id, name: dto.name, note: dto.note, quantity: dto.quantity, buyPrice: dto.buyPrice, sellPrice: dto.sellPrice, buyCurrency: dto.buyCurrency, sellCurrency: dto.sellCurrency, obtained: dto.obtained, disposed: dto.disposed, image: resizedData, kind: dto.kind, brand: dto.brand, seller: dto.seller)
-        }
-        
-        persistenceHelper.update(existingEntity, to: dtoWithResizedImage ?? dto , kind: kind, brand: brand, seller: seller, isObtainedDateEdited, isDisposedDateEdited) { result in
-            switch result {
-            case .success(_):
-                self.handleSuccess(refetching: [.item])
-            case .failure(let error):
-                self.logger.log("Error while deleting data: \(error.localizedDescription, privacy: .public)")
-                self.message = "Cannot update name = \(String(describing: dto.name))"
-                self.handle(error: error, completionHandler: nil)
+        Task {
+            var dto = dto
+            if let data = dto.image {
+                dto.image = await resized(data) ?? data
             }
-        }  
-        
+            
+            // The item may have been deleted (here or by a CloudKit merge) while resizing
+            guard isAvailable(existingEntity) else {
+                handleMissing(existingEntity, name: dto.name)
+                return
+            }
+            
+            persistenceHelper.update(existingEntity, to: dto, kind: kind, brand: brand, seller: seller, isObtainedDateEdited, isDisposedDateEdited) { result in
+                switch result {
+                case .success(_):
+                    self.handleSuccess(refetching: [.item])
+                case .failure(let error):
+                    self.logger.log("Error while deleting data: \(error.localizedDescription, privacy: .public)")
+                    self.message = "Cannot update name = \(String(describing: dto.name))"
+                    self.handle(error: error, completionHandler: nil)
+                }
+            }
+        }
     }
     
     func tryResize(image: Data) -> Data? {
         return imageProcessor.tryResize(image: image)
+    }
+    
+    // Decoding and re-encoding a photo takes long enough to hitch the UI, so it runs off the main actor
+    func resized(_ image: Data) async -> Data? {
+        await Self.resize(image, using: imageProcessor)
+    }
+    
+    @concurrent
+    nonisolated private static func resize(_ image: Data, using imageProcessor: ImageProcesser) async -> Data? {
+        PerformanceSignposts.measure("resize") {
+            imageProcessor.tryResize(image: image)
+        }
     }
 
     func updateDisposed(_ item: Item, to date: Date?) -> Void {
