@@ -343,6 +343,7 @@
 		74F94FD7568572333C2EFA65 /* PerformanceSignposts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceSignposts.swift; sourceTree = "<group>"; };
 		9000E36A2771229700A224E0 /* BelongingsApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BelongingsApp.swift; sourceTree = "<group>"; };
 		900DDBBF26E036C90034A155 /* Shared.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Shared.xcdatamodel; sourceTree = "<group>"; };
+		90AD5A0000000000000000D2 /* Shared 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Shared 2.xcdatamodel"; sourceTree = "<group>"; };
 		900DDBC126E036C90034A155 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		900DDBC826E036CA0034A155 /* Belongings Organizer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Belongings Organizer.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		900DDBCB26E036CA0034A155 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -2003,9 +2004,10 @@
 		900DDBBE26E036C90034A155 /* Belongings.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				90AD5A0000000000000000D2 /* Shared 2.xcdatamodel */,
 				900DDBBF26E036C90034A155 /* Shared.xcdatamodel */,
 			);
-			currentVersion = 900DDBBF26E036C90034A155 /* Shared.xcdatamodel */;
+			currentVersion = 90AD5A0000000000000000D2 /* Shared 2.xcdatamodel */;
 			path = Belongings.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
