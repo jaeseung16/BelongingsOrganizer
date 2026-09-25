@@ -26,7 +26,7 @@ struct AdSupportModifier: ViewModifier {
             }
             .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
                 ATTrackingManager.requestTrackingAuthorization { status in
-                    GADMobileAds.sharedInstance().start(completionHandler: nil)
+                    MobileAds.shared.start(completionHandler: nil)
 
                 }
             }
