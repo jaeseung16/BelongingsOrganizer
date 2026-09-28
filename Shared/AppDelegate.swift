@@ -7,6 +7,7 @@
 
 import Foundation
 import os
+import AppIntents
 import CloudKit
 import CoreData
 import Persistence
@@ -45,6 +46,7 @@ class AppDelegate: NSObject {
             StressTestData.seed(persistence.container.viewContext, itemCount: itemCount)
             self.viewModel = BelongingsViewModel(persistence: persistence)
             super.init()
+            registerAppIntentsDependencies()
             return
         }
         #endif
@@ -52,6 +54,14 @@ class AppDelegate: NSObject {
         self.viewModel = BelongingsViewModel(persistence: persistence)
         
         super.init()
+        registerAppIntentsDependencies()
+    }
+
+    // Intents may run without any window (Siri, Shortcuts), so they reach the store through
+    // the same view model the app uses; this delegate is created on those launches too
+    private func registerAppIntentsDependencies() {
+        let viewModel = self.viewModel
+        AppDependencyManager.shared.add(dependency: viewModel)
     }
     
     // Stress test runs use a local in-memory store: no pushes, no CloudKit subscription

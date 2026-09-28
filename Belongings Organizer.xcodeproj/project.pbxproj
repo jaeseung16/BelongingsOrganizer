@@ -235,6 +235,21 @@
 		90AD5B00000000000000A002 /* ItemThumbnailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5B00000000000000A001 /* ItemThumbnailView.swift */; };
 		90AD5B00000000000000A003 /* ItemThumbnailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5B00000000000000A001 /* ItemThumbnailView.swift */; };
 		90AD5B00000000000000A004 /* ItemThumbnailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5B00000000000000A001 /* ItemThumbnailView.swift */; };
+		90AD5C00000000000000B101 /* IntentAccessPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B001 /* IntentAccessPolicy.swift */; };
+		90AD5C00000000000000B102 /* CategoryEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B002 /* CategoryEntity.swift */; };
+		90AD5C00000000000000B103 /* BrandEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B003 /* BrandEntity.swift */; };
+		90AD5C00000000000000B104 /* SellerEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B004 /* SellerEntity.swift */; };
+		90AD5C00000000000000B105 /* ItemEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B005 /* ItemEntity.swift */; };
+		90AD5C00000000000000B201 /* IntentAccessPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B001 /* IntentAccessPolicy.swift */; };
+		90AD5C00000000000000B202 /* CategoryEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B002 /* CategoryEntity.swift */; };
+		90AD5C00000000000000B203 /* BrandEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B003 /* BrandEntity.swift */; };
+		90AD5C00000000000000B204 /* SellerEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B004 /* SellerEntity.swift */; };
+		90AD5C00000000000000B205 /* ItemEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B005 /* ItemEntity.swift */; };
+		90AD5C00000000000000B301 /* IntentAccessPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B001 /* IntentAccessPolicy.swift */; };
+		90AD5C00000000000000B302 /* CategoryEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B002 /* CategoryEntity.swift */; };
+		90AD5C00000000000000B303 /* BrandEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B003 /* BrandEntity.swift */; };
+		90AD5C00000000000000B304 /* SellerEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B004 /* SellerEntity.swift */; };
+		90AD5C00000000000000B305 /* ItemEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B005 /* ItemEntity.swift */; };
 		90B23E6626EE901900B29063 /* KindDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B23E6526EE901900B29063 /* KindDetailView.swift */; };
 		90B23E6726EE901900B29063 /* KindDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B23E6526EE901900B29063 /* KindDetailView.swift */; };
 		90B46BC82700F53E00BEED75 /* EditPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B46BC62700F53E00BEED75 /* EditPhotoView.swift */; };
@@ -424,6 +439,11 @@
 		90AD5A00000000000000000A /* AdSupportModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdSupportModifier.swift; sourceTree = "<group>"; };
 		90AD5A0000000000000000D2 /* Shared 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Shared 2.xcdatamodel"; sourceTree = "<group>"; };
 		90AD5B00000000000000A001 /* ItemThumbnailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemThumbnailView.swift; sourceTree = "<group>"; };
+		90AD5C00000000000000B001 /* IntentAccessPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentAccessPolicy.swift; sourceTree = "<group>"; };
+		90AD5C00000000000000B002 /* CategoryEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryEntity.swift; sourceTree = "<group>"; };
+		90AD5C00000000000000B003 /* BrandEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrandEntity.swift; sourceTree = "<group>"; };
+		90AD5C00000000000000B004 /* SellerEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SellerEntity.swift; sourceTree = "<group>"; };
+		90AD5C00000000000000B005 /* ItemEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemEntity.swift; sourceTree = "<group>"; };
 		90B23E6526EE901900B29063 /* KindDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KindDetailView.swift; sourceTree = "<group>"; };
 		90B46BC62700F53E00BEED75 /* EditPhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPhotoView.swift; sourceTree = "<group>"; };
 		90C0D98A26E7DEF600158C85 /* AddItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItemView.swift; sourceTree = "<group>"; };
@@ -536,6 +556,7 @@
 		900DDBBD26E036C90034A155 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				90AD5C00000000000000B000 /* AppIntents */,
 				90D3F23026EA593B00955316 /* ViewModels */,
 				90596B8426E6ACC30001CCA5 /* Views */,
 				9000E36A2771229700A224E0 /* BelongingsApp.swift */,
@@ -598,6 +619,18 @@
 				900DDBE926E036CB0034A155 /* Info.plist */,
 			);
 			path = "Tests macOS";
+			sourceTree = "<group>";
+		};
+		90AD5C00000000000000B000 /* AppIntents */ = {
+			isa = PBXGroup;
+			children = (
+				90AD5C00000000000000B001 /* IntentAccessPolicy.swift */,
+				90AD5C00000000000000B005 /* ItemEntity.swift */,
+				90AD5C00000000000000B002 /* CategoryEntity.swift */,
+				90AD5C00000000000000B003 /* BrandEntity.swift */,
+				90AD5C00000000000000B004 /* SellerEntity.swift */,
+			);
+			path = AppIntents;
 			sourceTree = "<group>";
 		};
 		900FF640277539E700F08528 /* Item */ = {
@@ -1133,6 +1166,11 @@
 				904498E726EBDEDB00002A6F /* ItemListView.swift in Sources */,
 				90FF8FD4276FABC70099A23B /* ItemRowView.swift in Sources */,
 				90AD5B00000000000000A002 /* ItemThumbnailView.swift in Sources */,
+				90AD5C00000000000000B101 /* IntentAccessPolicy.swift in Sources */,
+				90AD5C00000000000000B102 /* CategoryEntity.swift in Sources */,
+				90AD5C00000000000000B103 /* BrandEntity.swift in Sources */,
+				90AD5C00000000000000B104 /* SellerEntity.swift in Sources */,
+				90AD5C00000000000000B105 /* ItemEntity.swift in Sources */,
 				901A21EA28568BB8006CF1A4 /* BelongingsOrganizerConstants.swift in Sources */,
 				908EC8442AC9EF19004647A5 /* DateSectionView.swift in Sources */,
 				908527842AD4A6B1004185C9 /* SelectionSectionView.swift in Sources */,
@@ -1265,6 +1303,11 @@
 				90CD27EE270908A1001A89B5 /* ImageType.swift in Sources */,
 				90FF8FD5276FABC70099A23B /* ItemRowView.swift in Sources */,
 				90AD5B00000000000000A003 /* ItemThumbnailView.swift in Sources */,
+				90AD5C00000000000000B201 /* IntentAccessPolicy.swift in Sources */,
+				90AD5C00000000000000B202 /* CategoryEntity.swift in Sources */,
+				90AD5C00000000000000B203 /* BrandEntity.swift in Sources */,
+				90AD5C00000000000000B204 /* SellerEntity.swift in Sources */,
+				90AD5C00000000000000B205 /* ItemEntity.swift in Sources */,
 				90D3F23F26EA8CDC00955316 /* SellerDTO.swift in Sources */,
 				90B46BC82700F53E00BEED75 /* EditPhotoView.swift in Sources */,
 				90C172D626F13FAF00244A9C /* SellerDetailView.swift in Sources */,
@@ -1365,6 +1408,11 @@
 				90AD5A00000000000000003D /* ItemListView.swift in Sources */,
 				90AD5A00000000000000003E /* ItemRowView.swift in Sources */,
 				90AD5B00000000000000A004 /* ItemThumbnailView.swift in Sources */,
+				90AD5C00000000000000B301 /* IntentAccessPolicy.swift in Sources */,
+				90AD5C00000000000000B302 /* CategoryEntity.swift in Sources */,
+				90AD5C00000000000000B303 /* BrandEntity.swift in Sources */,
+				90AD5C00000000000000B304 /* SellerEntity.swift in Sources */,
+				90AD5C00000000000000B305 /* ItemEntity.swift in Sources */,
 				90AD5A00000000000000003F /* BelongingsOrganizerConstants.swift in Sources */,
 				90AD5A000000000000000040 /* DateSectionView.swift in Sources */,
 				90AD5A000000000000000041 /* SelectionSectionView.swift in Sources */,

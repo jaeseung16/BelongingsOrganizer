@@ -74,6 +74,27 @@ class PersistenceHelper {
         saveContext(completionHandler: completionHandler)
     }
     
+    // MARK: - Lookup
+    // App Intents refer to objects by uuid and resolve spoken or typed names
+    func fetch<Entity: NSManagedObject>(_ entity: Entities, uuids: [UUID]) -> [Entity] {
+        guard !uuids.isEmpty else {
+            return []
+        }
+        let fetchRequest = getFetchRequest(for: Entity.self, entityName: entity.rawValue, predicate: NSPredicate(format: "uuid IN %@", uuids))
+        return perform(fetchRequest)
+    }
+
+    // An empty string matches every named object
+    func fetch<Entity: NSManagedObject>(_ entity: Entities, nameContaining string: String, predicate: NSPredicate? = nil, sortDescriptors: [NSSortDescriptor], limit: Int = 0) -> [Entity] {
+        var predicates = [string.isEmpty ? NSPredicate(format: "name != nil") : NSPredicate(format: "name CONTAINS[cd] %@", string)]
+        if let predicate {
+            predicates.append(predicate)
+        }
+        let fetchRequest = getFetchRequest(for: Entity.self, entityName: entity.rawValue, sortDescriptors: sortDescriptors, predicate: NSCompoundPredicate(andPredicateWithSubpredicates: predicates))
+        fetchRequest.fetchLimit = limit
+        return perform(fetchRequest)
+    }
+
     // MARK: - Create
     public func saveBelonging(name: String, kind: [Kind], brand: Brand?, seller: Seller?, note: String, obtained: Date, buyPrice: Double, quantity: Int64, buyCurrency: String, image: Data?, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
         let created = Date()

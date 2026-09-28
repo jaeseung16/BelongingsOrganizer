@@ -8,6 +8,7 @@
 import SwiftUI
 import CoreData
 import ImageIO
+import UniformTypeIdentifiers
 
 // Draws an item's photo downsampled to the size it is shown at. Decoding runs off the main
 // thread and the result is cached, so scrolling back to a row doesn't decode its photo again.
@@ -88,6 +89,19 @@ nonisolated final class ThumbnailCache: @unchecked Sendable {
             cache.setObject(image, forKey: KeyBox(key), cost: image.bytesPerRow * image.height)
         }
         return image
+    }
+
+    // App Intents display representations take encoded image data rather than a CGImage
+    static func jpegThumbnail(from data: Data, maxPixelSize: CGFloat) -> Data? {
+        guard let image = downsample(data, toFit: CGSize(width: maxPixelSize, height: maxPixelSize)) else {
+            return nil
+        }
+        let output = NSMutableData()
+        guard let destination = CGImageDestinationCreateWithData(output, UTType.jpeg.identifier as CFString, 1, nil) else {
+            return nil
+        }
+        CGImageDestinationAddImage(destination, image, [kCGImageDestinationLossyCompressionQuality: 0.8] as CFDictionary)
+        return CGImageDestinationFinalize(destination) ? output as Data : nil
     }
 
     private static func downsample(_ data: Data, toFit pixelSize: CGSize) -> CGImage? {
