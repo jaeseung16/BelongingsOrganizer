@@ -250,6 +250,15 @@
 		90AD5C00000000000000B303 /* BrandEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B003 /* BrandEntity.swift */; };
 		90AD5C00000000000000B304 /* SellerEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B004 /* SellerEntity.swift */; };
 		90AD5C00000000000000B305 /* ItemEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B005 /* ItemEntity.swift */; };
+		90AD5C00000000000000B106 /* OpenIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B006 /* OpenIntents.swift */; };
+		90AD5C00000000000000B107 /* SearchItemsIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B007 /* SearchItemsIntent.swift */; };
+		90AD5C00000000000000B108 /* BelongingsShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B008 /* BelongingsShortcuts.swift */; };
+		90AD5C00000000000000B206 /* OpenIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B006 /* OpenIntents.swift */; };
+		90AD5C00000000000000B207 /* SearchItemsIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B007 /* SearchItemsIntent.swift */; };
+		90AD5C00000000000000B208 /* BelongingsShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B008 /* BelongingsShortcuts.swift */; };
+		90AD5C00000000000000B306 /* OpenIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B006 /* OpenIntents.swift */; };
+		90AD5C00000000000000B307 /* SearchItemsIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B007 /* SearchItemsIntent.swift */; };
+		90AD5C00000000000000B308 /* BelongingsShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B008 /* BelongingsShortcuts.swift */; };
 		90B23E6626EE901900B29063 /* KindDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B23E6526EE901900B29063 /* KindDetailView.swift */; };
 		90B23E6726EE901900B29063 /* KindDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B23E6526EE901900B29063 /* KindDetailView.swift */; };
 		90B46BC82700F53E00BEED75 /* EditPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B46BC62700F53E00BEED75 /* EditPhotoView.swift */; };
@@ -444,6 +453,9 @@
 		90AD5C00000000000000B003 /* BrandEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrandEntity.swift; sourceTree = "<group>"; };
 		90AD5C00000000000000B004 /* SellerEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SellerEntity.swift; sourceTree = "<group>"; };
 		90AD5C00000000000000B005 /* ItemEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemEntity.swift; sourceTree = "<group>"; };
+		90AD5C00000000000000B006 /* OpenIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenIntents.swift; sourceTree = "<group>"; };
+		90AD5C00000000000000B007 /* SearchItemsIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchItemsIntent.swift; sourceTree = "<group>"; };
+		90AD5C00000000000000B008 /* BelongingsShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BelongingsShortcuts.swift; sourceTree = "<group>"; };
 		90B23E6526EE901900B29063 /* KindDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KindDetailView.swift; sourceTree = "<group>"; };
 		90B46BC62700F53E00BEED75 /* EditPhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPhotoView.swift; sourceTree = "<group>"; };
 		90C0D98A26E7DEF600158C85 /* AddItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItemView.swift; sourceTree = "<group>"; };
@@ -629,6 +641,9 @@
 				90AD5C00000000000000B002 /* CategoryEntity.swift */,
 				90AD5C00000000000000B003 /* BrandEntity.swift */,
 				90AD5C00000000000000B004 /* SellerEntity.swift */,
+				90AD5C00000000000000B006 /* OpenIntents.swift */,
+				90AD5C00000000000000B007 /* SearchItemsIntent.swift */,
+				90AD5C00000000000000B008 /* BelongingsShortcuts.swift */,
 			);
 			path = AppIntents;
 			sourceTree = "<group>";
@@ -1171,6 +1186,9 @@
 				90AD5C00000000000000B103 /* BrandEntity.swift in Sources */,
 				90AD5C00000000000000B104 /* SellerEntity.swift in Sources */,
 				90AD5C00000000000000B105 /* ItemEntity.swift in Sources */,
+				90AD5C00000000000000B106 /* OpenIntents.swift in Sources */,
+				90AD5C00000000000000B107 /* SearchItemsIntent.swift in Sources */,
+				90AD5C00000000000000B108 /* BelongingsShortcuts.swift in Sources */,
 				901A21EA28568BB8006CF1A4 /* BelongingsOrganizerConstants.swift in Sources */,
 				908EC8442AC9EF19004647A5 /* DateSectionView.swift in Sources */,
 				908527842AD4A6B1004185C9 /* SelectionSectionView.swift in Sources */,
@@ -1308,6 +1326,9 @@
 				90AD5C00000000000000B203 /* BrandEntity.swift in Sources */,
 				90AD5C00000000000000B204 /* SellerEntity.swift in Sources */,
 				90AD5C00000000000000B205 /* ItemEntity.swift in Sources */,
+				90AD5C00000000000000B206 /* OpenIntents.swift in Sources */,
+				90AD5C00000000000000B207 /* SearchItemsIntent.swift in Sources */,
+				90AD5C00000000000000B208 /* BelongingsShortcuts.swift in Sources */,
 				90D3F23F26EA8CDC00955316 /* SellerDTO.swift in Sources */,
 				90B46BC82700F53E00BEED75 /* EditPhotoView.swift in Sources */,
 				90C172D626F13FAF00244A9C /* SellerDetailView.swift in Sources */,
@@ -1413,6 +1434,9 @@
 				90AD5C00000000000000B303 /* BrandEntity.swift in Sources */,
 				90AD5C00000000000000B304 /* SellerEntity.swift in Sources */,
 				90AD5C00000000000000B305 /* ItemEntity.swift in Sources */,
+				90AD5C00000000000000B306 /* OpenIntents.swift in Sources */,
+				90AD5C00000000000000B307 /* SearchItemsIntent.swift in Sources */,
+				90AD5C00000000000000B308 /* BelongingsShortcuts.swift in Sources */,
 				90AD5A00000000000000003F /* BelongingsOrganizerConstants.swift in Sources */,
 				90AD5A000000000000000040 /* DateSectionView.swift in Sources */,
 				90AD5A000000000000000041 /* SelectionSectionView.swift in Sources */,

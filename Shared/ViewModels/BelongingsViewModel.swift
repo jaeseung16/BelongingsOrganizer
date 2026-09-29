@@ -37,6 +37,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     @Published var showAlert = false
     @Published var stringToSearch = ""
     @Published var navigateToItems = false
+    @Published var navigationRequest: NavigationRequest?
     @Published var canRefresh = false
 
     var message = ""
@@ -82,6 +83,13 @@ class BelongingsViewModel: NSObject, ObservableObject {
                 self.logger.error("Failed to assign missing uuids: \(error.localizedDescription, privacy: .public)")
             }
         }
+        
+        // Parameterized App Shortcut phrases ("Open <item> in Belongings") follow the item
+        // suggestions; refresh them once a burst of saves or merges settles
+        $itemsGeneration
+            .debounce(for: .seconds(5), scheduler: DispatchQueue.main)
+            .sink { _ in BelongingsShortcuts.updateAppShortcutParameters() }
+            .store(in: &subscriptions)
         
         fetchEntities()
     }
@@ -413,6 +421,40 @@ class BelongingsViewModel: NSObject, ObservableObject {
             } catch {
                 self.logger.log("Error while updating history: \(error.localizedDescription, privacy: .public) \(Thread.callStackSymbols, privacy: .public)")
             }
+        }
+    }
+    
+    // MARK: - Navigation
+    // Where a notification, Siri, or Shortcuts asked the app to go; ContentView follows it
+    enum NavigationRequest: Equatable {
+        case item(Item)
+        case kind(Kind)
+        case brand(Brand)
+        case seller(Seller)
+    }
+    
+    // Shows the item list searched for the string, as a notification tap or a Siri search does
+    func showItems(matching search: String) -> Void {
+        stringToSearch = search
+        navigateToItems = true
+    }
+    
+    func open(_ entity: Entities, uuid: UUID) throws -> Void {
+        let objects: [NSManagedObject] = persistenceHelper.fetch(entity, uuids: [uuid])
+        guard let object = objects.first else {
+            throw BelongingsError.notFound(entity)
+        }
+        switch object {
+        case let item as Item:
+            navigationRequest = .item(item)
+        case let kind as Kind:
+            navigationRequest = .kind(kind)
+        case let brand as Brand:
+            navigationRequest = .brand(brand)
+        case let seller as Seller:
+            navigationRequest = .seller(seller)
+        default:
+            throw BelongingsError.notFound(entity)
         }
     }
     

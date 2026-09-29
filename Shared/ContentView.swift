@@ -116,10 +116,21 @@ struct ContentView: View {
                 selectedSeller = nil
             }
         }
-        .onChange(of: viewModel.navigateToItems) { _, navigate in
+        // Initial too: Siri or a notification may ask before the window appears
+        .onChange(of: viewModel.navigateToItems, initial: true) { _, navigate in
             if navigate {
                 section = .items
+                // On iPhone an open item would hide the search results
+                if let item = selectedItem, !viewModel.checkIfStringToSearchContainedIn(item.name ?? "") {
+                    selectedItem = nil
+                }
                 viewModel.navigateToItems = false
+            }
+        }
+        .onChange(of: viewModel.navigationRequest, initial: true) { _, request in
+            if let request {
+                navigate(to: request)
+                viewModel.navigationRequest = nil
             }
         }
         #if ADS
@@ -189,6 +200,39 @@ struct ContentView: View {
             StatsDetailView(statsType: statsType, start: statsStart, end: statsEnd)
         case .settings, nil:
             EmptyView()
+        }
+    }
+
+    private func navigate(to request: BelongingsViewModel.NavigationRequest) {
+        switch request {
+        case .item(let item):
+            // Keep the item in the list, so it doesn't stay selected but out of sight
+            clearSearch(unlessMatching: item.name)
+            if item.disposed == nil {
+                section = .items
+                selectedItem = item
+            } else {
+                section = .disposed
+                selectedDisposedItem = item
+            }
+        case .kind(let kind):
+            clearSearch(unlessMatching: kind.name)
+            section = .categories
+            selectedKind = kind
+        case .brand(let brand):
+            clearSearch(unlessMatching: brand.name)
+            section = .brands
+            selectedBrand = brand
+        case .seller(let seller):
+            clearSearch(unlessMatching: seller.name)
+            section = .sellers
+            selectedSeller = seller
+        }
+    }
+
+    private func clearSearch(unlessMatching name: String?) {
+        if !viewModel.checkIfStringToSearchContainedIn(name ?? "") {
+            viewModel.stringToSearch = ""
         }
     }
 

@@ -268,8 +268,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         logger.info("userNotificationCenter: response=\(response, privacy: .public)")
-        viewModel.stringToSearch = response.notification.request.content.body
-        viewModel.navigateToItems = true
+        viewModel.showItems(matching: response.notification.request.content.body)
         completionHandler()
     }
 }
