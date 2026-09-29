@@ -99,6 +99,15 @@ extension ItemEntity {
         }
     }
 
+    // An item just changed by an intent, with its thumbnail
+    @MainActor
+    static func fetched(_ item: Item) async throws -> ItemEntity {
+        guard let entity = await withThumbnails(snapshots(of: [item])).first else {
+            throw BelongingsError.notFound(.item)
+        }
+        return entity
+    }
+
     private static let thumbnailPixelSize: CGFloat = 120
 }
 

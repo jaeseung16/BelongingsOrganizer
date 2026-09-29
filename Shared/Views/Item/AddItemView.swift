@@ -18,7 +18,7 @@ struct AddItemView: View {
     @State private var buyPrice = ""
     @State private var quantity = ""
     
-    @AppStorage("BelongingsOrganizer.currency")
+    @AppStorage(BelongsOrganizerConstants.currency.rawValue)
     private var currency: String = "USD"
     
     @State private var kind = [Kind]()

@@ -424,6 +424,53 @@ class BelongingsViewModel: NSObject, ObservableObject {
         }
     }
     
+    // MARK: - App Intents
+    // Siri and Shortcuts report failures themselves, so these throw instead of raising the app's alert
+    func addItem(_ dto: ItemDTO) async throws -> Item {
+        if !dto.kind.allSatisfy(isAvailable) {
+            throw BelongingsError.notFound(.kind)
+        }
+        if let brand = dto.brand, !isAvailable(brand) {
+            throw BelongingsError.notFound(.brand)
+        }
+        if let seller = dto.seller, !isAvailable(seller) {
+            throw BelongingsError.notFound(.seller)
+        }
+        let item = persistenceHelper.insertBelonging(name: dto.name, kind: dto.kind, brand: dto.brand, seller: dto.seller, note: dto.note,
+                                                     obtained: dto.obtained, buyPrice: dto.buyPrice, quantity: Int64(dto.quantity),
+                                                     buyCurrency: dto.buyCurrency, image: dto.image)
+        try await persistenceHelper.save()
+        handleSuccess(refetching: [.item])
+        return item
+    }
+    
+    func setDisposed(_ item: Item, on date: Date?) async throws -> Void {
+        guard isAvailable(item) else {
+            removeDeletedObjects()
+            throw BelongingsError.notFound(.item)
+        }
+        try await withCheckedThrowingContinuation { continuation in
+            persistenceHelper.updateDisposed(item, to: date) { continuation.resume(with: $0) }
+        }
+        handleSuccess(refetching: [.item])
+    }
+    
+    func countItems(_ disposition: ItemDisposition, kind: Kind?, brand: Brand?, seller: Seller?) -> Int {
+        // Unnamed items aren't listed, so they aren't counted either
+        var predicates = [NSPredicate(format: disposition == .active ? "disposed == nil" : "disposed != nil"),
+                          NSPredicate(format: "name != nil")]
+        if let kind {
+            predicates.append(NSPredicate(format: "ANY kind == %@", kind))
+        }
+        if let brand {
+            predicates.append(NSPredicate(format: "ANY brand == %@", brand))
+        }
+        if let seller {
+            predicates.append(NSPredicate(format: "ANY seller == %@", seller))
+        }
+        return persistenceHelper.count(.item, predicate: NSCompoundPredicate(andPredicateWithSubpredicates: predicates))
+    }
+    
     // MARK: - Navigation
     // Where a notification, Siri, or Shortcuts asked the app to go; ContentView follows it
     enum NavigationRequest: Equatable {
@@ -439,11 +486,17 @@ class BelongingsViewModel: NSObject, ObservableObject {
         navigateToItems = true
     }
     
-    func open(_ entity: Entities, uuid: UUID) throws -> Void {
-        let objects: [NSManagedObject] = persistenceHelper.fetch(entity, uuids: [uuid])
+    // The object an App Intent entity refers to
+    func object<Object: NSManagedObject>(_ entity: Entities, uuid: UUID) throws -> Object {
+        let objects: [Object] = persistenceHelper.fetch(entity, uuids: [uuid])
         guard let object = objects.first else {
             throw BelongingsError.notFound(entity)
         }
+        return object
+    }
+    
+    func open(_ entity: Entities, uuid: UUID) throws -> Void {
+        let object: NSManagedObject = try object(entity, uuid: uuid)
         switch object {
         case let item as Item:
             navigationRequest = .item(item)

@@ -24,4 +24,9 @@ nonisolated enum IntentAccessPolicy {
     static var showsPhotos: Bool {
         !isAppLocked
     }
+
+    // So do prices in snippets
+    static var showsPrices: Bool {
+        !isAppLocked
+    }
 }

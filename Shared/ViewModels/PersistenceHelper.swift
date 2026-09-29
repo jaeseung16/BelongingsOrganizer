@@ -95,8 +95,25 @@ class PersistenceHelper {
         return perform(fetchRequest)
     }
 
+    func count(_ entity: Entities, predicate: NSPredicate) -> Int {
+        let fetchRequest = getFetchRequest(for: entity.type, entityName: entity.rawValue, predicate: predicate)
+        do {
+            return try viewContext.count(for: fetchRequest)
+        } catch {
+            PersistenceHelper.logger.error("Failed to count with fetchRequest=\(fetchRequest, privacy: .public): error=\(error.localizedDescription, privacy: .public)")
+            return 0
+        }
+    }
+
     // MARK: - Create
     public func saveBelonging(name: String, kind: [Kind], brand: Brand?, seller: Seller?, note: String, obtained: Date, buyPrice: Double, quantity: Int64, buyCurrency: String, image: Data?, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
+        insertBelonging(name: name, kind: kind, brand: brand, seller: seller, note: note, obtained: obtained, buyPrice: buyPrice, quantity: quantity, buyCurrency: buyCurrency, image: image)
+        saveContext(completionHandler: completionHandler)
+    }
+    
+    // Inserts without saving; a failed save rolls it back
+    @discardableResult
+    func insertBelonging(name: String, kind: [Kind], brand: Brand?, seller: Seller?, note: String, obtained: Date, buyPrice: Double, quantity: Int64, buyCurrency: String, image: Data?) -> Item {
         let created = Date()
         
         let newItem = Item(context: viewContext)
@@ -123,7 +140,7 @@ class PersistenceHelper {
             seller.addToItems(newItem)
         }
         
-        saveContext(completionHandler: completionHandler)
+        return newItem
     }
     
     public func saveKind(_ name: String, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
@@ -305,6 +322,13 @@ class PersistenceHelper {
              to processing that request.
              */
             print("Failed to perform classification.\n\(error.localizedDescription)")
+        }
+    }
+    
+    // For callers that report failures themselves (App Intents)
+    func save() async throws -> Void {
+        try await withCheckedThrowingContinuation { continuation in
+            saveContext { continuation.resume(with: $0) }
         }
     }
     

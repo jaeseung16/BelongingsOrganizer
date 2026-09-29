@@ -27,6 +27,7 @@
 		9000E36B2771229700A224E0 /* BelongingsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9000E36A2771229700A224E0 /* BelongingsApp.swift */; };
 		9000E36C2771229700A224E0 /* BelongingsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9000E36A2771229700A224E0 /* BelongingsApp.swift */; };
 		900DDBDD26E036CB0034A155 /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900DDBDC26E036CB0034A155 /* Tests_iOS.swift */; };
+		90AD5C00000000000000B401 /* AppIntentsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B400 /* AppIntentsTests.swift */; };
 		900DDBE826E036CB0034A155 /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900DDBE726E036CB0034A155 /* Tests_macOS.swift */; };
 		900DDBEA26E036CB0034A155 /* Belongings.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 900DDBBE26E036C90034A155 /* Belongings.xcdatamodeld */; };
 		900DDBEB26E036CB0034A155 /* Belongings.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 900DDBBE26E036C90034A155 /* Belongings.xcdatamodeld */; };
@@ -259,6 +260,21 @@
 		90AD5C00000000000000B306 /* OpenIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B006 /* OpenIntents.swift */; };
 		90AD5C00000000000000B307 /* SearchItemsIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B007 /* SearchItemsIntent.swift */; };
 		90AD5C00000000000000B308 /* BelongingsShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B008 /* BelongingsShortcuts.swift */; };
+		90AD5C00000000000000B109 /* AddItemIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B009 /* AddItemIntent.swift */; };
+		90AD5C00000000000000B10A /* MarkItemDisposedIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B00A /* MarkItemDisposedIntent.swift */; };
+		90AD5C00000000000000B10B /* CountItemsIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B00B /* CountItemsIntent.swift */; };
+		90AD5C00000000000000B10C /* GetItemDetailsIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B00C /* GetItemDetailsIntent.swift */; };
+		90AD5C00000000000000B10D /* ItemSnippetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B00D /* ItemSnippetView.swift */; };
+		90AD5C00000000000000B209 /* AddItemIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B009 /* AddItemIntent.swift */; };
+		90AD5C00000000000000B20A /* MarkItemDisposedIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B00A /* MarkItemDisposedIntent.swift */; };
+		90AD5C00000000000000B20B /* CountItemsIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B00B /* CountItemsIntent.swift */; };
+		90AD5C00000000000000B20C /* GetItemDetailsIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B00C /* GetItemDetailsIntent.swift */; };
+		90AD5C00000000000000B20D /* ItemSnippetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B00D /* ItemSnippetView.swift */; };
+		90AD5C00000000000000B309 /* AddItemIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B009 /* AddItemIntent.swift */; };
+		90AD5C00000000000000B30A /* MarkItemDisposedIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B00A /* MarkItemDisposedIntent.swift */; };
+		90AD5C00000000000000B30B /* CountItemsIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B00B /* CountItemsIntent.swift */; };
+		90AD5C00000000000000B30C /* GetItemDetailsIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B00C /* GetItemDetailsIntent.swift */; };
+		90AD5C00000000000000B30D /* ItemSnippetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B00D /* ItemSnippetView.swift */; };
 		90B23E6626EE901900B29063 /* KindDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B23E6526EE901900B29063 /* KindDetailView.swift */; };
 		90B23E6726EE901900B29063 /* KindDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B23E6526EE901900B29063 /* KindDetailView.swift */; };
 		90B46BC82700F53E00BEED75 /* EditPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B46BC62700F53E00BEED75 /* EditPhotoView.swift */; };
@@ -376,6 +392,7 @@
 		900DDBD326E036CB0034A155 /* macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = macOS.entitlements; sourceTree = "<group>"; };
 		900DDBD826E036CB0034A155 /* Tests iOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests iOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		900DDBDC26E036CB0034A155 /* Tests_iOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_iOS.swift; sourceTree = "<group>"; };
+		90AD5C00000000000000B400 /* AppIntentsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntentsTests.swift; sourceTree = "<group>"; };
 		900DDBDE26E036CB0034A155 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		900DDBE326E036CB0034A155 /* Tests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		900DDBE726E036CB0034A155 /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
@@ -456,6 +473,11 @@
 		90AD5C00000000000000B006 /* OpenIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenIntents.swift; sourceTree = "<group>"; };
 		90AD5C00000000000000B007 /* SearchItemsIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchItemsIntent.swift; sourceTree = "<group>"; };
 		90AD5C00000000000000B008 /* BelongingsShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BelongingsShortcuts.swift; sourceTree = "<group>"; };
+		90AD5C00000000000000B009 /* AddItemIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItemIntent.swift; sourceTree = "<group>"; };
+		90AD5C00000000000000B00A /* MarkItemDisposedIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkItemDisposedIntent.swift; sourceTree = "<group>"; };
+		90AD5C00000000000000B00B /* CountItemsIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountItemsIntent.swift; sourceTree = "<group>"; };
+		90AD5C00000000000000B00C /* GetItemDetailsIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetItemDetailsIntent.swift; sourceTree = "<group>"; };
+		90AD5C00000000000000B00D /* ItemSnippetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemSnippetView.swift; sourceTree = "<group>"; };
 		90B23E6526EE901900B29063 /* KindDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KindDetailView.swift; sourceTree = "<group>"; };
 		90B46BC62700F53E00BEED75 /* EditPhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPhotoView.swift; sourceTree = "<group>"; };
 		90C0D98A26E7DEF600158C85 /* AddItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItemView.swift; sourceTree = "<group>"; };
@@ -619,6 +641,7 @@
 			isa = PBXGroup;
 			children = (
 				900DDBDC26E036CB0034A155 /* Tests_iOS.swift */,
+				90AD5C00000000000000B400 /* AppIntentsTests.swift */,
 				900DDBDE26E036CB0034A155 /* Info.plist */,
 			);
 			path = "Tests iOS";
@@ -644,6 +667,11 @@
 				90AD5C00000000000000B006 /* OpenIntents.swift */,
 				90AD5C00000000000000B007 /* SearchItemsIntent.swift */,
 				90AD5C00000000000000B008 /* BelongingsShortcuts.swift */,
+				90AD5C00000000000000B009 /* AddItemIntent.swift */,
+				90AD5C00000000000000B00A /* MarkItemDisposedIntent.swift */,
+				90AD5C00000000000000B00B /* CountItemsIntent.swift */,
+				90AD5C00000000000000B00C /* GetItemDetailsIntent.swift */,
+				90AD5C00000000000000B00D /* ItemSnippetView.swift */,
 			);
 			path = AppIntents;
 			sourceTree = "<group>";
@@ -1189,6 +1217,11 @@
 				90AD5C00000000000000B106 /* OpenIntents.swift in Sources */,
 				90AD5C00000000000000B107 /* SearchItemsIntent.swift in Sources */,
 				90AD5C00000000000000B108 /* BelongingsShortcuts.swift in Sources */,
+				90AD5C00000000000000B109 /* AddItemIntent.swift in Sources */,
+				90AD5C00000000000000B10A /* MarkItemDisposedIntent.swift in Sources */,
+				90AD5C00000000000000B10B /* CountItemsIntent.swift in Sources */,
+				90AD5C00000000000000B10C /* GetItemDetailsIntent.swift in Sources */,
+				90AD5C00000000000000B10D /* ItemSnippetView.swift in Sources */,
 				901A21EA28568BB8006CF1A4 /* BelongingsOrganizerConstants.swift in Sources */,
 				908EC8442AC9EF19004647A5 /* DateSectionView.swift in Sources */,
 				908527842AD4A6B1004185C9 /* SelectionSectionView.swift in Sources */,
@@ -1329,6 +1362,11 @@
 				90AD5C00000000000000B206 /* OpenIntents.swift in Sources */,
 				90AD5C00000000000000B207 /* SearchItemsIntent.swift in Sources */,
 				90AD5C00000000000000B208 /* BelongingsShortcuts.swift in Sources */,
+				90AD5C00000000000000B209 /* AddItemIntent.swift in Sources */,
+				90AD5C00000000000000B20A /* MarkItemDisposedIntent.swift in Sources */,
+				90AD5C00000000000000B20B /* CountItemsIntent.swift in Sources */,
+				90AD5C00000000000000B20C /* GetItemDetailsIntent.swift in Sources */,
+				90AD5C00000000000000B20D /* ItemSnippetView.swift in Sources */,
 				90D3F23F26EA8CDC00955316 /* SellerDTO.swift in Sources */,
 				90B46BC82700F53E00BEED75 /* EditPhotoView.swift in Sources */,
 				90C172D626F13FAF00244A9C /* SellerDetailView.swift in Sources */,
@@ -1351,6 +1389,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				900DDBDD26E036CB0034A155 /* Tests_iOS.swift in Sources */,
+				90AD5C00000000000000B401 /* AppIntentsTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1437,6 +1476,11 @@
 				90AD5C00000000000000B306 /* OpenIntents.swift in Sources */,
 				90AD5C00000000000000B307 /* SearchItemsIntent.swift in Sources */,
 				90AD5C00000000000000B308 /* BelongingsShortcuts.swift in Sources */,
+				90AD5C00000000000000B309 /* AddItemIntent.swift in Sources */,
+				90AD5C00000000000000B30A /* MarkItemDisposedIntent.swift in Sources */,
+				90AD5C00000000000000B30B /* CountItemsIntent.swift in Sources */,
+				90AD5C00000000000000B30C /* GetItemDetailsIntent.swift in Sources */,
+				90AD5C00000000000000B30D /* ItemSnippetView.swift in Sources */,
 				90AD5A00000000000000003F /* BelongingsOrganizerConstants.swift in Sources */,
 				90AD5A000000000000000040 /* DateSectionView.swift in Sources */,
 				90AD5A000000000000000041 /* SelectionSectionView.swift in Sources */,
