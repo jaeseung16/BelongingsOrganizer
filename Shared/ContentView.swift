@@ -71,6 +71,8 @@ struct ContentView: View {
     @State private var selectedBrand: Brand?
     @State private var selectedSeller: Seller?
 
+    private static let intentHandoffDelay = Duration.milliseconds(500)
+
     @State private var statsType = StatsType.obtained
     @State private var statsStart = Calendar.current.date(byAdding: DateComponents(day: -7), to: Date())!
     @State private var statsEnd = Date()
@@ -129,8 +131,13 @@ struct ContentView: View {
         }
         .onChange(of: viewModel.navigationRequest, initial: true) { _, request in
             if let request {
-                navigate(to: request)
                 viewModel.navigationRequest = nil
+                // Selected while Siri or Shortcuts is still handing over, the item is pushed twice
+                // on iPhone (Back then shows it again); waiting for the handoff avoids that
+                Task {
+                    try? await Task.sleep(for: Self.intentHandoffDelay)
+                    navigate(to: request)
+                }
             }
         }
         #if ADS
