@@ -264,4 +264,82 @@ nonisolated class AppIntentsTests: XCTestCase {
         let categories: (any IntentValueExpressing)? = details.categories
         XCTAssertNotNil(categories)
     }
+
+    // MARK: - Spotlight
+
+    // The uuids Spotlight holds, including items no longer in the store (spotlightQuery drops those).
+    // Indexing runs in the background, so this waits for the index to catch up.
+    private func indexedItems(until condition: (Set<String>) -> Bool) async throws -> Set<String> {
+        let intent = definitions.intents["IndexedItemIdentifiersIntent"].makeIntent()
+        let deadline = Date.now.addingTimeInterval(30)
+        var identifiers = Set<String>(try await intent.run().value as [String])
+        while !condition(identifiers) && Date.now < deadline {
+            try await Task.sleep(for: .milliseconds(500))
+            identifiers = Set(try await intent.run().value as [String])
+        }
+        return identifiers
+    }
+
+    private func spotlightResults(_ query: String, until condition: ([AnyAppEntity]) -> Bool) async throws -> [AnyAppEntity] {
+        let items = definitions.entities["ItemEntity"]
+        let deadline = Date.now.addingTimeInterval(30)
+        var results = try await items.spotlightQuery(query)
+        while !condition(results) && Date.now < deadline {
+            try await Task.sleep(for: .milliseconds(500))
+            results = try await items.spotlightQuery(query)
+        }
+        return results
+    }
+
+    // A launch replaces the stress store, so the index holds exactly its items: the previous
+    // launch's are removed
+    @MainActor
+    func testSpotlightIndexesItems() async throws {
+        _ = launch()
+        let items = Set(try await allItems().map(\.identifier.instanceIdentifier))
+        XCTAssertEqual(items.count, Self.itemCount)
+        let indexed = try await indexedItems { $0 == items }
+        XCTAssertEqual(indexed, items, "Every item, owned or disposed, is indexed, and nothing else")
+    }
+
+    @MainActor
+    func testSpotlightFollowsAddAndDelete() async throws {
+        let (app, itemList) = launch()
+        _ = try await indexedItems { $0.count == Self.itemCount }
+
+        let intent = definitions.intents["AddItemIntent"].makeIntent(name: "Brass Lamp", note: "Reading light by the window")
+        let added: AnyAppEntity = try await intent.run().value
+        let id = added.identifier.instanceIdentifier
+        let afterAdd = try await indexedItems { $0.contains(id) }
+        XCTAssertTrue(afterAdd.contains(id))
+        let byName = try await spotlightResults("Lamp") { $0.contains(added) }
+        XCTAssertTrue(byName.contains(added), "The added item is found by name")
+        let byNote = try await spotlightResults("window") { $0.contains(added) }
+        XCTAssertTrue(byNote.contains(added), "The added item is found by its note")
+
+        // The newest item tops the list
+        let cell = itemList.cells.element(boundBy: 0)
+        let listed = expectation(for: NSPredicate(format: "label == %@", "Brass Lamp"), evaluatedWith: cell.staticTexts.element(boundBy: 0))
+        await fulfillment(of: [listed], timeout: 5)
+        cell.swipeLeft()
+        app.buttons["Delete"].tap()
+
+        let afterDelete = try await indexedItems { !$0.contains(id) }
+        XCTAssertFalse(afterDelete.contains(id), "A deleted item leaves the index")
+        XCTAssertEqual(afterDelete.count, Self.itemCount)
+    }
+
+    // Nothing is indexed while the app lock is on
+    @MainActor
+    func testSpotlightIsEmptyWhileLocked() async throws {
+        let (app, _) = launch()
+        _ = try await indexedItems { $0.count == Self.itemCount }
+        app.terminate()
+
+        let lockedApp = XCUIApplication()
+        lockedApp.launchArguments += ["-StressTestItemCount", "\(Self.itemCount)", "-requireAuthentication", "YES"]
+        lockedApp.launch()
+        let indexed = try await indexedItems { $0.isEmpty }
+        XCTAssertTrue(indexed.isEmpty, "\(indexed.count) items are still indexed while locked")
+    }
 }

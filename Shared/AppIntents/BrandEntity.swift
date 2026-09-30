@@ -32,8 +32,8 @@ struct BrandEntity: AppEntity {
 }
 
 extension BrandEntity {
-    @MainActor
-    init?(_ brand: Brand) {
+    // On the queue of the object's context: the view context's for intents, a background one for indexing
+    nonisolated init?(_ brand: Brand) {
         guard let uuid = brand.uuid else {
             return nil
         }

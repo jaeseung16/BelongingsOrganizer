@@ -29,8 +29,8 @@ struct CategoryEntity: AppEntity {
 }
 
 extension CategoryEntity {
-    @MainActor
-    init?(_ kind: Kind) {
+    // On the queue of the object's context: the view context's for intents, a background one for indexing
+    nonisolated init?(_ kind: Kind) {
         guard let uuid = kind.uuid else {
             return nil
         }

@@ -10,7 +10,8 @@ import Foundation
 // Typed access to Item's relationships. The schema keeps brand and seller to-many (CloudKit
 // can't change a relationship's cardinality in place), but the app treats them as single-valued:
 // PersistenceHelper.update replaces the whole set, so these read the one element.
-extension Item {
+// Nonisolated like the generated properties: callers stay on the queue of the item's context.
+nonisolated extension Item {
     // Sorted by name: the relationship is an unordered set
     var kinds: [Kind] {
         (kind?.compactMap { $0 as? Kind } ?? [])

@@ -15,7 +15,7 @@ import os
 import Persistence
 
 class PersistenceHelper {
-    private static let logger = Logger()
+    private nonisolated static let logger = Logger()
     static let transactionAuthor = "App"
     
     private let persistence: Persistence
@@ -102,6 +102,84 @@ class PersistenceHelper {
         } catch {
             PersistenceHelper.logger.error("Failed to count with fetchRequest=\(fetchRequest, privacy: .public): error=\(error.localizedDescription, privacy: .public)")
             return 0
+        }
+    }
+
+    // MARK: - Background reads
+    // Spotlight indexing reads every item and its photo, so it runs on a private context
+    private lazy var backgroundContext = persistence.container.newBackgroundContext()
+
+    // The uuids of the items the list shows (named ones)
+    func itemUUIDs() async -> Set<UUID> {
+        let context = backgroundContext
+        return await context.perform {
+            let fetchRequest = NSFetchRequest<NSDictionary>(entityName: Entities.item.rawValue)
+            fetchRequest.predicate = NSPredicate(format: "name != nil AND uuid != nil")
+            fetchRequest.resultType = .dictionaryResultType
+            fetchRequest.propertiesToFetch = ["uuid"]
+            do {
+                return Set(try context.fetch(fetchRequest).compactMap { $0["uuid"] as? UUID })
+            } catch {
+                PersistenceHelper.logger.error("Failed to fetch item uuids: \(error.localizedDescription, privacy: .public)")
+                return []
+            }
+        }
+    }
+
+    // The uuids of the named items that saved or merged changes touched, directly or through a
+    // renamed or deleted category, brand, or seller. `hasDeletions` is set when an item no longer exists.
+    func itemUUIDs(affectedBy objectIDs: [NSManagedObjectID]) async -> (uuids: Set<UUID>, hasDeletions: Bool) {
+        let context = backgroundContext
+        return await context.perform {
+            var uuids = Set<UUID>()
+            var hasDeletions = false
+            func add(_ item: Item) {
+                if item.name != nil, let uuid = item.uuid {
+                    uuids.insert(uuid)
+                }
+            }
+            for objectID in objectIDs {
+                guard let object = try? context.existingObject(with: objectID) else {
+                    hasDeletions = hasDeletions || objectID.entity.name == Entities.item.rawValue
+                    continue
+                }
+                switch object {
+                case let item as Item:
+                    add(item)
+                case let kind as Kind:
+                    kind.items?.compactMap { $0 as? Item }.forEach(add)
+                case let brand as Brand:
+                    brand.items?.compactMap { $0 as? Item }.forEach(add)
+                case let seller as Seller:
+                    seller.items?.compactMap { $0 as? Item }.forEach(add)
+                default:
+                    break
+                }
+            }
+            context.reset()
+            return (uuids, hasDeletions)
+        }
+    }
+
+    // Named items with the uuids, each transformed on the background context's queue
+    func transformItems<T: Sendable>(uuids: [UUID], _ transform: @escaping @Sendable (Item) -> T?) async -> [T] {
+        guard !uuids.isEmpty else {
+            return []
+        }
+        let context = backgroundContext
+        return await context.perform {
+            let fetchRequest = NSFetchRequest<Item>(entityName: Entities.item.rawValue)
+            fetchRequest.predicate = NSPredicate(format: "uuid IN %@ AND name != nil", uuids)
+            fetchRequest.relationshipKeyPathsForPrefetching = ["kind", "brand", "seller"]
+            do {
+                let results = try context.fetch(fetchRequest).compactMap(transform)
+                // Drops the rows and photos just read
+                context.reset()
+                return results
+            } catch {
+                PersistenceHelper.logger.error("Failed to fetch items: \(error.localizedDescription, privacy: .public)")
+                return []
+            }
         }
     }
 

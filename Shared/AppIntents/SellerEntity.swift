@@ -32,8 +32,8 @@ struct SellerEntity: AppEntity {
 }
 
 extension SellerEntity {
-    @MainActor
-    init?(_ seller: Seller) {
+    // On the queue of the object's context: the view context's for intents, a background one for indexing
+    nonisolated init?(_ seller: Seller) {
         guard let uuid = seller.uuid else {
             return nil
         }

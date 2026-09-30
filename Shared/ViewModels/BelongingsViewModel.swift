@@ -43,11 +43,13 @@ class BelongingsViewModel: NSObject, ObservableObject {
     var message = ""
     
     let persistenceHelper: PersistenceHelper
+    let itemIndexer: ItemIndexer
     let imageProcessor = ImageProcesser.shared
     
     init(persistence: Persistence) {
         self.persistence = persistence
         self.persistenceHelper = PersistenceHelper(persistence: persistence)
+        self.itemIndexer = ItemIndexer(persistenceHelper: persistenceHelper, storeName: persistence.container.name)
         super.init()
         
         NotificationCenter.default
@@ -91,7 +93,29 @@ class BelongingsViewModel: NSObject, ObservableObject {
             .sink { _ in BelongingsShortcuts.updateAppShortcutParameters() }
             .store(in: &subscriptions)
         
+        // Spotlight follows the app's own saves here and CloudKit's in fetchUpdates(_:)
+        NotificationCenter.default
+            .publisher(for: NSManagedObjectContext.didSaveObjectIDsNotification, object: viewContext)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.itemIndexer.update(changedObjectIDs: Self.objectIDs(in: $0)) }
+            .store(in: &subscriptions)
+        
+        // The lock is an @AppStorage toggle in Settings
+        NotificationCenter.default
+            .publisher(for: UserDefaults.didChangeNotification)
+            .map { _ in IntentAccessPolicy.isAppLocked }
+            .removeDuplicates()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.itemIndexer.setLocked($0) }
+            .store(in: &subscriptions)
+        
         fetchEntities()
+        itemIndexer.start()
+    }
+    
+    private static func objectIDs(in notification: Notification) -> [NSManagedObjectID] {
+        let keys = [NSInsertedObjectIDsKey, NSUpdatedObjectIDsKey, NSDeletedObjectIDsKey]
+        return keys.flatMap { (notification.userInfo?[$0] as? Set<NSManagedObjectID>) ?? [] }
     }
     
     func fetchEntities() -> Void {
@@ -418,6 +442,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
                 if !changedObjectIDs.isEmpty && !canRefresh {
                     canRefresh = true
                 }
+                itemIndexer.update(changedObjectIDs: changedObjectIDs)
             } catch {
                 self.logger.log("Error while updating history: \(error.localizedDescription, privacy: .public) \(Thread.callStackSymbols, privacy: .public)")
             }

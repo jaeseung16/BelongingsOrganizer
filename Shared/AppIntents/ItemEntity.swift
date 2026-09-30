@@ -7,17 +7,19 @@
 
 import Foundation
 import AppIntents
+import CoreSpotlight
 
-struct ItemEntity: AppEntity {
+// Indexed in Spotlight by ItemIndexer, so Spotlight and Siri find items by meaning
+struct ItemEntity: IndexedEntity {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Item", numericFormat: "\(placeholder: .int) items")
     static let defaultQuery = ItemQuery()
 
     let id: UUID
 
-    @Property(title: "Name")
+    @Property(title: "Name", indexingKey: \.displayName)
     var name: String
 
-    @Property(title: "Note")
+    @Property(title: "Note", indexingKey: \.contentDescription)
     var note: String
 
     @Property(title: "Quantity")
@@ -55,11 +57,19 @@ struct ItemEntity: AppEntity {
         }
         return DisplayRepresentation(title: "\(name)", subtitle: "\(details.joined(separator: ", "))", image: image)
     }
+
+    // Categories, brand, and seller aren't text properties, so they go in as keywords
+    var attributeSet: CSSearchableItemAttributeSet {
+        let attributeSet = defaultAttributeSet
+        attributeSet.keywords = categories.map(\.name) + [brand?.name, seller?.name].compactMap { $0 }
+        attributeSet.thumbnailData = thumbnail
+        return attributeSet
+    }
 }
 
 extension ItemEntity {
-    @MainActor
-    init?(_ item: Item) {
+    // On the queue of the item's context: the view context's for intents, a background one for indexing
+    nonisolated init?(_ item: Item) {
         guard let uuid = item.uuid else {
             return nil
         }
@@ -108,10 +118,22 @@ extension ItemEntity {
         return entity
     }
 
-    private static let thumbnailPixelSize: CGFloat = 120
+    // For Spotlight, on the queue of the item's background context. The indexer only runs
+    // while the app lock is off, so the photo is always included.
+    nonisolated static func indexed(_ item: Item) -> ItemEntity? {
+        guard var entity = ItemEntity(item) else {
+            return nil
+        }
+        if let photo = item.image {
+            entity.thumbnail = ThumbnailCache.jpegThumbnail(from: photo, maxPixelSize: thumbnailPixelSize)
+        }
+        return entity
+    }
+
+    private nonisolated static let thumbnailPixelSize: CGFloat = 120
 }
 
-struct ItemQuery: EntityStringQuery {
+struct ItemQuery: EntityStringQuery, IndexedEntityQuery {
     // Siri and Shortcuts show a short list; the in-app search is the place for long results
     private static let resultLimit = 20
 
@@ -133,6 +155,15 @@ struct ItemQuery: EntityStringQuery {
     // The most recently updated items still owned
     func suggestedEntities() async throws -> [ItemEntity] {
         await items(nameContaining: "", ownedOnly: true)
+    }
+
+    // Spotlight asks for these when its index is lost or out of date
+    func reindexEntities(for identifiers: [ItemEntity.ID], indexDescription: CSSearchableIndexDescription) async throws {
+        await viewModel.itemIndexer.reindex(identifiers)
+    }
+
+    func reindexAllEntities(indexDescription: CSSearchableIndexDescription) async throws {
+        await viewModel.itemIndexer.reindexAll()
     }
 
     private func items(nameContaining string: String, ownedOnly: Bool) async -> [ItemEntity] {

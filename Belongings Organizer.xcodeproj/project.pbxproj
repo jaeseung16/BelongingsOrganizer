@@ -265,16 +265,19 @@
 		90AD5C00000000000000B10B /* CountItemsIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B00B /* CountItemsIntent.swift */; };
 		90AD5C00000000000000B10C /* GetItemDetailsIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B00C /* GetItemDetailsIntent.swift */; };
 		90AD5C00000000000000B10D /* ItemSnippetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B00D /* ItemSnippetView.swift */; };
+		90AD5C00000000000000B10E /* ItemIndexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B00E /* ItemIndexer.swift */; };
 		90AD5C00000000000000B209 /* AddItemIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B009 /* AddItemIntent.swift */; };
 		90AD5C00000000000000B20A /* MarkItemDisposedIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B00A /* MarkItemDisposedIntent.swift */; };
 		90AD5C00000000000000B20B /* CountItemsIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B00B /* CountItemsIntent.swift */; };
 		90AD5C00000000000000B20C /* GetItemDetailsIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B00C /* GetItemDetailsIntent.swift */; };
 		90AD5C00000000000000B20D /* ItemSnippetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B00D /* ItemSnippetView.swift */; };
+		90AD5C00000000000000B20E /* ItemIndexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B00E /* ItemIndexer.swift */; };
 		90AD5C00000000000000B309 /* AddItemIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B009 /* AddItemIntent.swift */; };
 		90AD5C00000000000000B30A /* MarkItemDisposedIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B00A /* MarkItemDisposedIntent.swift */; };
 		90AD5C00000000000000B30B /* CountItemsIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B00B /* CountItemsIntent.swift */; };
 		90AD5C00000000000000B30C /* GetItemDetailsIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B00C /* GetItemDetailsIntent.swift */; };
 		90AD5C00000000000000B30D /* ItemSnippetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B00D /* ItemSnippetView.swift */; };
+		90AD5C00000000000000B30E /* ItemIndexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B00E /* ItemIndexer.swift */; };
 		90B23E6626EE901900B29063 /* KindDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B23E6526EE901900B29063 /* KindDetailView.swift */; };
 		90B23E6726EE901900B29063 /* KindDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B23E6526EE901900B29063 /* KindDetailView.swift */; };
 		90B46BC82700F53E00BEED75 /* EditPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B46BC62700F53E00BEED75 /* EditPhotoView.swift */; };
@@ -478,6 +481,7 @@
 		90AD5C00000000000000B00B /* CountItemsIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountItemsIntent.swift; sourceTree = "<group>"; };
 		90AD5C00000000000000B00C /* GetItemDetailsIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetItemDetailsIntent.swift; sourceTree = "<group>"; };
 		90AD5C00000000000000B00D /* ItemSnippetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemSnippetView.swift; sourceTree = "<group>"; };
+		90AD5C00000000000000B00E /* ItemIndexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemIndexer.swift; sourceTree = "<group>"; };
 		90B23E6526EE901900B29063 /* KindDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KindDetailView.swift; sourceTree = "<group>"; };
 		90B46BC62700F53E00BEED75 /* EditPhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPhotoView.swift; sourceTree = "<group>"; };
 		90C0D98A26E7DEF600158C85 /* AddItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItemView.swift; sourceTree = "<group>"; };
@@ -672,6 +676,7 @@
 				90AD5C00000000000000B00B /* CountItemsIntent.swift */,
 				90AD5C00000000000000B00C /* GetItemDetailsIntent.swift */,
 				90AD5C00000000000000B00D /* ItemSnippetView.swift */,
+				90AD5C00000000000000B00E /* ItemIndexer.swift */,
 			);
 			path = AppIntents;
 			sourceTree = "<group>";
@@ -1222,6 +1227,7 @@
 				90AD5C00000000000000B10B /* CountItemsIntent.swift in Sources */,
 				90AD5C00000000000000B10C /* GetItemDetailsIntent.swift in Sources */,
 				90AD5C00000000000000B10D /* ItemSnippetView.swift in Sources */,
+				90AD5C00000000000000B10E /* ItemIndexer.swift in Sources */,
 				901A21EA28568BB8006CF1A4 /* BelongingsOrganizerConstants.swift in Sources */,
 				908EC8442AC9EF19004647A5 /* DateSectionView.swift in Sources */,
 				908527842AD4A6B1004185C9 /* SelectionSectionView.swift in Sources */,
@@ -1367,6 +1373,7 @@
 				90AD5C00000000000000B20B /* CountItemsIntent.swift in Sources */,
 				90AD5C00000000000000B20C /* GetItemDetailsIntent.swift in Sources */,
 				90AD5C00000000000000B20D /* ItemSnippetView.swift in Sources */,
+				90AD5C00000000000000B20E /* ItemIndexer.swift in Sources */,
 				90D3F23F26EA8CDC00955316 /* SellerDTO.swift in Sources */,
 				90B46BC82700F53E00BEED75 /* EditPhotoView.swift in Sources */,
 				90C172D626F13FAF00244A9C /* SellerDetailView.swift in Sources */,
@@ -1481,6 +1488,7 @@
 				90AD5C00000000000000B30B /* CountItemsIntent.swift in Sources */,
 				90AD5C00000000000000B30C /* GetItemDetailsIntent.swift in Sources */,
 				90AD5C00000000000000B30D /* ItemSnippetView.swift in Sources */,
+				90AD5C00000000000000B30E /* ItemIndexer.swift in Sources */,
 				90AD5A00000000000000003F /* BelongingsOrganizerConstants.swift in Sources */,
 				90AD5A000000000000000040 /* DateSectionView.swift in Sources */,
 				90AD5A000000000000000041 /* SelectionSectionView.swift in Sources */,
