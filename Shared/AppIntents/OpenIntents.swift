@@ -7,6 +7,7 @@
 
 import Foundation
 import AppIntents
+import os
 
 // Each opens the app on the entity's sidebar section with the entity selected. The app lock
 // still covers the window, so these only need the policy for resolving the target.
@@ -25,6 +26,33 @@ struct OpenItemIntent: OpenIntent {
     func perform() async throws -> some IntentResult {
         try viewModel.open(.item, uuid: target.id)
         return .result()
+    }
+}
+
+extension OpenItemIntent {
+    init(target: ItemEntity) {
+        self.init()
+        self.target = target
+    }
+
+    // So Siri learns which items are opened often. Nothing is donated while the app lock is on.
+    @MainActor
+    static func donate(opening item: Item) {
+        guard !IntentAccessPolicy.isAppLocked, let entity = ItemEntity(item) else {
+            return
+        }
+        OpenItemIntent(target: entity).donate()
+    }
+
+    private static let logger = Logger()
+
+    // Turning the lock on takes back what was donated
+    static func deleteDonations() async {
+        do {
+            _ = try await IntentDonationManager.shared.deleteDonations(matching: .intentType(OpenItemIntent.self))
+        } catch {
+            logger.error("Failed to delete donations: \(error.localizedDescription, privacy: .public)")
+        }
     }
 }
 

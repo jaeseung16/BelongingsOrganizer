@@ -98,6 +98,7 @@ struct ItemListView: View {
         .onChange(of: viewModel.items) {
             updateFilteredItems()
         }
+        .onscreenEntities(Item.self)
         .accessibilityIdentifier(disposition == .active ? "ItemList" : "DisposedItemList")
         .navigationTitle(disposition == .active ? "Items" : "Disposed")
         .toolbar {

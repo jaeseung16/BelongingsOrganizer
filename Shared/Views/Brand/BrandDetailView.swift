@@ -40,6 +40,7 @@ struct BrandDetailView: View {
                     .opacity(showProgress ? 1 : 0)
             }
         }
+        .onscreenEntity(brand)
     }
     
     private func reset() {

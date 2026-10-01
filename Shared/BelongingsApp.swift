@@ -41,6 +41,7 @@ struct BelongingsApp: App {
                 }
             }
             .environmentObject(authService)
+            .environment(\.hidesOnscreenEntities, requireAuthentication && !authService.isUnlocked)
             .onChange(of: scenePhase) { _, newPhase in
                 guard requireAuthentication else {
                     return

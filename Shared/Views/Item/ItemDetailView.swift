@@ -32,6 +32,7 @@ struct ItemDetailView: View {
             }
             .padding()
         }
+        .onscreenEntity(item)
     }
     
     private var header: some View {

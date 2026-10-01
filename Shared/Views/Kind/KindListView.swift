@@ -27,6 +27,7 @@ struct KindListView: View {
             }
             .onDelete(perform: deleteKinds)
         }
+        .onscreenEntities(Kind.self)
         .navigationTitle("Categories")
         .toolbar {
             header

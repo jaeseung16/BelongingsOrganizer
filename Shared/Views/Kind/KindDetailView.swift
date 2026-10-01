@@ -32,6 +32,7 @@ struct KindDetailView: View {
             .navigationTitle(name)
             .padding()
         }
+        .onscreenEntity(kind)
     }
     
     private func reset() {

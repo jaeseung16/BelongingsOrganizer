@@ -50,6 +50,7 @@ struct SellerDetailView: View {
         } update: {
             update()
         }
+        .onscreenEntity(seller)
     }
     
     private func reset() {

@@ -148,6 +148,16 @@ struct ItemQuery: EntityStringQuery, IndexedEntityQuery {
         return await ItemEntity.withThumbnails(snapshots)
     }
 
+    // For items on screen: the text alone, without reading photos for thumbnails
+    func displayRepresentations(for identifiers: [ItemEntity.ID]) async throws -> [ItemEntity.ID: DisplayRepresentation] {
+        let viewModel = self.viewModel
+        return await MainActor.run {
+            let items: [Item] = viewModel.persistenceHelper.fetch(.item, uuids: identifiers)
+            let entities = items.compactMap(ItemEntity.init)
+            return Dictionary(entities.map { ($0.id, $0.displayRepresentation) }, uniquingKeysWith: { first, _ in first })
+        }
+    }
+
     func entities(matching string: String) async throws -> [ItemEntity] {
         await items(nameContaining: string, ownedOnly: false)
     }

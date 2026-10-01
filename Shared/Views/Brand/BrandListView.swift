@@ -27,6 +27,7 @@ struct BrandListView: View {
             }
             .onDelete(perform: deleteBrands)
         }
+        .onscreenEntities(Brand.self)
         .navigationTitle("Brands")
         .toolbar {
             header

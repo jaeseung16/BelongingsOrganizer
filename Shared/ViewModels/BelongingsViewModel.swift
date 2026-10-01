@@ -106,7 +106,12 @@ class BelongingsViewModel: NSObject, ObservableObject {
             .map { _ in IntentAccessPolicy.isAppLocked }
             .removeDuplicates()
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.itemIndexer.setLocked($0) }
+            .sink { [weak self] locked in
+                self?.itemIndexer.setLocked(locked)
+                if locked {
+                    Task { await OpenItemIntent.deleteDonations() }
+                }
+            }
             .store(in: &subscriptions)
         
         fetchEntities()

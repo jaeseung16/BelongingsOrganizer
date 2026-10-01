@@ -72,6 +72,8 @@ struct ContentView: View {
     @State private var selectedSeller: Seller?
 
     private static let intentHandoffDelay = Duration.milliseconds(500)
+    // Siri and Shortcuts donate the intents they run, so opening this one isn't donated again
+    @State private var itemOpenedByIntent: Item?
 
     @State private var statsType = StatsType.obtained
     @State private var statsStart = Calendar.current.date(byAdding: DateComponents(day: -7), to: Date())!
@@ -117,6 +119,12 @@ struct ContentView: View {
             if let seller = selectedSeller, !sellers.contains(seller) {
                 selectedSeller = nil
             }
+        }
+        .onChange(of: selectedItem) { _, item in
+            donateOpening(item)
+        }
+        .onChange(of: selectedDisposedItem) { _, item in
+            donateOpening(item)
         }
         // Initial too: Siri or a notification may ask before the window appears
         .onChange(of: viewModel.navigateToItems, initial: true) { _, navigate in
@@ -215,6 +223,7 @@ struct ContentView: View {
         case .item(let item):
             // Keep the item in the list, so it doesn't stay selected but out of sight
             clearSearch(unlessMatching: item.name)
+            itemOpenedByIntent = item
             if item.disposed == nil {
                 section = .items
                 selectedItem = item
@@ -234,6 +243,15 @@ struct ContentView: View {
             clearSearch(unlessMatching: seller.name)
             section = .sellers
             selectedSeller = seller
+        }
+    }
+
+    private func donateOpening(_ item: Item?) {
+        defer {
+            itemOpenedByIntent = nil
+        }
+        if let item, item != itemOpenedByIntent {
+            OpenItemIntent.donate(opening: item)
         }
     }
 

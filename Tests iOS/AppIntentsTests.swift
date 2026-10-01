@@ -265,6 +265,75 @@ nonisolated class AppIntentsTests: XCTestCase {
         XCTAssertNotNil(categories)
     }
 
+    // MARK: - Onscreen awareness
+
+    // What the app tells Siri is on screen, once the view settles
+    private func annotations(_ type: String, until condition: ([ViewAnnotation]) -> Bool) async throws -> [ViewAnnotation] {
+        let entities = definitions.entities[type]
+        let deadline = Date.now.addingTimeInterval(10)
+        var annotations = try await entities.viewAnnotations()
+        while !condition(annotations) && Date.now < deadline {
+            try await Task.sleep(for: .milliseconds(500))
+            annotations = try await entities.viewAnnotations()
+        }
+        return annotations
+    }
+
+    private func annotates(_ name: String) -> ([ViewAnnotation]) -> Bool {
+        { annotations in annotations.contains { (try? $0.entity.name as String) == name } }
+    }
+
+    @MainActor
+    func testItemListAndDetailAreAnnotated() async throws {
+        let (app, itemList) = launch()
+        let items = Set(try await allItems().map(\.identifier.instanceIdentifier))
+
+        let listed = try await annotations("ItemEntity") { !$0.isEmpty }
+        XCTAssertFalse(listed.isEmpty, "The list's rows are annotated")
+        for annotation in listed {
+            let id = annotation.entity.identifier.instanceIdentifier
+            XCTAssertTrue(items.contains(id), "Not an item in the store: \(id)")
+        }
+
+        let cell = itemList.cells.element(boundBy: 0)
+        XCTAssertTrue(cell.waitForExistence(timeout: 5))
+        let name = cell.staticTexts.element(boundBy: 0).label
+        cell.tap()
+        await waitForNameField(app, showing: name)
+        let shown = try await annotations("ItemEntity", until: annotates(name))
+        XCTAssertTrue(annotates(name)(shown), "The open item is annotated")
+    }
+
+    @MainActor
+    func testCategoryBrandSellerDetailsAreAnnotated() async throws {
+        let (app, _) = launch()
+        for (type, intent) in [("CategoryEntity", "OpenCategoryIntent"), ("BrandEntity", "OpenBrandIntent"), ("SellerEntity", "OpenSellerIntent")] {
+            let entity = try await definitions.entities[type].suggestedEntities()[0]
+            let name: String = try entity.name
+            try await definitions.intents[intent].makeIntent(target: entity).run()
+            await waitForNameField(app, showing: name)
+            let shown = try await annotations(type) { $0.contains { $0.entity == entity } }
+            XCTAssertTrue(shown.contains { $0.entity == entity }, "\(name) isn't annotated")
+        }
+    }
+
+    // The lock screen covers the window, so Siri isn't told about the belongings behind it,
+    // even an item an intent opened there
+    @MainActor
+    func testNothingIsAnnotatedWhileLocked() async throws {
+        let app = XCUIApplication()
+        app.launchArguments += ["-StressTestItemCount", "\(Self.itemCount)", "-requireAuthentication", "YES"]
+        app.launch()
+        let item = try await definitions.entities["ItemEntity"].suggestedEntities()[0]
+        try await definitions.intents["OpenItemIntent"].makeIntent(target: item).run()
+        try await Task.sleep(for: .seconds(3))
+
+        for type in ["ItemEntity", "CategoryEntity", "BrandEntity", "SellerEntity"] {
+            let annotations = try await definitions.entities[type].viewAnnotations()
+            XCTAssertTrue(annotations.isEmpty, "\(annotations.count) \(type) annotations while locked")
+        }
+    }
+
     // MARK: - Spotlight
 
     // The uuids Spotlight holds, including items no longer in the store (spotlightQuery drops those).
