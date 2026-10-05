@@ -95,6 +95,22 @@ class PersistenceHelper {
         return perform(fetchRequest)
     }
 
+    // Named items whose name, a category, or the brand contains any of the terms, most recently updated first
+    func fetchItems(matchingAny terms: [String], limit: Int) -> [Item] {
+        guard !terms.isEmpty else {
+            return []
+        }
+        let matches = terms.map {
+            NSPredicate(format: "name CONTAINS[cd] %@ OR ANY kind.name CONTAINS[cd] %@ OR ANY brand.name CONTAINS[cd] %@", $0, $0, $0)
+        }
+        let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [NSPredicate(format: "name != nil"),
+                                                                            NSCompoundPredicate(orPredicateWithSubpredicates: matches)])
+        let fetchRequest = getFetchRequest(for: Item.self, entityName: Entities.item.rawValue,
+                                           sortDescriptors: [NSSortDescriptor(key: "lastupd", ascending: false)], predicate: predicate)
+        fetchRequest.fetchLimit = limit
+        return perform(fetchRequest)
+    }
+
     func count(_ entity: Entities, predicate: NSPredicate) -> Int {
         let fetchRequest = getFetchRequest(for: entity.type, entityName: entity.rawValue, predicate: predicate)
         do {

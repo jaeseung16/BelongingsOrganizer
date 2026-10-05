@@ -411,4 +411,92 @@ nonisolated class AppIntentsTests: XCTestCase {
         let indexed = try await indexedItems { $0.isEmpty }
         XCTAssertTrue(indexed.isEmpty, "\(indexed.count) items are still indexed while locked")
     }
+
+    // MARK: - Visual Intelligence
+
+    // The simulator SDK has no VisualIntelligence, so these go through DEBUG intents that run the
+    // same matching and search from plain labels (no pixel buffer, so no MobileNet pass)
+    private func visualSearch(_ labels: [String]) async throws -> [String] {
+        try await definitions.intents["VisualSearchItemNamesIntent"].makeIntent(labels: labels).run().value
+    }
+
+    @MainActor
+    func testVisualSearchMatchesLabels() async throws {
+        _ = launch()
+
+        // Case-insensitive, and a plural label finds the singular
+        let lowercased = try await visualSearch(["item 12"])
+        XCTAssertEqual(lowercased, ["Item 12"])
+        let plural = try await visualSearch(["Item 12s"])
+        XCTAssertEqual(plural, ["Item 12"])
+
+        // Item 4 and Items 40–49 match: capped at 10
+        let capped = try await visualSearch(["Item 4"])
+        XCTAssertEqual(capped.count, 10)
+        XCTAssertTrue(capped.allSatisfy { $0.hasPrefix("Item 4") }, "Unexpected match in \(capped)")
+
+        let unmatched = try await visualSearch(["Headphones"])
+        XCTAssertTrue(unmatched.isEmpty)
+    }
+
+    @MainActor
+    func testVisualSearchMatchesCategoryAndBrand() async throws {
+        _ = launch()
+        let item = try await definitions.entities["ItemEntity"].suggestedEntities()[0]
+        let name: String = try item.name
+        let brand: AnyAppEntity = try item.brand
+        let brandName: String = try brand.name
+
+        // "Brand 2" also matches Brands 20–29, so the item may be past the cap
+        let byBrand = try await visualSearch([brandName])
+        XCTAssertFalse(byBrand.isEmpty)
+        if byBrand.count < 10 {
+            XCTAssertTrue(byBrand.contains(name), "\(name) wasn't found by \(brandName)")
+        }
+
+        // Name matches rank above category matches, even the least recent item, which recency
+        // alone would push past the cap ("Category 1" also matches Categories 10–19)
+        // Only a name no other name contains ("Item 7", not "Item 1"), so it's the one name match
+        let items = try await allItems()
+        let names = try items.map { try $0.name as String }
+        let unique = try items.filter { item in
+            let name: String = try item.name
+            return names.filter { $0.contains(name) }.count == 1
+        }
+        let oldest = try XCTUnwrap(unique.min { (try? $0.obtained as Date) ?? .distantFuture < (try? $1.obtained as Date) ?? .distantFuture })
+        let oldestName: String = try oldest.name
+        let ranked = try await visualSearch(["Category 1", oldestName])
+        XCTAssertEqual(ranked.count, 10)
+        XCTAssertEqual(ranked.first, oldestName, "Name match isn't first: \(ranked)")
+    }
+
+    @MainActor
+    func testVisualSearchIsEmptyWhileLocked() async throws {
+        let (app, _) = launch()
+        let unlocked = try await visualSearch(["Item 1"])
+        XCTAssertFalse(unlocked.isEmpty)
+        app.terminate()
+
+        let lockedApp = XCUIApplication()
+        lockedApp.launchArguments += ["-StressTestItemCount", "\(Self.itemCount)", "-requireAuthentication", "YES"]
+        lockedApp.launch()
+        let locked = try await visualSearch(["Item 1"])
+        XCTAssertTrue(locked.isEmpty, "\(locked.count) results while locked")
+    }
+
+    // "More results" searches the item list for the first label some item's name contains
+    @MainActor
+    func testVisualSearchMoreResultsSearchesItemList() async throws {
+        let (app, itemList) = launch()
+
+        try await definitions.intents["ShowVisualSearchResultsForLabelsIntent"].makeIntent(labels: ["Headphones", "Item 3"]).run()
+        let searched = expectation(for: NSPredicate(format: "value == %@", "Item 3"), evaluatedWith: app.searchFields.firstMatch)
+        await fulfillment(of: [searched], timeout: 5)
+        let firstName = itemList.cells.element(boundBy: 0).staticTexts.element(boundBy: 0)
+        XCTAssertTrue(firstName.waitForExistence(timeout: 5))
+        for index in 0..<itemList.cells.count {
+            let name = itemList.cells.element(boundBy: index).staticTexts.element(boundBy: 0).label
+            XCTAssertTrue(name.hasPrefix("Item 3"), "Unexpected match: \(name)")
+        }
+    }
 }
