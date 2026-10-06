@@ -19,6 +19,7 @@ import os
 // memory so that image blobs use external storage the way they do in the real store.
 enum StressTestData {
     static let itemCountKey = "StressTestItemCount"
+    static let keepsItemCountKey = "StressTestKeepsItemCount"
     static let storeName = "BelongingsStressTest"
 
     private static let logger = Logger()
@@ -26,6 +27,21 @@ enum StressTestData {
     static var itemCount: Int? {
         let count = UserDefaults.standard.integer(forKey: itemCountKey)
         return count > 0 ? count : nil
+    }
+
+    // An intent that launches the app doesn't pass it the UI test's launch arguments. A test
+    // launches it once with `-StressTestKeepsItemCount YES` to keep the count in the app's
+    // defaults for those launches, and with `NO` to remove it again.
+    static func keepItemCountIfAsked() {
+        let defaults = UserDefaults.standard
+        guard defaults.object(forKey: keepsItemCountKey) != nil else {
+            return
+        }
+        if defaults.bool(forKey: keepsItemCountKey), let itemCount {
+            defaults.set(itemCount, forKey: itemCountKey)
+        } else {
+            defaults.removeObject(forKey: itemCountKey)
+        }
     }
 
     static func destroyStore() {

@@ -6,6 +6,7 @@
 //
 
 import XCTest
+import AppIntentsTesting
 
 nonisolated final class BelogingsOrganizerUIPerformanceTests: XCTestCase {
 
@@ -119,6 +120,36 @@ nonisolated final class BelogingsOrganizerUIPerformanceTests: XCTestCase {
             for _ in 0..<5 {
                 itemList.swipeDown(velocity: .fast)
             }
+        }
+    }
+
+    // The full Spotlight index of the seeded store, which is rebuilt on every stress launch.
+    // Each iteration waits until Spotlight holds exactly the new launch's items, read through a
+    // DEBUG intent: the previous launch's entries (other uuids) are there until the rebuild
+    // removes them.
+    @MainActor
+    func testStressInitialSpotlightIndexing() throws {
+        let app = stressApp()
+        let itemCount = Int(Self.stressItemCount)!
+        let definitions = IntentDefinitions(bundleIdentifier: Self.subsystem)
+        let metrics: [XCTMetric] = [signpostMetric("indexAllItems"), XCTCPUMetric(application: app)]
+        measure(metrics: metrics) {
+            app.launch()
+            let indexed = expectation(description: "Every item is indexed")
+            Task.detached {
+                let deadline = Date.now.addingTimeInterval(180)
+                let launched = try? await definitions.entities["ItemEntity"].suggestedEntities()
+                let sample = Set((launched ?? []).map(\.identifier.instanceIdentifier))
+                while Date.now < deadline {
+                    let identifiers: [String] = (try? await definitions.intents["IndexedItemIdentifiersIntent"].makeIntent().run().value) ?? []
+                    if !sample.isEmpty && identifiers.count == itemCount && sample.isSubset(of: identifiers) {
+                        indexed.fulfill()
+                        return
+                    }
+                    try? await Task.sleep(for: .seconds(1))
+                }
+            }
+            wait(for: [indexed], timeout: 180)
         }
     }
 

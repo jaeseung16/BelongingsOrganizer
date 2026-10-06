@@ -34,6 +34,16 @@ nonisolated class AppIntentsTests: XCTestCase {
         return (app, itemList)
     }
 
+    // With the app lock on, behind the lock screen. The simulator itself is unlocked, so intents
+    // that require authentication still run.
+    @MainActor
+    private func launchLocked() -> XCUIApplication {
+        let app = XCUIApplication()
+        app.launchArguments += ["-StressTestItemCount", "\(Self.itemCount)", "-requireAuthentication", "YES"]
+        app.launch()
+        return app
+    }
+
     @MainActor
     private func waitForNameField(_ app: XCUIApplication, showing name: String) async {
         let shown = expectation(for: NSPredicate(format: "value == %@", name), evaluatedWith: app.textFields.firstMatch)
@@ -62,6 +72,11 @@ nonisolated class AppIntentsTests: XCTestCase {
         return try await intent.run().value
     }
 
+    // Whether each item comes with its thumbnail (every seeded item has a photo)
+    private func thumbnails(_ items: [AnyAppEntity]) async throws -> [Bool] {
+        try await definitions.intents["ItemThumbnailsIntent"].makeIntent(items: items).run().value
+    }
+
     // MARK: - Queries
 
     @MainActor
@@ -73,6 +88,9 @@ nonisolated class AppIntentsTests: XCTestCase {
         XCTAssertFalse(suggested.isEmpty)
         XCTAssertLessThanOrEqual(suggested.count, 20)
         XCTAssertFalse(suggested.contains(where: isDisposed), "Suggestions are owned items only")
+        let withThumbnails = try await thumbnails(suggested)
+        XCTAssertEqual(withThumbnails.count, suggested.count)
+        XCTAssertFalse(withThumbnails.contains(false), "Every item has a photo, so every entity has a thumbnail")
 
         let matching = try await items.entities(matching: "item 1")
         XCTAssertFalse(matching.isEmpty)
@@ -265,6 +283,94 @@ nonisolated class AppIntentsTests: XCTestCase {
         XCTAssertNotNil(categories)
     }
 
+    // MARK: - App lock
+
+    // The app lock asks intents for an unlocked device, which the simulator is, so they still
+    // read and change belongings. Entities leave out photos, and an item an intent opens stays
+    // behind the lock screen.
+    @MainActor
+    func testIntentsFollowLockPolicy() async throws {
+        let app = launchLocked()
+        let lockScreen = app.descendants(matching: .any)["LockScreen"]
+        XCTAssertTrue(lockScreen.waitForExistence(timeout: 10))
+
+        let suggested = try await definitions.entities["ItemEntity"].suggestedEntities()
+        XCTAssertFalse(suggested.isEmpty)
+        let withThumbnails = try await thumbnails(suggested)
+        XCTAssertEqual(withThumbnails.count, suggested.count)
+        XCTAssertFalse(withThumbnails.contains(true), "No photos while locked")
+
+        let currentBefore = try await count("current")
+        let added: AnyAppEntity = try await definitions.intents["AddItemIntent"].makeIntent(name: "Locked Item").run().value
+        let currentAfter = try await count("current")
+        XCTAssertEqual(currentAfter, currentBefore + 1)
+        let disposed: AnyAppEntity = try await definitions.intents["MarkItemDisposedIntent"].makeIntent(item: added).run().value
+        XCTAssertTrue(isDisposed(disposed))
+
+        // The item opens behind the lock screen, which stays on top
+        try await definitions.intents["OpenItemIntent"].makeIntent(target: suggested[0]).run()
+        await waitForNameField(app, showing: try suggested[0].name)
+        XCTAssertTrue(lockScreen.exists)
+        XCTAssertTrue(app.buttons["Unlock"].isHittable, "The lock screen still covers the window")
+    }
+
+    // MARK: - Cold launch
+
+    // An intent that launches the app doesn't pass it this test's launch arguments, so the
+    // stress-store count is kept in the app's defaults until the test ends
+    @MainActor
+    private func keepStressStoreForIntentLaunches() -> XCUIApplication {
+        let app = XCUIApplication()
+        app.launchArguments += ["-StressTestItemCount", "\(Self.itemCount)", "-StressTestKeepsItemCount", "YES"]
+        app.launch()
+        addTeardownBlock { @MainActor in
+            let app = XCUIApplication()
+            app.launchArguments += ["-StressTestItemCount", "\(Self.itemCount)", "-StressTestKeepsItemCount", "NO"]
+            app.launch()
+            app.terminate()
+        }
+        app.terminate()
+        return app
+    }
+
+    // The app isn't running: the search launches it and shows the results
+    @MainActor
+    func testSearchLaunchesApp() async throws {
+        let app = keepStressStoreForIntentLaunches()
+        XCTAssertEqual(app.state, .notRunning)
+
+        try await definitions.intents["SearchItemsIntent"].makeIntent(criteria: StringSearchCriteria(term: "Item 3")).run()
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 10))
+        let searched = expectation(for: NSPredicate(format: "value == %@", "Item 3"), evaluatedWith: app.searchFields.firstMatch)
+        await fulfillment(of: [searched], timeout: 10)
+        let itemList = app.descendants(matching: .any)["ItemList"]
+        let firstName = itemList.cells.element(boundBy: 0).staticTexts.element(boundBy: 0)
+        XCTAssertTrue(firstName.waitForExistence(timeout: 5))
+        for index in 0..<itemList.cells.count {
+            let name = itemList.cells.element(boundBy: index).staticTexts.element(boundBy: 0).label
+            XCTAssertTrue(name.hasPrefix("Item 3"), "Unexpected match: \(name)")
+        }
+    }
+
+    // The query starts the app without a window; opening the item then brings up the window,
+    // which lands on the item, pushed once
+    @MainActor
+    func testOpenItemLaunchesWindow() async throws {
+        let app = keepStressStoreForIntentLaunches()
+        let suggested = try await definitions.entities["ItemEntity"].suggestedEntities()
+        let item = try XCTUnwrap(suggested.first, "No stress store items")
+        XCTAssertNotEqual(app.state, .runningForeground)
+
+        try await definitions.intents["OpenItemIntent"].makeIntent(target: item).run()
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 10))
+        await waitForNameField(app, showing: try item.name)
+        app.navigationBars.buttons["BackButton"].tap()
+        // Known bug: when the window is new, the 500 ms handoff delay isn't always enough, and
+        // the item is pushed twice in about half the runs
+        XCTExpectFailure("A window opened by the intent sometimes pushes the item twice", strict: false)
+        XCTAssertTrue(app.descendants(matching: .any)["ItemList"].waitForExistence(timeout: 5), "One Back returns to the list")
+    }
+
     // MARK: - Onscreen awareness
 
     // What the app tells Siri is on screen, once the view settles
@@ -321,9 +427,7 @@ nonisolated class AppIntentsTests: XCTestCase {
     // even an item an intent opened there
     @MainActor
     func testNothingIsAnnotatedWhileLocked() async throws {
-        let app = XCUIApplication()
-        app.launchArguments += ["-StressTestItemCount", "\(Self.itemCount)", "-requireAuthentication", "YES"]
-        app.launch()
+        _ = launchLocked()
         let item = try await definitions.entities["ItemEntity"].suggestedEntities()[0]
         try await definitions.intents["OpenItemIntent"].makeIntent(target: item).run()
         try await Task.sleep(for: .seconds(3))
@@ -405,9 +509,7 @@ nonisolated class AppIntentsTests: XCTestCase {
         _ = try await indexedItems { $0.count == Self.itemCount }
         app.terminate()
 
-        let lockedApp = XCUIApplication()
-        lockedApp.launchArguments += ["-StressTestItemCount", "\(Self.itemCount)", "-requireAuthentication", "YES"]
-        lockedApp.launch()
+        _ = launchLocked()
         let indexed = try await indexedItems { $0.isEmpty }
         XCTAssertTrue(indexed.isEmpty, "\(indexed.count) items are still indexed while locked")
     }
@@ -477,9 +579,7 @@ nonisolated class AppIntentsTests: XCTestCase {
         XCTAssertFalse(unlocked.isEmpty)
         app.terminate()
 
-        let lockedApp = XCUIApplication()
-        lockedApp.launchArguments += ["-StressTestItemCount", "\(Self.itemCount)", "-requireAuthentication", "YES"]
-        lockedApp.launch()
+        _ = launchLocked()
         let locked = try await visualSearch(["Item 1"])
         XCTAssertTrue(locked.isEmpty, "\(locked.count) results while locked")
     }

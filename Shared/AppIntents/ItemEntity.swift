@@ -188,3 +188,19 @@ struct ItemQuery: EntityStringQuery, IndexedEntityQuery {
         return await ItemEntity.withThumbnails(snapshots)
     }
 }
+
+#if DEBUG
+// For UI tests: whether each item, as the system resolves it through ItemQuery, carries a
+// thumbnail. The thumbnail isn't an entity property, so AppIntentsTesting can't read it.
+struct ItemThumbnailsIntent: AppIntent {
+    static let title: LocalizedStringResource = "Item Thumbnails"
+    static let isDiscoverable = false
+
+    @Parameter(title: "Items")
+    var items: [ItemEntity]
+
+    func perform() async throws -> some ReturnsValue<[Bool]> {
+        .result(value: items.map { $0.thumbnail != nil })
+    }
+}
+#endif

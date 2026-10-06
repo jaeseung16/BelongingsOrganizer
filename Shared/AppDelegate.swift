@@ -37,6 +37,7 @@ class AppDelegate: NSObject {
     
     override init() {
         #if DEBUG
+        StressTestData.keepItemCountIfAsked()
         if let itemCount = StressTestData.itemCount,
            let modelURL = Bundle.main.url(forResource: BelongsOrganizerConstants.appName.rawValue, withExtension: "momd"),
            let model = NSManagedObjectModel(contentsOf: modelURL) {
