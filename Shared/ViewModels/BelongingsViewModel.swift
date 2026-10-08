@@ -100,12 +100,14 @@ class BelongingsViewModel: NSObject, ObservableObject {
             .sink { [weak self] in self?.itemIndexer.update(changedObjectIDs: Self.objectIDs(in: $0)) }
             .store(in: &subscriptions)
         
-        // The lock is an @AppStorage toggle in Settings
+        // The lock is an @AppStorage toggle in Settings. Hop to main before the map: the
+        // notification is posted on whichever thread changed the defaults (CloudKit does so on
+        // its own queue), and the closures here are main-actor isolated
         NotificationCenter.default
             .publisher(for: UserDefaults.didChangeNotification)
+            .receive(on: DispatchQueue.main)
             .map { _ in IntentAccessPolicy.isAppLocked }
             .removeDuplicates()
-            .receive(on: DispatchQueue.main)
             .sink { [weak self] locked in
                 self?.itemIndexer.setLocked(locked)
                 if locked {
