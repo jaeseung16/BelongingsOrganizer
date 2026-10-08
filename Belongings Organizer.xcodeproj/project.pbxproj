@@ -27,7 +27,6 @@
 		9000E36B2771229700A224E0 /* BelongingsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9000E36A2771229700A224E0 /* BelongingsApp.swift */; };
 		9000E36C2771229700A224E0 /* BelongingsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9000E36A2771229700A224E0 /* BelongingsApp.swift */; };
 		900DDBDD26E036CB0034A155 /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900DDBDC26E036CB0034A155 /* Tests_iOS.swift */; };
-		90AD5C00000000000000B401 /* AppIntentsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B400 /* AppIntentsTests.swift */; };
 		900DDBE826E036CB0034A155 /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900DDBE726E036CB0034A155 /* Tests_macOS.swift */; };
 		900DDBEA26E036CB0034A155 /* Belongings.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 900DDBBE26E036C90034A155 /* Belongings.xcdatamodeld */; };
 		900DDBEB26E036CB0034A155 /* Belongings.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 900DDBBE26E036C90034A155 /* Belongings.xcdatamodeld */; };
@@ -241,25 +240,9 @@
 		90AD5C00000000000000B103 /* BrandEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B003 /* BrandEntity.swift */; };
 		90AD5C00000000000000B104 /* SellerEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B004 /* SellerEntity.swift */; };
 		90AD5C00000000000000B105 /* ItemEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B005 /* ItemEntity.swift */; };
-		90AD5C00000000000000B201 /* IntentAccessPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B001 /* IntentAccessPolicy.swift */; };
-		90AD5C00000000000000B202 /* CategoryEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B002 /* CategoryEntity.swift */; };
-		90AD5C00000000000000B203 /* BrandEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B003 /* BrandEntity.swift */; };
-		90AD5C00000000000000B204 /* SellerEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B004 /* SellerEntity.swift */; };
-		90AD5C00000000000000B205 /* ItemEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B005 /* ItemEntity.swift */; };
-		90AD5C00000000000000B301 /* IntentAccessPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B001 /* IntentAccessPolicy.swift */; };
-		90AD5C00000000000000B302 /* CategoryEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B002 /* CategoryEntity.swift */; };
-		90AD5C00000000000000B303 /* BrandEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B003 /* BrandEntity.swift */; };
-		90AD5C00000000000000B304 /* SellerEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B004 /* SellerEntity.swift */; };
-		90AD5C00000000000000B305 /* ItemEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B005 /* ItemEntity.swift */; };
 		90AD5C00000000000000B106 /* OpenIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B006 /* OpenIntents.swift */; };
 		90AD5C00000000000000B107 /* SearchItemsIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B007 /* SearchItemsIntent.swift */; };
 		90AD5C00000000000000B108 /* BelongingsShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B008 /* BelongingsShortcuts.swift */; };
-		90AD5C00000000000000B206 /* OpenIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B006 /* OpenIntents.swift */; };
-		90AD5C00000000000000B207 /* SearchItemsIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B007 /* SearchItemsIntent.swift */; };
-		90AD5C00000000000000B208 /* BelongingsShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B008 /* BelongingsShortcuts.swift */; };
-		90AD5C00000000000000B306 /* OpenIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B006 /* OpenIntents.swift */; };
-		90AD5C00000000000000B307 /* SearchItemsIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B007 /* SearchItemsIntent.swift */; };
-		90AD5C00000000000000B308 /* BelongingsShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B008 /* BelongingsShortcuts.swift */; };
 		90AD5C00000000000000B109 /* AddItemIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B009 /* AddItemIntent.swift */; };
 		90AD5C00000000000000B10A /* MarkItemDisposedIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B00A /* MarkItemDisposedIntent.swift */; };
 		90AD5C00000000000000B10B /* CountItemsIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B00B /* CountItemsIntent.swift */; };
@@ -268,6 +251,14 @@
 		90AD5C00000000000000B10E /* ItemIndexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B00E /* ItemIndexer.swift */; };
 		90AD5C00000000000000B10F /* OnscreenEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B00F /* OnscreenEntities.swift */; };
 		90AD5C00000000000000B110 /* VisualSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B010 /* VisualSearch.swift */; };
+		90AD5C00000000000000B201 /* IntentAccessPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B001 /* IntentAccessPolicy.swift */; };
+		90AD5C00000000000000B202 /* CategoryEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B002 /* CategoryEntity.swift */; };
+		90AD5C00000000000000B203 /* BrandEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B003 /* BrandEntity.swift */; };
+		90AD5C00000000000000B204 /* SellerEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B004 /* SellerEntity.swift */; };
+		90AD5C00000000000000B205 /* ItemEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B005 /* ItemEntity.swift */; };
+		90AD5C00000000000000B206 /* OpenIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B006 /* OpenIntents.swift */; };
+		90AD5C00000000000000B207 /* SearchItemsIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B007 /* SearchItemsIntent.swift */; };
+		90AD5C00000000000000B208 /* BelongingsShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B008 /* BelongingsShortcuts.swift */; };
 		90AD5C00000000000000B209 /* AddItemIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B009 /* AddItemIntent.swift */; };
 		90AD5C00000000000000B20A /* MarkItemDisposedIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B00A /* MarkItemDisposedIntent.swift */; };
 		90AD5C00000000000000B20B /* CountItemsIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B00B /* CountItemsIntent.swift */; };
@@ -276,6 +267,14 @@
 		90AD5C00000000000000B20E /* ItemIndexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B00E /* ItemIndexer.swift */; };
 		90AD5C00000000000000B20F /* OnscreenEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B00F /* OnscreenEntities.swift */; };
 		90AD5C00000000000000B210 /* VisualSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B010 /* VisualSearch.swift */; };
+		90AD5C00000000000000B301 /* IntentAccessPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B001 /* IntentAccessPolicy.swift */; };
+		90AD5C00000000000000B302 /* CategoryEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B002 /* CategoryEntity.swift */; };
+		90AD5C00000000000000B303 /* BrandEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B003 /* BrandEntity.swift */; };
+		90AD5C00000000000000B304 /* SellerEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B004 /* SellerEntity.swift */; };
+		90AD5C00000000000000B305 /* ItemEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B005 /* ItemEntity.swift */; };
+		90AD5C00000000000000B306 /* OpenIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B006 /* OpenIntents.swift */; };
+		90AD5C00000000000000B307 /* SearchItemsIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B007 /* SearchItemsIntent.swift */; };
+		90AD5C00000000000000B308 /* BelongingsShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B008 /* BelongingsShortcuts.swift */; };
 		90AD5C00000000000000B309 /* AddItemIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B009 /* AddItemIntent.swift */; };
 		90AD5C00000000000000B30A /* MarkItemDisposedIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B00A /* MarkItemDisposedIntent.swift */; };
 		90AD5C00000000000000B30B /* CountItemsIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B00B /* CountItemsIntent.swift */; };
@@ -284,6 +283,7 @@
 		90AD5C00000000000000B30E /* ItemIndexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B00E /* ItemIndexer.swift */; };
 		90AD5C00000000000000B30F /* OnscreenEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B00F /* OnscreenEntities.swift */; };
 		90AD5C00000000000000B310 /* VisualSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B010 /* VisualSearch.swift */; };
+		90AD5C00000000000000B401 /* AppIntentsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AD5C00000000000000B400 /* AppIntentsTests.swift */; };
 		90B23E6626EE901900B29063 /* KindDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B23E6526EE901900B29063 /* KindDetailView.swift */; };
 		90B23E6726EE901900B29063 /* KindDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B23E6526EE901900B29063 /* KindDetailView.swift */; };
 		90B46BC82700F53E00BEED75 /* EditPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B46BC62700F53E00BEED75 /* EditPhotoView.swift */; };
@@ -401,7 +401,6 @@
 		900DDBD326E036CB0034A155 /* macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = macOS.entitlements; sourceTree = "<group>"; };
 		900DDBD826E036CB0034A155 /* Tests iOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests iOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		900DDBDC26E036CB0034A155 /* Tests_iOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_iOS.swift; sourceTree = "<group>"; };
-		90AD5C00000000000000B400 /* AppIntentsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntentsTests.swift; sourceTree = "<group>"; };
 		900DDBDE26E036CB0034A155 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		900DDBE326E036CB0034A155 /* Tests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		900DDBE726E036CB0034A155 /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
@@ -490,6 +489,7 @@
 		90AD5C00000000000000B00E /* ItemIndexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemIndexer.swift; sourceTree = "<group>"; };
 		90AD5C00000000000000B00F /* OnscreenEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnscreenEntities.swift; sourceTree = "<group>"; };
 		90AD5C00000000000000B010 /* VisualSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualSearch.swift; sourceTree = "<group>"; };
+		90AD5C00000000000000B400 /* AppIntentsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntentsTests.swift; sourceTree = "<group>"; };
 		90B23E6526EE901900B29063 /* KindDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KindDetailView.swift; sourceTree = "<group>"; };
 		90B46BC62700F53E00BEED75 /* EditPhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPhotoView.swift; sourceTree = "<group>"; };
 		90C0D98A26E7DEF600158C85 /* AddItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItemView.swift; sourceTree = "<group>"; };
@@ -668,29 +668,6 @@
 			path = "Tests macOS";
 			sourceTree = "<group>";
 		};
-		90AD5C00000000000000B000 /* AppIntents */ = {
-			isa = PBXGroup;
-			children = (
-				90AD5C00000000000000B001 /* IntentAccessPolicy.swift */,
-				90AD5C00000000000000B005 /* ItemEntity.swift */,
-				90AD5C00000000000000B002 /* CategoryEntity.swift */,
-				90AD5C00000000000000B003 /* BrandEntity.swift */,
-				90AD5C00000000000000B004 /* SellerEntity.swift */,
-				90AD5C00000000000000B006 /* OpenIntents.swift */,
-				90AD5C00000000000000B007 /* SearchItemsIntent.swift */,
-				90AD5C00000000000000B008 /* BelongingsShortcuts.swift */,
-				90AD5C00000000000000B009 /* AddItemIntent.swift */,
-				90AD5C00000000000000B00A /* MarkItemDisposedIntent.swift */,
-				90AD5C00000000000000B00B /* CountItemsIntent.swift */,
-				90AD5C00000000000000B00C /* GetItemDetailsIntent.swift */,
-				90AD5C00000000000000B00D /* ItemSnippetView.swift */,
-				90AD5C00000000000000B00E /* ItemIndexer.swift */,
-				90AD5C00000000000000B00F /* OnscreenEntities.swift */,
-				90AD5C00000000000000B010 /* VisualSearch.swift */,
-			);
-			path = AppIntents;
-			sourceTree = "<group>";
-		};
 		900FF640277539E700F08528 /* Item */ = {
 			isa = PBXGroup;
 			children = (
@@ -857,6 +834,29 @@
 				908D1E4A2ADB4B600018FE52 /* InputObtainedView.swift */,
 			);
 			path = Add;
+			sourceTree = "<group>";
+		};
+		90AD5C00000000000000B000 /* AppIntents */ = {
+			isa = PBXGroup;
+			children = (
+				90AD5C00000000000000B001 /* IntentAccessPolicy.swift */,
+				90AD5C00000000000000B005 /* ItemEntity.swift */,
+				90AD5C00000000000000B002 /* CategoryEntity.swift */,
+				90AD5C00000000000000B003 /* BrandEntity.swift */,
+				90AD5C00000000000000B004 /* SellerEntity.swift */,
+				90AD5C00000000000000B006 /* OpenIntents.swift */,
+				90AD5C00000000000000B007 /* SearchItemsIntent.swift */,
+				90AD5C00000000000000B008 /* BelongingsShortcuts.swift */,
+				90AD5C00000000000000B009 /* AddItemIntent.swift */,
+				90AD5C00000000000000B00A /* MarkItemDisposedIntent.swift */,
+				90AD5C00000000000000B00B /* CountItemsIntent.swift */,
+				90AD5C00000000000000B00C /* GetItemDetailsIntent.swift */,
+				90AD5C00000000000000B00D /* ItemSnippetView.swift */,
+				90AD5C00000000000000B00E /* ItemIndexer.swift */,
+				90AD5C00000000000000B00F /* OnscreenEntities.swift */,
+				90AD5C00000000000000B010 /* VisualSearch.swift */,
+			);
+			path = AppIntents;
 			sourceTree = "<group>";
 		};
 		90D3F23026EA593B00955316 /* ViewModels */ = {
@@ -1713,7 +1713,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = Belongings.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 44;
+				CURRENT_PROJECT_VERSION = 45;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
@@ -1741,7 +1741,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = Belongings.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 44;
+				CURRENT_PROJECT_VERSION = 45;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
@@ -1772,7 +1772,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 44;
+				CURRENT_PROJECT_VERSION = 45;
 				DEAD_CODE_STRIPPING = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -1800,7 +1800,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 44;
+				CURRENT_PROJECT_VERSION = 45;
 				DEAD_CODE_STRIPPING = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -1958,7 +1958,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = Belongings.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 44;
+				CURRENT_PROJECT_VERSION = 45;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = "iOS/Info-Ads.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
@@ -1987,7 +1987,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = Belongings.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 44;
+				CURRENT_PROJECT_VERSION = 45;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = "iOS/Info-Ads.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
