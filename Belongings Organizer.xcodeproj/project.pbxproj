@@ -126,8 +126,8 @@
 		908EC8452AC9EF19004647A5 /* DateSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908EC8432AC9EF19004647A5 /* DateSectionView.swift */; };
 		908EC8472AC9F138004647A5 /* SectionTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908EC8462AC9F138004647A5 /* SectionTitle.swift */; };
 		908EC8482AC9F138004647A5 /* SectionTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908EC8462AC9F138004647A5 /* SectionTitle.swift */; };
-		909286FA2AD0A20A006FADAE /* BrandKinsSellerRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 909286F92AD0A20A006FADAE /* BrandKinsSellerRowView.swift */; };
-		909286FB2AD0A20A006FADAE /* BrandKinsSellerRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 909286F92AD0A20A006FADAE /* BrandKinsSellerRowView.swift */; };
+		909286FA2AD0A20A006FADAE /* BrandKindSellerRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 909286F92AD0A20A006FADAE /* BrandKindSellerRowView.swift */; };
+		909286FB2AD0A20A006FADAE /* BrandKindSellerRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 909286F92AD0A20A006FADAE /* BrandKindSellerRowView.swift */; };
 		909286FD2AD0C085006FADAE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 909286FC2AD0C085006FADAE /* Assets.xcassets */; };
 		909286FE2AD0C085006FADAE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 909286FC2AD0C085006FADAE /* Assets.xcassets */; };
 		9095FEA52B25038800921520 /* StatsDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9095FEA42B25038800921520 /* StatsDetailView.swift */; };
@@ -192,7 +192,7 @@
 		90AD5A000000000000000044 /* ChooseSellerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9072233226E93CDC00965653 /* ChooseSellerView.swift */; };
 		90AD5A000000000000000045 /* KindDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B23E6526EE901900B29063 /* KindDetailView.swift */; };
 		90AD5A000000000000000046 /* SellerStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 907614AD29D0ED9E0068365C /* SellerStats.swift */; };
-		90AD5A000000000000000047 /* BrandKinsSellerRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 909286F92AD0A20A006FADAE /* BrandKinsSellerRowView.swift */; };
+		90AD5A000000000000000047 /* BrandKindSellerRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 909286F92AD0A20A006FADAE /* BrandKindSellerRowView.swift */; };
 		90AD5A000000000000000048 /* ItemSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9089734926FD3B3F005A03A8 /* ItemSummaryView.swift */; };
 		90AD5A000000000000000049 /* AnotherItemSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 907DBE6C2B2669CE00DF7E43 /* AnotherItemSummaryView.swift */; };
 		90AD5A00000000000000004A /* DetailNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90742B222ADC3107007B4E76 /* DetailNameView.swift */; };
@@ -464,7 +464,7 @@
 		908DC2462AD75FD800B858F3 /* CommonRoundedRectangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonRoundedRectangle.swift; sourceTree = "<group>"; };
 		908EC8432AC9EF19004647A5 /* DateSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateSectionView.swift; sourceTree = "<group>"; };
 		908EC8462AC9F138004647A5 /* SectionTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionTitle.swift; sourceTree = "<group>"; };
-		909286F92AD0A20A006FADAE /* BrandKinsSellerRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrandKinsSellerRowView.swift; sourceTree = "<group>"; };
+		909286F92AD0A20A006FADAE /* BrandKindSellerRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrandKindSellerRowView.swift; sourceTree = "<group>"; };
 		909286FC2AD0C085006FADAE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9095FEA42B25038800921520 /* StatsDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsDetailView.swift; sourceTree = "<group>"; };
 		9095FEAD2B251A4600921520 /* ItemOverTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemOverTime.swift; sourceTree = "<group>"; };
@@ -729,7 +729,7 @@
 				906EA8A026F7EFF300235302 /* EditDateView.swift */,
 				904498E326EBD7A800002A6F /* SheetBottom.swift */,
 				904498DF26EBD2F500002A6F /* Text */,
-				909286F92AD0A20A006FADAE /* BrandKinsSellerRowView.swift */,
+				909286F92AD0A20A006FADAE /* BrandKindSellerRowView.swift */,
 				906A67302AD1E91500DE53BE /* URLView.swift */,
 				908527812AD4A256004185C9 /* NameURLModifier.swift */,
 				906A67332AD1EA8A00DE53BE /* NameView.swift */,
@@ -1248,7 +1248,7 @@
 				9072233326E93CDC00965653 /* ChooseSellerView.swift in Sources */,
 				90B23E6626EE901900B29063 /* KindDetailView.swift in Sources */,
 				907614AE29D0ED9E0068365C /* SellerStats.swift in Sources */,
-				909286FA2AD0A20A006FADAE /* BrandKinsSellerRowView.swift in Sources */,
+				909286FA2AD0A20A006FADAE /* BrandKindSellerRowView.swift in Sources */,
 				9089734A26FD3B3F005A03A8 /* ItemSummaryView.swift in Sources */,
 				907DBE6D2B2669CE00DF7E43 /* AnotherItemSummaryView.swift in Sources */,
 				90742B232ADC3107007B4E76 /* DetailNameView.swift in Sources */,
@@ -1337,7 +1337,7 @@
 				9072233126E93A0500965653 /* AddBrandView.swift in Sources */,
 				9000E36C2771229700A224E0 /* BelongingsApp.swift in Sources */,
 				90C2DE432AE08BA300B82677 /* ItemDTO.swift in Sources */,
-				909286FB2AD0A20A006FADAE /* BrandKinsSellerRowView.swift in Sources */,
+				909286FB2AD0A20A006FADAE /* BrandKindSellerRowView.swift in Sources */,
 				901A21E728568B2E006CF1A4 /* AppDelegate.swift in Sources */,
 				90DD8C2A26F936E60079424A /* MobileNet.mlmodel in Sources */,
 				90F3B6AC26FFEA2900C4859D /* ItemProperty.swift in Sources */,
@@ -1513,7 +1513,7 @@
 				90AD5A000000000000000044 /* ChooseSellerView.swift in Sources */,
 				90AD5A000000000000000045 /* KindDetailView.swift in Sources */,
 				90AD5A000000000000000046 /* SellerStats.swift in Sources */,
-				90AD5A000000000000000047 /* BrandKinsSellerRowView.swift in Sources */,
+				90AD5A000000000000000047 /* BrandKindSellerRowView.swift in Sources */,
 				90AD5A000000000000000048 /* ItemSummaryView.swift in Sources */,
 				90AD5A000000000000000049 /* AnotherItemSummaryView.swift in Sources */,
 				90AD5A00000000000000004A /* DetailNameView.swift in Sources */,

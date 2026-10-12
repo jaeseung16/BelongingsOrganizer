@@ -2,7 +2,7 @@
 //  BrandKindSellerRowView.swift
 //  Belongings Organizer
 //
-//  Created by Jae Seung Lee on 10/1/23.
+//  Created by Jae Seung Lee on 10/6/23.
 //
 
 import SwiftUI
