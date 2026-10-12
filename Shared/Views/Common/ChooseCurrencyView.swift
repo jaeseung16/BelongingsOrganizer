@@ -49,10 +49,3 @@ struct ChooseCurrencyView: View {
         return NSLocale.autoupdatingCurrent.localizedString(forCurrencyCode: currencyCode) ?? ""
     }
 }
-
-struct ChooseCurrencyView_Previews: PreviewProvider {
-    @State static var currency: String = "USD"
-    static var previews: some View {
-        ChooseCurrencyView(currency: $currency)
-    }
-}

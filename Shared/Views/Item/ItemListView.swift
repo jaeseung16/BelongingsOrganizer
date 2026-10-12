@@ -7,9 +7,16 @@
 
 import SwiftUI
 
+enum ItemDisposition {
+    case active
+    case disposed
+}
+
 struct ItemListView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
-    
+
+    var disposition = ItemDisposition.active
+
     @State var presentAddItemView = false
     @State var presentFilterItemsView = false
     @State var presentSortItemView = false
@@ -17,108 +24,103 @@ struct ItemListView: View {
     @State var selectedKinds = Set<Kind>()
     @State var selectedBrands = Set<Brand>()
     @State var selectedSellers = Set<Seller>()
-    
-    @State private var showAlert = false
+
     @State private var showAlertForDeletion = false
-    
+
     @State private var sortType = SortType.lastupd
     @State private var sortDirection = SortDirection.descending
-    
-    @State var items: [Item]
-    
-    var filteredItems: [Item] {
-        items.filter {
-            var filter = true
-            
-            if let kind = $0.kind as? Set<Kind>, !selectedKinds.isEmpty && selectedKinds.intersection(kind).isEmpty {
-                filter = false
-            }
-            
-            if let brand = $0.brand as? Set<Brand>, !selectedBrands.isEmpty && selectedBrands.intersection(brand).isEmpty {
-                filter = false
-            }
-            
-            if let seller = $0.seller as? Set<Seller>, !selectedSellers.isEmpty && selectedSellers.intersection(seller).isEmpty {
-                filter = false
-            }
-            
-            return filter
-        }
-        .filter {
-            if let name = $0.name {
-                return viewModel.checkIfStringToSearchContainedIn(name)
-            } else {
-                return false
-            }
-        }
-        .sorted {
-            switch sortType {
-            case .lastupd:
-                if let lastupd1 = $0.lastupd, let lastupd2 = $1.lastupd {
-                    return sortDirection == .ascending ? lastupd1 < lastupd2 : lastupd2 < lastupd1
-                } else {
-                    return false
-                }
-            case .obtained:
-                if let obtained1 = $0.obtained, let obtained2 = $1.obtained {
-                    return sortDirection == .ascending ? obtained1 < obtained2 : obtained2 < obtained1
-                } else {
-                    return false
-                }
-            case .name:
-                if let name1 = $0.name, let name2 = $1.name {
-                    return sortDirection == .ascending ? name1 < name2 : name2 < name1
-                } else {
-                    return false
-                }
-            }
+
+    @Binding var selected: Item?
+
+    // Recomputed only when one of these changes, or when the items do
+    private struct Query: Equatable {
+        var disposition: ItemDisposition
+        var search: String
+        var kinds: Set<Kind>
+        var brands: Set<Brand>
+        var sellers: Set<Seller>
+        var sortType: SortType
+        var sortDirection: SortDirection
+    }
+
+    private var query: Query {
+        Query(disposition: disposition, search: viewModel.stringToSearch, kinds: selectedKinds, brands: selectedBrands,
+              sellers: selectedSellers, sortType: sortType, sortDirection: sortDirection)
+    }
+
+    @State private var filteredItems = [Item]()
+
+    private func updateFilteredItems() {
+        filteredItems = PerformanceSignposts.measure("filterItems") {
+            viewModel.fetchItems(disposition, kinds: selectedKinds, brands: selectedBrands, sellers: selectedSellers,
+                                 sortType: sortType, sortDirection: sortDirection)
         }
     }
-    
+
     var body: some View {
-        NavigationView {
-            GeometryReader { geometry in
-                VStack {
-                    header()
-                        .frame(width: geometry.size.width)
-                    
-                    Divider()
-                    
-                    itemListView()
-                    
+        List(selection: $selected) {
+            ForEach(filteredItems, id: \.self) { item in
+                NavigationLink(value: item) {
+                    ItemRowView(item: item)
                 }
-                .navigationTitle("Items")
+                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                    Button(role: .destructive) {
+                        delete(item)
+                    } label: {
+                        Label("Delete", systemImage: "trash")
+                    }
+
+                    if disposition == .active {
+                        Button {
+                            viewModel.updateDisposed(item, to: Date())
+                        } label: {
+                            Label("Dispose", systemImage: "archivebox")
+                        }
+                        .tint(.orange)
+                    } else {
+                        Button {
+                            viewModel.updateDisposed(item, to: nil)
+                        } label: {
+                            Label("Restore", systemImage: "arrow.uturn.backward")
+                        }
+                        .tint(.blue)
+                    }
+                }
             }
+        }
+        .onChange(of: query, initial: true) {
+            updateFilteredItems()
+        }
+        .onChange(of: viewModel.itemsGeneration) {
+            updateFilteredItems()
+        }
+        // Deletions are pruned from items without a refetch
+        .onChange(of: viewModel.items) {
+            updateFilteredItems()
+        }
+        .onscreenEntities(Item.self)
+        .accessibilityIdentifier(disposition == .active ? "ItemList" : "DisposedItemList")
+        .navigationTitle(disposition == .active ? "Items" : "Disposed")
+        .toolbar {
+            header
+        }
+        .refreshable {
+            viewModel.fetchEntities()
         }
         .sheet(isPresented: $presentAddItemView) {
             AddItemView()
                 .environmentObject(viewModel)
-                .frame(minWidth: 350, minHeight: 550)
-                .padding()
+                .modifier(SheetModifier())
         }
         .sheet(isPresented: $presentFilterItemsView) {
             FilterItemsView(selectedKinds: $selectedKinds, selectedBrands: $selectedBrands, selectedSellers: $selectedSellers)
                 .environmentObject(viewModel)
-                .frame(minWidth: 350, minHeight: 450)
-                .padding()
+                .modifier(SheetModifier())
         }
         .sheet(isPresented: $presentSortItemView) {
             SortItemsView(sortType: $sortType, sortDirection: $sortDirection)
                 .environmentObject(viewModel)
-                .frame(minWidth: 350, minHeight: 100)
-                .padding()
-        }
-        .onChange(of: viewModel.items) { _ in
-            items = viewModel.items
-        }
-        .onChange(of: viewModel.showAlert) { _ in
-            showAlert = viewModel.showAlert
-        }
-        .alert("Unable to Save Data", isPresented: $showAlert) {
-            Button("Dismiss") {
-            }
-        } message: {
-            Text(viewModel.message)
+                .modifier(SheetModifier())
         }
         .alert("Unable to Delete Data", isPresented: $showAlertForDeletion) {
             Button("Dismiss") {
@@ -127,64 +129,44 @@ struct ItemListView: View {
             Text("Failed to delete the selected item")
         }
     }
-    
-    private func header() -> some View {
-        HStack {
-            Spacer()
-            
-            Button(action: {
+
+    private var header: ToolbarItemGroup<some View> {
+        ToolbarItemGroup(placement: .leadingButtons) {
+            Button {
+                viewModel.refresh()
+            } label: {
+                Label("Refresh", systemImage: "arrow.clockwise")
+            }
+            .disabled(!viewModel.canRefresh)
+
+            Button  {
                 presentFilterItemsView = true
-            }) {
+            } label: {
                 Label("Filter", systemImage: "line.horizontal.3.decrease.circle")
             }
-            
-            Spacer()
-            
+
             Button {
                 presentSortItemView = true
             } label: {
                 Label("Sort", systemImage: "list.number")
             }
-            
-            Spacer()
-            
+
             Button {
                 viewModel.persistenceHelper.reset()
                 presentAddItemView = true
             } label: {
                 Label("Add", systemImage: "plus")
             }
-            
-            Spacer()
-        }
-        .scaledToFit()
-    }
-    
-    private func itemListView() -> some View {
-        List {
-            ForEach(filteredItems) { item in
-                NavigationLink(destination: ItemDetailView(item: item,
-                                                           imageData: item.image,
-                                                           name: item.name ?? "",
-                                                           quantity: Int(item.quantity),
-                                                           buyPrice: item.buyPrice,
-                                                           sellPrice: item.sellPrice,
-                                                           buyCurrency: item.buyCurrency ?? "USD",
-                                                           sellCurrency: item.sellCurrency ?? "USD",
-                                                           note: item.note ?? "",
-                                                           obtained: item.obtained ?? Date(),
-                                                           disposed: item.disposed ?? Date())) {
-                    ItemRowView(item: item)
-                }
-            }
-            .onDelete(perform: deleteItems)
         }
     }
-    
-    private func deleteItems(offsets: IndexSet) {
+
+    private func delete(_ item: Item) {
         withAnimation {
-            viewModel.delete(offsets.map { filteredItems[$0] }) { _ in
-                showAlert.toggle()
+            if selected == item {
+                selected = nil
+            }
+            viewModel.delete([item]) { _ in
+                showAlertForDeletion.toggle()
             }
         }
     }

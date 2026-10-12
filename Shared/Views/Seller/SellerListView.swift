@@ -12,99 +12,69 @@ struct SellerListView: View {
 
     @State var presentAddSelleriew = false
 
-    @State private var showAlert = false
     @State private var showAlertForDeletion = false
-    
-    @State var sellers = [Seller]()
-    @State var selectedSeller: Seller?
-    
+    @Binding var selected: Seller?
+
+    private var sellers: [Seller] {
+        return viewModel.filteredSellers
+    }
+
     var body: some View {
-        NavigationView {
-            VStack {
-                header()
-                
-                sellerListView()
-                .sheet(isPresented: $presentAddSelleriew, content: {
-                    AddSellerView()
-                        .environmentObject(viewModel)
-                        .frame(minWidth: 350, minHeight: 450)
-                        .padding()
-                })
-            }
-            .navigationTitle("Seller")
-        }
-        .onChange(of: viewModel.sellers) { _ in
-            sellers = viewModel.filteredSellers
-        }
-        .onChange(of: viewModel.showAlert) { _ in
-            showAlert = viewModel.showAlert
-        }
-        .onChange(of: viewModel.stringToSearch) { _ in
-            sellers = viewModel.filteredSellers
-        }
-        .alert("Unable to Save Data", isPresented: $showAlert) {
-            Button("Dismiss") {
-                showAlert.toggle()
-            }
-        } message: {
-            Text(viewModel.message)
-        }
-        .alert("Unable to Delete Data", isPresented: $showAlertForDeletion) {
-            Button("Dismiss") {
-                showAlert.toggle()
-            }
-        } message: {
-            Text("Failed to delete the selected seller")
-        }
-    }
-    
-    private func header() -> some View {
-        HStack {
-            Button(action: {
-                viewModel.persistenceHelper.reset()
-                presentAddSelleriew = true
-            }) {
-                Label("Add a seller", systemImage: "plus")
-            }
-        }
-    }
-    
-    private func sellerListView() -> some View {
-        List {
+        List(selection: $selected) {
             ForEach(sellers) { seller in
-                NavigationLink {
-                    SellerDetailView(seller: seller, name: seller.name ?? "", urlString: seller.url?.absoluteString ?? "", items: viewModel.getItems(seller))
-                } label: {
-                    SellerRowView(name: seller.name ?? "", itemCount: viewModel.getItemCount(seller))
+                NavigationLink(value: seller) {
+                    BrandKindSellerRowView(name: seller.name ?? "", itemCount: viewModel.getItemCount(seller))
                 }
             }
             .onDelete(perform: deleteSellers)
         }
-        #if os(iOS)
-        .id(UUID())
-        #endif
+        .onscreenEntities(Seller.self)
+        .navigationTitle("Sellers")
+        .toolbar {
+            header
+        }
+        .refreshable {
+            viewModel.fetchEntities()
+        }
+        .sheet(isPresented: $presentAddSelleriew) {
+            AddSellerView()
+                .environmentObject(viewModel)
+                .modifier(SheetModifier())
+        }
+        .alert("Failed to delete", isPresented: $showAlertForDeletion) {
+            Button("Dismiss") {
+            }
+        } message: {
+            Text("Unable to delete the selected seller")
+        }
     }
-    
-    private func sellerRowView(_ seller: Seller, name: String) -> some View {
-        HStack {
-            Text(name)
-            
-            Spacer()
-            
-            if let items = seller.items {
-                Text("\(items.count) items")
-                    .font(.callout)
-                    .foregroundColor(.secondary)
+
+    private var header: ToolbarItemGroup<some View> {
+        ToolbarItemGroup(placement: .leadingButtons) {
+            Button {
+                viewModel.refresh()
+            } label: {
+                Label("Refresh", systemImage: "arrow.clockwise")
+            }
+            .disabled(!viewModel.canRefresh)
+
+            Button {
+                presentAddSelleriew = true
+            } label: {
+                Label("Add a seller", systemImage: "plus")
             }
         }
     }
-    
+
     private func deleteSellers(offsets: IndexSet) {
         withAnimation {
-            viewModel.delete(offsets.map { sellers[$0] }) { _ in
+            let sellersToDelete = offsets.map { sellers[$0] }
+            if let selected, sellersToDelete.contains(selected) {
+                self.selected = nil
+            }
+            viewModel.delete(sellersToDelete) { _ in
                 showAlertForDeletion.toggle()
             }
         }
     }
 }
-

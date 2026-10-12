@@ -15,7 +15,8 @@ import os
 import Persistence
 
 class PersistenceHelper {
-    private static let logger = Logger()
+    private nonisolated static let logger = Logger()
+    static let transactionAuthor = "App"
     
     private let persistence: Persistence
     var viewContext: NSManagedObjectContext {
@@ -33,18 +34,322 @@ class PersistenceHelper {
         imageData = nil
     }
     
-    func save(item: Item, kind: [Kind], brand: Brand?, seller: Seller?, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
+    func perform<Element>(_ fetchRequest: NSFetchRequest<Element>) -> [Element] {
+        var fetchedEntities = [Element]()
+        do {
+            fetchedEntities = try viewContext.fetch(fetchRequest)
+        } catch {
+            PersistenceHelper.logger.error("Failed to fetch with fetchRequest=\(fetchRequest, privacy: .public): error=\(error.localizedDescription, privacy: .public)")
+        }
+        return fetchedEntities
+    }
+    
+    func getFetchRequest<Entity: NSFetchRequestResult>(for type: Entity.Type, entityName: String, sortDescriptors: [NSSortDescriptor] = [], predicate: NSPredicate? = nil) -> NSFetchRequest<Entity> {
+        let fetchRequest = NSFetchRequest<Entity>(entityName: entityName)
+        if !sortDescriptors.isEmpty {
+            fetchRequest.sortDescriptors = sortDescriptors
+        }
+        if let predicate = predicate {
+            fetchRequest.predicate = predicate
+        }
+        return fetchRequest
+    }
+    
+    // Every entity is created with a uuid, but the attribute is optional and nothing enforces it
+    func assignMissingUUIDs(completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
+        let predicate = NSPredicate(format: "uuid == nil")
+        var assigned = 0
+        for entity in Entities.allCases {
+            let fetchRequest = getFetchRequest(for: entity.type, entityName: entity.rawValue, predicate: predicate)
+            for object in perform(fetchRequest) {
+                object.setValue(UUID(), forKey: "uuid")
+                assigned += 1
+            }
+        }
+        guard assigned > 0 else {
+            completionHandler(.success(()))
+            return
+        }
+        PersistenceHelper.logger.log("Assigning uuids to \(assigned) objects")
+        saveContext(completionHandler: completionHandler)
+    }
+    
+    // MARK: - Lookup
+    // App Intents refer to objects by uuid and resolve spoken or typed names
+    func fetch<Entity: NSManagedObject>(_ entity: Entities, uuids: [UUID]) -> [Entity] {
+        guard !uuids.isEmpty else {
+            return []
+        }
+        let fetchRequest = getFetchRequest(for: Entity.self, entityName: entity.rawValue, predicate: NSPredicate(format: "uuid IN %@", uuids))
+        return perform(fetchRequest)
+    }
+
+    // An empty string matches every named object
+    func fetch<Entity: NSManagedObject>(_ entity: Entities, nameContaining string: String, predicate: NSPredicate? = nil, sortDescriptors: [NSSortDescriptor], limit: Int = 0) -> [Entity] {
+        var predicates = [string.isEmpty ? NSPredicate(format: "name != nil") : NSPredicate(format: "name CONTAINS[cd] %@", string)]
+        if let predicate {
+            predicates.append(predicate)
+        }
+        let fetchRequest = getFetchRequest(for: Entity.self, entityName: entity.rawValue, sortDescriptors: sortDescriptors, predicate: NSCompoundPredicate(andPredicateWithSubpredicates: predicates))
+        fetchRequest.fetchLimit = limit
+        return perform(fetchRequest)
+    }
+
+    // Named items whose name, a category, or the brand contains any of the terms, most recently updated first
+    func fetchItems(matchingAny terms: [String], limit: Int) -> [Item] {
+        guard !terms.isEmpty else {
+            return []
+        }
+        let matches = terms.map {
+            NSPredicate(format: "name CONTAINS[cd] %@ OR ANY kind.name CONTAINS[cd] %@ OR ANY brand.name CONTAINS[cd] %@", $0, $0, $0)
+        }
+        let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [NSPredicate(format: "name != nil"),
+                                                                            NSCompoundPredicate(orPredicateWithSubpredicates: matches)])
+        let fetchRequest = getFetchRequest(for: Item.self, entityName: Entities.item.rawValue,
+                                           sortDescriptors: [NSSortDescriptor(key: "lastupd", ascending: false)], predicate: predicate)
+        fetchRequest.fetchLimit = limit
+        return perform(fetchRequest)
+    }
+
+    func count(_ entity: Entities, predicate: NSPredicate) -> Int {
+        let fetchRequest = getFetchRequest(for: entity.type, entityName: entity.rawValue, predicate: predicate)
+        do {
+            return try viewContext.count(for: fetchRequest)
+        } catch {
+            PersistenceHelper.logger.error("Failed to count with fetchRequest=\(fetchRequest, privacy: .public): error=\(error.localizedDescription, privacy: .public)")
+            return 0
+        }
+    }
+
+    // MARK: - Background reads
+    // Spotlight indexing reads every item and its photo, so it runs on a private context
+    private lazy var backgroundContext = persistence.container.newBackgroundContext()
+
+    // The uuids of the items the list shows (named ones)
+    func itemUUIDs() async -> Set<UUID> {
+        let context = backgroundContext
+        return await context.perform {
+            let fetchRequest = NSFetchRequest<NSDictionary>(entityName: Entities.item.rawValue)
+            fetchRequest.predicate = NSPredicate(format: "name != nil AND uuid != nil")
+            fetchRequest.resultType = .dictionaryResultType
+            fetchRequest.propertiesToFetch = ["uuid"]
+            do {
+                return Set(try context.fetch(fetchRequest).compactMap { $0["uuid"] as? UUID })
+            } catch {
+                PersistenceHelper.logger.error("Failed to fetch item uuids: \(error.localizedDescription, privacy: .public)")
+                return []
+            }
+        }
+    }
+
+    // The uuids of the named items that saved or merged changes touched, directly or through a
+    // renamed or deleted category, brand, or seller. `hasDeletions` is set when an item no longer exists.
+    func itemUUIDs(affectedBy objectIDs: [NSManagedObjectID]) async -> (uuids: Set<UUID>, hasDeletions: Bool) {
+        let context = backgroundContext
+        return await context.perform {
+            var uuids = Set<UUID>()
+            var hasDeletions = false
+            func add(_ item: Item) {
+                if item.name != nil, let uuid = item.uuid {
+                    uuids.insert(uuid)
+                }
+            }
+            for objectID in objectIDs {
+                guard let object = try? context.existingObject(with: objectID) else {
+                    hasDeletions = hasDeletions || objectID.entity.name == Entities.item.rawValue
+                    continue
+                }
+                switch object {
+                case let item as Item:
+                    add(item)
+                case let kind as Kind:
+                    kind.items?.compactMap { $0 as? Item }.forEach(add)
+                case let brand as Brand:
+                    brand.items?.compactMap { $0 as? Item }.forEach(add)
+                case let seller as Seller:
+                    seller.items?.compactMap { $0 as? Item }.forEach(add)
+                default:
+                    break
+                }
+            }
+            context.reset()
+            return (uuids, hasDeletions)
+        }
+    }
+
+    // Named items with the uuids, each transformed on the background context's queue
+    func transformItems<T: Sendable>(uuids: [UUID], _ transform: @escaping @Sendable (Item) -> T?) async -> [T] {
+        guard !uuids.isEmpty else {
+            return []
+        }
+        let context = backgroundContext
+        return await context.perform {
+            let fetchRequest = NSFetchRequest<Item>(entityName: Entities.item.rawValue)
+            fetchRequest.predicate = NSPredicate(format: "uuid IN %@ AND name != nil", uuids)
+            fetchRequest.relationshipKeyPathsForPrefetching = ["kind", "brand", "seller"]
+            do {
+                let results = try context.fetch(fetchRequest).compactMap(transform)
+                // Drops the rows and photos just read
+                context.reset()
+                return results
+            } catch {
+                PersistenceHelper.logger.error("Failed to fetch items: \(error.localizedDescription, privacy: .public)")
+                return []
+            }
+        }
+    }
+
+    // MARK: - Create
+    public func saveBelonging(name: String, kind: [Kind], brand: Brand?, seller: Seller?, note: String, obtained: Date, buyPrice: Double, quantity: Int64, buyCurrency: String, image: Data?, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
+        insertBelonging(name: name, kind: kind, brand: brand, seller: seller, note: note, obtained: obtained, buyPrice: buyPrice, quantity: quantity, buyCurrency: buyCurrency, image: image)
+        saveContext(completionHandler: completionHandler)
+    }
+    
+    // Inserts without saving; a failed save rolls it back
+    @discardableResult
+    func insertBelonging(name: String, kind: [Kind], brand: Brand?, seller: Seller?, note: String, obtained: Date, buyPrice: Double, quantity: Int64, buyCurrency: String, image: Data?) -> Item {
+        let created = Date()
+        
+        let newItem = Item(context: viewContext)
+        newItem.created = created
+        newItem.lastupd = created
+        newItem.name = name
+        newItem.note = note
+        newItem.quantity = quantity
+        newItem.obtained = obtained
+        newItem.buyPrice = buyPrice
+        newItem.buyCurrency = buyCurrency
+        newItem.uuid = UUID()
+        newItem.image = image
+       
         if !kind.isEmpty {
+            kind.forEach { $0.addToItems(newItem) }
+        }
+        
+        if let brand {
+            brand.addToItems(newItem)
+        }
+        
+        if let seller {
+            seller.addToItems(newItem)
+        }
+        
+        return newItem
+    }
+    
+    public func saveKind(_ name: String, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
+        let created = Date()
+        
+        let newKind = Kind(context: viewContext)
+        newKind.created = created
+        newKind.lastupd = created
+        newKind.name = name.trimmingCharacters(in: .whitespaces)
+        newKind.uuid = UUID()
+        
+        saveContext(completionHandler: completionHandler)
+    }
+    
+    public func saveBrand(_ name: String, url: URL?, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
+        let created = Date()
+        
+        let newBrand = Brand(context: viewContext)
+        newBrand.created = created
+        newBrand.lastupd = created
+        newBrand.name = name
+        newBrand.url = url
+        newBrand.uuid = UUID()
+
+        saveContext(completionHandler: completionHandler)
+    }
+    
+    public func saveSeller(_ name: String, url: URL?, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
+        let created = Date()
+        
+        let newSeller = Seller(context: viewContext)
+        newSeller.created = created
+        newSeller.lastupd = created
+        newSeller.name = name
+        newSeller.url = url
+        newSeller.uuid = UUID()
+
+        saveContext(completionHandler: completionHandler)
+    }
+    
+    // MARK: - Update
+    public func update(_ item: Item, to dto: ItemDTO, kind: [Kind], brand: Brand?, seller: Seller?, _ isObtainedDateEdited: Bool, _ isDisposedDateEdited: Bool, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
+        
+        if !kind.isEmpty {
+            item.kind?.forEach {
+                if let kind = $0 as? Kind {
+                    kind.removeFromItems(item)
+                }
+            }
             kind.forEach { $0.addToItems(item) }
         }
         
         if brand != nil {
-            brand!.addToItems(item)
+            item.brand?.forEach {
+                if let brand = $0 as? Brand {
+                    brand.removeFromItems(item)
+                }
+            }
+            brand?.addToItems(item)
         }
         
         if seller != nil {
-            seller!.addToItems(item)
+            item.seller?.forEach {
+                if let seller = $0 as? Seller {
+                    seller.removeFromItems(item)
+                }
+            }
+            seller?.addToItems(item)
         }
+                
+        item.name = dto.name
+        item.note = dto.note
+        item.quantity = Int64(dto.quantity)
+        item.buyPrice = dto.buyPrice
+        item.sellPrice = dto.sellPrice
+        item.buyCurrency = dto.buyCurrency
+        item.sellCurrency = dto.sellCurrency
+        if isObtainedDateEdited {
+            item.obtained = dto.obtained
+        }
+        if isDisposedDateEdited {
+            item.disposed = dto.disposed
+        }
+        item.image = dto.image
+        item.lastupd = Date()
+        
+        saveContext(completionHandler: completionHandler)
+    }
+    
+    public func updateDisposed(_ item: Item, to date: Date?, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
+        item.disposed = date
+        item.lastupd = Date()
+
+        saveContext(completionHandler: completionHandler)
+    }
+
+    public func update(_ kind: Kind, to dto: KindDTO, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
+        kind.name = dto.name?.trimmingCharacters(in: .whitespaces)
+        kind.lastupd = Date()
+        
+        saveContext(completionHandler: completionHandler)
+    }
+    
+    public func update(_ brand: Brand, to dto: BrandDTO, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
+        brand.name = dto.name?.trimmingCharacters(in: .whitespaces)
+        brand.url = dto.url
+        brand.lastupd = Date()
+        
+        saveContext(completionHandler: completionHandler)
+    }
+    
+    public func update(_ seller: Seller, to dto: SellerDTO, completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
+        seller.name = dto.name?.trimmingCharacters(in: .whitespaces)
+        seller.url = dto.url
+        seller.lastupd = Date()
         
         saveContext(completionHandler: completionHandler)
     }
@@ -64,9 +369,10 @@ class PersistenceHelper {
             
             let request = VNCoreMLRequest(model: model, completionHandler: { [weak self] request, error in
                 let classifications = request.results as! [VNClassificationObservation]
-                
+
+                let result: String
                 if classifications.isEmpty {
-                    self?.classificationResult = "Nothing recognized."
+                    result = "Nothing recognized."
                 } else {
                     // Display top classifications ranked by confidence in the UI.
                     let topClassifications = classifications.prefix(2)
@@ -74,11 +380,11 @@ class PersistenceHelper {
                         // Formats the classification for display; e.g. "(0.37) cliff, drop, drop-off".
                         return String(format: "  (%.2f) %@", classification.confidence, classification.identifier)
                     }
-                    
-                    DispatchQueue.main.async {
-                        self?.classificationResult = descriptions.joined(separator: " ")
-                        print("classificationResult = \(String(describing: self?.classificationResult))")
-                    }
+                    result = descriptions.joined(separator: " ")
+                }
+
+                Task { @MainActor in
+                    self?.classificationResult = result
                 }
             })
             request.imageCropAndScaleOption = .centerCrop
@@ -88,34 +394,57 @@ class PersistenceHelper {
             fatalError("Failed to load Vision ML model: \(error)")
         }
     }()
+
+    func updateClassifications() async {
+        guard let data = imageData, let ciImage = CIImage(data: data) else {
+            return
+        }
+
+        nonisolated(unsafe) let request = classificationRequest
+        await Self.classify(ciImage: ciImage, request: request)
+    }
+
+    @concurrent
+    private static func classify(ciImage: CIImage, request: VNCoreMLRequest) async {
+        let handler = VNImageRequestHandler(ciImage: ciImage)
+        do {
+            try handler.perform([request])
+        } catch {
+            /*
+             This handler catches general image processing errors. The `classificationRequest`'s
+             completion handler `processClassifications(_:error:)` catches errors specific
+             to processing that request.
+             */
+            print("Failed to perform classification.\n\(error.localizedDescription)")
+        }
+    }
     
-    func updateClassifications() {
-        DispatchQueue.global(qos: .userInitiated).async {
-            guard let data = self.imageData, let ciImage = CIImage(data: data) else {
-                return
-            }
-            
-            let handler = VNImageRequestHandler(ciImage: ciImage)
-            do {
-                try handler.perform([self.classificationRequest])
-            } catch {
-                /*
-                 This handler catches general image processing errors. The `classificationRequest`'s
-                 completion handler `processClassifications(_:error:)` catches errors specific
-                 to processing that request.
-                 */
-                print("Failed to perform classification.\n\(error.localizedDescription)")
-            }
+    // For callers that report failures themselves (App Intents)
+    func save() async throws -> Void {
+        try await withCheckedThrowingContinuation { continuation in
+            saveContext { continuation.resume(with: $0) }
         }
     }
     
     private func saveContext(completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
-        viewContext.transactionAuthor = "App"
-        let originalMergePolicy = viewContext.mergePolicy
-        viewContext.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
-        persistence.save(completionHandler: completionHandler)
-        viewContext.mergePolicy = originalMergePolicy
-        viewContext.transactionAuthor = nil
+        let signpostState = PerformanceSignposts.signposter.beginInterval("save")
+        let viewContext = self.viewContext
+        Task {
+            var result: Result<Void, Error>
+            do {
+                try await persistence.save()
+                result = .success(())
+            } catch {
+                result = .failure(error)
+            }
+            await MainActor.run { [result] in
+                if case .failure = result {
+                    viewContext.rollback()
+                }
+                PerformanceSignposts.signposter.endInterval("save", signpostState)
+                completionHandler(result)
+            }
+        }
     }
     
     func delete(_ objects: [NSManagedObject], completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="19461" systemVersion="21A559" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="2">
+    <entity name="Brand" representedClassName="Brand" versionHashModifier="2" syncable="YES" codeGenerationType="class">
+        <attribute name="created" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="lastupd" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="url" optional="YES" attributeType="URI"/>
+        <attribute name="uuid" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <relationship name="items" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Item" inverseName="brand" inverseEntity="Item"/>
+        <fetchIndex name="byUuidIndex">
+            <fetchIndexElement property="uuid" type="Binary" order="ascending"/>
+        </fetchIndex>
+    </entity>
+    <entity name="Item" representedClassName="Item" versionHashModifier="2" syncable="YES" codeGenerationType="class">
+        <attribute name="buyCurrency" optional="YES" attributeType="String"/>
+        <attribute name="buyPrice" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="created" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="disposed" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="image" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
+        <attribute name="lastupd" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="note" optional="YES" attributeType="String"/>
+        <attribute name="obtained" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="quantity" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="sellCurrency" optional="YES" attributeType="String"/>
+        <attribute name="sellPrice" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="uuid" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <relationship name="brand" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Brand" inverseName="items" inverseEntity="Brand"/>
+        <relationship name="kind" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Kind" inverseName="items" inverseEntity="Kind"/>
+        <relationship name="seller" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Seller" inverseName="items" inverseEntity="Seller"/>
+        <fetchIndex name="byUuidIndex">
+            <fetchIndexElement property="uuid" type="Binary" order="ascending"/>
+        </fetchIndex>
+        <fetchIndex name="byDisposedIndex">
+            <fetchIndexElement property="disposed" type="Binary" order="ascending"/>
+        </fetchIndex>
+        <fetchIndex name="byObtainedIndex">
+            <fetchIndexElement property="obtained" type="Binary" order="ascending"/>
+        </fetchIndex>
+    </entity>
+    <entity name="Kind" representedClassName="Kind" versionHashModifier="2" syncable="YES" codeGenerationType="class">
+        <attribute name="created" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="lastupd" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="uuid" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <relationship name="items" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Item" inverseName="kind" inverseEntity="Item"/>
+        <fetchIndex name="byUuidIndex">
+            <fetchIndexElement property="uuid" type="Binary" order="ascending"/>
+        </fetchIndex>
+    </entity>
+    <entity name="Seller" representedClassName="Seller" versionHashModifier="2" syncable="YES" codeGenerationType="class">
+        <attribute name="created" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="lastupd" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="url" optional="YES" attributeType="URI"/>
+        <attribute name="uuid" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <relationship name="items" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Item" inverseName="seller" inverseEntity="Item"/>
+        <fetchIndex name="byUuidIndex">
+            <fetchIndexElement property="uuid" type="Binary" order="ascending"/>
+        </fetchIndex>
+    </entity>
+    <elements>
+        <element name="Brand" positionX="160" positionY="192" width="128" height="119"/>
+        <element name="Item" positionX="-63" positionY="72" width="128" height="269"/>
+        <element name="Kind" positionX="-63" positionY="-18" width="128" height="104"/>
+        <element name="Seller" positionX="-36" positionY="144" width="128" height="119"/>
+    </elements>
+</model>

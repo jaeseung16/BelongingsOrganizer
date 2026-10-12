@@ -10,32 +10,16 @@ import SwiftUI
 struct ItemRowView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
     
-    @State var item: Item
+    @ObservedObject var item: Item
     var imageWidth: CGFloat = 50
     
     var body: some View {
         HStack {
-            if let imageData = item.image {
-            #if os(macOS)
-                if let nsImage = NSImage(data: imageData) {
-                    Image(nsImage: nsImage)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: imageWidth)
-                }
-            #else
-                if let uiImage = UIImage(data: imageData) {
-                    Image(uiImage: uiImage)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: imageWidth)
-                }
-            #endif
-            } else {
+            ItemThumbnailView(item: item, size: CGSize(width: imageWidth, height: imageWidth)) {
                 Image(systemName: "photo")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: imageWidth)
+                    .frame(width: imageWidth, height: imageWidth)
             }
             
             Spacer()

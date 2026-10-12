@@ -8,11 +8,12 @@
 import SwiftUI
 
 struct SectionTitleView: View {
-    let title: String
+    let title: SectionTitle
+    var color = Color.secondary
     
     var body: some View {
-        Text(title)
+        Text(title.rawValue)
             .font(.caption)
-            .foregroundColor(.secondary)
+            .foregroundColor(color)
     }
 }

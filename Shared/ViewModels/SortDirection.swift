@@ -7,6 +7,7 @@
 
 import Foundation
 
-enum SortDirection {
-    case ascending, descending
+enum SortDirection: String {
+    case ascending = "arrow.up.forward"
+    case descending = "arrow.down.forward"
 }

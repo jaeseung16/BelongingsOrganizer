@@ -9,87 +9,72 @@ import SwiftUI
 
 struct BrandListView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
-    
-    @State var presentAddBrandView = false
 
-    @State private var showAlert = false
+    @State var presentAddBrandView = false
     @State private var showAlertForDeletion = false
-    
-    @State var brands = [Brand]()
-    
+    @Binding var selected: Brand?
+
+    var brands: [Brand] {
+        return viewModel.filteredBrands
+    }
+
     var body: some View {
-        NavigationView {
-            VStack {
-                header()
-                
-                brandListView()
-                .sheet(isPresented: $presentAddBrandView, content: {
-                    AddBrandView()
-                        .environmentObject(viewModel)
-                        .frame(minWidth: 350, minHeight: 450)
-                        .padding()
-                })
+        List(selection: $selected) {
+            ForEach(brands) { brand in
+                NavigationLink(value: brand) {
+                    BrandKindSellerRowView(name: brand.name ?? "", itemCount: viewModel.getItemCount(brand))
+                }
             }
-            .navigationTitle("Brands")
+            .onDelete(perform: deleteBrands)
         }
-        .onChange(of: viewModel.brands) { _ in
-            brands = viewModel.filteredBrands
+        .onscreenEntities(Brand.self)
+        .navigationTitle("Brands")
+        .toolbar {
+            header
         }
-        .onChange(of: viewModel.showAlert) { _ in
-            showAlert = viewModel.showAlert
+        .refreshable {
+            viewModel.fetchEntities()
         }
-        .onChange(of: viewModel.stringToSearch) { _ in
-            brands = viewModel.filteredBrands
-        }
-        .alert("Unable to Save Data", isPresented: $showAlert) {
-            Button("Dismiss") {
-                showAlert.toggle()
-            }
-        } message: {
-            Text(viewModel.message)
+        .sheet(isPresented: $presentAddBrandView) {
+            AddBrandView()
+                .environmentObject(viewModel)
+                .modifier(SheetModifier())
         }
         .alert("Unable to Delete Data", isPresented: $showAlertForDeletion) {
             Button("Dismiss") {
-                showAlert.toggle()
+                showAlertForDeletion.toggle()
             }
         } message: {
             Text("Failed to delete the selected brand")
         }
     }
-    
-    private func header() -> some View {
-        HStack {
-            Button(action: {
-                viewModel.persistenceHelper.reset()
+
+    private var header: ToolbarItemGroup<some View> {
+        ToolbarItemGroup(placement: .leadingButtons) {
+            Button {
+                viewModel.refresh()
+            } label: {
+                Label("Refresh", systemImage: "arrow.clockwise")
+            }
+            .disabled(!viewModel.canRefresh)
+
+            Button{
                 presentAddBrandView = true
-            }) {
+            } label: {
                 Label("Add a brand", systemImage: "plus")
             }
         }
     }
-    
-    private func brandListView() -> some View {
-        List {
-            ForEach(brands) { brand in
-                NavigationLink {
-                    BrandDetailView(brand: brand, name: brand.name ?? "", urlString: brand.url?.absoluteString ?? "", items: viewModel.getItems(brand))
-                } label: {
-                    BrandRowView(name: brand.name ?? "", itemCount: viewModel.getItemCount(brand))
-                }
-            }
-            .onDelete(perform: deleteBrands)
-        }
-        #if os(iOS)
-        .id(UUID())
-        #endif
-    }
-    
+
     private func deleteBrands(offsets: IndexSet) {
         withAnimation {
-            viewModel.delete(offsets.map { brands[$0] }) { _ in
+            let brandsToDelete = offsets.map { brands[$0] }
+            if let selected, brandsToDelete.contains(selected) {
+                self.selected = nil
+            }
+            viewModel.delete(brandsToDelete) { _ in
                 showAlertForDeletion.toggle()
             }
         }
     }
 }
-

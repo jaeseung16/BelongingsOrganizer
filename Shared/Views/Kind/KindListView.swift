@@ -9,85 +9,69 @@ import SwiftUI
 
 struct KindListView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
-    
+
     @State var presentAddKindView = false
-
-    @State private var showAlert = false
     @State private var showAlertForDeletion = false
+    @Binding var selected: Kind?
 
-    @State var kinds = [Kind]()
-    
+    var kinds: [Kind] {
+        return viewModel.filteredKinds
+    }
+
     var body: some View {
-        NavigationView {
-            VStack {
-                header()
-                
-                kindListView()
-                    .sheet(isPresented: $presentAddKindView) {
-                        AddKindView()
-                            .environmentObject(viewModel)
-                            .frame(minWidth: 350, minHeight: 450)
-                            .padding()
-                        
-                    }
+        List(selection: $selected) {
+            ForEach(kinds) { kind in
+                NavigationLink(value: kind) {
+                    BrandKindSellerRowView(name: kind.name ?? "", itemCount: viewModel.getItemCount(kind))
+                }
             }
-            .navigationTitle("Categories")
+            .onDelete(perform: deleteKinds)
         }
-        .onChange(of: viewModel.kinds) { _ in
-            kinds = viewModel.filteredKinds
+        .onscreenEntities(Kind.self)
+        .navigationTitle("Categories")
+        .toolbar {
+            header
         }
-        .onChange(of: viewModel.showAlert) { _ in
-            showAlert = viewModel.showAlert
+        .refreshable {
+            viewModel.fetchEntities()
         }
-        .onChange(of: viewModel.stringToSearch) { _ in
-            kinds = viewModel.filteredKinds
-        }
-        .alert("Unable to Save Data", isPresented: $showAlert) {
-            Button("Dismiss") {
-                showAlert.toggle()
-            }
-        } message: {
-            Text(viewModel.message)
+        .sheet(isPresented: $presentAddKindView) {
+            AddKindView()
+                .environmentObject(viewModel)
+                .modifier(SheetModifier())
         }
         .alert("Unable to Delete Data", isPresented: $showAlertForDeletion) {
             Button("Dismiss") {
-                showAlert.toggle()
             }
         } message: {
             Text("Failed to delete the selected category")
         }
     }
-    
-    private func header() -> some View {
-        HStack {
-            Button(action: {
-                viewModel.persistenceHelper.reset()
+
+    private var header: ToolbarItemGroup<some View> {
+        ToolbarItemGroup(placement: .leadingButtons) {
+            Button {
+                viewModel.refresh()
+            } label: {
+                Label("Refresh", systemImage: "arrow.clockwise")
+            }
+            .disabled(!viewModel.canRefresh)
+
+            Button {
                 presentAddKindView = true
-            }) {
+            } label: {
                 Label("Add a category", systemImage: "plus")
             }
         }
     }
-    
-    private func kindListView() -> some View {
-        List {
-            ForEach(kinds) { kind in
-                NavigationLink {
-                    KindDetailView(kind: kind, name: kind.name ?? "", items: viewModel.getItems(kind))
-                } label: {
-                    KindRowView(name: kind.name ?? "", itemCount: viewModel.getItemCount(kind))
-                }
-            }
-            .onDelete(perform: deleteKinds)
-        }
-        #if os(iOS)
-        .id(UUID())
-        #endif
-    }
 
     private func deleteKinds(offsets: IndexSet) {
         withAnimation {
-            viewModel.delete(offsets.map { kinds[$0] }) { _ in
+            let kindsToDelete = offsets.map { kinds[$0] }
+            if let selected, kindsToDelete.contains(selected) {
+                self.selected = nil
+            }
+            viewModel.delete(kindsToDelete) { _ in
                 showAlertForDeletion.toggle()
             }
         }

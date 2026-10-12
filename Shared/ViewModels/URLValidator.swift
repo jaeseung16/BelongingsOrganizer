@@ -12,24 +12,21 @@ class URLValidator {
         case http, https
     }
     
-    static private var schemeAuthoritySeparator = "://"
-    
-    static func validatedURL(from urlString: String, completionHandler: @escaping (URL?) -> Void) -> Void {
+    static private let schemeAuthoritySeparator = "://"
+
+    static func validatedURL(from urlString: String) async throws -> URL? {
         if isSchemeSupported(urlString) {
-            completionHandler(URL(string: urlString))
+            return URL(string: urlString)
         } else {
-            isWorkingWithHttps(with: urlString) { success in
-                if success {
-                    completionHandler(URL(string: prefix(urlString, with: .https)))
-                } else {
-                    self.isWorkingWithHttp(with: urlString) { success in
-                        completionHandler(success ? URL(string: prefix(urlString, with: .http)) : nil)
-                    }
-                }
+            if try await isWorkingWithHttps(with: urlString) {
+                return URL(string: prefix(urlString, with: .https))
+            } else if try await isWorkingWithHttp(with: urlString) {
+                return URL(string: prefix(urlString, with: .http))
             }
         }
+        return nil
     }
-    
+
     private static func prefix(_ urlString: String, with scheme: Scheme) -> String {
         return "\(scheme.rawValue)\(schemeAuthoritySeparator)\(urlString)"
     }
@@ -41,29 +38,26 @@ class URLValidator {
         return scheme == Scheme.http.rawValue || scheme == Scheme.https.rawValue
     }
     
-    private static func canDownload(from urlString: String, completionHandler: @escaping (Bool) -> Void) -> Void {
+    private static func canDownload(from urlString: String) async throws -> Bool {
         guard let url = URL(string: urlString) else {
-            completionHandler(false)
-            return
+            return false
         }
         
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
-            if let response = response as? HTTPURLResponse, response.statusCode == 200 {
-                completionHandler(true)
-            } else {
-                completionHandler(false)
-            }
+        let (_, response) = try await URLSession.shared.data(from: url)
+        if let response = response as? HTTPURLResponse, response.statusCode == 200 {
+            return true
         }
-        task.resume()
+        
+        return false
     }
     
-    private static func isWorkingWithHttps(with urlString: String, completionHandler: @escaping (Bool) -> Void) -> Void {
+    private static func isWorkingWithHttps(with urlString: String) async throws -> Bool {
         let urlStringPrefixedWithHttps = prefix(urlString, with: Scheme.https)
-        canDownload(from: urlStringPrefixedWithHttps) { completionHandler($0) }
+        return try await canDownload(from: urlStringPrefixedWithHttps)
     }
-    
-    private static func isWorkingWithHttp(with urlString: String, completionHandler: @escaping (Bool) -> Void) -> Void {
+
+    private static func isWorkingWithHttp(with urlString: String) async throws -> Bool {
         let urlStringPrefixedWithHttp = prefix(urlString, with: Scheme.http)
-        canDownload(from: urlStringPrefixedWithHttp) { completionHandler($0) }
+        return try await canDownload(from: urlStringPrefixedWithHttp)
     }
 }

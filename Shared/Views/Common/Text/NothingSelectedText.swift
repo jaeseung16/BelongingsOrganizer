@@ -15,9 +15,3 @@ struct NothingSelectedText: View {
             .foregroundColor(.secondary)
     }
 }
-
-struct NotSelectedView_Previews: PreviewProvider {
-    static var previews: some View {
-        NothingSelectedText()
-    }
-}
