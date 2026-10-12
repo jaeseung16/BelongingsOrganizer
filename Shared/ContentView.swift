@@ -59,14 +59,53 @@ enum SidebarSection: String, CaseIterable, Identifiable {
     }
 }
 
+extension SearchFieldPlacement {
+    // Keeps the field showing without a pull-down, as the split view did; navigationBarDrawer is unavailable on macOS
+    static var listSearchField: SearchFieldPlacement {
+        #if os(iOS)
+        return .navigationBarDrawer(displayMode: .always)
+        #else
+        return .automatic
+        #endif
+    }
+}
+
+// The tabs of the TabView root; the ads target keeps the SidebarSection sidebar
+enum AppTab: Hashable {
+    case items
+    case catalog
+    case search
+    case settings
+    case stats
+    case disposed
+
+    init(_ section: SidebarSection) {
+        switch section {
+        case .items:
+            self = .items
+        case .disposed:
+            self = .disposed
+        case .categories, .brands, .sellers:
+            self = .catalog
+        case .stats:
+            self = .stats
+        case .settings:
+            self = .settings
+        }
+    }
+}
+
 struct ContentView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
 
     @State private var section: SidebarSection? = .items
     @State private var columnVisibility = NavigationSplitViewVisibility.all
+    @State private var tab = AppTab.items
+    @State private var catalogSection = CatalogSection.categories
 
     @State private var selectedItem: Item?
     @State private var selectedDisposedItem: Item?
+    @State private var selectedSearchedItem: Item?
     @State private var selectedKind: Kind?
     @State private var selectedBrand: Brand?
     @State private var selectedSeller: Seller?
@@ -95,6 +134,9 @@ struct ContentView: View {
                 if let item = selectedDisposedItem, !items.contains(item) {
                     selectedDisposedItem = nil
                 }
+                if let item = selectedSearchedItem, !items.contains(item) {
+                    selectedSearchedItem = nil
+                }
             }
             .onChange(of: viewModel.kinds) { _, kinds in
                 if let kind = selectedKind, !kinds.contains(kind) {
@@ -117,10 +159,13 @@ struct ContentView: View {
             .onChange(of: selectedDisposedItem) { _, item in
                 donateOpening(item)
             }
+            .onChange(of: selectedSearchedItem) { _, item in
+                donateOpening(item)
+            }
             // Initial too: Siri or a notification may ask before the window appears
             .onChange(of: viewModel.navigateToItems, initial: true) { _, navigate in
                 if navigate {
-                    section = .items
+                    show(.items)
                     // On iPhone an open item would hide the search results
                     if let item = selectedItem, !viewModel.checkIfStringToSearchContainedIn(item.name ?? "") {
                         selectedItem = nil
@@ -148,7 +193,72 @@ struct ContentView: View {
         splitViewRoot
             .adSupport()
         #else
-        splitViewRoot
+        tabViewRoot
+        #endif
+    }
+
+    private var tabViewRoot: some View {
+        TabView(selection: $tab) {
+            Tab(SidebarSection.items.rawValue, systemImage: SidebarSection.items.systemImage, value: AppTab.items) {
+                NavigationSplitView {
+                    ItemListView(selected: $selectedItem)
+                        .searchable(text: $viewModel.stringToSearch, placement: .listSearchField)
+                } detail: {
+                    itemDetail(for: selectedItem)
+                }
+            }
+
+            Tab("Catalog", systemImage: "square.stack.3d.up.fill", value: AppTab.catalog) {
+                NavigationSplitView {
+                    CatalogView(section: $catalogSection, selectedKind: $selectedKind, selectedBrand: $selectedBrand,
+                                selectedSeller: $selectedSeller)
+                        .searchable(text: $viewModel.stringToSearch, placement: .listSearchField)
+                } detail: {
+                    catalogDetail
+                }
+            }
+
+            // A plain tab: one with the search role can't overflow into More on iPhone, and is dropped instead.
+            // Until search covers every entity, it searches the items
+            Tab("Search", systemImage: "magnifyingglass", value: AppTab.search) {
+                NavigationSplitView {
+                    ItemListView(selected: $selectedSearchedItem)
+                        .searchable(text: $viewModel.stringToSearch, placement: .listSearchField)
+                } detail: {
+                    itemDetail(for: selectedSearchedItem)
+                }
+            }
+
+            #if os(iOS)
+            Tab(SidebarSection.settings.rawValue, systemImage: SidebarSection.settings.systemImage, value: AppTab.settings) {
+                NavigationStack {
+                    SettingsView()
+                }
+            }
+            #endif
+
+            Tab(SidebarSection.stats.rawValue, systemImage: SidebarSection.stats.systemImage, value: AppTab.stats) {
+                NavigationSplitView {
+                    statsList
+                } detail: {
+                    statsDetail
+                }
+            }
+
+            Tab(SidebarSection.disposed.rawValue, systemImage: SidebarSection.disposed.systemImage, value: AppTab.disposed) {
+                NavigationSplitView {
+                    ItemListView(disposition: .disposed, selected: $selectedDisposedItem)
+                        .searchable(text: $viewModel.stringToSearch, placement: .listSearchField)
+                } detail: {
+                    itemDetail(for: selectedDisposedItem)
+                }
+            }
+        }
+        // macOS keeps its toolbar tabs: there the sidebar style around each tab's NavigationSplitView
+        // loops on Update Constraints until AppKit throws
+        #if os(iOS)
+        .tabViewStyle(.sidebarAdaptable)
+        .tabBarMinimizeBehavior(.onScrollDown)
         #endif
     }
 
@@ -225,24 +335,40 @@ struct ContentView: View {
             clearSearch(unlessMatching: item.name)
             itemOpenedByIntent = item
             if item.disposed == nil {
-                section = .items
+                show(.items)
                 selectedItem = item
             } else {
-                section = .disposed
+                show(.disposed)
                 selectedDisposedItem = item
             }
         case .kind(let kind):
             clearSearch(unlessMatching: kind.name)
-            section = .categories
+            show(.categories)
             selectedKind = kind
         case .brand(let brand):
             clearSearch(unlessMatching: brand.name)
-            section = .brands
+            show(.brands)
             selectedBrand = brand
         case .seller(let seller):
             clearSearch(unlessMatching: seller.name)
-            section = .sellers
+            show(.sellers)
             selectedSeller = seller
+        }
+    }
+
+    // Selects the section in whichever root is showing
+    private func show(_ section: SidebarSection) {
+        self.section = section
+        tab = AppTab(section)
+        switch section {
+        case .categories:
+            catalogSection = .categories
+        case .brands:
+            catalogSection = .brands
+        case .sellers:
+            catalogSection = .sellers
+        default:
+            break
         }
     }
 
@@ -294,6 +420,18 @@ struct ContentView: View {
             SellerDetailView(seller: seller, name: seller.name ?? "", urlString: seller.url?.absoluteString ?? "", items: viewModel.getItems(seller))
                 .id(seller)
                 .toolbarTitleDisplayMode(.inline)
+        }
+    }
+
+    @ViewBuilder
+    private var catalogDetail: some View {
+        switch catalogSection {
+        case .categories:
+            kindDetail(for: selectedKind)
+        case .brands:
+            brandDetail(for: selectedBrand)
+        case .sellers:
+            sellerDetail(for: selectedSeller)
         }
     }
 
