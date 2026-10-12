@@ -80,6 +80,79 @@ struct ContentView: View {
     @State private var statsEnd = Date()
 
     var body: some View {
+        root
+            .alert("Unable to save data", isPresented: $viewModel.showAlert) {
+                Button("Dismiss") {
+                }
+            } message: {
+                Text(viewModel.message)
+            }
+            // Clear selections whose object was deleted, here or on another device
+            .onChange(of: viewModel.items) { _, items in
+                if let item = selectedItem, !items.contains(item) {
+                    selectedItem = nil
+                }
+                if let item = selectedDisposedItem, !items.contains(item) {
+                    selectedDisposedItem = nil
+                }
+            }
+            .onChange(of: viewModel.kinds) { _, kinds in
+                if let kind = selectedKind, !kinds.contains(kind) {
+                    selectedKind = nil
+                }
+            }
+            .onChange(of: viewModel.brands) { _, brands in
+                if let brand = selectedBrand, !brands.contains(brand) {
+                    selectedBrand = nil
+                }
+            }
+            .onChange(of: viewModel.sellers) { _, sellers in
+                if let seller = selectedSeller, !sellers.contains(seller) {
+                    selectedSeller = nil
+                }
+            }
+            .onChange(of: selectedItem) { _, item in
+                donateOpening(item)
+            }
+            .onChange(of: selectedDisposedItem) { _, item in
+                donateOpening(item)
+            }
+            // Initial too: Siri or a notification may ask before the window appears
+            .onChange(of: viewModel.navigateToItems, initial: true) { _, navigate in
+                if navigate {
+                    section = .items
+                    // On iPhone an open item would hide the search results
+                    if let item = selectedItem, !viewModel.checkIfStringToSearchContainedIn(item.name ?? "") {
+                        selectedItem = nil
+                    }
+                    viewModel.navigateToItems = false
+                }
+            }
+            .onChange(of: viewModel.navigationRequest, initial: true) { _, request in
+                if let request {
+                    viewModel.navigationRequest = nil
+                    // Selected while Siri or Shortcuts is still handing over, the item is pushed twice
+                    // on iPhone (Back then shows it again); waiting for the handoff avoids that
+                    Task {
+                        try? await Task.sleep(for: Self.intentHandoffDelay)
+                        navigate(to: request)
+                    }
+                }
+            }
+    }
+
+    @ViewBuilder
+    private var root: some View {
+        #if ADS
+        // The banner's bottom inset leaves no room for a tab bar
+        splitViewRoot
+            .adSupport()
+        #else
+        splitViewRoot
+        #endif
+    }
+
+    private var splitViewRoot: some View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
             List(SidebarSection.sidebarCases, selection: $section) { section in
                 Label(section.rawValue, systemImage: section.systemImage)
@@ -90,74 +163,13 @@ struct ContentView: View {
         } detail: {
             detailColumn
         }
-        .alert("Unable to save data", isPresented: $viewModel.showAlert) {
-            Button("Dismiss") {
-            }
-        } message: {
-            Text(viewModel.message)
-        }
-        // Clear selections whose object was deleted, here or on another device
-        .onChange(of: viewModel.items) { _, items in
-            if let item = selectedItem, !items.contains(item) {
-                selectedItem = nil
-            }
-            if let item = selectedDisposedItem, !items.contains(item) {
-                selectedDisposedItem = nil
-            }
-        }
-        .onChange(of: viewModel.kinds) { _, kinds in
-            if let kind = selectedKind, !kinds.contains(kind) {
-                selectedKind = nil
-            }
-        }
-        .onChange(of: viewModel.brands) { _, brands in
-            if let brand = selectedBrand, !brands.contains(brand) {
-                selectedBrand = nil
-            }
-        }
-        .onChange(of: viewModel.sellers) { _, sellers in
-            if let seller = selectedSeller, !sellers.contains(seller) {
-                selectedSeller = nil
-            }
-        }
-        .onChange(of: selectedItem) { _, item in
-            donateOpening(item)
-        }
-        .onChange(of: selectedDisposedItem) { _, item in
-            donateOpening(item)
-        }
-        // Initial too: Siri or a notification may ask before the window appears
-        .onChange(of: viewModel.navigateToItems, initial: true) { _, navigate in
-            if navigate {
-                section = .items
-                // On iPhone an open item would hide the search results
-                if let item = selectedItem, !viewModel.checkIfStringToSearchContainedIn(item.name ?? "") {
-                    selectedItem = nil
-                }
-                viewModel.navigateToItems = false
-            }
-        }
-        .onChange(of: viewModel.navigationRequest, initial: true) { _, request in
-            if let request {
-                viewModel.navigationRequest = nil
-                // Selected while Siri or Shortcuts is still handing over, the item is pushed twice
-                // on iPhone (Back then shows it again); waiting for the handoff avoids that
-                Task {
-                    try? await Task.sleep(for: Self.intentHandoffDelay)
-                    navigate(to: request)
-                }
-            }
-        }
-        #if ADS
-        .adSupport()
-        #endif
     }
 
     @ViewBuilder
     private var contentColumn: some View {
         switch section {
         case .stats:
-            StatsView(statsType: $statsType, start: $statsStart, end: $statsEnd)
+            statsList
         case .settings:
             SettingsView()
         case nil:
@@ -194,25 +206,13 @@ struct ContentView: View {
         case .disposed:
             itemDetail(for: selectedDisposedItem)
         case .categories:
-            if let kind = selectedKind {
-                KindDetailView(kind: kind, name: kind.name ?? "", items: viewModel.getItems(kind))
-                    .id(kind)
-                    .toolbarTitleDisplayMode(.inline)
-            }
+            kindDetail(for: selectedKind)
         case .brands:
-            if let brand = selectedBrand {
-                BrandDetailView(brand: brand, name: brand.name ?? "", urlString: brand.url?.absoluteString ?? "", items: viewModel.getItems(brand))
-                    .id(brand)
-                    .toolbarTitleDisplayMode(.inline)
-            }
+            brandDetail(for: selectedBrand)
         case .sellers:
-            if let seller = selectedSeller {
-                SellerDetailView(seller: seller, name: seller.name ?? "", urlString: seller.url?.absoluteString ?? "", items: viewModel.getItems(seller))
-                    .id(seller)
-                    .toolbarTitleDisplayMode(.inline)
-            }
+            sellerDetail(for: selectedSeller)
         case .stats:
-            StatsDetailView(statsType: statsType, start: statsStart, end: statsEnd)
+            statsDetail
         case .settings, nil:
             EmptyView()
         }
@@ -268,5 +268,40 @@ struct ContentView: View {
                 .id(item)
                 .toolbarTitleDisplayMode(.inline)
         }
+    }
+
+    @ViewBuilder
+    private func kindDetail(for kind: Kind?) -> some View {
+        if let kind {
+            KindDetailView(kind: kind, name: kind.name ?? "", items: viewModel.getItems(kind))
+                .id(kind)
+                .toolbarTitleDisplayMode(.inline)
+        }
+    }
+
+    @ViewBuilder
+    private func brandDetail(for brand: Brand?) -> some View {
+        if let brand {
+            BrandDetailView(brand: brand, name: brand.name ?? "", urlString: brand.url?.absoluteString ?? "", items: viewModel.getItems(brand))
+                .id(brand)
+                .toolbarTitleDisplayMode(.inline)
+        }
+    }
+
+    @ViewBuilder
+    private func sellerDetail(for seller: Seller?) -> some View {
+        if let seller {
+            SellerDetailView(seller: seller, name: seller.name ?? "", urlString: seller.url?.absoluteString ?? "", items: viewModel.getItems(seller))
+                .id(seller)
+                .toolbarTitleDisplayMode(.inline)
+        }
+    }
+
+    private var statsList: some View {
+        StatsView(statsType: $statsType, start: $statsStart, end: $statsEnd)
+    }
+
+    private var statsDetail: some View {
+        StatsDetailView(statsType: statsType, start: statsStart, end: statsEnd)
     }
 }
