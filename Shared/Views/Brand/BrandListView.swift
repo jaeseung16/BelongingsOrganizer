@@ -12,10 +12,12 @@ struct BrandListView: View {
 
     @State var presentAddBrandView = false
     @State private var showAlertForDeletion = false
+    // The split view's search field; the tab root searches in its Search tab
+    var search = ""
     @Binding var selected: Brand?
 
     var brands: [Brand] {
-        return viewModel.filteredBrands
+        return viewModel.brands(matching: search)
     }
 
     var body: some View {

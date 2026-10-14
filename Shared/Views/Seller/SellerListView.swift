@@ -13,10 +13,12 @@ struct SellerListView: View {
     @State var presentAddSelleriew = false
 
     @State private var showAlertForDeletion = false
+    // The split view's search field; the tab root searches in its Search tab
+    var search = ""
     @Binding var selected: Seller?
 
     private var sellers: [Seller] {
-        return viewModel.filteredSellers
+        return viewModel.sellers(matching: search)
     }
 
     var body: some View {

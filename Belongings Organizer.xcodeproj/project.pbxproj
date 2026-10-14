@@ -301,8 +301,11 @@
 		90C2DE422AE08BA300B82677 /* ItemDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C2DE412AE08BA300B82677 /* ItemDTO.swift */; };
 		90C2DE432AE08BA300B82677 /* ItemDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C2DE412AE08BA300B82677 /* ItemDTO.swift */; };
 		90CA7A000000000000000002 /* CatalogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CA7A000000000000000001 /* CatalogView.swift */; };
+		905EA2000000000000000002 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905EA2000000000000000001 /* SearchView.swift */; };
 		90CA7A000000000000000003 /* CatalogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CA7A000000000000000001 /* CatalogView.swift */; };
+		905EA2000000000000000003 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905EA2000000000000000001 /* SearchView.swift */; };
 		90CA7A000000000000000004 /* CatalogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CA7A000000000000000001 /* CatalogView.swift */; };
+		905EA2000000000000000004 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905EA2000000000000000001 /* SearchView.swift */; };
 		90CB46A726ED3CB600A9468B /* BrandListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CB46A626ED3CB600A9468B /* BrandListView.swift */; };
 		90CB46A826ED3CB600A9468B /* BrandListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CB46A626ED3CB600A9468B /* BrandListView.swift */; };
 		90CB46AA26ED3F0F00A9468B /* SellerListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CB46A926ED3F0F00A9468B /* SellerListView.swift */; };
@@ -502,6 +505,7 @@
 		90C2DE3E2AE086A400B82677 /* ItemDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDetailView.swift; sourceTree = "<group>"; };
 		90C2DE412AE08BA300B82677 /* ItemDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDTO.swift; sourceTree = "<group>"; };
 		90CA7A000000000000000001 /* CatalogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogView.swift; sourceTree = "<group>"; };
+		905EA2000000000000000001 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		90CB46A626ED3CB600A9468B /* BrandListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrandListView.swift; sourceTree = "<group>"; };
 		90CB46A926ED3F0F00A9468B /* SellerListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SellerListView.swift; sourceTree = "<group>"; };
 		90CB46B626ED6A1900A9468B /* FilterItemsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterItemsView.swift; sourceTree = "<group>"; };
@@ -766,6 +770,7 @@
 				90FAB1042C0000010000A003 /* LockScreenView.swift */,
 				90FAB1072C0000010000A006 /* SettingsView.swift */,
 				90CA7A000000000000000001 /* CatalogView.swift */,
+				905EA2000000000000000001 /* SearchView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1225,6 +1230,7 @@
 				90FAB1052C0000010000A004 /* LockScreenView.swift in Sources */,
 				90FAB1082C0000010000A007 /* SettingsView.swift in Sources */,
 				90CA7A000000000000000002 /* CatalogView.swift in Sources */,
+				905EA2000000000000000002 /* SearchView.swift in Sources */,
 				90C0D98E26E8001700158C85 /* ChooseKindView.swift in Sources */,
 				90DD8C2C26F95A1B0079424A /* EditPhotoView.swift in Sources */,
 				904498E726EBDEDB00002A6F /* ItemListView.swift in Sources */,
@@ -1332,6 +1338,7 @@
 				90FAB1062C0000010000A005 /* LockScreenView.swift in Sources */,
 				90FAB1092C0000010000A008 /* SettingsView.swift in Sources */,
 				90CA7A000000000000000003 /* CatalogView.swift in Sources */,
+				905EA2000000000000000003 /* SearchView.swift in Sources */,
 				904498EB26EBF70600002A6F /* KindListView.swift in Sources */,
 				907614A929D0ED860068365C /* KindStats.swift in Sources */,
 				90CB46B826ED6A1900A9468B /* FilterItemsView.swift in Sources */,
@@ -1492,6 +1499,7 @@
 				90AD5A000000000000000039 /* LockScreenView.swift in Sources */,
 				90AD5A00000000000000003A /* SettingsView.swift in Sources */,
 				90CA7A000000000000000004 /* CatalogView.swift in Sources */,
+				905EA2000000000000000004 /* SearchView.swift in Sources */,
 				90AD5A00000000000000003B /* ChooseKindView.swift in Sources */,
 				90AD5A00000000000000003C /* EditPhotoView.swift in Sources */,
 				90AD5A00000000000000003D /* ItemListView.swift in Sources */,

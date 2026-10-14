@@ -12,10 +12,12 @@ struct KindListView: View {
 
     @State var presentAddKindView = false
     @State private var showAlertForDeletion = false
+    // The split view's search field; the tab root searches in its Search tab
+    var search = ""
     @Binding var selected: Kind?
 
     var kinds: [Kind] {
-        return viewModel.filteredKinds
+        return viewModel.kinds(matching: search)
     }
 
     var body: some View {

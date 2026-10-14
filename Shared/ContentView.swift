@@ -105,7 +105,7 @@ struct ContentView: View {
 
     @State private var selectedItem: Item?
     @State private var selectedDisposedItem: Item?
-    @State private var selectedSearchedItem: Item?
+    @State private var searchPath = [SearchResult]()
     @State private var selectedKind: Kind?
     @State private var selectedBrand: Brand?
     @State private var selectedSeller: Seller?
@@ -134,24 +134,25 @@ struct ContentView: View {
                 if let item = selectedDisposedItem, !items.contains(item) {
                     selectedDisposedItem = nil
                 }
-                if let item = selectedSearchedItem, !items.contains(item) {
-                    selectedSearchedItem = nil
-                }
+                pruneSearchPath()
             }
             .onChange(of: viewModel.kinds) { _, kinds in
                 if let kind = selectedKind, !kinds.contains(kind) {
                     selectedKind = nil
                 }
+                pruneSearchPath()
             }
             .onChange(of: viewModel.brands) { _, brands in
                 if let brand = selectedBrand, !brands.contains(brand) {
                     selectedBrand = nil
                 }
+                pruneSearchPath()
             }
             .onChange(of: viewModel.sellers) { _, sellers in
                 if let seller = selectedSeller, !sellers.contains(seller) {
                     selectedSeller = nil
                 }
+                pruneSearchPath()
             }
             .onChange(of: selectedItem) { _, item in
                 donateOpening(item)
@@ -159,17 +160,15 @@ struct ContentView: View {
             .onChange(of: selectedDisposedItem) { _, item in
                 donateOpening(item)
             }
-            .onChange(of: selectedSearchedItem) { _, item in
-                donateOpening(item)
+            .onChange(of: searchPath) { _, path in
+                if case .item(let item) = path.last {
+                    donateOpening(item)
+                }
             }
             // Initial too: Siri or a notification may ask before the window appears
             .onChange(of: viewModel.navigateToItems, initial: true) { _, navigate in
                 if navigate {
-                    show(.items)
-                    // On iPhone an open item would hide the search results
-                    if let item = selectedItem, !viewModel.checkIfStringToSearchContainedIn(item.name ?? "") {
-                        selectedItem = nil
-                    }
+                    showSearchResults()
                     viewModel.navigateToItems = false
                 }
             }
@@ -186,23 +185,29 @@ struct ContentView: View {
             }
     }
 
-    @ViewBuilder
+    #if ADS
+    // The banner's bottom inset leaves no room for a tab bar
     private var root: some View {
-        #if ADS
-        // The banner's bottom inset leaves no room for a tab bar
         splitViewRoot
             .adSupport()
-        #else
-        tabViewRoot
-        #endif
     }
+
+    // The split view's search field filters whichever list is showing
+    private static let listsFollowSearch = true
+    #else
+    private var root: some View {
+        tabViewRoot
+    }
+
+    // The Search tab owns the search, so a search typed there doesn't filter the other tabs
+    private static let listsFollowSearch = false
+    #endif
 
     private var tabViewRoot: some View {
         TabView(selection: $tab) {
             Tab(SidebarSection.items.rawValue, systemImage: SidebarSection.items.systemImage, value: AppTab.items) {
                 NavigationSplitView {
                     ItemListView(selected: $selectedItem)
-                        .searchable(text: $viewModel.stringToSearch, placement: .listSearchField)
                 } detail: {
                     itemDetail(for: selectedItem)
                 }
@@ -212,20 +217,19 @@ struct ContentView: View {
                 NavigationSplitView {
                     CatalogView(section: $catalogSection, selectedKind: $selectedKind, selectedBrand: $selectedBrand,
                                 selectedSeller: $selectedSeller)
-                        .searchable(text: $viewModel.stringToSearch, placement: .listSearchField)
                 } detail: {
                     catalogDetail
                 }
             }
 
-            // A plain tab: one with the search role can't overflow into More on iPhone, and is dropped instead.
-            // Until search covers every entity, it searches the items
+            // A plain tab: one with the search role can't overflow into More on iPhone, and is dropped instead
             Tab("Search", systemImage: "magnifyingglass", value: AppTab.search) {
-                NavigationSplitView {
-                    ItemListView(selected: $selectedSearchedItem)
+                NavigationStack(path: $searchPath) {
+                    SearchView()
                         .searchable(text: $viewModel.stringToSearch, placement: .listSearchField)
-                } detail: {
-                    itemDetail(for: selectedSearchedItem)
+                        .navigationDestination(for: SearchResult.self) { result in
+                            searchDetail(for: result)
+                        }
                 }
             }
 
@@ -248,7 +252,6 @@ struct ContentView: View {
             Tab(SidebarSection.disposed.rawValue, systemImage: SidebarSection.disposed.systemImage, value: AppTab.disposed) {
                 NavigationSplitView {
                     ItemListView(disposition: .disposed, selected: $selectedDisposedItem)
-                        .searchable(text: $viewModel.stringToSearch, placement: .listSearchField)
                 } detail: {
                     itemDetail(for: selectedDisposedItem)
                 }
@@ -294,15 +297,15 @@ struct ContentView: View {
     private var listColumn: some View {
         switch section {
         case .items:
-            ItemListView(selected: $selectedItem)
+            ItemListView(search: viewModel.stringToSearch, selected: $selectedItem)
         case .disposed:
-            ItemListView(disposition: .disposed, selected: $selectedDisposedItem)
+            ItemListView(disposition: .disposed, search: viewModel.stringToSearch, selected: $selectedDisposedItem)
         case .categories:
-            KindListView(selected: $selectedKind)
+            KindListView(search: viewModel.stringToSearch, selected: $selectedKind)
         case .brands:
-            BrandListView(selected: $selectedBrand)
+            BrandListView(search: viewModel.stringToSearch, selected: $selectedBrand)
         case .sellers:
-            SellerListView(selected: $selectedSeller)
+            SellerListView(search: viewModel.stringToSearch, selected: $selectedSeller)
         default:
             EmptyView()
         }
@@ -372,6 +375,27 @@ struct ContentView: View {
         }
     }
 
+    private func showSearchResults() {
+        if Self.listsFollowSearch {
+            show(.items)
+            // On iPhone an open item would hide the search results
+            if let item = selectedItem, !viewModel.checkIfStringToSearchContainedIn(item.name ?? "") {
+                selectedItem = nil
+            }
+        } else {
+            tab = .search
+            // The results, not whatever an earlier search opened
+            searchPath = []
+        }
+    }
+
+    // Pops the search stack back to the first object deleted here or on another device
+    private func pruneSearchPath() {
+        if let index = searchPath.firstIndex(where: { !viewModel.isAvailable($0.object) }) {
+            searchPath.removeSubrange(index...)
+        }
+    }
+
     private func donateOpening(_ item: Item?) {
         defer {
             itemOpenedByIntent = nil
@@ -381,8 +405,9 @@ struct ContentView: View {
         }
     }
 
+    // In the split view, keeps an opened object in its list; the tab root's lists aren't filtered
     private func clearSearch(unlessMatching name: String?) {
-        if !viewModel.checkIfStringToSearchContainedIn(name ?? "") {
+        if Self.listsFollowSearch, !viewModel.checkIfStringToSearchContainedIn(name ?? "") {
             viewModel.stringToSearch = ""
         }
     }
@@ -420,6 +445,20 @@ struct ContentView: View {
             SellerDetailView(seller: seller, name: seller.name ?? "", urlString: seller.url?.absoluteString ?? "", items: viewModel.getItems(seller))
                 .id(seller)
                 .toolbarTitleDisplayMode(.inline)
+        }
+    }
+
+    @ViewBuilder
+    private func searchDetail(for result: SearchResult) -> some View {
+        switch result {
+        case .item(let item):
+            itemDetail(for: item)
+        case .kind(let kind):
+            kindDetail(for: kind)
+        case .brand(let brand):
+            brandDetail(for: brand)
+        case .seller(let seller):
+            sellerDetail(for: seller)
         }
     }
 

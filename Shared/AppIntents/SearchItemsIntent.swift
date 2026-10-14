@@ -8,7 +8,7 @@
 import Foundation
 import AppIntents
 
-// "Search Belongings for headphones": opens the item list with the search filled in
+// "Search Belongings for headphones": opens the search with the term filled in
 @AppIntent(schema: .system.searchInApp)
 struct SearchItemsIntent: ShowInAppSearchResultsIntent {
     static let searchScopes: [StringSearchScope] = [.general]

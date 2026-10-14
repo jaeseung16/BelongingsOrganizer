@@ -16,6 +16,8 @@ struct ItemListView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
 
     var disposition = ItemDisposition.active
+    // The split view's search field; the tab root searches in its Search tab
+    var search = ""
 
     @State var presentAddItemView = false
     @State var presentFilterItemsView = false
@@ -44,7 +46,7 @@ struct ItemListView: View {
     }
 
     private var query: Query {
-        Query(disposition: disposition, search: viewModel.stringToSearch, kinds: selectedKinds, brands: selectedBrands,
+        Query(disposition: disposition, search: search, kinds: selectedKinds, brands: selectedBrands,
               sellers: selectedSellers, sortType: sortType, sortDirection: sortDirection)
     }
 
@@ -52,7 +54,7 @@ struct ItemListView: View {
 
     private func updateFilteredItems() {
         filteredItems = PerformanceSignposts.measure("filterItems") {
-            viewModel.fetchItems(disposition, kinds: selectedKinds, brands: selectedBrands, sellers: selectedSellers,
+            viewModel.fetchItems(disposition, matching: search, kinds: selectedKinds, brands: selectedBrands, sellers: selectedSellers,
                                  sortType: sortType, sortDirection: sortDirection)
         }
     }
