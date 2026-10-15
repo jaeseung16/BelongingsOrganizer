@@ -49,6 +49,9 @@
 		904498EA26EBF70600002A6F /* KindListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 904498E926EBF70600002A6F /* KindListView.swift */; };
 		904498EB26EBF70600002A6F /* KindListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 904498E926EBF70600002A6F /* KindListView.swift */; };
 		90596B8626E6ACD20001CCA5 /* AddKindView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90596B8526E6ACD20001CCA5 /* AddKindView.swift */; };
+		905EA2000000000000000002 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905EA2000000000000000001 /* SearchView.swift */; };
+		905EA2000000000000000003 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905EA2000000000000000001 /* SearchView.swift */; };
+		905EA2000000000000000004 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905EA2000000000000000001 /* SearchView.swift */; };
 		90620B2D2AF0712F0056493B /* BelogingsOrganizerUIPerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90620B2C2AF0712F0056493B /* BelogingsOrganizerUIPerformanceTests.swift */; };
 		90620B2F2AF0712F0056493B /* BelogingsOrganizerUIPerformanceTestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90620B2E2AF0712F0056493B /* BelogingsOrganizerUIPerformanceTestsLaunchTests.swift */; };
 		906A67312AD1E91500DE53BE /* URLView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 906A67302AD1E91500DE53BE /* URLView.swift */; };
@@ -301,11 +304,8 @@
 		90C2DE422AE08BA300B82677 /* ItemDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C2DE412AE08BA300B82677 /* ItemDTO.swift */; };
 		90C2DE432AE08BA300B82677 /* ItemDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C2DE412AE08BA300B82677 /* ItemDTO.swift */; };
 		90CA7A000000000000000002 /* CatalogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CA7A000000000000000001 /* CatalogView.swift */; };
-		905EA2000000000000000002 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905EA2000000000000000001 /* SearchView.swift */; };
 		90CA7A000000000000000003 /* CatalogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CA7A000000000000000001 /* CatalogView.swift */; };
-		905EA2000000000000000003 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905EA2000000000000000001 /* SearchView.swift */; };
 		90CA7A000000000000000004 /* CatalogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CA7A000000000000000001 /* CatalogView.swift */; };
-		905EA2000000000000000004 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905EA2000000000000000001 /* SearchView.swift */; };
 		90CB46A726ED3CB600A9468B /* BrandListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CB46A626ED3CB600A9468B /* BrandListView.swift */; };
 		90CB46A826ED3CB600A9468B /* BrandListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CB46A626ED3CB600A9468B /* BrandListView.swift */; };
 		90CB46AA26ED3F0F00A9468B /* SellerListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CB46A926ED3F0F00A9468B /* SellerListView.swift */; };
@@ -419,6 +419,7 @@
 		904498E626EBDEDB00002A6F /* ItemListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemListView.swift; sourceTree = "<group>"; };
 		904498E926EBF70600002A6F /* KindListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KindListView.swift; sourceTree = "<group>"; };
 		90596B8526E6ACD20001CCA5 /* AddKindView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddKindView.swift; sourceTree = "<group>"; };
+		905EA2000000000000000001 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		90620B2A2AF0712F0056493B /* BelogingsOrganizerUIPerformanceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BelogingsOrganizerUIPerformanceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		90620B2C2AF0712F0056493B /* BelogingsOrganizerUIPerformanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BelogingsOrganizerUIPerformanceTests.swift; sourceTree = "<group>"; };
 		90620B2E2AF0712F0056493B /* BelogingsOrganizerUIPerformanceTestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BelogingsOrganizerUIPerformanceTestsLaunchTests.swift; sourceTree = "<group>"; };
@@ -505,7 +506,6 @@
 		90C2DE3E2AE086A400B82677 /* ItemDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDetailView.swift; sourceTree = "<group>"; };
 		90C2DE412AE08BA300B82677 /* ItemDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDTO.swift; sourceTree = "<group>"; };
 		90CA7A000000000000000001 /* CatalogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogView.swift; sourceTree = "<group>"; };
-		905EA2000000000000000001 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		90CB46A626ED3CB600A9468B /* BrandListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrandListView.swift; sourceTree = "<group>"; };
 		90CB46A926ED3F0F00A9468B /* SellerListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SellerListView.swift; sourceTree = "<group>"; };
 		90CB46B626ED6A1900A9468B /* FilterItemsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterItemsView.swift; sourceTree = "<group>"; };
@@ -1729,7 +1729,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = Belongings.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 47;
+				CURRENT_PROJECT_VERSION = 48;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
@@ -1757,7 +1757,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = Belongings.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 47;
+				CURRENT_PROJECT_VERSION = 48;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
@@ -1788,7 +1788,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 47;
+				CURRENT_PROJECT_VERSION = 48;
 				DEAD_CODE_STRIPPING = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -1816,7 +1816,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 47;
+				CURRENT_PROJECT_VERSION = 48;
 				DEAD_CODE_STRIPPING = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -1974,7 +1974,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = Belongings.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 47;
+				CURRENT_PROJECT_VERSION = 48;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = "iOS/Info-Ads.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
@@ -2003,7 +2003,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = Belongings.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 47;
+				CURRENT_PROJECT_VERSION = 48;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = "iOS/Info-Ads.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
