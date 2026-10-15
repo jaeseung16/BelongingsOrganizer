@@ -30,6 +30,7 @@ struct BrandListView: View {
             .onDelete(perform: deleteBrands)
         }
         .onscreenEntities(Brand.self)
+        .accessibilityIdentifier("BrandList")
         .navigationTitle("Brands")
         .toolbar {
             header

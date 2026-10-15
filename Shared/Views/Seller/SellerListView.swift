@@ -31,6 +31,7 @@ struct SellerListView: View {
             .onDelete(perform: deleteSellers)
         }
         .onscreenEntities(Seller.self)
+        .accessibilityIdentifier("SellerList")
         .navigationTitle("Sellers")
         .toolbar {
             header

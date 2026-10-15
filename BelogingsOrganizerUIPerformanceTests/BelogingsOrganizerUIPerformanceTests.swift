@@ -34,8 +34,8 @@ nonisolated final class BelogingsOrganizerUIPerformanceTests: XCTestCase {
         
         let itemList = app.descendants(matching: .any)["ItemList"]
         if !itemList.waitForExistence(timeout: 2) {
-            // The NavigationSplitView sidebar is showing; select the Items section.
-            app.staticTexts["Items"].firstMatch.tap()
+            // Another tab is showing; select the Items tab
+            app.tabBars.buttons["Items"].tap()
             XCTAssertTrue(itemList.waitForExistence(timeout: 5))
         }
             
@@ -80,7 +80,7 @@ nonisolated final class BelogingsOrganizerUIPerformanceTests: XCTestCase {
     private func showItemList(in app: XCUIApplication) -> XCUIElement {
         let itemList = app.descendants(matching: .any)["ItemList"]
         if !itemList.waitForExistence(timeout: 10) {
-            app.staticTexts["Items"].firstMatch.tap()
+            app.tabBars.buttons["Items"].tap()
             XCTAssertTrue(itemList.waitForExistence(timeout: 10))
         }
         return itemList

@@ -41,7 +41,7 @@ nonisolated class Tests_iOS: XCTestCase {
 
         let itemList = app.descendants(matching: .any)["ItemList"]
         if !itemList.waitForExistence(timeout: 10) {
-            app.staticTexts["Items"].firstMatch.tap()
+            app.tabBars.buttons["Items"].tap()
             XCTAssertTrue(itemList.waitForExistence(timeout: 10))
         }
 
@@ -112,6 +112,63 @@ nonisolated class Tests_iOS: XCTestCase {
             XCTAssertTrue(cell.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "Item 29")).firstMatch.exists,
                           "Unexpected match: \(cell.staticTexts.element(boundBy: 0).label)")
         }
+    }
+
+    @MainActor
+    private func waitForNameField(_ app: XCUIApplication, showing name: String) {
+        let shown = expectation(for: NSPredicate(format: "value == %@", name), evaluatedWith: app.textFields.firstMatch)
+        wait(for: [shown], timeout: 5)
+    }
+
+    // The first cell's name (rows show the name first)
+    @MainActor
+    private func openFirstRow(of list: XCUIElement) -> String {
+        let cell = list.cells.element(boundBy: 0)
+        XCTAssertTrue(cell.waitForExistence(timeout: 5))
+        let name = cell.staticTexts.element(boundBy: 0).label
+        cell.tap()
+        return name
+    }
+
+    // Each tab keeps its own navigation: switching tabs leaves what another tab has open,
+    // including Disposed behind More
+    @MainActor
+    func testTabsKeepTheirNavigation() throws {
+        let app = XCUIApplication()
+        app.launchArguments += ["-StressTestItemCount", "50"]
+        app.launch()
+        let tabs = app.tabBars.firstMatch
+
+        let itemList = app.descendants(matching: .any)["ItemList"]
+        XCTAssertTrue(itemList.waitForExistence(timeout: 10))
+        let item = openFirstRow(of: itemList)
+        waitForNameField(app, showing: item)
+
+        tabs.buttons["Catalog"].tap()
+        let picker = app.segmentedControls["CatalogPicker"]
+        XCTAssertTrue(picker.waitForExistence(timeout: 5))
+        picker.buttons["Brands"].tap()
+        let brand = openFirstRow(of: app.descendants(matching: .any)["BrandList"])
+        waitForNameField(app, showing: brand)
+
+        tabs.buttons["More"].tap()
+        app.cells.staticTexts["Disposed"].tap()
+        let disposed = openFirstRow(of: app.descendants(matching: .any)["DisposedItemList"])
+        waitForNameField(app, showing: disposed)
+
+        tabs.buttons["Items"].tap()
+        waitForNameField(app, showing: item)
+        tabs.buttons["Catalog"].tap()
+        waitForNameField(app, showing: brand)
+        tabs.buttons["More"].tap()
+        waitForNameField(app, showing: disposed)
+
+        // Back in Catalog, the picker is still on Brands
+        tabs.buttons["Catalog"].tap()
+        app.navigationBars.buttons["Brands"].tap()
+        XCTAssertTrue(picker.buttons["Brands"].waitForExistence(timeout: 5))
+        XCTAssertTrue(picker.buttons["Brands"].isSelected)
+        XCTAssertTrue(app.descendants(matching: .any)["BrandList"].exists)
     }
 
     func testLaunchPerformance() throws {

@@ -30,6 +30,7 @@ struct KindListView: View {
             .onDelete(perform: deleteKinds)
         }
         .onscreenEntities(Kind.self)
+        .accessibilityIdentifier("KindList")
         .navigationTitle("Categories")
         .toolbar {
             header

@@ -28,7 +28,7 @@ nonisolated class AppIntentsTests: XCTestCase {
 
         let itemList = app.descendants(matching: .any)["ItemList"]
         if !itemList.waitForExistence(timeout: 10) {
-            app.staticTexts["Items"].firstMatch.tap()
+            app.tabBars.buttons["Items"].tap()
             XCTAssertTrue(itemList.waitForExistence(timeout: 10))
         }
         return (app, itemList)
@@ -119,12 +119,15 @@ nonisolated class AppIntentsTests: XCTestCase {
         let owned = try await definitions.entities["ItemEntity"].suggestedEntities()[0]
         try await open.makeIntent(target: owned).run()
         await waitForNameField(app, showing: try owned.name)
+        XCTAssertTrue(app.tabBars.buttons["Items"].isSelected)
         XCTAssertTrue(app.navigationBars.buttons["Items"].exists)
 
         let items = try await allItems()
         let disposed = try XCTUnwrap(items.first(where: isDisposed), "The seed disposes about one in ten")
         try await open.makeIntent(target: disposed).run()
         await waitForNameField(app, showing: try disposed.name)
+        // Disposed is behind More on iPhone
+        XCTAssertTrue(app.tabBars.buttons["More"].isSelected)
         XCTAssertTrue(app.navigationBars.buttons["Disposed"].exists)
 
         for (type, intent, section) in [("CategoryEntity", "OpenCategoryIntent", "Categories"),
@@ -133,6 +136,8 @@ nonisolated class AppIntentsTests: XCTestCase {
             let entity = try await definitions.entities[type].suggestedEntities()[0]
             try await definitions.intents[intent].makeIntent(target: entity).run()
             await waitForNameField(app, showing: try entity.name)
+            XCTAssertTrue(app.tabBars.buttons["Catalog"].isSelected, "\(intent) didn't open Catalog")
+            // Each catalog list keeps its own title, so Back names the section
             XCTAssertTrue(app.navigationBars.buttons[section].exists, "\(intent) didn't open \(section)")
         }
     }
