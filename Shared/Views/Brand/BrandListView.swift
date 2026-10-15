@@ -51,16 +51,22 @@ struct BrandListView: View {
         }
     }
 
-    private var header: ToolbarItemGroup<some View> {
-        ToolbarItemGroup(placement: .leadingButtons) {
-            Button {
-                viewModel.refresh()
-            } label: {
-                Label("Refresh", systemImage: "arrow.clockwise")
+    // Add trails, as on the Items list
+    @ToolbarContentBuilder
+    private var header: some ToolbarContent {
+        // Shown only once another device has changed something, leaving the title room on iPad
+        if viewModel.canRefresh {
+            ToolbarItem(placement: .leadingButtons) {
+                Button {
+                    viewModel.refresh()
+                } label: {
+                    Label("Refresh", systemImage: "arrow.clockwise")
+                }
             }
-            .disabled(!viewModel.canRefresh)
+        }
 
-            Button{
+        ToolbarItem(placement: .primaryAction) {
+            Button {
                 presentAddBrandView = true
             } label: {
                 Label("Add a brand", systemImage: "plus")

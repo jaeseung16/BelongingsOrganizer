@@ -70,6 +70,14 @@ extension SearchFieldPlacement {
     }
 }
 
+extension View {
+    // The list column of a tab's split view; at the default width, macOS truncates an item row's
+    // date and sends the toolbar buttons into the overflow menu
+    func listColumn() -> some View {
+        navigationSplitViewColumnWidth(min: 320, ideal: 340, max: 440)
+    }
+}
+
 // The tabs of the TabView root; the ads target keeps the SidebarSection sidebar
 enum AppTab: Hashable {
     case items
@@ -208,6 +216,7 @@ struct ContentView: View {
             Tab(SidebarSection.items.rawValue, systemImage: SidebarSection.items.systemImage, value: AppTab.items) {
                 NavigationSplitView {
                     ItemListView(selected: $selectedItem)
+                        .listColumn()
                 } detail: {
                     itemDetail(for: selectedItem)
                 }
@@ -217,6 +226,7 @@ struct ContentView: View {
                 NavigationSplitView {
                     CatalogView(section: $catalogSection, selectedKind: $selectedKind, selectedBrand: $selectedBrand,
                                 selectedSeller: $selectedSeller)
+                        .listColumn()
                 } detail: {
                     catalogDetail
                 }
@@ -244,6 +254,7 @@ struct ContentView: View {
             Tab(SidebarSection.stats.rawValue, systemImage: SidebarSection.stats.systemImage, value: AppTab.stats) {
                 NavigationSplitView {
                     statsList
+                        .listColumn()
                 } detail: {
                     statsDetail
                 }
@@ -252,6 +263,7 @@ struct ContentView: View {
             Tab(SidebarSection.disposed.rawValue, systemImage: SidebarSection.disposed.systemImage, value: AppTab.disposed) {
                 NavigationSplitView {
                     ItemListView(disposition: .disposed, selected: $selectedDisposedItem)
+                        .listColumn()
                 } detail: {
                     itemDetail(for: selectedDisposedItem)
                 }

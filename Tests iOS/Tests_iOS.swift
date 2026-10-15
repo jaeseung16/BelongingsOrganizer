@@ -62,7 +62,7 @@ nonisolated class Tests_iOS: XCTestCase {
         XCTAssertTrue(itemList.staticTexts["Renamed Item"].waitForExistence(timeout: 5))
         XCTAssertFalse(itemList.staticTexts[originalName].exists)
         // A local save is not a remote change
-        XCTAssertFalse(app.buttons["Refresh"].isEnabled)
+        XCTAssertFalse(app.buttons["Refresh"].exists)
         // The list is sorted by last update, newest first
         XCTAssertEqual(itemList.cells.element(boundBy: 0).staticTexts.element(boundBy: 0).label, "Renamed Item")
 

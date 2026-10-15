@@ -132,15 +132,21 @@ struct ItemListView: View {
         }
     }
 
-    private var header: ToolbarItemGroup<some View> {
-        ToolbarItemGroup(placement: .leadingButtons) {
-            Button {
-                viewModel.refresh()
-            } label: {
-                Label("Refresh", systemImage: "arrow.clockwise")
+    // Filter and Sort trail as one glass group, with Add set apart
+    @ToolbarContentBuilder
+    private var header: some ToolbarContent {
+        // Shown only once another device has changed something, leaving the title room on iPad
+        if viewModel.canRefresh {
+            ToolbarItem(placement: .leadingButtons) {
+                Button {
+                    viewModel.refresh()
+                } label: {
+                    Label("Refresh", systemImage: "arrow.clockwise")
+                }
             }
-            .disabled(!viewModel.canRefresh)
+        }
 
+        ToolbarItemGroup(placement: .primaryAction) {
             Button  {
                 presentFilterItemsView = true
             } label: {
@@ -152,7 +158,11 @@ struct ItemListView: View {
             } label: {
                 Label("Sort", systemImage: "list.number")
             }
+        }
 
+        ToolbarSpacer(.fixed, placement: .primaryAction)
+
+        ToolbarItem(placement: .primaryAction) {
             Button {
                 viewModel.persistenceHelper.reset()
                 presentAddItemView = true
