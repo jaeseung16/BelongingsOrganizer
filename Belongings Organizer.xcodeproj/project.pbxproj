@@ -40,6 +40,9 @@
 		901A21EA28568BB8006CF1A4 /* BelongingsOrganizerConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 901A21E928568BA8006CF1A4 /* BelongingsOrganizerConstants.swift */; };
 		901A21EB28568BB8006CF1A4 /* BelongingsOrganizerConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 901A21E928568BA8006CF1A4 /* BelongingsOrganizerConstants.swift */; };
 		901A21ED2856981A006CF1A4 /* Persistence in Frameworks */ = {isa = PBXBuildFile; productRef = 901A21EC2856981A006CF1A4 /* Persistence */; };
+		90281BCA30840D760009A7F3 /* Belongings_Ads_AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 90281BC930840D760009A7F3 /* Belongings_Ads_AppIcon.icon */; };
+		90281BD5308410D90009A7F3 /* Belongings_AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 90281BD4308410D90009A7F3 /* Belongings_AppIcon.icon */; };
+		90281BD6308410D90009A7F3 /* Belongings_AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 90281BD4308410D90009A7F3 /* Belongings_AppIcon.icon */; };
 		904498E126EBD30500002A6F /* NothingSelectedText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 904498E026EBD30500002A6F /* NothingSelectedText.swift */; };
 		904498E226EBD30500002A6F /* NothingSelectedText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 904498E026EBD30500002A6F /* NothingSelectedText.swift */; };
 		904498E426EBD7A800002A6F /* SheetBottom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 904498E326EBD7A800002A6F /* SheetBottom.swift */; };
@@ -414,6 +417,8 @@
 		900F8D792735C5210069CE07 /* DetailHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailHeaderView.swift; sourceTree = "<group>"; };
 		901A21E628568AEF006CF1A4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		901A21E928568BA8006CF1A4 /* BelongingsOrganizerConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BelongingsOrganizerConstants.swift; sourceTree = "<group>"; };
+		90281BC930840D760009A7F3 /* Belongings_Ads_AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = Belongings_Ads_AppIcon.icon; sourceTree = "<group>"; };
+		90281BD4308410D90009A7F3 /* Belongings_AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = Belongings_AppIcon.icon; sourceTree = "<group>"; };
 		904498E026EBD30500002A6F /* NothingSelectedText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NothingSelectedText.swift; sourceTree = "<group>"; };
 		904498E326EBD7A800002A6F /* SheetBottom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheetBottom.swift; sourceTree = "<group>"; };
 		904498E626EBDEDB00002A6F /* ItemListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemListView.swift; sourceTree = "<group>"; };
@@ -618,6 +623,8 @@
 				901A21E928568BA8006CF1A4 /* BelongingsOrganizerConstants.swift */,
 				901A21E628568AEF006CF1A4 /* AppDelegate.swift */,
 				909286FC2AD0C085006FADAE /* Assets.xcassets */,
+				90281BD4308410D90009A7F3 /* Belongings_AppIcon.icon */,
+				90281BC930840D760009A7F3 /* Belongings_Ads_AppIcon.icon */,
 				900DDBBE26E036C90034A155 /* Belongings.xcdatamodeld */,
 			);
 			path = Shared;
@@ -1134,6 +1141,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				90281BD6308410D90009A7F3 /* Belongings_AppIcon.icon in Resources */,
 				909286FD2AD0C085006FADAE /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1142,6 +1150,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				90281BD5308410D90009A7F3 /* Belongings_AppIcon.icon in Resources */,
 				909286FE2AD0C085006FADAE /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1171,6 +1180,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				90281BCA30840D760009A7F3 /* Belongings_Ads_AppIcon.icon in Resources */,
 				90AD5A00000000000000006C /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1969,7 +1979,7 @@
 		90AD5A000000000000000006 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconAds;
+				ASSETCATALOG_COMPILER_APPICON_NAME = Belongings_Ads_AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = Belongings.entitlements;
@@ -1998,7 +2008,7 @@
 		90AD5A000000000000000007 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconAds;
+				ASSETCATALOG_COMPILER_APPICON_NAME = Belongings_Ads_AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = Belongings.entitlements;
