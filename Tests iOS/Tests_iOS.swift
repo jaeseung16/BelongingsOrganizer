@@ -153,6 +153,10 @@ nonisolated class Tests_iOS: XCTestCase {
 
         tabs.buttons["More"].tap()
         app.cells.staticTexts["Disposed"].tap()
+        // Disposed keeps Filter and Sort but has no Add
+        let disposedBar = app.navigationBars["Disposed"]
+        XCTAssertTrue(disposedBar.buttons["Filter"].waitForExistence(timeout: 5))
+        XCTAssertFalse(disposedBar.buttons["Add"].exists)
         let disposed = openFirstRow(of: app.descendants(matching: .any)["DisposedItemList"])
         waitForNameField(app, showing: disposed)
 

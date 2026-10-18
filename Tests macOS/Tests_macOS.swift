@@ -66,6 +66,7 @@ nonisolated class Tests_macOS: XCTestCase {
         let itemList = app.descendants(matching: .any)["ItemList"]
         XCTAssertTrue(itemList.waitForExistence(timeout: 10))
         XCTAssertEqual(app.toolbars.tabGroups.firstMatch.tabs["Items"].value as? Int, 1)
+        XCTAssertTrue(app.toolbars.buttons["Add"].exists)
         let item = selectFirstRow(of: itemList)
         waitForNameField(app, showing: item)
 
@@ -77,6 +78,9 @@ nonisolated class Tests_macOS: XCTestCase {
         waitForNameField(app, showing: brand)
 
         select("Disposed", in: app)
+        // Disposed keeps Filter and Sort but has no Add
+        XCTAssertTrue(app.toolbars.buttons["Filter"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.toolbars.buttons["Add"].exists)
         let disposed = selectFirstRow(of: app.descendants(matching: .any)["DisposedItemList"])
         waitForNameField(app, showing: disposed)
 

@@ -132,7 +132,7 @@ struct ItemListView: View {
         }
     }
 
-    // Filter and Sort trail as one glass group, with Add set apart
+    // Filter and Sort trail as one glass group, with Add set apart; Disposed has no Add
     @ToolbarContentBuilder
     private var header: some ToolbarContent {
         // Shown only once another device has changed something, leaving the title room on iPad
@@ -160,14 +160,16 @@ struct ItemListView: View {
             }
         }
 
-        ToolbarSpacer(.fixed, placement: .primaryAction)
+        if disposition == .active {
+            ToolbarSpacer(.fixed, placement: .primaryAction)
 
-        ToolbarItem(placement: .primaryAction) {
-            Button {
-                viewModel.persistenceHelper.reset()
-                presentAddItemView = true
-            } label: {
-                Label("Add", systemImage: "plus")
+            ToolbarItem(placement: .primaryAction) {
+                Button {
+                    viewModel.persistenceHelper.reset()
+                    presentAddItemView = true
+                } label: {
+                    Label("Add", systemImage: "plus")
+                }
             }
         }
     }
