@@ -21,10 +21,10 @@ extension ToolbarItemPlacement {
 
 enum SidebarSection: String, CaseIterable, Identifiable {
     case items = "Items"
-    case disposed = "Disposed"
     case categories = "Categories"
     case brands = "Brands"
     case sellers = "Sellers"
+    case disposed = "Disposed"
     case stats = "Stats"
     case settings = "Settings"
 
