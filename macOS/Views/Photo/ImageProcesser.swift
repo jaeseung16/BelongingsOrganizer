@@ -56,9 +56,9 @@ nonisolated final class ImageProcesser: ImagePasting, ImageResizing, Sendable {
                 completionHandler(image, error)
             } else {
                 ImageProcesser.logger.log("loadFile")
-                self.loadFile(from: fileProviders) { item, error in
+                self.loadFile(from: fileProviders) { url, error in
                     let imageData: Data?
-                    if let item = item, let url = URL(dataRepresentation: item as! Data, relativeTo: nil) {
+                    if let url = url {
                         imageData = try? Data(contentsOf: url)
                     } else {
                         imageData = nil
@@ -101,7 +101,7 @@ nonisolated final class ImageProcesser: ImagePasting, ImageResizing, Sendable {
         }
     }
 
-    private func loadFile(from itemProviders: [NSItemProvider], completionHandler: @escaping NSItemProvider.CompletionHandler) -> Void {
+    private func loadFile(from itemProviders: [NSItemProvider], completionHandler: @escaping @Sendable (URL?, Error?) -> Void) -> Void {
         guard !itemProviders.isEmpty else {
             ImageProcesser.logger.log("loadFile: no itemProviders")
             completionHandler(nil, nil)
@@ -110,7 +110,7 @@ nonisolated final class ImageProcesser: ImagePasting, ImageResizing, Sendable {
         itemProviders.forEach { itemProvider in
             for type in ImageProcesser.fileTypes {
                 if itemProvider.hasItemConformingToTypeIdentifier(type.identifier) {
-                    itemProvider.loadItem(forTypeIdentifier: UTType.fileURL.identifier, completionHandler: completionHandler)
+                    _ = itemProvider.loadObject(ofClass: URL.self, completionHandler: completionHandler)
                 }
             }
         }
