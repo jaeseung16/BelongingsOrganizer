@@ -26,9 +26,22 @@ struct KindListView: View {
                 NavigationLink(value: kind) {
                     BrandKindSellerRowView(name: kind.name ?? "", itemCount: viewModel.getItemCount(kind))
                 }
+                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                    deleteButton(kind)
+                }
+                .contextMenu {
+                    deleteButton(kind)
+                }
             }
-            .onDelete(perform: deleteKinds)
         }
+        #if os(macOS)
+        // ⌫ deletes the selected row
+        .onDeleteCommand {
+            if let selected {
+                delete([selected])
+            }
+        }
+        #endif
         .onscreenEntities(Kind.self)
         .accessibilityIdentifier("KindList")
         .navigationTitle("Categories")
@@ -74,9 +87,16 @@ struct KindListView: View {
         }
     }
 
-    private func deleteKinds(offsets: IndexSet) {
+    private func deleteButton(_ kind: Kind) -> some View {
+        Button(role: .destructive) {
+            delete([kind])
+        } label: {
+            Label("Delete", systemImage: "trash")
+        }
+    }
+
+    private func delete(_ kindsToDelete: [Kind]) {
         withAnimation {
-            let kindsToDelete = offsets.map { kinds[$0] }
             if let selected, kindsToDelete.contains(selected) {
                 self.selected = nil
             }

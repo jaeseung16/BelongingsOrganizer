@@ -26,9 +26,22 @@ struct BrandListView: View {
                 NavigationLink(value: brand) {
                     BrandKindSellerRowView(name: brand.name ?? "", itemCount: viewModel.getItemCount(brand))
                 }
+                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                    deleteButton(brand)
+                }
+                .contextMenu {
+                    deleteButton(brand)
+                }
             }
-            .onDelete(perform: deleteBrands)
         }
+        #if os(macOS)
+        // ⌫ deletes the selected row
+        .onDeleteCommand {
+            if let selected {
+                delete([selected])
+            }
+        }
+        #endif
         .onscreenEntities(Brand.self)
         .accessibilityIdentifier("BrandList")
         .navigationTitle("Brands")
@@ -75,9 +88,16 @@ struct BrandListView: View {
         }
     }
 
-    private func deleteBrands(offsets: IndexSet) {
+    private func deleteButton(_ brand: Brand) -> some View {
+        Button(role: .destructive) {
+            delete([brand])
+        } label: {
+            Label("Delete", systemImage: "trash")
+        }
+    }
+
+    private func delete(_ brandsToDelete: [Brand]) {
         withAnimation {
-            let brandsToDelete = offsets.map { brands[$0] }
             if let selected, brandsToDelete.contains(selected) {
                 self.selected = nil
             }

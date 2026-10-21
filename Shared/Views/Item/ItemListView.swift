@@ -66,30 +66,21 @@ struct ItemListView: View {
                     ItemRowView(item: item)
                 }
                 .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                    Button(role: .destructive) {
-                        delete(item)
-                    } label: {
-                        Label("Delete", systemImage: "trash")
-                    }
-
-                    if disposition == .active {
-                        Button {
-                            viewModel.updateDisposed(item, to: Date())
-                        } label: {
-                            Label("Dispose", systemImage: "archivebox")
-                        }
-                        .tint(.orange)
-                    } else {
-                        Button {
-                            viewModel.updateDisposed(item, to: nil)
-                        } label: {
-                            Label("Restore", systemImage: "arrow.uturn.backward")
-                        }
-                        .tint(.blue)
-                    }
+                    rowActions(item)
+                }
+                .contextMenu {
+                    rowActions(item)
                 }
             }
         }
+        #if os(macOS)
+        // ⌫ deletes the selected row
+        .onDeleteCommand {
+            if let selected {
+                delete(selected)
+            }
+        }
+        #endif
         .onChange(of: query, initial: true) {
             updateFilteredItems()
         }
@@ -171,6 +162,31 @@ struct ItemListView: View {
                     Label("Add", systemImage: "plus")
                 }
             }
+        }
+    }
+
+    @ViewBuilder
+    private func rowActions(_ item: Item) -> some View {
+        Button(role: .destructive) {
+            delete(item)
+        } label: {
+            Label("Delete", systemImage: "trash")
+        }
+
+        if disposition == .active {
+            Button {
+                viewModel.updateDisposed(item, to: Date())
+            } label: {
+                Label("Dispose", systemImage: "archivebox")
+            }
+            .tint(.orange)
+        } else {
+            Button {
+                viewModel.updateDisposed(item, to: nil)
+            } label: {
+                Label("Restore", systemImage: "arrow.uturn.backward")
+            }
+            .tint(.blue)
         }
     }
 

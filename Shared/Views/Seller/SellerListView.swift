@@ -27,9 +27,22 @@ struct SellerListView: View {
                 NavigationLink(value: seller) {
                     BrandKindSellerRowView(name: seller.name ?? "", itemCount: viewModel.getItemCount(seller))
                 }
+                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                    deleteButton(seller)
+                }
+                .contextMenu {
+                    deleteButton(seller)
+                }
             }
-            .onDelete(perform: deleteSellers)
         }
+        #if os(macOS)
+        // ⌫ deletes the selected row
+        .onDeleteCommand {
+            if let selected {
+                delete([selected])
+            }
+        }
+        #endif
         .onscreenEntities(Seller.self)
         .accessibilityIdentifier("SellerList")
         .navigationTitle("Sellers")
@@ -75,9 +88,16 @@ struct SellerListView: View {
         }
     }
 
-    private func deleteSellers(offsets: IndexSet) {
+    private func deleteButton(_ seller: Seller) -> some View {
+        Button(role: .destructive) {
+            delete([seller])
+        } label: {
+            Label("Delete", systemImage: "trash")
+        }
+    }
+
+    private func delete(_ sellersToDelete: [Seller]) {
         withAnimation {
-            let sellersToDelete = offsets.map { sellers[$0] }
             if let selected, sellersToDelete.contains(selected) {
                 self.selected = nil
             }
