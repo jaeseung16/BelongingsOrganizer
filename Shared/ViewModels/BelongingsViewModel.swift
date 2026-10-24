@@ -155,13 +155,9 @@ class BelongingsViewModel: NSObject, ObservableObject {
 
     // The item list's query: SQLite filters and sorts, and batching faults in only the rows
     // the list actually shows. `items` stays unfiltered for the stats.
-    func fetchItems(_ disposition: ItemDisposition, kinds: Set<Kind>, brands: Set<Brand>, sellers: Set<Seller>, sortType: SortType, sortDirection: SortDirection) -> [Item] {
-        var predicates = [NSPredicate(format: disposition == .active ? "disposed == nil" : "disposed != nil")]
-        if stringToSearch.isEmpty {
-            predicates.append(NSPredicate(format: "name != nil"))
-        } else {
-            predicates.append(NSPredicate(format: "name CONTAINS[c] %@", stringToSearch))
-        }
+    func fetchItems(_ disposition: ItemDisposition, matching search: String, kinds: Set<Kind>, brands: Set<Brand>, sellers: Set<Seller>, sortType: SortType, sortDirection: SortDirection) -> [Item] {
+        var predicates = [NSPredicate(format: disposition == .active ? "disposed == nil" : "disposed != nil"),
+                          namePredicate(matching: search)]
         // A selected category, brand, or seller may have been deleted since it was selected
         let kinds = kinds.filter(isAvailable)
         if !kinds.isEmpty {
@@ -192,15 +188,35 @@ class BelongingsViewModel: NSObject, ObservableObject {
         return persistenceHelper.perform(fetchRequest)
     }
     
-    @Published var kinds = [Kind]()
-    var filteredKinds: [Kind] {
-        kinds.filter {
-            if let name = $0.name {
-                return checkIfStringToSearchContainedIn(name)
+    // The Search tab's items, disposed ones included, batched like the item list's
+    func searchItems(matching search: String) -> [Item] {
+        guard !search.isEmpty else {
+            return []
+        }
+        let sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare))]
+        let fetchRequest = persistenceHelper.getFetchRequest(for: Item.self, entityName: "Item", sortDescriptors: sortDescriptors, predicate: namePredicate(matching: search))
+        fetchRequest.fetchBatchSize = 50
+        return persistenceHelper.perform(fetchRequest)
+    }
+    
+    private func namePredicate(matching search: String) -> NSPredicate {
+        search.isEmpty ? NSPredicate(format: "name != nil") : NSPredicate(format: "name CONTAINS[c] %@", search)
+    }
+    
+    // Named objects whose name contains the search; all of them for an empty search
+    private func named<Object: NSManagedObject>(_ objects: [Object], name: (Object) -> String?, matching search: String) -> [Object] {
+        objects.filter {
+            if let name = name($0) {
+                return search.isEmpty || name.lowercased().contains(search.lowercased())
             } else {
                 return false
             }
         }
+    }
+    
+    @Published var kinds = [Kind]()
+    func kinds(matching search: String) -> [Kind] {
+        named(kinds, name: \.name, matching: search)
     }
     
     func fetchKinds() -> Void {
@@ -211,14 +227,8 @@ class BelongingsViewModel: NSObject, ObservableObject {
     }
     
     @Published var brands = [Brand]()
-    var filteredBrands: [Brand] {
-        brands.filter {
-            if let name = $0.name {
-                return checkIfStringToSearchContainedIn(name)
-            } else {
-                return false
-            }
-        }
+    func brands(matching search: String) -> [Brand] {
+        named(brands, name: \.name, matching: search)
     }
     
     func fetchBrands() -> Void {
@@ -229,14 +239,8 @@ class BelongingsViewModel: NSObject, ObservableObject {
     }
     
     @Published var sellers = [Seller]()
-    var filteredSellers: [Seller] {
-        sellers.filter {
-            if let name = $0.name {
-                return checkIfStringToSearchContainedIn(name)
-            } else {
-                return false
-            }
-        }
+    func sellers(matching search: String) -> [Seller] {
+        named(sellers, name: \.name, matching: search)
     }
     
     func fetchSellers() -> Void {
@@ -408,7 +412,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
     // MARK: - Deleted objects
     // An object deleted here or merged in as deleted from CloudKit either reports isDeleted
     // (pending save) or has lost its context (saved)
-    private func isAvailable(_ object: NSManagedObject) -> Bool {
+    func isAvailable(_ object: NSManagedObject) -> Bool {
         !object.isDeleted && object.managedObjectContext != nil
     }
     
@@ -512,7 +516,7 @@ class BelongingsViewModel: NSObject, ObservableObject {
         case seller(Seller)
     }
     
-    // Shows the item list searched for the string, as a notification tap or a Siri search does
+    // Shows the search results for the string, as a notification tap or a Siri search does
     func showItems(matching search: String) -> Void {
         stringToSearch = search
         navigateToItems = true

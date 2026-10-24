@@ -41,7 +41,7 @@ nonisolated class Tests_iOS: XCTestCase {
 
         let itemList = app.descendants(matching: .any)["ItemList"]
         if !itemList.waitForExistence(timeout: 10) {
-            app.staticTexts["Items"].firstMatch.tap()
+            app.tabBars.buttons["Items"].tap()
             XCTAssertTrue(itemList.waitForExistence(timeout: 10))
         }
 
@@ -62,7 +62,7 @@ nonisolated class Tests_iOS: XCTestCase {
         XCTAssertTrue(itemList.staticTexts["Renamed Item"].waitForExistence(timeout: 5))
         XCTAssertFalse(itemList.staticTexts[originalName].exists)
         // A local save is not a remote change
-        XCTAssertFalse(app.buttons["Refresh"].isEnabled)
+        XCTAssertFalse(app.buttons["Refresh"].exists)
         // The list is sorted by last update, newest first
         XCTAssertEqual(itemList.cells.element(boundBy: 0).staticTexts.element(boundBy: 0).label, "Renamed Item")
 
@@ -84,7 +84,7 @@ nonisolated class Tests_iOS: XCTestCase {
         XCTAssertTrue(itemList.cells.element(boundBy: 0).exists)
     }
 
-    // The item list filters in the fetch request; searching must still match names case-insensitively
+    // The Search tab filters items in the fetch request; searching must still match names case-insensitively
     @MainActor
     func testStressDataSearchItems() throws {
         let app = XCUIApplication()
@@ -92,24 +92,87 @@ nonisolated class Tests_iOS: XCTestCase {
         app.launch()
 
         let itemList = app.descendants(matching: .any)["ItemList"]
-        if !itemList.waitForExistence(timeout: 10) {
-            app.staticTexts["Items"].firstMatch.tap()
-            XCTAssertTrue(itemList.waitForExistence(timeout: 10))
-        }
+        XCTAssertTrue(itemList.waitForExistence(timeout: 10))
+        app.tabBars.buttons["Search"].tap()
 
         let searchField = app.searchFields.firstMatch
         XCTAssertTrue(searchField.waitForExistence(timeout: 5))
         searchField.tap()
         searchField.typeText("item 29")
 
-        // Items 29 and 290-299, minus any the seed disposed
-        let firstCell = itemList.cells.element(boundBy: 0)
-        XCTAssertTrue(firstCell.waitForExistence(timeout: 5))
-        XCTAssertLessThanOrEqual(itemList.cells.count, 11)
-        for index in 0..<itemList.cells.count {
-            let name = itemList.cells.element(boundBy: index).staticTexts.element(boundBy: 0).label
-            XCTAssertTrue(name.hasPrefix("Item 29"), "Unexpected match: \(name)")
+        // Items 29 and 290-299, disposed ones included, under the "Items" header cell; no category,
+        // brand, or seller matches. Rows scrolled off screen aren't cells
+        let results = app.descendants(matching: .any)["SearchResults"]
+        XCTAssertTrue(results.cells.staticTexts["Items"].waitForExistence(timeout: 5))
+        XCTAssertGreaterThan(results.cells.count, 1)
+        XCTAssertLessThanOrEqual(results.cells.count, 12)
+        // A disposed item's cell has its "Disposed" badge too
+        for index in 1..<results.cells.count {
+            let cell = results.cells.element(boundBy: index)
+            XCTAssertTrue(cell.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "Item 29")).firstMatch.exists,
+                          "Unexpected match: \(cell.staticTexts.element(boundBy: 0).label)")
         }
+    }
+
+    @MainActor
+    private func waitForNameField(_ app: XCUIApplication, showing name: String) {
+        let shown = expectation(for: NSPredicate(format: "value == %@", name), evaluatedWith: app.textFields.firstMatch)
+        wait(for: [shown], timeout: 5)
+    }
+
+    // The first cell's name (rows show the name first)
+    @MainActor
+    private func openFirstRow(of list: XCUIElement) -> String {
+        let cell = list.cells.element(boundBy: 0)
+        XCTAssertTrue(cell.waitForExistence(timeout: 5))
+        let name = cell.staticTexts.element(boundBy: 0).label
+        cell.tap()
+        return name
+    }
+
+    // Each tab keeps its own navigation: switching tabs leaves what another tab has open,
+    // including Disposed behind More
+    @MainActor
+    func testTabsKeepTheirNavigation() throws {
+        let app = XCUIApplication()
+        app.launchArguments += ["-StressTestItemCount", "50"]
+        app.launch()
+        let tabs = app.tabBars.firstMatch
+
+        let itemList = app.descendants(matching: .any)["ItemList"]
+        XCTAssertTrue(itemList.waitForExistence(timeout: 10))
+        let item = openFirstRow(of: itemList)
+        waitForNameField(app, showing: item)
+
+        tabs.buttons["Catalog"].tap()
+        let picker = app.segmentedControls["CatalogPicker"]
+        XCTAssertTrue(picker.waitForExistence(timeout: 5))
+        picker.buttons["Brands"].tap()
+        let brand = openFirstRow(of: app.descendants(matching: .any)["BrandList"])
+        waitForNameField(app, showing: brand)
+
+        tabs.buttons["More"].tap()
+        app.cells.staticTexts["Disposed"].tap()
+        // Disposed keeps Filter and Sort but has no Add
+        let disposedBar = app.navigationBars["Disposed"]
+        XCTAssertTrue(disposedBar.buttons["Filter"].waitForExistence(timeout: 5))
+        XCTAssertFalse(disposedBar.buttons["Add"].exists)
+        let disposed = openFirstRow(of: app.descendants(matching: .any)["DisposedItemList"])
+        waitForNameField(app, showing: disposed)
+
+        tabs.buttons["Items"].tap()
+        waitForNameField(app, showing: item)
+        tabs.buttons["Catalog"].tap()
+        waitForNameField(app, showing: brand)
+        tabs.buttons["More"].tap()
+        waitForNameField(app, showing: disposed)
+
+        // Back in Catalog, the picker is still on Brands
+        tabs.buttons["Catalog"].tap()
+        app.navigationBars.buttons["Brands"].tap()
+        XCTAssertTrue(picker.buttons["Brands"].waitForExistence(timeout: 5))
+        XCTAssertTrue(picker.buttons["Brands"].isSelected)
+        XCTAssertTrue(app.descendants(matching: .any)["BrandList"].exists)
     }
 
     func testLaunchPerformance() throws {

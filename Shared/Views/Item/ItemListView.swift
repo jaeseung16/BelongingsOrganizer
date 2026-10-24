@@ -16,6 +16,8 @@ struct ItemListView: View {
     @EnvironmentObject var viewModel: BelongingsViewModel
 
     var disposition = ItemDisposition.active
+    // The split view's search field; the tab root searches in its Search tab
+    var search = ""
 
     @State var presentAddItemView = false
     @State var presentFilterItemsView = false
@@ -44,7 +46,7 @@ struct ItemListView: View {
     }
 
     private var query: Query {
-        Query(disposition: disposition, search: viewModel.stringToSearch, kinds: selectedKinds, brands: selectedBrands,
+        Query(disposition: disposition, search: search, kinds: selectedKinds, brands: selectedBrands,
               sellers: selectedSellers, sortType: sortType, sortDirection: sortDirection)
     }
 
@@ -52,7 +54,7 @@ struct ItemListView: View {
 
     private func updateFilteredItems() {
         filteredItems = PerformanceSignposts.measure("filterItems") {
-            viewModel.fetchItems(disposition, kinds: selectedKinds, brands: selectedBrands, sellers: selectedSellers,
+            viewModel.fetchItems(disposition, matching: search, kinds: selectedKinds, brands: selectedBrands, sellers: selectedSellers,
                                  sortType: sortType, sortDirection: sortDirection)
         }
     }
@@ -64,30 +66,21 @@ struct ItemListView: View {
                     ItemRowView(item: item)
                 }
                 .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                    Button(role: .destructive) {
-                        delete(item)
-                    } label: {
-                        Label("Delete", systemImage: "trash")
-                    }
-
-                    if disposition == .active {
-                        Button {
-                            viewModel.updateDisposed(item, to: Date())
-                        } label: {
-                            Label("Dispose", systemImage: "archivebox")
-                        }
-                        .tint(.orange)
-                    } else {
-                        Button {
-                            viewModel.updateDisposed(item, to: nil)
-                        } label: {
-                            Label("Restore", systemImage: "arrow.uturn.backward")
-                        }
-                        .tint(.blue)
-                    }
+                    rowActions(item)
+                }
+                .contextMenu {
+                    rowActions(item)
                 }
             }
         }
+        #if os(macOS)
+        // ⌫ deletes the selected row
+        .onDeleteCommand {
+            if let selected {
+                delete(selected)
+            }
+        }
+        #endif
         .onChange(of: query, initial: true) {
             updateFilteredItems()
         }
@@ -130,15 +123,21 @@ struct ItemListView: View {
         }
     }
 
-    private var header: ToolbarItemGroup<some View> {
-        ToolbarItemGroup(placement: .leadingButtons) {
-            Button {
-                viewModel.refresh()
-            } label: {
-                Label("Refresh", systemImage: "arrow.clockwise")
+    // Filter and Sort trail as one glass group, with Add set apart; Disposed has no Add
+    @ToolbarContentBuilder
+    private var header: some ToolbarContent {
+        // Shown only once another device has changed something, leaving the title room on iPad
+        if viewModel.canRefresh {
+            ToolbarItem(placement: .leadingButtons) {
+                Button {
+                    viewModel.refresh()
+                } label: {
+                    Label("Refresh", systemImage: "arrow.clockwise")
+                }
             }
-            .disabled(!viewModel.canRefresh)
+        }
 
+        ToolbarItemGroup(placement: .primaryAction) {
             Button  {
                 presentFilterItemsView = true
             } label: {
@@ -150,13 +149,44 @@ struct ItemListView: View {
             } label: {
                 Label("Sort", systemImage: "list.number")
             }
+        }
 
-            Button {
-                viewModel.persistenceHelper.reset()
-                presentAddItemView = true
-            } label: {
-                Label("Add", systemImage: "plus")
+        if disposition == .active {
+            ToolbarSpacer(.fixed, placement: .primaryAction)
+
+            ToolbarItem(placement: .primaryAction) {
+                Button {
+                    viewModel.persistenceHelper.reset()
+                    presentAddItemView = true
+                } label: {
+                    Label("Add", systemImage: "plus")
+                }
             }
+        }
+    }
+
+    @ViewBuilder
+    private func rowActions(_ item: Item) -> some View {
+        Button(role: .destructive) {
+            delete(item)
+        } label: {
+            Label("Delete", systemImage: "trash")
+        }
+
+        if disposition == .active {
+            Button {
+                viewModel.updateDisposed(item, to: Date())
+            } label: {
+                Label("Dispose", systemImage: "archivebox")
+            }
+            .tint(.orange)
+        } else {
+            Button {
+                viewModel.updateDisposed(item, to: nil)
+            } label: {
+                Label("Restore", systemImage: "arrow.uturn.backward")
+            }
+            .tint(.blue)
         }
     }
 

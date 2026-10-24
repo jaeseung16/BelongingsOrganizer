@@ -28,7 +28,7 @@ nonisolated class AppIntentsTests: XCTestCase {
 
         let itemList = app.descendants(matching: .any)["ItemList"]
         if !itemList.waitForExistence(timeout: 10) {
-            app.staticTexts["Items"].firstMatch.tap()
+            app.tabBars.buttons["Items"].tap()
             XCTAssertTrue(itemList.waitForExistence(timeout: 10))
         }
         return (app, itemList)
@@ -119,12 +119,15 @@ nonisolated class AppIntentsTests: XCTestCase {
         let owned = try await definitions.entities["ItemEntity"].suggestedEntities()[0]
         try await open.makeIntent(target: owned).run()
         await waitForNameField(app, showing: try owned.name)
+        XCTAssertTrue(app.tabBars.buttons["Items"].isSelected)
         XCTAssertTrue(app.navigationBars.buttons["Items"].exists)
 
         let items = try await allItems()
         let disposed = try XCTUnwrap(items.first(where: isDisposed), "The seed disposes about one in ten")
         try await open.makeIntent(target: disposed).run()
         await waitForNameField(app, showing: try disposed.name)
+        // Disposed is behind More on iPhone
+        XCTAssertTrue(app.tabBars.buttons["More"].isSelected)
         XCTAssertTrue(app.navigationBars.buttons["Disposed"].exists)
 
         for (type, intent, section) in [("CategoryEntity", "OpenCategoryIntent", "Categories"),
@@ -133,13 +136,34 @@ nonisolated class AppIntentsTests: XCTestCase {
             let entity = try await definitions.entities[type].suggestedEntities()[0]
             try await definitions.intents[intent].makeIntent(target: entity).run()
             await waitForNameField(app, showing: try entity.name)
+            XCTAssertTrue(app.tabBars.buttons["Catalog"].isSelected, "\(intent) didn't open Catalog")
+            // Each catalog list keeps its own title, so Back names the section
             XCTAssertTrue(app.navigationBars.buttons[section].exists, "\(intent) didn't open \(section)")
         }
     }
 
     @MainActor
-    func testSearchClosesNonMatchingItem() async throws {
-        let (app, itemList) = launch()
+    private func searchResults(_ app: XCUIApplication) -> XCUIElement {
+        app.descendants(matching: .any)["SearchResults"]
+    }
+
+    // The first cell is the "Items" header; a disposed item's cell has its "Disposed" badge too
+    @MainActor
+    private func assertSearchResults(_ app: XCUIApplication, havePrefix term: String) {
+        let results = searchResults(app)
+        XCTAssertTrue(results.cells.staticTexts["Items"].waitForExistence(timeout: 5))
+        XCTAssertGreaterThan(results.cells.count, 1)
+        for index in 1..<results.cells.count {
+            let cell = results.cells.element(boundBy: index)
+            XCTAssertTrue(cell.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", term)).firstMatch.exists,
+                          "Unexpected match: \(cell.staticTexts.element(boundBy: 0).label)")
+        }
+    }
+
+    // The search opens the Search tab, whatever the Items tab is showing
+    @MainActor
+    func testSearchShowsResultsOverOpenItem() async throws {
+        let (app, _) = launch()
 
         let item = try await definitions.entities["ItemEntity"].suggestedEntities()[0]
         let name: String = try item.name
@@ -148,32 +172,30 @@ nonisolated class AppIntentsTests: XCTestCase {
 
         let term = name.hasPrefix("Item 4") ? "Item 3" : "Item 4"
         try await definitions.intents["SearchItemsIntent"].makeIntent(criteria: StringSearchCriteria(term: term)).run()
-        let firstName = itemList.cells.element(boundBy: 0).staticTexts.element(boundBy: 0)
-        XCTAssertTrue(firstName.waitForExistence(timeout: 5))
-        for index in 0..<itemList.cells.count {
-            let name = itemList.cells.element(boundBy: index).staticTexts.element(boundBy: 0).label
-            XCTAssertTrue(name.hasPrefix(term), "Unexpected match: \(name)")
-        }
+        assertSearchResults(app, havePrefix: term)
         XCTAssertEqual(app.searchFields.firstMatch.value as? String, term)
     }
 
-    // Also checks that the detail is pushed once: one Back returns to the list
+    // The item list isn't filtered by the Search tab, and the search is kept. Also checks that
+    // the detail is pushed once: one Back returns to the list
     @MainActor
-    func testOpenItemClearsSearchHidingIt() async throws {
+    func testOpenItemKeepsSearch() async throws {
         let (app, itemList) = launch()
+        app.tabBars.buttons["Search"].tap()
         let searchField = app.searchFields.firstMatch
         XCTAssertTrue(searchField.waitForExistence(timeout: 5))
         searchField.tap()
         searchField.typeText("no such item")
-        XCTAssertFalse(itemList.cells.firstMatch.waitForExistence(timeout: 2))
+        XCTAssertFalse(searchResults(app).cells.firstMatch.waitForExistence(timeout: 2))
 
         let item = try await definitions.entities["ItemEntity"].suggestedEntities()[0]
         try await definitions.intents["OpenItemIntent"].makeIntent(target: item).run()
         await waitForNameField(app, showing: try item.name)
 
         app.navigationBars.buttons["BackButton"].tap()
-        XCTAssertTrue(itemList.cells.firstMatch.waitForExistence(timeout: 5), "Back should return to the list, with the search cleared")
-        XCTAssertEqual(app.searchFields.firstMatch.placeholderValue, app.searchFields.firstMatch.value as? String)
+        XCTAssertTrue(itemList.cells.firstMatch.waitForExistence(timeout: 5), "Back should return to the unfiltered list")
+        app.tabBars.buttons["Search"].tap()
+        XCTAssertEqual(app.searchFields.firstMatch.value as? String, "no such item")
     }
 
     // MARK: - Add, dispose, count
@@ -343,13 +365,7 @@ nonisolated class AppIntentsTests: XCTestCase {
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 10))
         let searched = expectation(for: NSPredicate(format: "value == %@", "Item 3"), evaluatedWith: app.searchFields.firstMatch)
         await fulfillment(of: [searched], timeout: 10)
-        let itemList = app.descendants(matching: .any)["ItemList"]
-        let firstName = itemList.cells.element(boundBy: 0).staticTexts.element(boundBy: 0)
-        XCTAssertTrue(firstName.waitForExistence(timeout: 5))
-        for index in 0..<itemList.cells.count {
-            let name = itemList.cells.element(boundBy: index).staticTexts.element(boundBy: 0).label
-            XCTAssertTrue(name.hasPrefix("Item 3"), "Unexpected match: \(name)")
-        }
+        assertSearchResults(app, havePrefix: "Item 3")
     }
 
     // The query starts the app without a window; opening the item then brings up the window,
@@ -584,19 +600,14 @@ nonisolated class AppIntentsTests: XCTestCase {
         XCTAssertTrue(locked.isEmpty, "\(locked.count) results while locked")
     }
 
-    // "More results" searches the item list for the first label some item's name contains
+    // "More results" searches for the first label some item's name contains
     @MainActor
-    func testVisualSearchMoreResultsSearchesItemList() async throws {
-        let (app, itemList) = launch()
+    func testVisualSearchMoreResultsSearches() async throws {
+        let (app, _) = launch()
 
         try await definitions.intents["ShowVisualSearchResultsForLabelsIntent"].makeIntent(labels: ["Headphones", "Item 3"]).run()
         let searched = expectation(for: NSPredicate(format: "value == %@", "Item 3"), evaluatedWith: app.searchFields.firstMatch)
         await fulfillment(of: [searched], timeout: 5)
-        let firstName = itemList.cells.element(boundBy: 0).staticTexts.element(boundBy: 0)
-        XCTAssertTrue(firstName.waitForExistence(timeout: 5))
-        for index in 0..<itemList.cells.count {
-            let name = itemList.cells.element(boundBy: index).staticTexts.element(boundBy: 0).label
-            XCTAssertTrue(name.hasPrefix("Item 3"), "Unexpected match: \(name)")
-        }
+        assertSearchResults(app, havePrefix: "Item 3")
     }
 }

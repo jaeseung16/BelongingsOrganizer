@@ -24,9 +24,12 @@ enum StressTestData {
 
     private static let logger = Logger()
 
+    // 0 gives an empty store, e.g. for App Store screenshots
     static var itemCount: Int? {
-        let count = UserDefaults.standard.integer(forKey: itemCountKey)
-        return count > 0 ? count : nil
+        guard UserDefaults.standard.object(forKey: itemCountKey) != nil else {
+            return nil
+        }
+        return max(0, UserDefaults.standard.integer(forKey: itemCountKey))
     }
 
     // An intent that launches the app doesn't pass it the UI test's launch arguments. A test
@@ -57,6 +60,9 @@ enum StressTestData {
     }
 
     static func seed(_ context: NSManagedObjectContext, itemCount: Int) {
+        guard itemCount > 0 else {
+            return
+        }
         var generator = SplitMix64(seed: 20260921)
         let now = Date()
 

@@ -12,10 +12,12 @@ struct KindListView: View {
 
     @State var presentAddKindView = false
     @State private var showAlertForDeletion = false
+    // The split view's search field; the tab root searches in its Search tab
+    var search = ""
     @Binding var selected: Kind?
 
     var kinds: [Kind] {
-        return viewModel.filteredKinds
+        return viewModel.kinds(matching: search)
     }
 
     var body: some View {
@@ -24,10 +26,24 @@ struct KindListView: View {
                 NavigationLink(value: kind) {
                     BrandKindSellerRowView(name: kind.name ?? "", itemCount: viewModel.getItemCount(kind))
                 }
+                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                    deleteButton(kind)
+                }
+                .contextMenu {
+                    deleteButton(kind)
+                }
             }
-            .onDelete(perform: deleteKinds)
         }
+        #if os(macOS)
+        // ⌫ deletes the selected row
+        .onDeleteCommand {
+            if let selected {
+                delete([selected])
+            }
+        }
+        #endif
         .onscreenEntities(Kind.self)
+        .accessibilityIdentifier("KindList")
         .navigationTitle("Categories")
         .toolbar {
             header
@@ -48,15 +64,21 @@ struct KindListView: View {
         }
     }
 
-    private var header: ToolbarItemGroup<some View> {
-        ToolbarItemGroup(placement: .leadingButtons) {
-            Button {
-                viewModel.refresh()
-            } label: {
-                Label("Refresh", systemImage: "arrow.clockwise")
+    // Add trails, as on the Items list
+    @ToolbarContentBuilder
+    private var header: some ToolbarContent {
+        // Shown only once another device has changed something, leaving the title room on iPad
+        if viewModel.canRefresh {
+            ToolbarItem(placement: .leadingButtons) {
+                Button {
+                    viewModel.refresh()
+                } label: {
+                    Label("Refresh", systemImage: "arrow.clockwise")
+                }
             }
-            .disabled(!viewModel.canRefresh)
+        }
 
+        ToolbarItem(placement: .primaryAction) {
             Button {
                 presentAddKindView = true
             } label: {
@@ -65,9 +87,16 @@ struct KindListView: View {
         }
     }
 
-    private func deleteKinds(offsets: IndexSet) {
+    private func deleteButton(_ kind: Kind) -> some View {
+        Button(role: .destructive) {
+            delete([kind])
+        } label: {
+            Label("Delete", systemImage: "trash")
+        }
+    }
+
+    private func delete(_ kindsToDelete: [Kind]) {
         withAnimation {
-            let kindsToDelete = offsets.map { kinds[$0] }
             if let selected, kindsToDelete.contains(selected) {
                 self.selected = nil
             }
