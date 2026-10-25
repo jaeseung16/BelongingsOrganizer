@@ -5,10 +5,13 @@ The app helps a user keep the records of items.
 [<img src="./docs/assets/images/Download_on_the_App_Store_Badge_US-UK_RGB_wht_092917.svg">](https://apps.apple.com/app/id1584237466)
 [<img src="./docs/assets/images/Download_on_the_App_Store_Badge_US-UK_RGB_blk_092917.svg">](https://apps.apple.com/app/id1609814834)
 # How to Use
- 
+
+The iOS and macOS apps are organized in tabs: Items · Catalog · Search · Stats · Disposed, plus Settings on iOS. The version with ads uses a sidebar instead (see [Version with Ads](#version-with-ads)).
+
 ## Items tab
-  - Presents a list of items
-  - Click ‘Filter’ to set categories, brands, and/or sellers to see filtered items. 
+  - Presents a list of items, excluding disposed ones
+  - Click ‘Filter’ to set categories, brands, and/or sellers to see filtered items
+  - Click ‘Sort’ to sort items by name or date
   - Click ‘Add’ to add a new item
   - Select an item in the list to see the details, which can be edited.
 
@@ -18,6 +21,17 @@ The app helps a user keep the records of items.
   - Select a category to edit its name and to see a list of items attached to it.
   - Select a brand or seller to edit its name and url and to see the items attached to it. The url can be open in a user’s default browser by clicking ‘Open in Browser’.
 
+## Search tab
+  - Find items, categories, brands, and sellers by name
+  - Disposed items are included in the results
+
+## Stats tab
+  - Presents the number of items per category, brand, and seller
+  - Choose ‘Obtained’ or ‘Disposed’ to count items by the date they were obtained or disposed of
+  - Set the start and end dates to limit the statistics to that period
+  - Select a category, brand, or seller to see the items counted for it
+  - On iPhone, this tab is under ‘More’.
+
 ## Disposed tab
   - Presents a list of disposed items, which are the items with a disposed date. They no longer appear in the Items tab.
   - Click ‘Filter’ and ‘Sort’ to narrow down and order the list, as in the Items tab
@@ -25,16 +39,16 @@ The app helps a user keep the records of items.
   - Select an item in the list to see the details. There is no ‘Add’ here.
   - On iPhone, this tab is under ‘More’.
 
-## Stats tab
-  - Presents the number of items per category, brand, and seller
-  - Choose ‘Obtained’ or ‘Disposed’ to count items by the date they were obtained or disposed of
-  - Set the start and end dates to limit the statistics to that period
-  - Select a category, brand, or seller to see the items counted for it
-
 ## Settings tab
   - Turn on ‘Require Face ID / Touch ID’ (the name follows the biometry available on the device) to lock the app
   - When enabled, authentication is required each time the app launches or returns from the background
   - On macOS, open Settings from the app menu or with ⌘,
+
+## Version with Ads
+The iOS version with ads works the same way, except for the layout:
+  - A sidebar lists Items, Categories, Brands, Sellers, Disposed, Stats, and Settings. Categories, Brands, and Sellers are separate sections instead of a Catalog tab.
+  - There is no Search tab. The search field filters whichever list is showing by name: items, categories, brands, or sellers.
+  - A banner ad is shown at the bottom of the screen.
 
 # Version History
 
